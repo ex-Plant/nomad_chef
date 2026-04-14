@@ -2,11 +2,14 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
+import { Image } from "@/components/ui/image";
+import { SECTION_IDS } from "@/components/home/section-ids";
 import { EyebrowTag } from "@/components/home/eyebrow-tag";
 import { FadeUp } from "@/components/home/fade-up";
 import { RotatingStarburst } from "@/components/home/rotating-starburst";
 import { ArrowButton } from "@/components/home/arrow-button";
+import { ProgressDots } from "@/components/home/progress-dots";
+import { TRANSITION, AUTOPLAY_INTERVAL } from "@/components/home/animation-constants";
 import { SLIDES_EDITORIAL } from "@/components/home/services-slider-data";
 
 /* ─── Animation presets ─── */
@@ -16,28 +19,6 @@ const TEXT_VARIANTS = {
   center: { opacity: 1, y: 0 },
   exit: { opacity: 0, y: -20 },
 } as const;
-
-const TEXT_TRANSITION = {
-  duration: 0.5,
-  ease: [0.32, 0.72, 0, 1] as const,
-};
-
-/* ─── Progress dots ─── */
-
-function ProgressDots({ total, active }: { total: number; active: number }) {
-  return (
-    <div className="flex items-center gap-2">
-      {Array.from({ length: total }, (_, i) => (
-        <div
-          key={i}
-          className={`h-3 rounded-full transition-all duration-300 ${
-            i === active ? "w-8 bg-yellow" : "w-3 bg-white/30"
-          }`}
-        />
-      ))}
-    </div>
-  );
-}
 
 /* ─── Main component — fullscreen bg, text only ─── */
 
@@ -61,7 +42,7 @@ export function ServicesSlider() {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % SLIDES_EDITORIAL.length);
-    }, 8000);
+    }, AUTOPLAY_INTERVAL);
   }, []);
 
   useEffect(() => {
@@ -71,20 +52,21 @@ export function ServicesSlider() {
     };
   }, [resetTimer]);
 
-  const handleNextWithReset = useCallback(() => {
-    handleNext();
-    resetTimer();
-  }, [handleNext, resetTimer]);
+  // do not remove
+  // const handleNextWithReset = useCallback(() => {
+  //   handleNext();
+  //   resetTimer();
+  // }, [handleNext, resetTimer]);
 
-  const handlePrevWithReset = useCallback(() => {
-    handlePrev();
-    resetTimer();
-  }, [handlePrev, resetTimer]);
+  // const handlePrevWithReset = useCallback(() => {
+  //   handlePrev();
+  //   resetTimer();
+  // }, [handlePrev, resetTimer]);
 
   const active = SLIDES_EDITORIAL[activeIndex];
 
   return (
-    <section id="uslugi" className="relative min-h-[100dvh] overflow-x-clip">
+    <section id={SECTION_IDS.services} className="relative min-h-dvh overflow-x-clip">
       {/* All images stacked — crossfade via opacity */}
       {SLIDES_EDITORIAL.map((slide, i) => (
         <motion.div
@@ -107,17 +89,17 @@ export function ServicesSlider() {
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-off-black/10" />
-      <div className="absolute inset-0 bg-gradient-to-t from-off-black/60 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-lienar-to-t from-off-black/60 via-transparent to-transparent" />
 
       {/* Decorative starburst — top-right */}
       <RotatingStarburst
         color="yellow"
         size="md"
-        className="absolute -right-10 -top-20 z-[2] md:-right-12 md:-top-28 lg:-top-32"
+        className="absolute -right-10 -top-20 z-2 md:-right-12 md:-top-28 lg:-top-32"
       />
 
       {/* Content layer */}
-      <div className="relative z-[1] flex min-h-[100dvh] flex-col justify-between px-6 pb-10 pt-20 md:px-12 md:pb-14 md:pt-28 lg:px-20 lg:pb-16 lg:pt-32">
+      <div className="relative z-1 flex min-h-dvh flex-col justify-between px-6 pb-10 pt-20 md:px-12 md:pb-14 md:pt-28 lg:px-20 lg:pb-16 lg:pt-32">
         {/* Top: eyebrow + heading */}
         <div>
           <FadeUp className="mb-6">
@@ -129,7 +111,7 @@ export function ServicesSlider() {
           <FadeUp
             as="h2"
             delay={0.1}
-            className="max-w-2xl font-[family-name:var(--font-archivo-black)] text-3xl uppercase leading-[0.85] tracking-tighter text-white md:text-5xl lg:text-6xl"
+            className="max-w-2xl text-heading text-3xl text-white md:text-5xl lg:text-6xl"
           >
             Co mogę
             <br />
@@ -148,22 +130,22 @@ export function ServicesSlider() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={TEXT_TRANSITION}
+              transition={TRANSITION.fast}
               className="max-w-2xl"
             >
-              <p className="font-[family-name:var(--font-geist-sans)] text-[10px] uppercase tracking-[0.24em] text-white/55">
+              <p className="text-label text-[10px] tracking-counter text-white/50">
                 {String(activeIndex + 1).padStart(2, "0")} /{" "}
                 {SLIDES_EDITORIAL.length}
               </p>
-              <h3 className="mt-4 max-w-[12ch] font-[family-name:var(--font-archivo-black)] text-4xl uppercase leading-[0.86] tracking-tight text-white md:text-6xl lg:text-7xl">
+              <h3 className="mt-4 max-w-[12ch] text-heading tracking-tight text-4xl text-white md:text-6xl lg:text-7xl">
                 {active.title}
               </h3>
 
-              <p className="mt-4 max-w-[24ch] font-[family-name:var(--font-instrument)] text-xl italic leading-snug text-white/86 md:text-3xl">
+              <p className="mt-4 max-w-[24ch] text-subtitle text-xl leading-snug text-white/90 md:text-3xl">
                 {active.tagline}
               </p>
 
-              <p className="mt-4 max-w-[42ch] font-[family-name:var(--font-geist-sans)] text-sm leading-relaxed text-white/62 md:text-base">
+              <p className="mt-4 max-w-[42ch] font-sans text-sm leading-relaxed text-white/70 md:text-base">
                 {active.description}
               </p>
             </motion.div>

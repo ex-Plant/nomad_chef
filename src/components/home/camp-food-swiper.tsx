@@ -2,11 +2,15 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
+import { Image } from "@/components/ui/image";
+import { SECTION_IDS } from "@/components/home/section-ids";
 import { EyebrowTag } from "@/components/home/eyebrow-tag";
 import { FadeUp } from "@/components/home/fade-up";
 import { Button } from "@/components/home/button";
 import { RotatingStarburst } from "@/components/home/rotating-starburst";
+import { ProgressDots } from "@/components/home/progress-dots";
+import { ArrowButton } from "@/components/home/arrow-button";
+import { TRANSITION, DURATION, AUTOPLAY_INTERVAL } from "@/components/home/animation-constants";
 
 import type { StaticImageData } from "next/image";
 
@@ -65,78 +69,7 @@ const SLIDES: readonly SlideT[] = [
 
 /* ─── Animation ─── */
 
-const EASE = [0.32, 0.72, 0, 1] as const;
-const DURATION = 1.2;
-const INTERVAL = 10000;
-
-const TRANSITION = {
-  duration: DURATION,
-  ease: EASE,
-};
-
-/* ─── Progress dots ─── */
-
-function ProgressDots({
-  total,
-  active,
-  onSelect,
-}: {
-  total: number;
-  active: number;
-  onSelect: (i: number) => void;
-}) {
-  return (
-    <div className="flex items-center gap-3">
-      {Array.from({ length: total }, (_, i) => (
-        <button
-          key={i}
-          onClick={() => onSelect(i)}
-          aria-label={`Slide ${i + 1}`}
-          className={`h-3 rounded-full transition-[background-color] duration-500 ${
-            i === active
-              ? "w-10 bg-yellow"
-              : "w-3 bg-white/30 hover:bg-white/50"
-          }`}
-          style={{ willChange: "background-color" }}
-        />
-      ))}
-    </div>
-  );
-}
-
-/* ─── Arrow button ─── */
-
-function ArrowButton({
-  onClick,
-  direction,
-}: {
-  onClick: () => void;
-  direction: "prev" | "next";
-}) {
-  return (
-    <button
-      onClick={onClick}
-      aria-label={direction === "next" ? "Następna" : "Poprzednia"}
-      className="flex h-14 w-14 items-center justify-center rounded-full bg-yellow transition-transform duration-200 hover:scale-105 active:scale-95"
-    >
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 20 20"
-        fill="none"
-        className={`text-blue ${direction === "prev" ? "rotate-180" : ""}`}
-      >
-        <path
-          d="M4 10h12m0 0l-5-5m5 5l-5 5"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </button>
-  );
-}
+const SLIDE_TRANSITION = TRANSITION.slow;
 
 /* ─── Main component ─── */
 
@@ -158,7 +91,7 @@ export function CampFoodSwiper() {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % SLIDES.length);
-    }, INTERVAL);
+    }, AUTOPLAY_INTERVAL);
   }, []);
 
   useEffect(() => {
@@ -181,7 +114,7 @@ export function CampFoodSwiper() {
   const slide = SLIDES[activeIndex];
 
   return (
-    <section id="camp-food" className="relative overflow-hidden">
+    <section id={SECTION_IDS.campFood} className="relative overflow-hidden">
       {/* Animated background color — crossfade, no gap */}
       <AnimatePresence>
         <motion.div
@@ -189,7 +122,7 @@ export function CampFoodSwiper() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={TRANSITION}
+          transition={SLIDE_TRANSITION}
           className={`absolute inset-0 ${slide.bg}`}
           style={{ willChange: "opacity" }}
         />
@@ -204,7 +137,7 @@ export function CampFoodSwiper() {
 
       <div className="relative z-[2] px-6 py-16 md:px-12 md:py-20 lg:px-20 lg:py-24">
         {/* Eyebrow */}
-        <FadeUp className="mb-16" duration={DURATION}>
+        <FadeUp className="mb-16" duration={DURATION.slow}>
           <EyebrowTag
             color={slide.eyebrowColor}
             withLine
@@ -217,12 +150,12 @@ export function CampFoodSwiper() {
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           {/* Text — left side */}
           <div className="flex flex-col justify-center md:col-span-5 md:col-start-1">
-            <p className="font-[family-name:var(--font-instrument)] text-lg italic text-white/90 md:text-xl">
+            <p className="text-subtitle text-lg text-white/90 md:text-xl">
               Mój pierwszy ebook.
             </p>
 
             <h2
-              className={`mt-4 font-[family-name:var(--font-archivo-black)] text-4xl uppercase leading-[0.85] tracking-tighter md:text-5xl lg:text-6xl ${slide.headlineColor}`}
+              className={`mt-4 text-heading text-4xl md:text-5xl lg:text-6xl ${slide.headlineColor}`}
             >
               Camp
               <br />
@@ -236,8 +169,8 @@ export function CampFoodSwiper() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  transition={TRANSITION}
-                  className={`absolute inset-0 max-w-[50ch] font-[family-name:var(--font-instrument)] text-lg leading-relaxed md:text-xl ${slide.subtitleColor}`}
+                  transition={SLIDE_TRANSITION}
+                  className={`absolute inset-0 max-w-[50ch] text-body text-lg md:text-xl ${slide.subtitleColor}`}
                 >
                   {slide.description}
                 </motion.p>
@@ -259,7 +192,7 @@ export function CampFoodSwiper() {
                 initial={{ opacity: 0, scale: 0.95, rotate: -2 }}
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 exit={{ opacity: 0, scale: 0.95, rotate: 2 }}
-                transition={TRANSITION}
+                transition={SLIDE_TRANSITION}
                 className="flex h-full items-center justify-center"
                 style={{ willChange: "transform, opacity" }}
               >
@@ -267,7 +200,7 @@ export function CampFoodSwiper() {
                   src={slide.image}
                   alt={slide.alt}
                   className="h-full w-auto max-w-full rounded-xl object-contain"
-                  quality={70}
+                  sizes="(max-width: 768px) 80vw, 50vw"
                   priority
                 />
               </motion.div>
@@ -286,8 +219,8 @@ export function CampFoodSwiper() {
             }}
           />
           <div className="flex gap-3">
-            <ArrowButton direction="prev" onClick={handlePrevWithReset} />
-            <ArrowButton direction="next" onClick={handleNextWithReset} />
+            <ArrowButton direction="prev" onClick={handlePrevWithReset} color="yellow" />
+            <ArrowButton direction="next" onClick={handleNextWithReset} color="yellow" />
           </div>
         </div>
       </div>

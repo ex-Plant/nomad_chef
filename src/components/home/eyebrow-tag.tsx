@@ -52,7 +52,7 @@ export function EyebrowTag({
 
   const tag = (
     <span
-      className={`rounded-full border ${border} px-4 py-1.5 font-[family-name:var(--font-geist-sans)] text-[10px] uppercase tracking-[0.2em] ${text}`}
+      className={`rounded-full border ${border} px-4 py-1.5 text-label text-[10px] ${text}`}
     >
       {children}
     </span>

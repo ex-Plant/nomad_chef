@@ -3,18 +3,20 @@
 import { EnvelopeSimple, InstagramLogo, ArrowRight } from '@phosphor-icons/react';
 import { EyebrowTag } from '@/components/home/eyebrow-tag';
 import { Button } from '@/components/home/button';
+import { SECTION_IDS } from '@/components/home/section-ids';
 import { RotatingStarburst } from '@/components/home/rotating-starburst';
 import { FadeUp } from '@/components/home/fade-up';
+import { SectionContent } from '@/components/home/section-content';
 
 export function Contact() {
   return (
-    <section id="kontakt" className="relative overflow-hidden bg-yellow py-24 md:py-32 lg:py-40">
+    <section id={SECTION_IDS.contact} className="relative overflow-hidden bg-yellow py-24 md:py-32 lg:py-40">
       <RotatingStarburst
         color="pink"
         className="absolute -right-8 bottom-12 z-0 w-36 md:-right-6 md:bottom-16 md:w-44 lg:w-52"
       />
 
-      <div className="relative z-[1] px-6 md:px-12 lg:px-20">
+      <SectionContent className="relative z-[1]">
         {/* Eyebrow */}
         <FadeUp className="mb-16">
           <EyebrowTag color="coral" withLine>Kontakt</EyebrowTag>
@@ -27,7 +29,7 @@ export function Contact() {
             <FadeUp
               as="h2"
               delay={0.1}
-              className="font-[family-name:var(--font-archivo-black)] text-5xl uppercase leading-[0.85] tracking-tighter text-coral md:text-7xl lg:text-[6rem]"
+              className="text-heading text-5xl text-coral md:text-7xl lg:text-[6rem]"
             >
               Jesli czujesz,
               <br />
@@ -39,7 +41,7 @@ export function Contact() {
             <FadeUp
               as="p"
               delay={0.2}
-              className="mt-6 max-w-md font-[family-name:var(--font-instrument)] text-xl italic text-coral md:text-2xl"
+              className="mt-6 max-w-md text-subtitle text-xl text-coral md:text-2xl"
             >
               — napisz.
             </FadeUp>
@@ -57,7 +59,7 @@ export function Contact() {
                   <EnvelopeSimple size={20} weight="bold" aria-hidden="true" />
                 </span>
                 <div className="flex-1">
-                  <span className="block font-geist text-xs uppercase tracking-[0.15em] text-coral">
+                  <span className="block text-label text-xs tracking-link text-coral">
                     Email
                   </span>
                   <span className="block font-geist text-lg font-medium text-off-black">
@@ -83,7 +85,7 @@ export function Contact() {
                   <InstagramLogo size={20} weight="bold" aria-hidden="true" />
                 </span>
                 <div className="flex-1">
-                  <span className="block font-geist text-xs uppercase tracking-[0.15em] text-coral">
+                  <span className="block text-label text-xs tracking-link text-coral">
                     Instagram
                   </span>
                   <span className="block font-geist text-lg font-medium text-off-black">
@@ -105,7 +107,7 @@ export function Contact() {
                 <textarea
                   placeholder="Twoja wiadomosc..."
                   rows={4}
-                  className="w-full resize-none rounded-2xl border border-coral bg-yellow px-5 py-4 font-[family-name:var(--font-instrument)] text-base text-off-black transition-colors duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-coral focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral"
+                  className="w-full resize-none rounded-2xl border border-coral bg-yellow px-5 py-4 font-serif text-base text-off-black transition-colors duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-coral focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral"
                 />
                 <Button href="mailto:hello@nomadchef.pl" variant="coral-solid">
                   Wyślij wiadomość
@@ -121,14 +123,14 @@ export function Contact() {
           amount={0.5}
           className="mt-24 flex items-center justify-between border-t border-coral pt-8"
         >
-          <span className="font-[family-name:var(--font-archivo-black)] text-sm uppercase tracking-tight text-coral">
+          <span className="text-heading text-sm tracking-tight text-coral">
             Nomad Chef
           </span>
           <span className="font-geist text-xs text-coral">
             2025
           </span>
         </FadeUp>
-      </div>
+      </SectionContent>
     </section>
   );
 }

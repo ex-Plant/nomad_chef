@@ -2,11 +2,13 @@
 
 import { useRef } from "react";
 import { useScroll, useTransform } from "framer-motion";
-import Image from "next/image";
+import { Image } from "@/components/ui/image";
 import { EyebrowTag } from "@/components/home/eyebrow-tag";
 import { Button } from "@/components/home/button";
 import { RotatingStarburst } from "@/components/home/rotating-starburst";
 import { FadeUp } from "@/components/home/fade-up";
+import { SectionContent } from "@/components/home/section-content";
+import { SECTION_IDS } from "@/components/home/section-ids";
 import ebookImg1 from "@/app/moodboard/ebook/ebook_1.webp";
 import ebookImg2 from "@/app/moodboard/ebook/ebook_2.webp";
 
@@ -23,7 +25,7 @@ export function CampFood() {
   return (
     <section
       ref={sectionRef}
-      id="camp-food"
+      id={SECTION_IDS.campFood}
       className="relative overflow-hidden bg-electric-blue py-24 md:py-32 lg:py-40"
     >
       {/* Decorative starburst — bottom-left, rotates on scroll */}
@@ -33,7 +35,7 @@ export function CampFood() {
         className="absolute -left-8 bottom-12 z-[0] md:-left-6 md:bottom-16"
       />
 
-      <div className="px-6 md:px-12 lg:px-20 z-2 relative">
+      <SectionContent className="z-2 relative">
         {/* Eyebrow */}
         <FadeUp className="mb-16">
           <EyebrowTag color="coral" withLine lineColor="coral">
@@ -44,17 +46,17 @@ export function CampFood() {
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           {/* Text — right side, 5 cols */}
           <div className="flex flex-col justify-center md:col-span-5 md:col-start-1">
-            <FadeUp as="h2" delay={0.1} className="font-[family-name:var(--font-archivo-black)] text-5xl uppercase leading-[0.85] tracking-tighter text-coral md:text-7xl lg:text-8xl">
+            <FadeUp as="h2" delay={0.1} className="text-heading text-5xl text-coral md:text-7xl lg:text-8xl">
               Camp
               <br />
               Food
             </FadeUp>
 
-            <FadeUp as="p" delay={0.2} className="mt-6 font-[family-name:var(--font-instrument)] text-lg italic text-white/80 md:text-xl">
+            <FadeUp as="p" delay={0.2} className="mt-6 text-subtitle text-lg text-white/80 md:text-xl">
               Moj pierwszy ebook.
             </FadeUp>
 
-            <FadeUp as="p" delay={0.3} className="mt-4 max-w-[50ch] font-[family-name:var(--font-instrument)] text-base leading-relaxed text-white/70 md:text-lg">
+            <FadeUp as="p" delay={0.3} className="mt-4 max-w-[50ch] text-body text-base text-white/70 md:text-lg">
               Jedzenie, ktore zabierasz ze soba — w ruch, w nature, w zycie. 38
               przepisow opartych na prostocie, jakosci i intuicji. Bez spiny.
               Bez zbednych zasad.
@@ -74,7 +76,7 @@ export function CampFood() {
                 src={ebookImg1}
                 alt="Camp Food — okladka ebooka"
                 className="aspect-[3/4] w-full rounded-xl object-cover shadow-2xl"
-                quality={100}
+                sizes="(max-width: 768px) 80vw, 40vw"
               />
             </FadeUp>
 
@@ -84,13 +86,13 @@ export function CampFood() {
                   src={ebookImg2}
                   alt="Camp Food — wnetrze ebooka"
                   className="aspect-[17/10] w-full object-cover"
-                  quality={100}
+                  sizes="(max-width: 768px) 40vw, 20vw"
                 />
               </div>
             </FadeUp>
           </div>
         </div>
-      </div>
+      </SectionContent>
     </section>
   );
 }

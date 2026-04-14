@@ -2,13 +2,12 @@
 
 import { motion } from "framer-motion";
 import type { ComponentPropsWithoutRef } from "react";
+import { EASE } from "@/components/home/animation-constants";
 
 const FADE_UP = {
   hidden: { opacity: 0, y: 24 },
   visible: { opacity: 1, y: 0 },
 } as const;
-
-const DEFAULT_EASE = [0.32, 0.72, 0, 1] as const;
 
 type FadeUpPropsT = {
   readonly as?: "div" | "h2" | "p" | "section";
@@ -17,7 +16,7 @@ type FadeUpPropsT = {
   readonly amount?: number;
   readonly margin?: string;
   readonly className?: string;
-  readonly children: React.ReactNode;
+  readonly children?: React.ReactNode;
 } & Omit<ComponentPropsWithoutRef<typeof motion.div>, "variants" | "initial" | "whileInView" | "viewport" | "transition">;
 
 export function FadeUp({
@@ -34,7 +33,7 @@ export function FadeUp({
 
   const transition = {
     duration,
-    ease: DEFAULT_EASE,
+    ease: EASE,
     ...(delay !== undefined && { delay }),
   };
 

@@ -1,8 +1,10 @@
 "use client";
 
-import Image from "next/image";
+import { Image } from "@/components/ui/image";
 
 import { FadeUp } from "@/components/home/fade-up";
+import { SECTION_IDS } from "@/components/home/section-ids";
+import { SectionContent } from "@/components/home/section-content";
 
 import cs1 from "@/app/moodboard/gallery/client-selected-1.webp";
 import cs2 from "@/app/moodboard/gallery/client-selected-2.webp";
@@ -83,10 +85,10 @@ function distributeIntoColumns<TItem>(
 export function Gallery() {
   return (
     <section
-      id="galeria"
+      id={SECTION_IDS.gallery}
       className="relative overflow-hidden bg-warm-white py-24 md:py-32 lg:py-40"
     >
-      <div className="px-6 md:px-12 lg:px-20">
+      <SectionContent>
         {/* Header — asymmetric */}
         <FadeUp className="mb-16">
           <EyebrowTag color="coral" withLine>
@@ -98,7 +100,7 @@ export function Gallery() {
           className="mb-16 flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
           delay={0.1}
         >
-          <h2 className="font-[family-name:var(--font-archivo-black)] text-5xl uppercase leading-[0.85] tracking-tighter text-off-black md:text-7xl lg:text-8xl">
+          <h2 className="text-heading text-5xl text-off-black md:text-7xl lg:text-8xl">
             Galeria
           </h2>
         </FadeUp>
@@ -113,12 +115,12 @@ export function Gallery() {
           delay={0.2}
         >
           <div className="h-px flex-1 bg-coral" />
-          <span className="font-[family-name:var(--font-geist-sans)] text-xs uppercase tracking-[0.15em] text-coral">
+          <span className="text-label text-xs tracking-link text-coral">
             @marta_leśniewska
           </span>
           <div className="h-px flex-1 bg-coral" />
         </FadeUp>
-      </div>
+      </SectionContent>
     </section>
   );
 }
