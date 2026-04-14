@@ -45,23 +45,67 @@ Priority order for design decisions: ebook style > client-selected > secondary-r
 
 ## Design Direction (locked)
 
-### Palette (derived from ebook covers)
-- Background: Warm off-white `#FDF8F3`
-- Primary accent: Coral / red-orange `#E8523A` (ebook cover background)
-- Secondary accent: Electric blue `#1B3FE0` (ebook "CAMP FOOD" typography)
-- Supporting: Dusty rose `#D4A69A`, Golden `#E8A832`, Sage `#6B8F63`
-- Text: Off-black `#1A1614` (warm-tinted)
-- Light text (on colored backgrounds): `#FFFFFF`
+### Palette
+
+Primary (section backgrounds, key UI):
+
+- Coral-orange: `#DE6445` (rgb 222/100/69)
+- Electric blue: `#193EF4` (rgb 25/62/244)
+- Warm white: `#F5EEE5` (rgb 245/238/229)
+
+Secondary (can also be used as section backgrounds):
+
+- Pink: `#F3B1E3` (rgb 243/177/227)
+- Yellow: `#E5F55D` (rgb 229/245/93)
+
+Text:
+
+- Off-black `#1A1614` on light backgrounds
+- `#FFFFFF` on coral-orange and blue backgrounds
+
+Rule: No colors outside this system. Tint/shade these five for variants.
 
 ### Typography
+
 - Headlines: Bold compressed sans-serif (matching ebook's "CAMP FOOD" style), uppercase, tight tracking
 - Body: Warm editorial serif for descriptions and longer copy
 - Labels/nav/CTAs: Clean sans-serif at small scale
 
 ### Visual Language
-- Bold color-blocked sections (solid coral or blue backgrounds) alternating with warm off-white
+
+**Scroll color zones** (reference: https://zooom.framer.website/):
+
+- Each major section occupies full viewport height with one of the three primary background colors
+- Scrolling creates a color journey — white → coral → blue → white → coral, etc.
+- Text and UI flip to high-contrast counterparts per zone
+
+**Navigation** (reference: design-5 floating nav):
+
+- Floating pill-shaped nav that appears on scroll
+- Tracks and highlights the currently visible section
+- See `src/components/design-5/floating-nav.tsx` for interaction pattern
+
+**Hero** (reference: design-5 parallax hero):
+
+- Large parallax hero with scroll-based image scaling
+- Needs a strong real photo — TBD
+- See `src/components/design-5/hero-section.tsx` for motion pattern
+
+**Gallery** (reference: design-1 masonry grid):
+
+- Uneven/organic masonry grid — CSS columns, not a rigid equal-height grid
+- Varied image sizes create visual rhythm
+- See `src/components/design-1/gallery.tsx` for layout shape
+
+**Photography**:
+
+- Real photos from `src/app/moodboard/` only — client-selected and Instagram content
+- No stock photos, no placeholders, no picsum
+- Photography is the dominant visual — large, full-bleed, hero-scale
+
+**General**:
+
 - Asymmetric layouts (DESIGN_VARIANCE: 8)
-- Photography as dominant visual — large, full-bleed, hero-scale
 - Gallery-style spacing with generous whitespace
 - Subtle grain/noise overlay for tactile warmth
 - No glassmorphism, no gradients, no glows — tactile and analog
