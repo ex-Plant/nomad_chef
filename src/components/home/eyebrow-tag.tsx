@@ -1,3 +1,5 @@
+import { FadeUp } from "@/components/home/fade-up";
+
 type ColorT = "coral" | "blue" | "yellow" | "pink" | "dark" | "white";
 
 const COLOR_MAP: Record<ColorT, { border: string; text: string; line: string }> =
@@ -39,6 +41,8 @@ type EyebrowTagPropsT = {
   readonly color?: ColorT;
   readonly withLine?: boolean;
   readonly lineColor?: ColorT;
+  readonly className?: string;
+  readonly duration?: number;
 };
 
 export function EyebrowTag({
@@ -46,6 +50,8 @@ export function EyebrowTag({
   color = "dark",
   withLine = false,
   lineColor,
+  className = "mb-16",
+  duration,
 }: EyebrowTagPropsT) {
   const { border, text } = COLOR_MAP[color];
   const lineBg = COLOR_MAP[lineColor ?? color].line;
@@ -58,12 +64,18 @@ export function EyebrowTag({
     </span>
   );
 
-  if (!withLine) return tag;
-
-  return (
+  const content = withLine ? (
     <div className="flex items-center gap-4">
       {tag}
       <div className={`h-px flex-1 ${lineBg}`} />
     </div>
+  ) : (
+    tag
+  );
+
+  return (
+    <FadeUp className={className} duration={duration}>
+      {content}
+    </FadeUp>
   );
 }

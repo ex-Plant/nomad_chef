@@ -94,11 +94,9 @@ export function CampFoodSplit() {
 
       <div className="relative z-[2] px-6 py-16 md:px-12 md:py-20 lg:px-20 lg:py-24">
         {/* Eyebrow */}
-        <FadeUp className="mb-16" duration={DURATION.slow}>
-          <EyebrowTag color="white" withLine lineColor="white">
-            Ebook
-          </EyebrowTag>
-        </FadeUp>
+        <EyebrowTag color="white" withLine lineColor="white" duration={DURATION.slow}>
+          Ebook
+        </EyebrowTag>
 
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           {/* Text — left side (on coral) */}

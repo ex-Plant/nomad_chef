@@ -17,11 +17,9 @@ export function About() {
       className="relative overflow-hidden py-24 md:py-32 lg:py-40"
     >
       <SectionContent>
-        <FadeUp className="mb-16">
-          <EyebrowTag color="coral" withLine>
-            O mnie
-          </EyebrowTag>
-        </FadeUp>
+        <EyebrowTag color="coral" withLine>
+          O mnie
+        </EyebrowTag>
 
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           {/* Images column — 5 of 12 cols, staggered */}
@@ -36,7 +34,7 @@ export function About() {
               />
             </FadeUp>
 
-            {/* Blue geometric accent — ebook-style */}
+            {/* Yellow Dot geometric accent — ebook-style */}
             <FadeUp
               className="absolute -left-4 top-8 z-0 h-24 w-24 rounded-full bg-yellow md:-left-8 md:h-32 md:w-32"
               amount={0.2}

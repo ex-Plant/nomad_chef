@@ -18,9 +18,7 @@ export function Contact() {
 
       <SectionContent className="relative z-[1]">
         {/* Eyebrow */}
-        <FadeUp className="mb-16">
-          <EyebrowTag color="coral" withLine>Kontakt</EyebrowTag>
-        </FadeUp>
+        <EyebrowTag color="coral" withLine>Kontakt</EyebrowTag>
 
         {/* Asymmetric split: massive heading left, form/links right */}
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">

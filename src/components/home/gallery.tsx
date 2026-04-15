@@ -90,11 +90,9 @@ export function Gallery() {
     >
       <SectionContent>
         {/* Header — asymmetric */}
-        <FadeUp className="mb-16">
-          <EyebrowTag color="coral" withLine>
-            Galeria
-          </EyebrowTag>
-        </FadeUp>
+        <EyebrowTag color="coral" withLine>
+          Galeria
+        </EyebrowTag>
 
         <FadeUp
           className="mb-16 flex flex-col gap-4 md:flex-row md:items-end md:justify-between"

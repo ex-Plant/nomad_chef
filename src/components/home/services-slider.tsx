@@ -102,11 +102,9 @@ export function ServicesSlider() {
       <div className="relative z-1 flex min-h-dvh flex-col justify-between px-6 pb-10 pt-20 md:px-12 md:pb-14 md:pt-28 lg:px-20 lg:pb-16 lg:pt-32">
         {/* Top: eyebrow + heading */}
         <div>
-          <FadeUp className="mb-6">
-            <EyebrowTag color="yellow" withLine lineColor="yellow">
-              Oferta
-            </EyebrowTag>
-          </FadeUp>
+          <EyebrowTag color="yellow" withLine lineColor="yellow">
+            Oferta
+          </EyebrowTag>
 
           <FadeUp
             as="h2"

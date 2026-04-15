@@ -37,11 +37,9 @@ export function CampFoodInverted() {
 
       <SectionContent className="z-2 relative">
         {/* Eyebrow */}
-        <FadeUp className="mb-16">
-          <EyebrowTag color="yellow" withLine>
-            Ebook
-          </EyebrowTag>
-        </FadeUp>
+        <EyebrowTag color="yellow" withLine>
+          Ebook
+        </EyebrowTag>
 
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           {/* Text — right side, 5 cols */}
