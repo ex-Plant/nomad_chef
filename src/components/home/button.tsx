@@ -1,4 +1,4 @@
-import { ArrowRight } from '@phosphor-icons/react';
+import { ArrowRight } from 'lucide-react';
 
 const VARIANTS = {
   coral: {
@@ -48,38 +48,113 @@ const VARIANTS = {
   },
 } as const;
 
-type ButtonVariantT = keyof typeof VARIANTS;
+export type ButtonVariantT = keyof typeof VARIANTS;
+
+const SHAPES = {
+  pill: {
+    wrapper: 'rounded-full px-8 py-4 gap-3',
+    circle: 'h-7 w-7',
+    icon: 14,
+  },
+  compact: {
+    wrapper: 'rounded-lg px-5 py-2.5 gap-2',
+    circle: 'h-5 w-5',
+    icon: 12,
+  },
+} as const;
+
+export type ButtonShapeT = keyof typeof SHAPES;
+
+const BASE_CLASSES =
+  'group inline-flex items-center border font-geist text-sm font-medium uppercase tracking-wide transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.97] active:translate-y-[1px]';
+
+function ButtonContent({
+  children,
+  circleClasses,
+  shape = 'pill',
+}: {
+  readonly children: React.ReactNode;
+  readonly circleClasses: string;
+  readonly shape?: ButtonShapeT;
+}) {
+  const s = SHAPES[shape];
+
+  return (
+    <>
+      {children}
+      <span
+        className={`flex ${s.circle} items-center justify-center rounded-full transition-transform duration-300 group-hover:translate-x-0.5 ${circleClasses}`}
+      >
+        <ArrowRight size={s.icon} strokeWidth={2.5} aria-hidden="true" />
+      </span>
+    </>
+  );
+}
 
 type ButtonPropsT = {
   readonly children: React.ReactNode;
+  readonly variant?: ButtonVariantT;
+  readonly shape?: ButtonShapeT;
+  readonly className?: string;
+  readonly onClick?: () => void;
+  readonly type?: 'button' | 'submit' | 'reset';
+  readonly disabled?: boolean;
+};
+
+export function Button({
+  children,
+  variant = 'white',
+  shape = 'pill',
+  className = '',
+  onClick,
+  type = 'button',
+  disabled,
+}: ButtonPropsT) {
+  const v = VARIANTS[variant];
+  const s = SHAPES[shape];
+
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={`${BASE_CLASSES} ${s.wrapper} ${v.base} ${v.hover} ${className}`}
+    >
+      <ButtonContent circleClasses={v.circle} shape={shape}>{children}</ButtonContent>
+    </button>
+  );
+}
+
+type LinkButtonPropsT = {
+  readonly children: React.ReactNode;
   readonly href: string;
   readonly variant?: ButtonVariantT;
+  readonly shape?: ButtonShapeT;
   readonly className?: string;
   readonly target?: string;
   readonly rel?: string;
 };
 
-export function Button({
+export function LinkButton({
   children,
   href,
   variant = 'white',
+  shape = 'pill',
   className = '',
   target,
   rel,
-}: ButtonPropsT) {
+}: LinkButtonPropsT) {
   const v = VARIANTS[variant];
+  const s = SHAPES[shape];
 
   return (
     <a
       href={href}
       target={target}
       rel={rel}
-      className={`group inline-flex items-center gap-3 rounded-full border px-8 py-4 font-geist text-sm font-medium uppercase tracking-wide transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.97] active:translate-y-[1px] ${v.base} ${v.hover} ${className}`}
+      className={`${BASE_CLASSES} ${s.wrapper} ${v.base} ${v.hover} ${className}`}
     >
-      {children}
-      <span className={`flex h-7 w-7 items-center justify-center rounded-full transition-transform duration-300 group-hover:translate-x-0.5 ${v.circle}`}>
-        <ArrowRight size={14} weight="bold" aria-hidden="true" />
-      </span>
+      <ButtonContent circleClasses={v.circle} shape={shape}>{children}</ButtonContent>
     </a>
   );
 }

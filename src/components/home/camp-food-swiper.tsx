@@ -6,7 +6,7 @@ import { Image } from "@/components/ui/image";
 import { SECTION_IDS } from "@/components/home/section-ids";
 import { EyebrowTag } from "@/components/home/eyebrow-tag";
 import { FadeUp } from "@/components/home/fade-up";
-import { Button } from "@/components/home/button";
+import { LinkButton } from "@/components/home/button";
 import { RotatingStarburst } from "@/components/home/rotating-starburst";
 import { ProgressDots } from "@/components/home/progress-dots";
 import { ArrowButton } from "@/components/home/arrow-button";
@@ -177,9 +177,9 @@ export function CampFoodSwiper() {
             </div>
 
             <div className="mt-12">
-              <Button href="#" variant={slide.buttonVariant}>
+              <LinkButton href="#" variant={slide.buttonVariant}>
                 Kup ebook
-              </Button>
+              </LinkButton>
             </div>
           </div>
 

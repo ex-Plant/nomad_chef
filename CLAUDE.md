@@ -53,6 +53,12 @@ The portfolio project at `/Users/konradantonik/workspace/portfolio/old_page` is 
 
 When building new utilities or patterns, check the portfolio project first for existing implementations.
 
+The fest project at `/Users/konradantonik/workspace/fest/fest-frontend` is another reference codebase. Key resources:
+
+- `components/ui/button.tsx` — Button component with CVA variants, `asChild` pattern via Radix Slot
+- `components/ui/button-link.tsx` — LinkButton wrapper using `asChild` for link-as-button
+- General shadcn/ui + CVA + Radix patterns
+
 ## Design Direction (locked)
 
 ### Palette

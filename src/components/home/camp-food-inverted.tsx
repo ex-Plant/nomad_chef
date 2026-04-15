@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useScroll, useTransform } from "framer-motion";
 import { Image } from "@/components/ui/image";
 import { EyebrowTag } from "@/components/home/eyebrow-tag";
-import { Button } from "@/components/home/button";
+import { LinkButton } from "@/components/home/button";
 import { RotatingStarburst } from "@/components/home/rotating-starburst";
 import { FadeUp } from "@/components/home/fade-up";
 import { SectionContent } from "@/components/home/section-content";
@@ -61,9 +61,9 @@ export function CampFoodInverted() {
             </FadeUp>
 
             <FadeUp delay={0.4} className="mt-12">
-              <Button href="#" variant="blue">
+              <LinkButton href="#" variant="blue">
                 Kup ebook
-              </Button>
+              </LinkButton>
             </FadeUp>
           </div>
 

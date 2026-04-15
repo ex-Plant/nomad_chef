@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { SECTION_IDS } from "@/components/home/section-ids";
 import { Image } from "@/components/ui/image";
-import { Button } from "@/components/home/button";
+import { LinkButton } from "@/components/home/button";
 import { EASE } from "@/components/home/animation-constants";
 import heroImg from "@/moodboard/gallery/client-selected-8.webp";
 
@@ -83,12 +83,12 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 1.4, ease: EASE }}
           >
-            <Button href="#uslugi" variant="yellow-solid">
+            <LinkButton href="#uslugi" variant="yellow-solid">
               Zobacz oferte
-            </Button>
-            <Button href="#kontakt" variant="coral-solid">
+            </LinkButton>
+            <LinkButton href="#kontakt" variant="coral-solid">
               Napisz do mnie
-            </Button>
+            </LinkButton>
           </motion.div>
         </motion.div>
       </div>

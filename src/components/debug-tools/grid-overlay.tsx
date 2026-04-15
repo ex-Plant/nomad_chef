@@ -24,8 +24,8 @@ type GridOverlayPropsT = {
 export function GridOverlay({
   position = "fixed",
   z = 10000,
-  color = "rgb(239 68 68 / 0.1)",
-  borderColor = "rgb(255 255 255 / 0.2)",
+  color = "rgb(239 68 68 / 0.06)",
+  borderColor = "rgb(239 68 68 / 0.25)",
   className,
 }: GridOverlayPropsT) {
   return (
@@ -38,7 +38,7 @@ export function GridOverlay({
       style={{ zIndex: z }}
     >
       <div className="mx-auto h-full w-full px-6 md:px-12 lg:px-20">
-        <div className="grid h-full grid-cols-1 md:grid-cols-12">
+        <div className="grid h-full grid-cols-1 gap-8 md:grid-cols-12">
           {Array.from({ length: 12 }).map((_, i) => (
             <div
               key={i}
