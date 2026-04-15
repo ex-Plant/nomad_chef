@@ -46,7 +46,7 @@ export function About() {
           <div className="flex flex-col justify-center md:col-span-6 md:col-start-7">
             <FadeUp
               as="h2"
-              className="text-heading text-4xl text-off-black md:text-6xl lg:text-7xl"
+              className="text-heading-lg text-off-black"
               delay={0.2}
             >
               Gotuję prosto,
@@ -57,7 +57,7 @@ export function About() {
             </FadeUp>
 
             <FadeUp className="mt-8 space-y-5" delay={0.4}>
-              <p className="max-w-[55ch] text-body text-lg text-off-black/70 md:text-xl">
+              <p className="max-w-[55ch] text-body-lg text-muted">
                 Tworzę jedzenie dopasowane do ludzi i sytuacji — od kameralnych
                 kolacji, przez eventy, po wyjazdy w miejscach, które rzadko mają
                 cokolwiek wspólnego z klasyczną kuchnią.
@@ -65,17 +65,17 @@ export function About() {
 
               {/* Pull quote — editorial serif, breaks visual rhythm */}
               <blockquote className="border-l-4 border-coral py-2 pl-6">
-                <p className="text-quote text-xl text-off-black/90 md:text-2xl">
+                <p className="text-quote-lg text-off-black/90">
                   Łączę smak z funkcją — jedzenie ma nie tylko smakować, ale też
                   działać.
                 </p>
               </blockquote>
 
-              <p className="max-w-[55ch] text-body text-lg text-off-black/70 md:text-xl">
+              <p className="max-w-[55ch] text-body-lg text-muted">
                 Pracuję na ekologicznych produktach, korzystam z fermentacji,
                 świeżych ziół i składników wspierających organizm.
               </p>
-              <p className="max-w-[55ch] text-body text-lg text-off-black/70 md:text-xl">
+              <p className="max-w-[55ch] text-body-lg text-muted">
                 Moja droga do kuchni nie była oczywista — od banku, przez modę,
                 po własną restaurację. Dziś pracuję jako nomadyczna kucharka,
                 gotując w różnych miejscach świata.

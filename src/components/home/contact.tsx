@@ -27,7 +27,7 @@ export function Contact() {
             <FadeUp
               as="h2"
               delay={0.1}
-              className="text-heading text-5xl text-coral md:text-7xl lg:text-[6rem]"
+              className="text-heading-xl text-coral"
             >
               Jesli czujesz,
               <br />
@@ -39,7 +39,7 @@ export function Contact() {
             <FadeUp
               as="p"
               delay={0.2}
-              className="mt-6 max-w-md text-subtitle text-xl text-coral md:text-2xl"
+              className="mt-6 max-w-md text-subtitle-lg text-coral"
             >
               — napisz.
             </FadeUp>
@@ -57,7 +57,7 @@ export function Contact() {
                   <EnvelopeSimple size={20} weight="bold" aria-hidden="true" />
                 </span>
                 <div className="flex-1">
-                  <span className="block text-label text-xs tracking-link text-coral">
+                  <span className="block text-label-sm text-coral">
                     Email
                   </span>
                   <span className="block font-geist text-lg font-medium text-off-black">
@@ -83,7 +83,7 @@ export function Contact() {
                   <InstagramLogo size={20} weight="bold" aria-hidden="true" />
                 </span>
                 <div className="flex-1">
-                  <span className="block text-label text-xs tracking-link text-coral">
+                  <span className="block text-label-sm text-coral">
                     Instagram
                   </span>
                   <span className="block font-geist text-lg font-medium text-off-black">

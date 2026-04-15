@@ -31,7 +31,7 @@ const COLOR_MAP: Record<ColorT, { border: string; text: string; line: string }> 
     },
     white: {
       border: "border-white/30",
-      text: "text-white/70",
+      text: "text-muted-on-dark",
       line: "bg-white/30",
     },
   } as const;
@@ -58,7 +58,7 @@ export function EyebrowTag({
 
   const tag = (
     <span
-      className={`rounded-full border ${border} px-4 py-1.5 text-label text-[10px] ${text}`}
+      className={`rounded-full border ${border} px-4 py-1.5 text-label-xs ${text}`}
     >
       {children}
     </span>

@@ -44,17 +44,17 @@ export function CampFood() {
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           {/* Text — right side, 5 cols */}
           <div className="flex flex-col justify-center md:col-span-5 md:col-start-1">
-            <FadeUp as="h2" delay={0.1} className="text-heading text-5xl text-coral md:text-7xl lg:text-8xl">
+            <FadeUp as="h2" delay={0.1} className="text-heading-xl text-coral">
               Camp
               <br />
               Food
             </FadeUp>
 
-            <FadeUp as="p" delay={0.2} className="mt-6 text-subtitle text-lg text-white/80 md:text-xl">
+            <FadeUp as="p" delay={0.2} className="mt-6 text-subtitle-base text-white/80">
               Moj pierwszy ebook.
             </FadeUp>
 
-            <FadeUp as="p" delay={0.3} className="mt-4 max-w-[50ch] text-body text-base text-white/70 md:text-lg">
+            <FadeUp as="p" delay={0.3} className="mt-4 max-w-[50ch] text-body-base text-muted-on-dark">
               Jedzenie, ktore zabierasz ze soba — w ruch, w nature, w zycie. 38
               przepisow opartych na prostocie, jakosci i intuicji. Bez spiny.
               Bez zbednych zasad.

@@ -3,7 +3,7 @@ import { ArrowRight, ArrowUpRight } from '@phosphor-icons/react/dist/ssr';
 function Section({ title, bg, children }: { title: string; bg: string; children: React.ReactNode }) {
   return (
     <div className={`${bg} px-8 py-20 md:px-16`}>
-      <p className="mb-12 text-label text-[10px] text-white/30">
+      <p className="mb-12 text-label-xs text-white/30">
         {title}
       </p>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -16,7 +16,7 @@ function Section({ title, bg, children }: { title: string; bg: string; children:
 function Card({ n, children }: { n: number; children: React.ReactNode }) {
   return (
     <div className="flex flex-col items-start gap-3">
-      <span className="text-label text-[10px] text-white/20">
+      <span className="text-label-xs text-white/20">
         {String(n).padStart(2, '0')}
       </span>
       {children}

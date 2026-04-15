@@ -42,7 +42,7 @@ const SLIDES: readonly SlideT[] = [
     textColor: "text-white",
     headlineColor: "text-electric-blue",
     subtitleColor: "text-white/90",
-    bodyColor: "text-white/70",
+    bodyColor: "text-muted-on-dark",
     eyebrowColor: "white",
     eyebrowLineColor: "white",
     buttonVariant: "yellow-solid",
@@ -57,7 +57,7 @@ const SLIDES: readonly SlideT[] = [
     textColor: "text-white",
     headlineColor: "text-coral",
     subtitleColor: "text-white/80",
-    bodyColor: "text-white/70",
+    bodyColor: "text-muted-on-dark",
     eyebrowColor: "coral",
     eyebrowLineColor: "coral",
     buttonVariant: "coral-solid",
@@ -149,12 +149,12 @@ export function CampFoodSwiper() {
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           {/* Text — left side */}
           <div className="flex flex-col justify-center md:col-span-5 md:col-start-1">
-            <p className="text-subtitle text-lg text-white/90 md:text-xl">
+            <p className="text-subtitle-base text-white/90">
               Mój pierwszy ebook.
             </p>
 
             <h2
-              className={`mt-4 text-heading text-4xl md:text-5xl lg:text-6xl ${slide.headlineColor}`}
+              className={`mt-4 text-heading-md ${slide.headlineColor}`}
             >
               Camp
               <br />
@@ -169,7 +169,7 @@ export function CampFoodSwiper() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={SLIDE_TRANSITION}
-                  className={`absolute inset-0 max-w-[50ch] text-body text-lg md:text-xl ${slide.subtitleColor}`}
+                  className={`absolute inset-0 max-w-[50ch] text-body-lg ${slide.subtitleColor}`}
                 >
                   {slide.description}
                 </motion.p>

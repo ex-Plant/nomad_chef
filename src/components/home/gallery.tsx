@@ -98,7 +98,7 @@ export function Gallery() {
           className="mb-16 flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
           delay={0.1}
         >
-          <h2 className="text-heading text-5xl text-off-black md:text-7xl lg:text-8xl">
+          <h2 className="text-heading-xl text-off-black">
             Galeria
           </h2>
         </FadeUp>
@@ -113,7 +113,7 @@ export function Gallery() {
           delay={0.2}
         >
           <div className="h-px flex-1 bg-coral" />
-          <span className="text-label text-xs tracking-link text-coral">
+          <span className="text-label-sm text-coral">
             @marta_leśniewska
           </span>
           <div className="h-px flex-1 bg-coral" />

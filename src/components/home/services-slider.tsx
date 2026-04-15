@@ -109,7 +109,7 @@ export function ServicesSlider() {
           <FadeUp
             as="h2"
             delay={0.1}
-            className="max-w-2xl text-heading text-3xl text-white md:text-5xl lg:text-6xl"
+            className="max-w-2xl text-heading-sm text-white"
           >
             Co mogę
             <br />
@@ -131,19 +131,15 @@ export function ServicesSlider() {
               transition={TRANSITION.fast}
               className="max-w-2xl"
             >
-              <p className="text-label text-[10px] tracking-counter text-white/50">
-                {String(activeIndex + 1).padStart(2, "0")} /{" "}
-                {SLIDES_EDITORIAL.length}
-              </p>
-              <h3 className="mt-4 max-w-[12ch] text-heading tracking-tight text-4xl text-white md:text-6xl lg:text-7xl">
+              <h3 className="max-w-[12ch] text-heading-lg tracking-tight text-white">
                 {active.title}
               </h3>
 
-              <p className="mt-4 max-w-[24ch] text-subtitle text-xl leading-snug text-white/90 md:text-3xl">
+              <p className="mt-4 max-w-[24ch] text-subtitle-xl leading-snug text-white/90">
                 {active.tagline}
               </p>
 
-              <p className="mt-4 max-w-[42ch] font-sans text-sm leading-relaxed text-white/70 md:text-base">
+              <p className="mt-4 max-w-[42ch] font-sans text-sm leading-relaxed text-muted-on-dark md:text-base">
                 {active.description}
               </p>
             </motion.div>

@@ -67,7 +67,7 @@ export function Hero() {
           </motion.p>
 
           <motion.p
-            className="mt-3 max-w-lg text-body-base text-white/70"
+            className="mt-3 max-w-lg text-body-base text-muted-on-dark"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 1.1 }}
