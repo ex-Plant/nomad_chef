@@ -8,6 +8,7 @@ import {
   Geist,
   Bebas_Neue,
 } from "next/font/google";
+import { DebugWrapper } from "@/components/debug-tools/debug-wrapper";
 import "./globals.css";
 
 /* Design 1 fonts */
@@ -75,7 +76,9 @@ export default function RootLayout({
       lang="pl"
       className={`${archivoBlack.variable} ${archivo.variable} ${instrumentSerif.variable} ${geistSans.variable} ${playfair.variable} ${outfit.variable} ${bebasNeue.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-warm-white">{children}</body>
+      <body className="min-h-full flex flex-col bg-warm-white">
+        <DebugWrapper>{children}</DebugWrapper>
+      </body>
     </html>
   );
 }

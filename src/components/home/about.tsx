@@ -3,10 +3,10 @@ import { EyebrowTag } from "@/components/home/eyebrow-tag";
 import { FadeUp } from "@/components/home/fade-up";
 import { SectionContent } from "@/components/home/section-content";
 import { SECTION_IDS } from "@/components/home/section-ids";
-// import aboutImg from "@/app/moodboard/marta_photos/secondary-reference-instagram-3.webp"; // with dogs
-import aboutImg from "@/app/moodboard/marta_photos/secondary-reference-instagram-24.webp"; // mediterranean terrace
-// import aboutImg2 from "@/app/moodboard/marta_photos/secondary-reference-instagram-28.webp"; // tropical, coral dress
-// import aboutImg from "@/app/moodboard/marta_photos/secondary-reference-instagram-31.webp"; // bicycle, purple outfit
+// import aboutImg from "@/moodboard/marta_photos/secondary-reference-instagram-3.webp"; // with dogs
+import aboutImg from "@/moodboard/marta_photos/secondary-reference-instagram-24.webp"; // mediterranean terrace
+// import aboutImg2 from "@/moodboard/marta_photos/secondary-reference-instagram-28.webp"; // tropical, coral dress
+// import aboutImg from "@/moodboard/marta_photos/secondary-reference-instagram-31.webp"; // bicycle, purple outfit
 /* Marta photos — swap into aboutImg / aboutImg2 as needed:
  */
 

@@ -6,7 +6,7 @@ import { SECTION_IDS } from "@/components/home/section-ids";
 import { Image } from "@/components/ui/image";
 import { Button } from "@/components/home/button";
 import { EASE } from "@/components/home/animation-constants";
-import heroImg from "@/app/moodboard/gallery/client-selected-8.webp";
+import heroImg from "@/moodboard/gallery/client-selected-8.webp";
 
 export function Hero() {
   const ref = useRef<HTMLDivElement>(null);
@@ -47,7 +47,7 @@ export function Hero() {
         {/* Left text block — pushed to bottom-left */}
         <motion.div style={{ y: textY }} className="max-w-2xl">
           <motion.h1
-            className="text-heading text-6xl text-white md:text-8xl lg:text-[10rem]"
+            className="text-heading-hero text-white"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4, ease: EASE }}
@@ -58,7 +58,7 @@ export function Hero() {
           </motion.h1>
 
           <motion.p
-            className="mt-6 max-w-md text-subtitle text-xl text-white/90 md:text-2xl"
+            className="mt-6 max-w-md text-subtitle-lg text-white/90"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8, ease: EASE }}
@@ -67,7 +67,7 @@ export function Hero() {
           </motion.p>
 
           <motion.p
-            className="mt-3 max-w-lg text-body text-base text-white/70 md:text-lg"
+            className="mt-3 max-w-lg text-body-base text-white/70"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 1.1 }}

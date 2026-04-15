@@ -53,6 +53,8 @@
    ============================================================ */
 
 @layer components {
+  /* ==========  BASE FAMILIES  ========== */
+
   /* Bold compressed display heading — section h1/h2 */
   .text-heading {
     font-family: var(--font-display);
@@ -85,6 +87,68 @@
     font-family: var(--font-quote);
     font-style: italic;
     line-height: 1.375;
+  }
+
+  /* ==========  HEADING SIZES  ========== */
+
+  .text-heading-hero {
+    @apply text-heading text-6xl md:text-8xl lg:text-[10rem];
+  }
+
+  .text-heading-xl {
+    @apply text-heading text-5xl md:text-7xl lg:text-8xl;
+  }
+
+  .text-heading-lg {
+    @apply text-heading text-4xl md:text-6xl lg:text-7xl;
+  }
+
+  .text-heading-md {
+    @apply text-heading text-4xl md:text-5xl lg:text-6xl;
+  }
+
+  .text-heading-sm {
+    @apply text-heading text-3xl md:text-5xl lg:text-6xl;
+  }
+
+  /* ==========  BODY SIZES  ========== */
+
+  .text-body-lg {
+    @apply text-body text-lg md:text-xl;
+  }
+
+  .text-body-base {
+    @apply text-body text-base md:text-lg;
+  }
+
+  /* ==========  SUBTITLE SIZES  ========== */
+
+  .text-subtitle-xl {
+    @apply text-subtitle text-xl md:text-3xl;
+  }
+
+  .text-subtitle-lg {
+    @apply text-subtitle text-xl md:text-2xl;
+  }
+
+  .text-subtitle-base {
+    @apply text-subtitle text-lg md:text-xl;
+  }
+
+  /* ==========  LABEL SIZES  ========== */
+
+  .text-label-xs {
+    @apply text-label text-[10px];
+  }
+
+  .text-label-sm {
+    @apply text-label text-xs tracking-link;
+  }
+
+  /* ==========  QUOTE SIZES  ========== */
+
+  .text-quote-lg {
+    @apply text-quote text-xl md:text-2xl;
   }
 }
 

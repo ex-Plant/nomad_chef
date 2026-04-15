@@ -12,8 +12,8 @@ import { TRANSITION, DURATION, AUTOPLAY_INTERVAL } from "@/components/home/anima
 
 import type { StaticImageData } from "next/image";
 
-import ebookFront from "@/app/moodboard/ebook/ebook_1.webp";
-import ebookBack from "@/app/moodboard/ebook/ebook_2.webp";
+import ebookFront from "@/moodboard/ebook/ebook_1.webp";
+import ebookBack from "@/moodboard/ebook/ebook_2.webp";
 
 /* ─── Data ─────────────────────────────────────────────── */
 

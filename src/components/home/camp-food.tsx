@@ -9,8 +9,8 @@ import { RotatingStarburst } from "@/components/home/rotating-starburst";
 import { FadeUp } from "@/components/home/fade-up";
 import { SectionContent } from "@/components/home/section-content";
 import { SECTION_IDS } from "@/components/home/section-ids";
-import ebookImg1 from "@/app/moodboard/ebook/ebook_1.webp";
-import ebookImg2 from "@/app/moodboard/ebook/ebook_2.webp";
+import ebookImg1 from "@/moodboard/ebook/ebook_1.webp";
+import ebookImg2 from "@/moodboard/ebook/ebook_2.webp";
 
 export function CampFood() {
   const sectionRef = useRef<HTMLDivElement>(null);

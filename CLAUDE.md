@@ -12,7 +12,7 @@ High-end website for a chef with a colorful, Instagram-friendly, vibrant persona
 
 - Create a clean, beautiful, high-end visual design
 - Match the look and feel of the chef's Instagram account
-- Reference images will be dropped into `src/app/moodboard/`
+- Reference images live in `src/moodboard/`
 - Content is secondary — focus on layout, typography, color, and visual identity
 
 ### Phase 2 — Functionality (later)
@@ -34,7 +34,7 @@ Invoke whichever combination fits the current task. When in doubt, start with `t
 
 ## Reference Material
 
-All visual references live in `src/app/moodboard/`. Read these before making design decisions.
+All visual references live in `src/moodboard/`. Read these before making design decisions.
 
 - `init.md` — site structure, copy (Polish), and content brief from the client
 - `ebook_1.webp`, `ebook_2.webp` — **PRIMARY design reference**. The ebook's visual language (color blocking, typography, palette) defines the website's design direction.
@@ -42,6 +42,16 @@ All visual references live in `src/app/moodboard/`. Read these before making des
 - `secondary-reference-instagram-1..46.webp` — broader Instagram feed screenshots for mood/context
 
 Priority order for design decisions: ebook style > client-selected > secondary-reference.
+
+## Reference Project
+
+The portfolio project at `/Users/konradantonik/workspace/portfolio/old_page` is a sibling codebase used heavily as a reference for patterns, components, and tooling. Key resources:
+
+- `components/debug-tools/` — debug overlay system (grid, outlines, layers, screen size). Already ported to this project.
+- `styles/globals.css` — `fest-container` / `fest-grid` utility definitions (responsive container + grid system)
+- `docs/design_spec/` — design spec documents
+
+When building new utilities or patterns, check the portfolio project first for existing implementations.
 
 ## Design Direction (locked)
 
@@ -99,7 +109,7 @@ Rule: No colors outside this system. Tint/shade these five for variants.
 
 **Photography**:
 
-- Real photos from `src/app/moodboard/` only — client-selected and Instagram content
+- Real photos from `src/moodboard/` only — client-selected and Instagram content
 - No stock photos, no placeholders, no picsum
 - Photography is the dominant visual — large, full-bleed, hero-scale
 
