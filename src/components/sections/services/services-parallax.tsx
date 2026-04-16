@@ -198,7 +198,7 @@ export function ServicesParallax() {
           <div
             key={slide.title}
             className={cn(
-              `services-panel flex min-h-dvh flex-col py-24 pointer-events-auto
+              `services-panel flex min-h-[50dvh] flex-col py-24 pointer-events-auto
                drop-shadow-[0_0_60px_rgba(0,0,0,0.5)]`,
               i === 0 && "mt-[50dvh]"
             )}
