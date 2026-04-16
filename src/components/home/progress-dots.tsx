@@ -14,10 +14,10 @@ export function ProgressDots({ total, active, onSelect }: ProgressDotsPropsT) {
           key={i}
           {...(onSelect && { onClick: () => onSelect(i) })}
           aria-label={onSelect ? `Slide ${i + 1}` : undefined}
-          className={`h-3 rounded-full transition-[background-color] duration-500 ${
+          className={`h-3 rounded-sm  duration-500  ${
             i === active
               ? "w-10 bg-yellow"
-              : "w-3 bg-white/30 hover:bg-white/50"
+              : "w-3 bg-yellow/50 hover:bg-yellow cursor-pointer"
           }`}
           style={{ willChange: "background-color" }}
         />

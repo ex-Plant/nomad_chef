@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { useScroll, useTransform } from "framer-motion";
+import { ScatterText } from "@/components/home/scatter-text";
 import { Image } from "@/components/ui/image";
 import { EyebrowTag } from "@/components/home/eyebrow-tag";
 import { Button } from "@/components/home/button";
@@ -42,11 +43,14 @@ export function CampFoodInverted() {
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           {/* Text — right side, 5 cols */}
           <div className="flex flex-col justify-center md:col-span-5 md:col-start-1">
-            <FadeUp as="h2" delay={0.1} className="text-heading-xl text-electric-blue">
-              Camp
-              <br />
-              Food
-            </FadeUp>
+            <ScatterText
+              className="text-heading-xl"
+              scrollYProgress={scrollYProgress}
+              lines={[
+                { text: "Camp", className: "text-electric-blue" },
+                { text: "Food", className: "text-electric-blue" },
+              ]}
+            />
 
             <FadeUp as="p" delay={0.2} className="mt-6 text-subtitle-base text-white/80">
               Moj pierwszy ebook.

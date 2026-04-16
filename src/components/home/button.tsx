@@ -6,7 +6,7 @@ import { cn } from "@/helpers/cn";
 /* ─── Variants ────────────────────────────────────────── */
 
 const buttonVariants = cva(
-  "group inline-flex cursor-pointer items-center justify-center border font-geist text-sm font-medium uppercase tracking-wide transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.97] active:translate-y-[1px] disabled:pointer-events-none disabled:opacity-50",
+  "group inline-flex cursor-pointer items-center justify-center border font-geist text-sm font-medium uppercase tracking-wide transition-all duration-500 ease-brand active:scale-[0.97] active:translate-y-[1px] disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -25,15 +25,20 @@ const buttonVariants = cva(
         dark: "border-off-black/20 text-off-black hover:bg-off-black hover:text-white",
       },
       size: {
-        default: "rounded-full px-8 py-4 gap-3",
-        compact: "rounded-lg px-5 py-2.5 gap-2",
+        default: "px-8 py-4 gap-3",
+        compact: "px-4 py-2 gap-2",
         icon: "rounded-full p-0 h-14 w-14",
-        "icon-sm": "rounded-full p-0 h-10 w-10",
+        "icon-sm": "rounded-full p-0 size-8",
+      },
+      rounded: {
+        true: "rounded-full",
+        false: "rounded-lg",
       },
     },
     defaultVariants: {
       variant: "white",
       size: "default",
+      rounded: false,
     },
   }
 );
@@ -59,17 +64,19 @@ function Button({
   className,
   variant,
   size,
+  rounded,
   asChild = false,
   withArrow = false,
   children,
   ...props
 }: ButtonPropsT) {
   const Comp = asChild ? Slot : "button";
-  const arrowSize = size === "compact" ? ARROW_SIZES.compact : ARROW_SIZES.default;
+  const arrowSize =
+    size === "compact" ? ARROW_SIZES.compact : ARROW_SIZES.default;
 
   return (
     <Comp
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(buttonVariants({ variant, size, rounded, className }))}
       {...props}
     >
       <Slottable>{children}</Slottable>
@@ -78,10 +85,14 @@ function Button({
           className={cn(
             "flex items-center justify-center rounded-full transition-all duration-500",
             arrowSize.circle,
-            "bg-current/10",
+            "bg-current/10"
           )}
         >
-          <ArrowRight size={arrowSize.icon} strokeWidth={2.5} aria-hidden="true" />
+          <ArrowRight
+            size={arrowSize.icon}
+            strokeWidth={2.5}
+            aria-hidden="true"
+          />
         </span>
       )}
     </Comp>

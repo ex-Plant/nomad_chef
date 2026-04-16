@@ -2,39 +2,41 @@ import { FadeUp } from "@/components/home/fade-up";
 
 type ColorT = "coral" | "blue" | "yellow" | "pink" | "dark" | "white";
 
-const COLOR_MAP: Record<ColorT, { border: string; text: string; line: string }> =
-  {
-    coral: {
-      border: "border-coral",
-      text: "text-coral",
-      line: "bg-coral",
-    },
-    blue: {
-      border: "border-electric-blue",
-      text: "text-electric-blue",
-      line: "bg-electric-blue",
-    },
-    yellow: {
-      border: "border-yellow",
-      text: "text-yellow",
-      line: "bg-yellow",
-    },
-    pink: {
-      border: "border-pink",
-      text: "text-pink",
-      line: "bg-pink",
-    },
-    dark: {
-      border: "border-off-black/20",
-      text: "text-off-black/60",
-      line: "bg-off-black/20",
-    },
-    white: {
-      border: "border-white/30",
-      text: "text-muted-on-dark",
-      line: "bg-white/30",
-    },
-  } as const;
+const COLOR_MAP: Record<
+  ColorT,
+  { border: string; text: string; line: string }
+> = {
+  coral: {
+    border: "border-coral",
+    text: "text-coral",
+    line: "bg-coral",
+  },
+  blue: {
+    border: "border-electric-blue",
+    text: "text-electric-blue",
+    line: "bg-electric-blue",
+  },
+  yellow: {
+    border: "border-yellow",
+    text: "text-yellow",
+    line: "bg-yellow",
+  },
+  pink: {
+    border: "border-pink",
+    text: "text-pink",
+    line: "bg-pink",
+  },
+  dark: {
+    border: "border-off-black/20",
+    text: "text-off-black/60",
+    line: "bg-off-black/20",
+  },
+  white: {
+    border: "border-white/30",
+    text: "text-muted-on-dark",
+    line: "bg-white/30",
+  },
+} as const;
 
 type EyebrowTagPropsT = {
   readonly children: React.ReactNode;
@@ -48,7 +50,7 @@ type EyebrowTagPropsT = {
 export function EyebrowTag({
   children,
   color = "dark",
-  withLine = false,
+  withLine = true,
   lineColor,
   className = "mb-16",
   duration,
@@ -58,7 +60,7 @@ export function EyebrowTag({
 
   const tag = (
     <span
-      className={`rounded-full border ${border} px-4 py-1.5 text-label-xs ${text}`}
+      className={`rounded-lg border ${border} px-4 py-1.5 text-label-xs ${text}`}
     >
       {children}
     </span>

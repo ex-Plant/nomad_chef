@@ -2,14 +2,15 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { m, AnimatePresence } from "framer-motion";
+import { ScatterText } from "@/components/home/scatter-text";
 import { Image } from "@/components/ui/image";
 import { SECTION_IDS } from "@/components/home/section-ids";
 import { Section } from "@/components/home/section";
 import { EyebrowTag } from "@/components/home/eyebrow-tag";
-import { FadeUp } from "@/components/home/fade-up";
 import { Button } from "@/components/home/button";
 import { Starburst } from "@/components/home/starburst";
 import { SwiperControls } from "@/components/home/swiper-controls";
+import { SectionContent } from "@/components/home/section-content";
 import {
   TRANSITION,
   DURATION,
@@ -54,7 +55,7 @@ const SLIDES: readonly SlideT[] = [
     bodyColor: "text-muted-on-dark",
     eyebrowColor: "blue",
     eyebrowLineColor: "blue",
-    buttonVariant: "blue",
+    buttonVariant: "blue-solid",
     starburstColor: "blue",
     description:
       "Jedzenie, które zabierasz ze sobą — w ruch, w naturę, w życie.",
@@ -124,7 +125,7 @@ export function CampFoodSwiper() {
   const slide = SLIDES[activeIndex];
 
   return (
-    <Section id={SECTION_IDS.campFood} variant="viewport">
+    <Section id={SECTION_IDS.campFood}>
       {/* Animated background color — crossfade, no gap */}
       <AnimatePresence>
         <m.div
@@ -153,7 +154,7 @@ export function CampFoodSwiper() {
         className="absolute  z-3 md:-bottom-20 -right-16"
       />
 
-      <div className="relative z-1 px-6 py-16 md:px-12 md:py-20 lg:px-20 lg:py-24">
+      <SectionContent className="relative z-1">
         {/* Eyebrow */}
         <EyebrowTag
           color={slide.eyebrowColor}
@@ -170,11 +171,13 @@ export function CampFoodSwiper() {
               Mój pierwszy ebook.
             </p>
 
-            <h2 className={`mt-4 text-heading-lg ${slide.headlineColor}`}>
-              Camp
-              <br />
-              Food
-            </h2>
+            <ScatterText
+              className={`mt-4 text-heading-lg`}
+              lines={[
+                { text: "Camp", className: slide.headlineColor },
+                { text: "Food", className: slide.headlineColor },
+              ]}
+            />
 
             <div className="relative mt-6 h-24 md:h-20">
               <AnimatePresence mode="wait">
@@ -184,7 +187,7 @@ export function CampFoodSwiper() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={SLIDE_TRANSITION}
-                  className={`absolute inset-0 max-w-[50ch] text-body-lg ${slide.subtitleColor}`}
+                  className={`absolute inset-0 max-w-[40ch] text-body-lg ${slide.subtitleColor}`}
                 >
                   {slide.description}
                 </m.p>
@@ -195,7 +198,7 @@ export function CampFoodSwiper() {
               <Button
                 asChild
                 variant={slide.buttonVariant}
-                withArrow
+                // withArrow
                 size="compact"
               >
                 <a href="#">Kup ebook</a>
@@ -238,7 +241,7 @@ export function CampFoodSwiper() {
           }}
           className="mt-16"
         />
-      </div>
+      </SectionContent>
     </Section>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { EASE } from "@/components/home/animation-constants";
 import { NAV_ITEMS } from "@/components/home/section-ids";
 import { FadeUp } from "@/components/home/fade-up";
@@ -30,7 +30,7 @@ function HamburgerLine({
   const isLight = isOpen || isOnYellow;
 
   return (
-    <motion.span
+    <m.span
       className={`block h-px w-4 ${isLight ? "bg-white" : "bg-off-black"}`}
       animate={
         isOpen
@@ -88,7 +88,7 @@ export function NavMobileOverlay({
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
+        <m.div
           className="fixed inset-0 z-40 flex items-center justify-center bg-yellow md:hidden"
           variants={OVERLAY_VARIANTS}
           initial="hidden"
@@ -107,7 +107,7 @@ export function NavMobileOverlay({
               </FadeUp>
             ))}
           </div>
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

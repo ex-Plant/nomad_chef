@@ -1,8 +1,15 @@
+"use client";
+
+import { useRef } from "react";
+import { useScroll } from "framer-motion";
 import { Image } from "@/components/ui/image";
 import { EyebrowTag } from "@/components/home/eyebrow-tag";
 import { FadeUp } from "@/components/home/fade-up";
+import { ScatterText } from "@/components/home/scatter-text";
+import { Starburst } from "@/components/home/starburst";
 import { SectionContent } from "@/components/home/section-content";
 import { SECTION_IDS } from "@/components/home/section-ids";
+import { Section } from "@/components/home/section";
 // import aboutImg from "@/moodboard/marta_photos/secondary-reference-instagram-3.webp"; // with dogs
 import aboutImg from "@/moodboard/marta_photos/secondary-reference-instagram-24.webp"; // mediterranean terrace
 // import aboutImg2 from "@/moodboard/marta_photos/secondary-reference-instagram-28.webp"; // tropical, coral dress
@@ -10,12 +17,22 @@ import aboutImg from "@/moodboard/marta_photos/secondary-reference-instagram-24.
 /* Marta photos — swap into aboutImg / aboutImg2 as needed:
  */
 
+const HEADING_LINES = [
+  { text: "Gotuję", className: "text-off-black" },
+  { text: "prosto,", className: "text-off-black" },
+  { text: "ale nigdy", className: "text-coral" },
+  { text: "banalnie", className: "text-off-black" },
+] as const;
+
 export function About() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
   return (
-    <section
-      id={SECTION_IDS.about}
-      className="relative overflow-hidden py-24 md:py-32 lg:py-40"
-    >
+    <Section ref={sectionRef} id={SECTION_IDS.about}>
       <SectionContent>
         <EyebrowTag color="coral" withLine>
           O mnie
@@ -28,33 +45,29 @@ export function About() {
               <Image
                 src={aboutImg}
                 alt="Szefowa kuchni trzymająca talerz"
-                className="aspect-4/5 w-full rounded-2xl object-cover"
+                className="aspect-4/5"
                 sizes="(max-width: 768px) 100vw, 40vw"
                 // placeholder="blur"
               />
             </FadeUp>
 
-            {/* Yellow Dot geometric accent — ebook-style */}
+            {/* Yellow starburst accent — behind image */}
             <FadeUp
-              className="absolute -left-4 top-8 z-0 h-24 w-24 rounded-full bg-yellow md:-left-8 md:h-32 md:w-32"
+              className="absolute -left-8 -top-24 z-[-2] md:-left-24 "
               amount={0.2}
               delay={0.5}
-            />
+            >
+              <Starburst color="yellow" size="md" />
+            </FadeUp>
           </div>
 
           {/* Text column — 6 of 12 cols, offset start */}
           <div className="flex flex-col justify-center md:col-span-6 md:col-start-7">
-            <FadeUp
-              as="h2"
-              className="text-heading-lg text-off-black"
-              delay={0.2}
-            >
-              Gotuję prosto,
-              <br />
-              <span className="text-coral">ale nigdy</span>
-              <br />
-              banalnie
-            </FadeUp>
+            <ScatterText
+              className="text-heading-lg"
+              scrollYProgress={scrollYProgress}
+              lines={HEADING_LINES}
+            />
 
             <FadeUp className="mt-8 space-y-5" delay={0.4}>
               <p className="max-w-[55ch] text-body-lg text-muted">
@@ -84,6 +97,6 @@ export function About() {
           </div>
         </div>
       </SectionContent>
-    </section>
+    </Section>
   );
 }

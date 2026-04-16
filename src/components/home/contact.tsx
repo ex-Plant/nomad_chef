@@ -1,8 +1,7 @@
 "use client";
 
-import { Mail } from "lucide-react";
-import { InstagramIcon } from "@/components/ui/icons";
 import { EyebrowTag } from "@/components/home/eyebrow-tag";
+import { ScatterText } from "@/components/home/scatter-text";
 import { Button } from "@/components/home/button";
 import { ContactLink } from "@/components/home/contact-link";
 import { SECTION_IDS } from "@/components/home/section-ids";
@@ -13,14 +12,14 @@ import { SectionContent } from "@/components/home/section-content";
 
 export function Contact() {
   return (
-    <Section id={SECTION_IDS.contact} className="bg-yellow">
+    <Section id={SECTION_IDS.contact} className="bg-yellow min-h-fit">
       <Starburst
         color="pink"
         rotate
         className="absolute -right-8 bottom-12 z-0 w-36 md:-right-6 md:bottom-16 md:w-44 lg:w-52"
       />
 
-      <SectionContent className="relative z-[1]">
+      <SectionContent className="relative z-1 ">
         {/* Eyebrow */}
         <EyebrowTag color="coral" withLine>
           Kontakt
@@ -29,18 +28,15 @@ export function Contact() {
         {/* Asymmetric split: massive heading left, form/links right */}
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           {/* Left — large heading block */}
-          <div className="md:col-span-7 ">
-            <FadeUp
-              as="h2"
-              delay={0.1}
-              className="text-heading-lg xl:text-heading-xl  text-coral"
-            >
-              Jesli czujesz,
-              <br />
-              ze to cos
-              <br />
-              <span className="text-off-black">dla Ciebie</span>
-            </FadeUp>
+          <div className="md:col-span-7 flex flex-col justify-center ">
+            <ScatterText
+              className="text-heading-lg xl:text-heading-xl"
+              lines={[
+                { text: "Jesli czujesz,", className: "text-coral" },
+                { text: "ze to cos", className: "text-coral" },
+                { text: "dla Ciebie", className: "text-off-black" },
+              ]}
+            />
 
             <FadeUp
               as="p"
@@ -53,22 +49,16 @@ export function Contact() {
 
           {/* Right — contact links */}
           <div className="flex flex-col justify-end md:col-span-7 md:col-start-9">
-            <FadeUp delay={0.3} className="space-y-6">
+            <FadeUp delay={0.3} className="">
               <ContactLink
                 href="mailto:hello@nomadchef.pl"
-                icon={<Mail size={20} strokeWidth={2.5} aria-hidden="true" />}
+                icon="mail"
                 label="Email"
                 value="hello@nomadchef.pl"
               />
               <ContactLink
                 href="https://instagram.com/mart_lesniewska"
-                icon={
-                  <InstagramIcon
-                    size={20}
-                    strokeWidth={2.5}
-                    aria-hidden="true"
-                  />
-                }
+                icon="instagram"
                 label="Instagram"
                 value="@mart_lesniewska"
                 external
@@ -76,14 +66,19 @@ export function Contact() {
             </FadeUp>
 
             {/* Message form */}
-            <FadeUp delay={0.4} className="mt-10">
-              <form className="space-y-4">
+            <FadeUp delay={0.4} className="mt-8">
+              <form className="">
                 <textarea
                   placeholder="Twoja wiadomosc..."
                   rows={4}
-                  className="w-full resize-none rounded-2xl border border-coral bg-yellow px-5 py-4 font-serif text-base text-off-black transition-colors duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-coral focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral"
+                  className="w-full resize-none  rounded-lg border border-coral bg-yellow px-5 py-4 font-serif text-base text-off-black field-sizing-content transition-colors duration-300 ease-brand placeholder:text-coral focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral min-h-32"
                 />
-                <Button asChild variant="coral-solid" withArrow>
+                <Button
+                  className={`mt-4`}
+                  size="compact"
+                  asChild
+                  variant="coral-solid"
+                >
                   <a href="mailto:hello@nomadchef.pl">Wyślij wiadomość</a>
                 </Button>
               </form>
@@ -95,7 +90,7 @@ export function Contact() {
         <FadeUp
           delay={0.2}
           amount={0.5}
-          className="mt-24 flex items-center justify-between border-t border-coral pt-8"
+          className=" flex items-center justify-between border-t border-coral pt-8  mt-16"
         >
           <span className="text-heading text-sm tracking-tight text-coral">
             Nomad Chef

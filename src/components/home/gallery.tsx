@@ -3,7 +3,9 @@
 import { Image } from "@/components/ui/image";
 
 import { FadeUp } from "@/components/home/fade-up";
+import { ScatterText } from "@/components/home/scatter-text";
 import { SECTION_IDS } from "@/components/home/section-ids";
+import { Section } from "@/components/home/section";
 import { SectionContent } from "@/components/home/section-content";
 
 import cs1 from "@/moodboard/gallery/client-selected-1.webp";
@@ -84,24 +86,19 @@ function distributeIntoColumns<TItem>(
 
 export function Gallery() {
   return (
-    <section
-      id={SECTION_IDS.gallery}
-      className="relative overflow-hidden bg-warm-white py-24 md:py-32 lg:py-40"
-    >
+    <Section id={SECTION_IDS.gallery} className="bg-warm-white">
       <SectionContent>
         {/* Header — asymmetric */}
         <EyebrowTag color="coral" withLine>
           Galeria
         </EyebrowTag>
 
-        <FadeUp
-          className="mb-16 flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
-          delay={0.1}
-        >
-          <h2 className="text-heading-xl text-off-black">
-            Galeria
-          </h2>
-        </FadeUp>
+        <div className="mb-16 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <ScatterText
+            className="text-heading-xl"
+            lines={[{ text: "Galeria", className: "text-off-black" }]}
+          />
+        </div>
 
         {/* Staggered masonry — each column starts at a different height */}
         <GalleryGrid images={GALLERY_IMAGES} />
@@ -113,13 +110,11 @@ export function Gallery() {
           delay={0.2}
         >
           <div className="h-px flex-1 bg-coral" />
-          <span className="text-label-sm text-coral">
-            @marta_leśniewska
-          </span>
+          <span className="text-label-sm text-coral">@marta_leśniewska</span>
           <div className="h-px flex-1 bg-coral" />
         </FadeUp>
       </SectionContent>
-    </section>
+    </Section>
   );
 }
 
@@ -153,14 +148,14 @@ function MasonryColumns({
             return (
               <FadeUp
                 key={`${image.alt}-${globalIndex}`}
-                className="group overflow-hidden rounded-lg"
+                className="group"
                 amount={0.1}
                 delay={(globalIndex % 8) * 0.05}
               >
                 <Image
                   src={image.src}
                   alt={image.alt}
-                  className="w-full object-cover transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105 group-hover:brightness-110"
+                  className=" transition-all duration-700 ease-brand group-hover:scale-105 group-hover:brightness-110"
                   sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                   placeholder="blur"
                 />

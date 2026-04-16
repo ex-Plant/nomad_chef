@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { m, useScroll, useTransform } from "framer-motion";
+// import { useRef } from "react";
+// import { m, useScroll, useTransform } from "framer-motion";
 import { SECTION_IDS } from "@/components/home/section-ids";
 import { Section } from "@/components/home/section";
 import { Image } from "@/components/ui/image";
@@ -11,26 +11,20 @@ import { SectionContent } from "@/components/home/section-content";
 import heroImg from "@/moodboard/gallery/client-selected-8.webp";
 
 export function Hero() {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
-
-  const imageScale = useTransform(scrollYProgress, [0, 1], [1, 1.5]);
-  const imageOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-  const textY = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  // Parallax temporarily disabled — uncomment to restore:
+  // const ref = useRef<HTMLDivElement>(null);
+  // const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  // const imageScale = useTransform(scrollYProgress, [0, 1], [1, 1.5]);
+  // const imageOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  // const textY = useTransform(scrollYProgress, [0, 1], [0, -200]);
 
   return (
     <Section
-      ref={ref}
       id={SECTION_IDS.hero}
-      variant="viewport"
       className="overflow-hidden bg-coral"
     >
-      {/* Primary background image with parallax zoom */}
-      <m.div
-        style={{ scale: imageScale, opacity: imageOpacity }}
+      {/* Primary background image — parallax temporarily disabled */}
+      <div
         className="absolute inset-0 z-0"
       >
         <Image
@@ -43,12 +37,12 @@ export function Hero() {
           // placeholder="blur"
         />
         <div className="absolute inset-0 bg-coral/40" />
-      </m.div>
+      </div>
 
       {/* Asymmetric layout: text left, floating image right */}
-      <SectionContent className="relative z-10 flex min-h-dvh flex-col justify-end pb-16 md:flex-row md:items-end md:justify-between md:pb-20 outline">
+      <SectionContent className="relative z-10 flex flex-1 flex-col justify-end md:flex-row md:items-end md:justify-between ">
         {/* Left text block — pushed to bottom-left */}
-        <m.div style={{ y: textY }} className="max-w-2xl">
+        <div className="max-w-2xl">
           <FadeUp
             as="h1"
             trigger="mount"
@@ -98,7 +92,7 @@ export function Hero() {
               <a href="#kontakt">Napisz do mnie</a>
             </Button>
           </FadeUp>
-        </m.div>
+        </div>
       </SectionContent>
     </Section>
   );

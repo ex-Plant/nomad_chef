@@ -46,6 +46,9 @@
   /* Tracking overrides for text-label */
   --tracking-counter: 0.24em;
   --tracking-link: 0.15em;
+
+  /* Easing */
+  --ease-brand: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 /* ============================================================

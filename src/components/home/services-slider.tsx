@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { m, AnimatePresence } from "framer-motion";
+import { ScatterText } from "@/components/home/scatter-text";
 import { Image } from "@/components/ui/image";
 import { SECTION_IDS } from "@/components/home/section-ids";
 import { Section } from "@/components/home/section";
@@ -70,7 +71,7 @@ export function ServicesSlider() {
   const active = SLIDES_EDITORIAL[activeIndex];
 
   return (
-    <Section id={SECTION_IDS.services} variant="viewport">
+    <Section id={SECTION_IDS.services}>
       {/* All images stacked — crossfade via opacity */}
       {SLIDES_EDITORIAL.map((slide, i) => (
         <m.div
@@ -104,24 +105,21 @@ export function ServicesSlider() {
       />
 
       {/* Content layer */}
-      <SectionContent className="z-3 flex min-h-dvh flex-col justify-between pb-10 pt-20 md:pb-14 md:pt-28 lg:pb-16 lg:pt-32 relative">
+      <SectionContent className="z-3 flex flex-1 flex-col justify-between relative">
         {/* Top: eyebrow + heading */}
         <div>
           <EyebrowTag color="yellow" withLine lineColor="yellow">
             Oferta
           </EyebrowTag>
 
-          <FadeUp
-            as="h2"
-            delay={0.1}
-            className="max-w-2xl text-heading-sm text-white"
-          >
-            Co mogę
-            <br />
-            dla Ciebie
-            <br />
-            <span className="text-yellow">ugotować</span>
-          </FadeUp>
+          <ScatterText
+            className="max-w-2xl text-heading-sm"
+            lines={[
+              { text: "Co mogę", className: "text-white" },
+              { text: "dla Ciebie", className: "text-white" },
+              { text: "ugotować", className: "text-yellow" },
+            ]}
+          />
         </div>
 
         {/* Bottom: slide text + controls */}

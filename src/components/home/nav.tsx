@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { NAV_ITEMS, SECTION_IDS } from "@/components/home/section-ids";
 import { NavDesktop } from "@/components/home/nav-desktop";
 import {
@@ -18,14 +18,20 @@ export function Nav() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsVisible(window.scrollY > 100);
+      const shouldBeVisible = window.scrollY > 100;
+      setIsVisible((prev) =>
+        prev === shouldBeVisible ? prev : shouldBeVisible
+      );
 
       const kontakt = document.getElementById(SECTION_IDS.contact);
       const nav = navRef.current;
       if (kontakt && nav) {
         const kontaktRect = kontakt.getBoundingClientRect();
         const navRect = nav.getBoundingClientRect();
-        setIsOnYellow(kontaktRect.top < navRect.bottom);
+        const shouldBeOnYellow = kontaktRect.top < navRect.bottom;
+        setIsOnYellow((prev) =>
+          prev === shouldBeOnYellow ? prev : shouldBeOnYellow
+        );
       }
     };
 
@@ -62,13 +68,13 @@ export function Nav() {
     <>
       <AnimatePresence>
         {isVisible && (
-          <motion.nav
+          <m.nav
             ref={navRef}
             initial={{ y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -100, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className={`fixed top-6 left-1/2 z-50 -translate-x-1/2 rounded-full px-2 py-2 shadow-2xl backdrop-blur-sm transition-colors duration-1000 ${
+            className={`fixed top-6 left-1/2 z-50 -translate-x-1/2 rounded-lg px-2 py-2 shadow-2xl transition-colors duration-1000 ${
               isMobileOpen ? "bg-coral" : isOnYellow ? "bg-coral" : "bg-yellow"
             }`}
             aria-label="Nawigacja glowna"
@@ -85,7 +91,7 @@ export function Nav() {
                 onToggle={() => setIsMobileOpen(!isMobileOpen)}
               />
             </div>
-          </motion.nav>
+          </m.nav>
         )}
       </AnimatePresence>
 

@@ -20,7 +20,7 @@ export function NavDesktop({
         <li key={item.id}>
           <button
             onClick={() => scrollTo(item.id)}
-            className={`relative rounded-full px-4 py-2 font-geist text-xs uppercase tracking-wide transition-colors duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+            className={`relative rounded-lg px-4 py-1 font-geist text-xs uppercase tracking-wide transition-colors duration-300 ease-brand ${
               activeSection === item.id
                 ? isOnYellow
                   ? "text-black"
@@ -34,7 +34,7 @@ export function NavDesktop({
             {activeSection === item.id && (
               <motion.span
                 layoutId="d8-nav-pill"
-                className={`absolute inset-0 rounded-full ${
+                className={`absolute inset-0 rounded-lg ${
                   isOnYellow ? "bg-yellow" : "bg-coral"
                 }`}
                 transition={{

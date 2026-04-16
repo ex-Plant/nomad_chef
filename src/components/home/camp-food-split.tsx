@@ -8,6 +8,7 @@ import { EyebrowTag } from "@/components/home/eyebrow-tag";
 import { FadeUp } from "@/components/home/fade-up";
 import { Button } from "@/components/home/button";
 import { ProgressDots } from "@/components/home/progress-dots";
+import { SectionContent } from "@/components/home/section-content";
 import { TRANSITION, DURATION, AUTOPLAY_INTERVAL } from "@/components/home/animation-constants";
 
 import type { StaticImageData } from "next/image";
@@ -93,7 +94,8 @@ export function CampFoodSplit() {
         <div className="w-1/2 bg-electric-blue" />
       </div>
 
-      <div className="relative z-[2] px-6 py-16 md:px-12 md:py-20 lg:px-20 lg:py-24">
+      {/* py-16 md:py-20 lg:py-24 */}
+      <SectionContent className="relative z-[2]">
         {/* Eyebrow */}
         <EyebrowTag color="white" withLine lineColor="white" duration={DURATION.slow}>
           Ebook
@@ -177,7 +179,7 @@ export function CampFoodSplit() {
             </Button>
           </div>
         </div>
-      </div>
+      </SectionContent>
     </section>
   );
 }

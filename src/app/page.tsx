@@ -1,18 +1,27 @@
+import dynamic from "next/dynamic";
 import { Nav } from "@/components/home/nav";
 import { Hero } from "@/components/home/hero";
 import { About } from "@/components/home/about";
-import { ServicesSlider } from "@/components/home/services-slider";
-import { CampFoodSwiper } from "@/components/home/camp-food-swiper";
-import { Gallery } from "@/components/home/gallery";
-import { Contact } from "@/components/home/contact";
-import { ContactV2 } from "@/components/home/contact-v2";
 import { GrainOverlay } from "@/components/ui/grain-overlay";
+
+const ServicesSlider = dynamic(() =>
+  import("@/components/home/services-slider").then((m) => m.ServicesSlider)
+);
+const CampFoodSwiper = dynamic(() =>
+  import("@/components/home/camp-food-swiper").then((m) => m.CampFoodSwiper)
+);
+const Gallery = dynamic(() =>
+  import("@/components/home/gallery").then((m) => m.Gallery)
+);
+const Contact = dynamic(() =>
+  import("@/components/home/contact").then((m) => m.Contact)
+);
 
 export default function HomePage() {
   return (
     <>
       <Nav />
-      <main>
+      <main className="relative">
         <Hero />
         <About />
         <ServicesSlider />

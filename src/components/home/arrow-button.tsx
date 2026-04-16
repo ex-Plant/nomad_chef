@@ -1,10 +1,14 @@
 const COLOR_VARIANTS = {
   coral: { bg: "bg-coral", icon: "text-white" },
+  "coral-outline": { bg: "border border-coral bg-transparent hover:bg-coral", icon: "text-coral hover:text-white" },
   blue: { bg: "bg-electric-blue", icon: "text-white" },
+  "blue-outline": { bg: "border border-electric-blue bg-transparent hover:bg-electric-blue", icon: "text-electric-blue hover:text-white" },
   yellow: { bg: "bg-yellow", icon: "text-blue" },
+  "yellow-outline": { bg: "border border-yellow bg-transparent hover:bg-yellow", icon: "text-yellow hover:text-off-black" },
   pink: { bg: "bg-pink", icon: "text-off-black" },
   dark: { bg: "bg-off-black", icon: "text-white" },
   white: { bg: "bg-white", icon: "text-off-black" },
+  "white-outline": { bg: "border border-white/60 bg-transparent hover:bg-white", icon: "text-white hover:text-off-black" },
 } as const;
 
 const SIZE_VARIANTS = {
@@ -44,14 +48,14 @@ export function ArrowButton({
     <button
       onClick={onClick}
       aria-label={label}
-      className={`flex items-center justify-center rounded-full transition-transform duration-200 hover:scale-105 active:scale-95 ${bg} ${button} ${className}`}
+      className={`flex items-center justify-center rounded-full transition-all duration-500 hover:scale-105 active:scale-95 ${bg} ${button} ${className}`}
     >
       <svg
         width={svg}
         height={svg}
         viewBox="0 0 20 20"
         fill="none"
-        className={`${icon} ${direction === "prev" ? "rotate-180" : ""}`}
+        className={`transition-colors duration-500 ${icon} ${direction === "prev" ? "rotate-180" : ""}`}
       >
         <path
           d="M4 10h12m0 0l-5-5m5 5l-5 5"

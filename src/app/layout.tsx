@@ -9,6 +9,7 @@ import {
   Bebas_Neue,
 } from "next/font/google";
 import { DebugWrapper } from "@/components/debug-tools/debug-wrapper";
+import { MotionProvider } from "@/components/ui/motion-provider";
 import "./globals.css";
 
 /* Design 1 fonts */
@@ -77,7 +78,9 @@ export default function RootLayout({
       className={`${archivoBlack.variable} ${archivo.variable} ${instrumentSerif.variable} ${geistSans.variable} ${playfair.variable} ${outfit.variable} ${bebasNeue.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-warm-white">
-        <DebugWrapper>{children}</DebugWrapper>
+        <MotionProvider>
+          <DebugWrapper>{children}</DebugWrapper>
+        </MotionProvider>
       </body>
     </html>
   );
