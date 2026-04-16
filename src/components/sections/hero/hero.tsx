@@ -32,7 +32,7 @@ export function Hero() {
       if (!section || !image || !text) return;
 
       gsap.to(image, {
-        scale: 1,
+        // scale: 1,
         ease: "none",
         scrollTrigger: {
           trigger: section,
@@ -43,7 +43,7 @@ export function Hero() {
       });
 
       gsap.to(text, {
-        y: -800,
+        y: -400,
         ease: "none",
         scrollTrigger: {
           trigger: section,
@@ -77,43 +77,25 @@ export function Hero() {
       </div>
 
       {/* Asymmetric layout: text left, floating image right */}
-      <SectionContent className="relative z-10 flex flex-1 flex-col justify-end md:flex-row md:items-end md:justify-between ">
+      <SectionContent className="relative z-10 flex flex-1 flex-col justify-end md:flex-row md:items-end md:justify-between pb-12 ">
         {/* Left text block — pushed to bottom-left */}
-        <div ref={textRef} className="max-w-2xl text-white">
-          <FadeUp
-            as="p"
-            trigger="mount"
-            delay={0.9}
-            duration={1.2}
-            y={16}
-            className="mt-6 max-w-md "
-          >
-            <span className="mb-2 block max-w-[42ch] font-sans text-sm md:text-base">
-              <span className=" pl-2  ">
-                Jedzenie dopasowane do miejsca, ludzi i momentu
-              </span>
-            </span>
+        <div ref={textRef} className=" text-white">
+          <FadeUp as="p" trigger="mount" delay={0.9}>
+            <p className="mb-2 font-sans text-base  md:pl-2 max-w-sm md:max-w-lg ">
+              Jedzenie dopasowane do miejsca, ludzi i momentu
+            </p>
           </FadeUp>
           <ScatterText
             as="h1"
             triggerOnMount
-            className="text-heading-hero leading-[80%] text-white not-last-of-type:"
+            className="text-heading-hero md:text-9xl lg:text-[10rem] leading-[80%] text-8xl"
             lines={[{ text: "Nomad" }, { text: "Chef" }]}
           />
 
-          <FadeUp
-            as="p"
-            trigger="mount"
-            delay={1.1}
-            duration={1.2}
-            y={16}
-            className="mt-3 max-w-lg text-body-base"
-          >
-            <p className=" mt-2 max-w-[42ch] font-sans text-sm md:text-base">
-              <span className="   box-decoration-clone  px-1 ">
-                Gotuje tam, gdzie mnie potrzebujesz — od prywatnych kolacji,
-                przez garden party, po retreaty i wyjazdy w Polsce i za granica.
-              </span>
+          <FadeUp as="p" trigger="mount" delay={1.1} className="">
+            <p className="font-sans text-base  md:pl-2 mt-6 max-w-sm md:max-w-lg ">
+              Gotuje tam, gdzie mnie potrzebujesz — od prywatnych kolacji, przez
+              garden party, po retreaty i wyjazdy w Polsce i za granica.
             </p>
           </FadeUp>
 
@@ -121,8 +103,6 @@ export function Hero() {
           <FadeUp
             trigger="mount"
             delay={1.3}
-            duration={1.2}
-            y={12}
             className="mt-8 flex flex-wrap gap-4"
           >
             <Button
@@ -130,7 +110,6 @@ export function Hero() {
               variant="coral"
               size="compact"
               // withArrow
-              className={`h-fit`}
             >
               <a href="#uslugi">Zobacz oferte</a>
             </Button>
