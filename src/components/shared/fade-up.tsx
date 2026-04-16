@@ -14,14 +14,17 @@ type FadeUpPropsT = {
   readonly margin?: string;
   readonly className?: string;
   readonly children?: React.ReactNode;
-} & Omit<ComponentPropsWithoutRef<typeof m.div>, "variants" | "initial" | "whileInView" | "animate" | "viewport" | "transition">;
+} & Omit<
+  ComponentPropsWithoutRef<typeof m.div>,
+  "variants" | "initial" | "whileInView" | "animate" | "viewport" | "transition"
+>;
 
 export function FadeUp({
   as = "div",
   trigger = "inView",
-  duration = 0.8,
+  duration = 1.1,
   delay,
-  y: yOffset = 24,
+  y: yOffset = 16,
   amount = 0.3,
   margin,
   className,

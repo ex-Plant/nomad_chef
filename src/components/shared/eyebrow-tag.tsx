@@ -52,7 +52,7 @@ export function EyebrowTag({
   color = "dark",
   withLine = true,
   lineColor,
-  className = "mb-16",
+  className = "mb-12 sm:mb-16",
   duration,
 }: EyebrowTagPropsT) {
   const { border, text } = COLOR_MAP[color];

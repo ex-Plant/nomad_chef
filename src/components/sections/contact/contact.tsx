@@ -16,6 +16,7 @@ export function Contact() {
       <Starburst
         color="pink"
         rotate
+        variant="logo-h"
         className="absolute -right-8 bottom-12 z-0 w-36 md:-right-6 md:bottom-2 md:w-44 lg:w-52"
       />
 
@@ -92,8 +93,7 @@ export function Contact() {
           amount={0.5}
           className=" flex items-center justify-between border-t border-coral pt-8  mt-16 text-heading text-sm tracking-tight text-coral"
         >
-          <span>Nomad Chef</span>
-          <span>2025</span>
+          <span>Nomad Chef 2026</span>
         </FadeUp>
       </SectionContent>
     </Section>

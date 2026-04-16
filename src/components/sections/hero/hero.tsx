@@ -8,6 +8,7 @@ import { SECTION_IDS } from "@/config/section-ids";
 import { Section } from "@/components/shared/section";
 import { Button } from "@/components/shared/button";
 import { FadeUp } from "@/components/shared/fade-up";
+import { BodyText } from "@/components/shared/body-text";
 import { ScatterText } from "@/components/shared/scatter-text";
 import { SectionContent } from "@/components/shared/section-content";
 
@@ -80,24 +81,20 @@ export function Hero() {
       <SectionContent className="relative z-10 flex flex-1 flex-col justify-end md:flex-row md:items-end md:justify-between pb-12 ">
         {/* Left text block — pushed to bottom-left */}
         <div ref={textRef} className=" text-white">
-          <FadeUp as="p" trigger="mount" delay={0.9}>
-            <p className="mb-2 font-sans text-base  md:pl-2 max-w-sm md:max-w-lg ">
-              Jedzenie dopasowane do miejsca, ludzi i momentu
-            </p>
-          </FadeUp>
+          <BodyText trigger="mount" delay={0.9} className="mb-2 md:pl-2">
+            Jedzenie dopasowane do miejsca, ludzi i momentu
+          </BodyText>
           <ScatterText
             as="h1"
             triggerOnMount
-            className="text-heading-hero md:text-9xl lg:text-[10rem] leading-[80%] text-8xl"
+            className="font-display text-7xl sm:text-8xl uppercase leading-[0.85] tracking-[-0.05em] md:text-9xl lg:text-[10rem]"
             lines={[{ text: "Nomad" }, { text: "Chef" }]}
           />
 
-          <FadeUp as="p" trigger="mount" delay={1.1} className="">
-            <p className="font-sans text-base  md:pl-2 mt-6 max-w-sm md:max-w-lg ">
-              Gotuje tam, gdzie mnie potrzebujesz — od prywatnych kolacji, przez
-              garden party, po retreaty i wyjazdy w Polsce i za granica.
-            </p>
-          </FadeUp>
+          <BodyText trigger="mount" delay={1.1} className="mt-6 md:pl-2">
+            Gotuje tam, gdzie mnie potrzebujesz — od prywatnych kolacji, przez
+            garden party, po retreaty i wyjazdy w Polsce i za granica.
+          </BodyText>
 
           {/* CTAs */}
           <FadeUp

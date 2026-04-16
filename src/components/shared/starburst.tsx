@@ -23,9 +23,9 @@ const STARBURST_COLORS = {
 type StarburstColorT = keyof typeof STARBURST_COLORS;
 
 const SIZE_VARIANTS = {
-  sm: "w-32 md:w-40 lg:w-44",
-  md: "w-48 md:w-60 lg:w-72",
-  lg: "w-60 md:w-72 lg:w-88",
+  sm: "w-24 md:w-40 lg:w-44",
+  md: "w-28 md:w-60 lg:w-72",
+  lg: "w-44 md:w-72 lg:w-88",
 } as const;
 
 type StarburstSizeT = keyof typeof SIZE_VARIANTS;

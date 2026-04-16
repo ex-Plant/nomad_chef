@@ -101,16 +101,8 @@
 
   /* ==========  HEADING SIZES  ========== */
 
-  .text-heading-hero {
-    @apply text-6xl md:text-8xl lg:text-[10rem];
-    font-family: var(--font-display);
-    text-transform: uppercase;
-    line-height: 0.85;
-    letter-spacing: -0.05em;
-  }
-
   .text-heading-xl {
-    @apply text-5xl md:text-7xl lg:text-8xl;
+    @apply text-xl md:text-7xl lg:text-8xl;
     font-family: var(--font-display);
     text-transform: uppercase;
     line-height: 0.85;
@@ -118,7 +110,7 @@
   }
 
   .text-heading-lg {
-    @apply text-4xl md:text-6xl lg:text-7xl;
+    @apply text-[2.2rem] sm:text-6xl lg:text-7xl;
     font-family: var(--font-display);
     text-transform: uppercase;
     line-height: 0.85;
@@ -199,6 +191,20 @@
     font-style: italic;
     line-height: 1.375;
   }
+}
+
+/* ============================================================
+   GRID SYSTEM — fest-container + fest-grid
+   Ported from portfolio reference project.
+   Usage: <div class="fest-container"><div class="fest-grid">...children with col-span-*</div></div>
+   ============================================================ */
+
+@utility fest-container {
+  @apply mx-auto w-full px-6 md:px-12 lg:px-20;
+}
+
+@utility fest-grid {
+  @apply grid grid-cols-4 gap-0 sm:grid-cols-8 md:grid-cols-12;
 }
 
 html {

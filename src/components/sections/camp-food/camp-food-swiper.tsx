@@ -11,6 +11,7 @@ import { Button } from "@/components/shared/button";
 import { Starburst } from "@/components/shared/starburst";
 import { SwiperControls } from "@/components/shared/swiper-controls";
 import { SectionContent } from "@/components/shared/section-content";
+import { BodyText } from "@/components/shared/body-text";
 import {
   TRANSITION,
   DURATION,
@@ -138,22 +139,13 @@ export function CampFoodSwiper() {
         />
       </AnimatePresence>
 
-      {/* Decorative starburst — bottom-left */}
-      <Starburst
-        color={slide.starburstColor}
-        size="sm"
-        rotate
-        className="absolute -left-16 bottom-12  md:-left-6 md:bottom-16"
-      />
-
-      {/* Decorative starburst — bottom-right */}
-      <Starburst
-        color={slide.starburstColor}
-        size="sm"
-        className="absolute  z-3 md:-bottom-20 -right-16"
-      />
-
-      <SectionContent className="relative z-1">
+      <SectionContent className="relative z-3">
+        <Starburst
+          color={slide.starburstColor}
+          size="sm"
+          rotate
+          className="absolute -left-12 -bottom-26 z-[-1] md:-left-6 "
+        />
         {/* Eyebrow */}
         <EyebrowTag
           color={slide.eyebrowColor}
@@ -163,22 +155,20 @@ export function CampFoodSwiper() {
           Ebook
         </EyebrowTag>
 
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8 ">
           {/* Text — left side */}
           <div className="flex flex-col justify-center md:col-span-5 md:col-start-1">
-            <p className="text-subtitle-base text-white/90">
-              Mój pierwszy ebook.
-            </p>
+            <BodyText className="text-white/90">Mój pierwszy ebook.</BodyText>
 
             <ScatterText
-              className={`mt-4 text-heading-lg`}
+              className={`mt-4 text-heading-lg tracking-tight `}
               lines={[
                 { text: "Camp", className: slide.headlineColor },
                 { text: "Food", className: slide.headlineColor },
               ]}
             />
 
-            <div className="relative mt-6 h-24 md:h-20">
+            <div className="relative mt-6 min-h-12 sm:min-h-14 ">
               <AnimatePresence>
                 <m.p
                   key={activeIndex}
@@ -186,14 +176,15 @@ export function CampFoodSwiper() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={SLIDE_TRANSITION}
-                  className={`absolute inset-0 max-w-[40ch] text-body-lg ${slide.subtitleColor}`}
+                  className={`absolute inset-0 max-w-[320px] sm:max-w-[36ch]  text-body-lg
+                    font-sans text-sm sm:text-base ${slide.subtitleColor}`}
                 >
                   {slide.description}
                 </m.p>
               </AnimatePresence>
             </div>
 
-            <div className="mt-12">
+            <div className="mt-8">
               <Button
                 asChild
                 variant={slide.buttonVariant}
@@ -206,7 +197,13 @@ export function CampFoodSwiper() {
           </div>
 
           {/* Ebook cover — single large image, right side */}
-          <div className="relative h-[65vh] md:col-span-7 md:col-start-6">
+          <div className="relative h-[40vh] md:h-[65vh] md:col-span-7 md:col-start-6 ">
+            <Starburst
+              color={slide.starburstColor}
+              size="sm"
+              className="absolute z-1 -right-4 md:-left-52 -top-12"
+              variant="logo-a"
+            />
             <AnimatePresence>
               <m.div
                 key={activeIndex}
@@ -214,18 +211,19 @@ export function CampFoodSwiper() {
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 exit={{ opacity: 0, scale: 0.95, rotate: 2 }}
                 transition={SLIDE_TRANSITION}
-                className="absolute inset-0 flex h-full items-center justify-center"
+                className="absolute inset-0 flex h-full items-center justify-center z-4"
                 style={{ willChange: "transform, opacity" }}
               >
                 <Image
                   src={slide.image}
                   alt={slide.alt}
                   className="h-full w-auto max-w-full rounded-xl object-contain"
-                  sizes="(max-width: 768px) 80vw, 50vw"
+                  sizes="(max-width: 768px) 80vw, (max-width:1440px) 50vw, 750px"
                   priority
                 />
               </m.div>
             </AnimatePresence>
+            {/* Decorative starburst — bottom-right */}
           </div>
         </div>
 

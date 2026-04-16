@@ -157,6 +157,7 @@ export function ServicesParallax() {
               src={parallaxBg}
               alt="Tło sekcji usług — fotografia kulinarna"
               fill
+              priority
               className="rounded-none object-cover"
               sizes="100vw"
             />
@@ -178,7 +179,7 @@ export function ServicesParallax() {
         {/* Decorative starburst — starts top-right, GSAP moves it to bottom-right */}
         <div
           ref={starburstRef}
-          className="absolute -right-6 top-0 z-4 -translate-y-1/3 md:-right-8 lg:-right-10"
+          className="absolute -right-6 top-0 z-4 -translate-y-1/3  md:-right-8 lg:-right-20"
         >
           <Starburst
             variant="v1-b"
@@ -198,8 +199,10 @@ export function ServicesParallax() {
           <div
             key={slide.title}
             className={cn(
-              `services-panel flex min-h-[50dvh] flex-col py-24 pointer-events-auto
-               drop-shadow-[0_0_60px_rgba(0,0,0,0.5)]`,
+              `flex min-h-[50dvh] flex-col py-24 pointer-events-auto
+               drop-shadow-[0_0_60px_rgba(0,0,0,0.5)]
+               
+               `,
               i === 0 && "mt-[50dvh]"
             )}
           >
@@ -208,22 +211,22 @@ export function ServicesParallax() {
                 panelRefs.current[i] = el;
               }}
             >
-              <SectionContent className="max-w-2xl">
-                <h3 className="max-w-[12ch] text-heading-lg tracking-tight">
-                  <span className="bg-coral text-white box-decoration-clone leading-[0.9] pr-2">
+              <SectionContent className=" ">
+                <h3 className="max-w-sm sm:max-w-xl lg:max-w-2xl ">
+                  <span className="bg-coral text-white box-decoration-clone leading-[0.9] pr-2 max-w-[12ch] text-heading-lg tracking-tight">
                     {slide.title}
                   </span>
                 </h3>
                 {"tagline" in slide && (
-                  <p className="mt-8 font-sans leading-snug">
-                    <span className="bg-yellow text-black box-decoration-clone leading-[0.9] px-1 pr-2">
+                  <p className="mt-8 max-w-sm sm:max-w-md leading-tight mb-2 ">
+                    <span className="bg-yellow text-off-black box-decoration-clone leading-[0.9] px-1 pr-2  font-sans text-sm md:text-base  ">
                       {slide.tagline}
                     </span>
                   </p>
                 )}
                 {"description" in slide && (
-                  <p className=" mt-2 max-w-[42ch] font-sans text-sm md:text-base">
-                    <span className="bg-pink text-black box-decoration-clone px-1 ">
+                  <p className="max-w-sm lg:max-w-md  leading-tight  ">
+                    <span className="bg-pink text-off-black box-decoration-clone leading-[0.8] px-1 pr-2  font-sans text-sm md:text-base">
                       {slide.description}
                     </span>
                   </p>

@@ -48,7 +48,7 @@ export function About() {
 
             {/* Yellow starburst accent — behind image */}
             <FadeUp
-              className="absolute -left-8 -top-24 z-[-2] md:-left-24 "
+              className="absolute -left-8 -top-12 md:-top-24 z-[-2] md:-left-24 "
               amount={0.2}
               delay={0.5}
             >
@@ -65,7 +65,7 @@ export function About() {
             />
 
             <FadeUp className="mt-8 space-y-5" delay={0.4}>
-              <p className="max-w-[55ch] text-body-lg text-muted">
+              <p className="max-w-[55ch] text-sans text-muted">
                 Tworzę jedzenie dopasowane do ludzi i sytuacji — od kameralnych
                 kolacji, przez eventy, po wyjazdy w miejscach, które rzadko mają
                 cokolwiek wspólnego z klasyczną kuchnią.
@@ -73,17 +73,17 @@ export function About() {
 
               {/* Pull quote — editorial serif, breaks visual rhythm */}
               <blockquote className="border-l-4 border-coral py-2 pl-6">
-                <p className="text-quote-lg text-off-black/90">
+                <p className="text-quote-lg text-off-black/90 max-w-[35ch]">
                   Łączę smak z funkcją — jedzenie ma nie tylko smakować, ale też
                   działać.
                 </p>
               </blockquote>
 
-              <p className="max-w-[55ch] text-body-lg text-muted">
+              <p className="max-w-[55ch] text-sans text-muted">
                 Pracuję na ekologicznych produktach, korzystam z fermentacji,
                 świeżych ziół i składników wspierających organizm.
               </p>
-              <p className="max-w-[55ch] text-body-lg text-muted">
+              <p className="max-w-[55ch] text-sans text-muted">
                 Moja droga do kuchni nie była oczywista — od banku, przez modę,
                 po własną restaurację. Dziś pracuję jako nomadyczna kucharka,
                 gotując w różnych miejscach świata.

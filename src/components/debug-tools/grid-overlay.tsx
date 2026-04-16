@@ -7,25 +7,16 @@ type GridOverlayPropsT = {
   readonly position?: "fixed" | "absolute";
   /** z-index — use to layer between background and content */
   readonly z?: number;
-  /** Column color */
-  readonly color?: string;
-  /** Column border color */
-  readonly borderColor?: string;
   readonly className?: string;
 };
 
 /**
- * Visual 12-column grid overlay.
- *
- * Full-page:  <GridOverlay />
- * Scoped:     <div className="relative"> <GridOverlay position="absolute" z={1} /> <content z={2} /> </div>
- * Under content, over bg:  <GridOverlay position="absolute" z={5} />
+ * Visual grid overlay using fest-container + fest-grid.
+ * Shows 4 cols on mobile, 8 on sm, 12 on md+.
  */
 export function GridOverlay({
   position = "fixed",
   z = 10000,
-  color = "rgb(239 68 68 / 0.06)",
-  borderColor = "rgb(239 68 68 / 0.25)",
   className,
 }: GridOverlayPropsT) {
   return (
@@ -37,22 +28,33 @@ export function GridOverlay({
       )}
       style={{ zIndex: z }}
     >
-      <div className="mx-auto h-full w-full px-6 md:px-12 lg:px-20">
-        <div className="grid h-full grid-cols-1 gap-8 md:grid-cols-12">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <div
-              key={i}
-              className={cn(
-                "col-span-1 h-full",
-                i >= 1 && "hidden md:block",
-              )}
-              style={{ borderRight: `0.5px solid ${borderColor}`, borderLeft: i === 0 ? `0.5px solid ${borderColor}` : undefined }}
-            >
-              <div className="h-full" style={{ backgroundColor: color }} />
-            </div>
-          ))}
+      <div className="fest-container h-full">
+        <div className="fest-grid h-full">
+          {/* 4 columns — mobile */}
+          <GridColumn />
+          <GridColumn />
+          <GridColumn />
+          <GridColumn />
+          {/* sm: 8 columns */}
+          <GridColumn className="hidden sm:block" />
+          <GridColumn className="hidden sm:block" />
+          <GridColumn className="hidden sm:block" />
+          <GridColumn className="hidden sm:block" />
+          {/* md: 12 columns */}
+          <GridColumn className="hidden md:block" />
+          <GridColumn className="hidden md:block" />
+          <GridColumn className="hidden md:block" />
+          <GridColumn className="hidden md:block" />
         </div>
       </div>
+    </div>
+  );
+}
+
+function GridColumn({ className }: { readonly className?: string }) {
+  return (
+    <div className={cn("col-span-1 border-[0.5px] border-black/20", className)}>
+      <div className="h-full bg-red-500/10" />
     </div>
   );
 }
