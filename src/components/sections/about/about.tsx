@@ -1,8 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import { useScroll } from "framer-motion";
-// useScroll still used by other motion elements in this component
 import { Image } from "@/components/ui/image";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 import { FadeUp } from "@/components/shared/fade-up";
@@ -27,10 +25,6 @@ const HEADING_LINES = [
 
 export function About() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
 
   return (
     <Section ref={sectionRef} id={SECTION_IDS.about}>
@@ -66,7 +60,7 @@ export function About() {
           <div className="flex flex-col justify-center md:col-span-6 md:col-start-7">
             <ScatterText
               className="text-heading-lg"
-              scrollYProgress={scrollYProgress}
+              triggerRef={sectionRef}
               lines={HEADING_LINES}
             />
 

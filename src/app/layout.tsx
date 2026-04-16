@@ -77,7 +77,7 @@ export default function RootLayout({
       lang="pl"
       className={`${archivoBlack.variable} ${archivo.variable} ${instrumentSerif.variable} ${geistSans.variable} ${playfair.variable} ${outfit.variable} ${bebasNeue.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-warm-white">
+      <body className="min-h-full flex flex-col bg-warm-white overflow-x-hidden">
         <MotionProvider>
           <DebugWrapper>{children}</DebugWrapper>
         </MotionProvider>

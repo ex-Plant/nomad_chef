@@ -45,7 +45,7 @@ export function CampFoodInverted() {
           <div className="flex flex-col justify-center md:col-span-5 md:col-start-1">
             <ScatterText
               className="text-heading-xl"
-              scrollYProgress={scrollYProgress}
+              triggerRef={sectionRef}
               lines={[
                 { text: "Camp", className: "text-electric-blue" },
                 { text: "Food", className: "text-electric-blue" },

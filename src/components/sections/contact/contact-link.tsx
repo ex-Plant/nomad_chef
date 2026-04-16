@@ -43,7 +43,7 @@ export function ContactLink({
       </span>
       <div className="flex-1">
         <span className="block text-label-sm text-coral">{label}</span>
-        <span className="block font-geist text-lg font-medium text-off-black">
+        <span className="block font-sans text-lg font-medium text-off-black">
           {value}
         </span>
       </div>

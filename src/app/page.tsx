@@ -4,11 +4,15 @@ import { Hero } from "@/components/sections/hero/hero";
 import { About } from "@/components/sections/about/about";
 import { GrainOverlay } from "@/components/ui/grain-overlay";
 
-const ServicesSlider = dynamic(() =>
-  import("@/components/sections/services/services-slider").then((m) => m.ServicesSlider)
+const ServicesParallax = dynamic(() =>
+  import("@/components/sections/services/services-parallax").then(
+    (m) => m.ServicesParallax
+  )
 );
 const CampFoodSwiper = dynamic(() =>
-  import("@/components/sections/camp-food/camp-food-swiper").then((m) => m.CampFoodSwiper)
+  import("@/components/sections/camp-food/camp-food-swiper").then(
+    (m) => m.CampFoodSwiper
+  )
 );
 const Gallery = dynamic(() =>
   import("@/components/sections/gallery/gallery").then((m) => m.Gallery)
@@ -24,7 +28,8 @@ export default function HomePage() {
       <main className="relative">
         <Hero />
         <About />
-        <ServicesSlider />
+        {/* <ServicesSlider /> */}
+        <ServicesParallax />
         <CampFoodSwiper />
         <Gallery />
         <Contact />

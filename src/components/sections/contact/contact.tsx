@@ -16,7 +16,7 @@ export function Contact() {
       <Starburst
         color="pink"
         rotate
-        className="absolute -right-8 bottom-12 z-0 w-36 md:-right-6 md:bottom-16 md:w-44 lg:w-52"
+        className="absolute -right-8 bottom-12 z-0 w-36 md:-right-6 md:bottom-2 md:w-44 lg:w-52"
       />
 
       <SectionContent className="relative z-1 ">
@@ -71,7 +71,7 @@ export function Contact() {
                 <textarea
                   placeholder="Twoja wiadomosc..."
                   rows={4}
-                  className="w-full resize-none  rounded-lg border border-coral bg-yellow px-5 py-4 font-serif text-base text-off-black field-sizing-content transition-colors duration-300 ease-brand placeholder:text-coral focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral min-h-32"
+                  className="w-full resize-none  rounded-lg border border-coral bg-yellow px-5 py-4 font-sans text-base text-off-black field-sizing-content transition-colors duration-300 ease-brand placeholder:text-coral focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral min-h-32"
                 />
                 <Button
                   className={`mt-4`}
@@ -90,12 +90,10 @@ export function Contact() {
         <FadeUp
           delay={0.2}
           amount={0.5}
-          className=" flex items-center justify-between border-t border-coral pt-8  mt-16"
+          className=" flex items-center justify-between border-t border-coral pt-8  mt-16 text-heading text-sm tracking-tight text-coral"
         >
-          <span className="text-heading text-sm tracking-tight text-coral">
-            Nomad Chef
-          </span>
-          <span className="font-geist text-xs text-coral">2025</span>
+          <span>Nomad Chef</span>
+          <span>2025</span>
         </FadeUp>
       </SectionContent>
     </Section>

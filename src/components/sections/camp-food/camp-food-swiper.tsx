@@ -85,7 +85,6 @@ const SLIDE_TRANSITION = TRANSITION.slow;
 
 export function CampFoodSwiper() {
   const [activeIndex, setActiveIndex] = useState(0);
-
   const handleNext = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % SLIDES.length);
   }, []);
@@ -180,7 +179,7 @@ export function CampFoodSwiper() {
             />
 
             <div className="relative mt-6 h-24 md:h-20">
-              <AnimatePresence mode="wait">
+              <AnimatePresence>
                 <m.p
                   key={activeIndex}
                   initial={{ opacity: 0, y: 20 }}
@@ -208,14 +207,14 @@ export function CampFoodSwiper() {
 
           {/* Ebook cover — single large image, right side */}
           <div className="relative h-[65vh] md:col-span-7 md:col-start-6">
-            <AnimatePresence mode="wait">
+            <AnimatePresence>
               <m.div
                 key={activeIndex}
                 initial={{ opacity: 0, scale: 0.95, rotate: -2 }}
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 exit={{ opacity: 0, scale: 0.95, rotate: 2 }}
                 transition={SLIDE_TRANSITION}
-                className="flex h-full items-center justify-center"
+                className="absolute inset-0 flex h-full items-center justify-center"
                 style={{ willChange: "transform, opacity" }}
               >
                 <Image

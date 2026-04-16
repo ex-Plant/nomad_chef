@@ -21,6 +21,8 @@ const buttonVariants = cva(
         "yellow-solid":
           "border-yellow bg-yellow text-off-black hover:shadow-[0_4px_20px_rgba(229,245,93,0.35)]",
         pink: "border-pink text-pink hover:bg-pink hover:text-white",
+        "pink-solid":
+          "border-pink bg-pink text-white hover:shadow-[0_4px_20px_rgba(243,177,227,0.35)]",
         white: "border-white/60 text-white hover:bg-white hover:text-off-black",
         dark: "border-off-black/20 text-off-black hover:bg-off-black hover:text-white",
       },

@@ -4,16 +4,12 @@ import { m } from "framer-motion";
 import type { ComponentPropsWithoutRef } from "react";
 import { EASE } from "@/config/animation-constants";
 
-const FADE_UP = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0 },
-} as const;
-
 type FadeUpPropsT = {
   readonly as?: "div" | "h1" | "h2" | "p" | "section";
   readonly trigger?: "inView" | "mount";
   readonly duration?: number;
   readonly delay?: number;
+  readonly y?: number;
   readonly amount?: number;
   readonly margin?: string;
   readonly className?: string;
@@ -25,6 +21,7 @@ export function FadeUp({
   trigger = "inView",
   duration = 0.8,
   delay,
+  y: yOffset = 24,
   amount = 0.3,
   margin,
   className,
@@ -32,6 +29,9 @@ export function FadeUp({
   ...rest
 }: FadeUpPropsT) {
   const Component = m[as];
+
+  const hidden = { opacity: 0, y: yOffset };
+  const visible = { opacity: 1, y: 0 };
 
   const transition = {
     duration,
@@ -46,8 +46,8 @@ export function FadeUp({
 
   const motionProps =
     trigger === "mount"
-      ? { initial: FADE_UP.hidden, animate: FADE_UP.visible }
-      : { variants: FADE_UP, initial: "hidden", whileInView: "visible" as const, viewport };
+      ? { initial: hidden, animate: visible }
+      : { initial: hidden, whileInView: visible, viewport };
 
   return (
     <Component

@@ -6,18 +6,23 @@
 
 :root {
   /* Primary palette */
-  --coral: #FF6316;
-  --electric-blue: #193EF4;
-  --warm-white: #F5EEE5;
+  --coral: #ff6316;
+  --electric-blue: #193ef4;
+  --warm-white: #f5eee5;
 
   /* Secondary palette */
-  --orange: #FF6316;
-  --pink: #FFADE6;
-  --yellow: #E1F532;
+  --orange: #ff6316;
+  --pink: #ffade6;
+  /* hot pink */
+  --pink: #ff69b4;
+  /* magenta pink  */
+  /* --pink: #ff2d9b; */
+  /* --pink: #FF1493;    */
+  --yellow: #e1f532;
 
   /* Text */
   --off-black: #211509;
-  --white: #FFFFFF;
+  --white: #ffffff;
 }
 
 @theme inline {
@@ -344,7 +349,7 @@ body {
 
 /* Grain overlay for design 3 */
 .d3-grain-overlay::after {
-  content: '';
+  content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
@@ -390,10 +395,18 @@ body {
 }
 
 /* Image rotation classes for collage effect */
-.d3-rotate-cw-1 { transform: rotate(1.2deg); }
-.d3-rotate-ccw-1 { transform: rotate(-1.5deg); }
-.d3-rotate-cw-2 { transform: rotate(2.3deg); }
-.d3-rotate-ccw-2 { transform: rotate(-2deg); }
+.d3-rotate-cw-1 {
+  transform: rotate(1.2deg);
+}
+.d3-rotate-ccw-1 {
+  transform: rotate(-1.5deg);
+}
+.d3-rotate-cw-2 {
+  transform: rotate(2.3deg);
+}
+.d3-rotate-ccw-2 {
+  transform: rotate(-2deg);
+}
 
 /* ============================================================
    DESIGN 4 — Warm Tactile Analog
@@ -459,8 +472,7 @@ body {
 /* Paper layer with subtle shadow */
 .d4-paper-layer {
   position: relative;
-  box-shadow:
-    0 1px 3px rgba(26, 22, 20, 0.06),
+  box-shadow: 0 1px 3px rgba(26, 22, 20, 0.06),
     0 4px 12px rgba(26, 22, 20, 0.04);
 }
 
@@ -481,13 +493,27 @@ body {
 /* Organic blob clip paths */
 .d4-blob-1 {
   clip-path: polygon(
-    5% 0%, 95% 2%, 100% 8%, 98% 92%, 93% 100%, 7% 98%, 0% 93%, 2% 5%
+    5% 0%,
+    95% 2%,
+    100% 8%,
+    98% 92%,
+    93% 100%,
+    7% 98%,
+    0% 93%,
+    2% 5%
   );
 }
 
 .d4-blob-2 {
   clip-path: polygon(
-    8% 2%, 92% 0%, 100% 6%, 97% 95%, 90% 100%, 3% 97%, 0% 90%, 4% 8%
+    8% 2%,
+    92% 0%,
+    100% 6%,
+    97% 95%,
+    90% 100%,
+    3% 97%,
+    0% 90%,
+    4% 8%
   );
 }
 

@@ -18,6 +18,8 @@ type ScatterTextPropsT = {
   readonly className?: string;
   /** External trigger element — if omitted, the component triggers itself */
   readonly triggerRef?: RefObject<HTMLElement | null>;
+  /** Play immediately on mount instead of on scroll enter */
+  readonly triggerOnMount?: boolean;
 };
 
 /**
@@ -40,6 +42,7 @@ export function ScatterText({
   as: Tag = "h2",
   className,
   triggerRef,
+  triggerOnMount = false,
 }: ScatterTextPropsT) {
   const containerRef = useRef<HTMLElement>(null);
 
@@ -48,47 +51,58 @@ export function ScatterText({
       const container = containerRef.current;
       if (!container) return;
 
-      const lineEls = container.querySelectorAll<HTMLElement>("[data-scatter-line]");
+      const triggerEl = triggerRef?.current ?? container;
+      const lineEls = container.querySelectorAll<HTMLElement>(
+        "[data-scatter-line]"
+      );
+
+      // Build a paused timeline — ScrollTrigger plays/resets it
+      const tl = gsap.timeline({ paused: true });
 
       lineEls.forEach((lineEl, lineIndex) => {
-        const lineStart = 0.05 + lineIndex * 0.05;
-        const letterSpans = lineEl.querySelectorAll<HTMLElement>("[data-scatter-letter]");
+        const lineDelay = lineIndex * 0.2;
+        const letterSpans = lineEl.querySelectorAll<HTMLElement>(
+          "[data-scatter-letter]"
+        );
         const totalChars = letterSpans.length;
         const mid = (totalChars - 1) / 2;
-
-        // Create a timeline scrubbed by scroll for this line
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: triggerRef?.current ?? container,
-            start: "start end",
-            end: "end start",
-            scrub: 1,
-          },
-        });
 
         // Line-level x slide
         tl.fromTo(
           lineEl,
           { x: 120 },
-          { x: 0, duration: 0.15, ease: "none" },
-          lineStart,
+          { x: 0, duration: 1.4, ease: "back.out(1.4)" },
+          lineDelay
         );
 
-        // Per-letter scatter → assemble
+        // Per-letter scatter → assemble with stagger
         letterSpans.forEach((span, i) => {
           const scatter = getLetterScatter(i, mid);
-          const letterStart = lineStart + i * 0.004;
 
           tl.fromTo(
             span,
             { x: scatter.x, y: scatter.y, rotation: scatter.rotate },
-            { x: 0, y: 0, rotation: 0, duration: 0.15, ease: "none" },
-            letterStart,
+            { x: 0, y: 0, rotation: 0, duration: 1.4, ease: "back.out(1.7)" },
+            lineDelay + i * 0.05
           );
         });
       });
+
+      // Set initial scattered state
+      tl.progress(0);
+
+      if (triggerOnMount) {
+        tl.play();
+      } else {
+        ScrollTrigger.create({
+          trigger: triggerEl,
+          start: "top 80%",
+          once: true,
+          onEnter: () => tl.restart(),
+        });
+      }
     },
-    { scope: containerRef, dependencies: [lines] },
+    { scope: containerRef, dependencies: [] }
   );
 
   return (

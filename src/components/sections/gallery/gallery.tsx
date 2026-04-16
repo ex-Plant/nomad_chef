@@ -18,16 +18,10 @@ import cs7 from "@/moodboard/gallery/client-selected-7.webp";
 import cs8 from "@/moodboard/gallery/client-selected-8.webp";
 import cs9 from "@/moodboard/gallery/client-selected-9.webp";
 import cs10 from "@/moodboard/gallery/client-selected-10.webp";
-import cs11 from "@/moodboard/gallery/client-selected-11.webp";
-import ig4 from "@/moodboard/gallery/secondary-reference-instagram-4.webp";
-import ig5 from "@/moodboard/gallery/secondary-reference-instagram-5.webp";
 import ig12 from "@/moodboard/gallery/secondary-reference-instagram-12.webp";
 import ig17 from "@/moodboard/gallery/secondary-reference-instagram-17.webp";
-import ig22 from "@/moodboard/gallery/secondary-reference-instagram-22.webp";
 import ig25 from "@/moodboard/gallery/secondary-reference-instagram-25.webp";
-import ig32 from "@/moodboard/gallery/secondary-reference-instagram-32.webp";
 import ig33 from "@/moodboard/gallery/secondary-reference-instagram-33.webp";
-import ig34 from "@/moodboard/gallery/secondary-reference-instagram-34.webp";
 import ig35 from "@/moodboard/gallery/secondary-reference-instagram-35.webp";
 import ig36 from "@/moodboard/gallery/secondary-reference-instagram-36.webp";
 import ig37 from "@/moodboard/gallery/secondary-reference-instagram-37.webp";
@@ -65,7 +59,6 @@ const GALLERY_IMAGES: readonly GalleryItemT[] = [
   { src: ig37, alt: "Jedzenie z Instagrama" },
   // { src: cs11, alt: "Close-up plating" },
   { src: ig38, alt: "Kolorowy talerz" },
-  { src: ig4, alt: "Fotografia kulinarna" },
   { src: ig39, alt: "Jedzenie z Instagrama" },
 ] as const;
 
