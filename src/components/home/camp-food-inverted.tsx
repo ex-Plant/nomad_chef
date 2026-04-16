@@ -4,11 +4,12 @@ import { useRef } from "react";
 import { useScroll, useTransform } from "framer-motion";
 import { Image } from "@/components/ui/image";
 import { EyebrowTag } from "@/components/home/eyebrow-tag";
-import { LinkButton } from "@/components/home/button";
-import { RotatingStarburst } from "@/components/home/rotating-starburst";
+import { Button } from "@/components/home/button";
+import { Starburst } from "@/components/home/starburst";
 import { FadeUp } from "@/components/home/fade-up";
 import { SectionContent } from "@/components/home/section-content";
 import { SECTION_IDS } from "@/components/home/section-ids";
+import { Section } from "@/components/home/section";
 import ebookImg1 from "@/moodboard/ebook/ebook_1.webp";
 import ebookImg2 from "@/moodboard/ebook/ebook_2.webp";
 
@@ -23,15 +24,12 @@ export function CampFoodInverted() {
   const book2Y = useTransform(scrollYProgress, [0, 1], [40, -40]);
 
   return (
-    <section
-      ref={sectionRef}
-      id={SECTION_IDS.campFood}
-      className="relative overflow-hidden bg-coral py-24 md:py-32 lg:py-40"
-    >
+    <Section ref={sectionRef} id={SECTION_IDS.campFood} className="bg-coral">
       {/* Decorative starburst — bottom-left, rotates on scroll */}
-      <RotatingStarburst
+      <Starburst
         color="blue"
         size="sm"
+        rotate
         className="absolute -left-8 bottom-12 z-[0] md:-left-6 md:bottom-16"
       />
 
@@ -61,9 +59,9 @@ export function CampFoodInverted() {
             </FadeUp>
 
             <FadeUp delay={0.4} className="mt-12">
-              <LinkButton href="#" variant="blue">
-                Kup ebook
-              </LinkButton>
+              <Button asChild variant="blue">
+                <a href="#">Kup ebook</a>
+              </Button>
             </FadeUp>
           </div>
 
@@ -91,6 +89,6 @@ export function CampFoodInverted() {
           </div>
         </div>
       </SectionContent>
-    </section>
+    </Section>
   );
 }

@@ -3,21 +3,20 @@
 import { Mail } from "lucide-react";
 import { InstagramIcon } from "@/components/ui/icons";
 import { EyebrowTag } from "@/components/home/eyebrow-tag";
-import { LinkButton } from "@/components/home/button";
+import { Button } from "@/components/home/button";
 import { ContactLink } from "@/components/home/contact-link";
 import { SECTION_IDS } from "@/components/home/section-ids";
-import { RotatingStarburst } from "@/components/home/rotating-starburst";
+import { Section } from "@/components/home/section";
+import { Starburst } from "@/components/home/starburst";
 import { FadeUp } from "@/components/home/fade-up";
 import { SectionContent } from "@/components/home/section-content";
 
 export function Contact() {
   return (
-    <section
-      id={SECTION_IDS.contact}
-      className="relative overflow-hidden bg-yellow py-24 md:py-32 lg:py-40"
-    >
-      <RotatingStarburst
+    <Section id={SECTION_IDS.contact} className="bg-yellow">
+      <Starburst
         color="pink"
+        rotate
         className="absolute -right-8 bottom-12 z-0 w-36 md:-right-6 md:bottom-16 md:w-44 lg:w-52"
       />
 
@@ -84,12 +83,9 @@ export function Contact() {
                   rows={4}
                   className="w-full resize-none rounded-2xl border border-coral bg-yellow px-5 py-4 font-serif text-base text-off-black transition-colors duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-coral focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral"
                 />
-                <LinkButton
-                  href="mailto:hello@nomadchef.pl"
-                  variant="coral-solid"
-                >
-                  Wyślij wiadomość
-                </LinkButton>
+                <Button asChild variant="coral-solid" withArrow>
+                  <a href="mailto:hello@nomadchef.pl">Wyślij wiadomość</a>
+                </Button>
               </form>
             </FadeUp>
           </div>
@@ -107,6 +103,6 @@ export function Contact() {
           <span className="font-geist text-xs text-coral">2025</span>
         </FadeUp>
       </SectionContent>
-    </section>
+    </Section>
   );
 }

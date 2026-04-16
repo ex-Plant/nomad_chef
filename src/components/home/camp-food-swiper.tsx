@@ -1,16 +1,20 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Image } from "@/components/ui/image";
 import { SECTION_IDS } from "@/components/home/section-ids";
+import { Section } from "@/components/home/section";
 import { EyebrowTag } from "@/components/home/eyebrow-tag";
 import { FadeUp } from "@/components/home/fade-up";
-import { LinkButton } from "@/components/home/button";
-import { RotatingStarburst } from "@/components/home/rotating-starburst";
-import { ProgressDots } from "@/components/home/progress-dots";
-import { ArrowButton } from "@/components/home/arrow-button";
-import { TRANSITION, DURATION, AUTOPLAY_INTERVAL } from "@/components/home/animation-constants";
+import { Button } from "@/components/home/button";
+import { Starburst } from "@/components/home/starburst";
+import { SwiperControls } from "@/components/home/swiper-controls";
+import {
+  TRANSITION,
+  DURATION,
+  AUTOPLAY_INTERVAL,
+} from "@/components/home/animation-constants";
 
 import type { StaticImageData } from "next/image";
 
@@ -27,9 +31,14 @@ type SlideT = {
   readonly headlineColor: string;
   readonly subtitleColor: string;
   readonly bodyColor: string;
-  readonly eyebrowColor: "coral" | "white" | "yellow";
-  readonly eyebrowLineColor: "coral" | "white" | "yellow";
-  readonly buttonVariant: "coral-solid" | "yellow-solid";
+  readonly eyebrowColor: "coral" | "blue" | "white" | "yellow";
+  readonly eyebrowLineColor: "coral" | "blue" | "white" | "yellow";
+  readonly buttonVariant:
+    | "coral-solid"
+    | "yellow-solid"
+    | "blue-solid"
+    | "coral"
+    | "blue";
   readonly starburstColor: "coral" | "blue" | "yellow";
   readonly description: string;
 };
@@ -43,9 +52,9 @@ const SLIDES: readonly SlideT[] = [
     headlineColor: "text-electric-blue",
     subtitleColor: "text-white/90",
     bodyColor: "text-muted-on-dark",
-    eyebrowColor: "white",
-    eyebrowLineColor: "white",
-    buttonVariant: "yellow-solid",
+    eyebrowColor: "blue",
+    eyebrowLineColor: "blue",
+    buttonVariant: "blue",
     starburstColor: "blue",
     description:
       "Jedzenie, które zabierasz ze sobą — w ruch, w naturę, w życie.",
@@ -95,11 +104,12 @@ export function CampFoodSwiper() {
   }, []);
 
   useEffect(() => {
-    resetTimer();
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [resetTimer]);
+    const id = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % SLIDES.length);
+    }, AUTOPLAY_INTERVAL);
+    timerRef.current = id;
+    return () => clearInterval(id);
+  }, []);
 
   const handleNextWithReset = useCallback(() => {
     handleNext();
@@ -114,10 +124,10 @@ export function CampFoodSwiper() {
   const slide = SLIDES[activeIndex];
 
   return (
-    <section id={SECTION_IDS.campFood} className="relative overflow-hidden">
+    <Section id={SECTION_IDS.campFood} variant="viewport">
       {/* Animated background color — crossfade, no gap */}
       <AnimatePresence>
-        <motion.div
+        <m.div
           key={activeIndex}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -128,18 +138,25 @@ export function CampFoodSwiper() {
         />
       </AnimatePresence>
 
-      {/* Decorative starburst */}
-      <RotatingStarburst
+      {/* Decorative starburst — bottom-left */}
+      <Starburst
         color={slide.starburstColor}
         size="sm"
-        className="absolute -left-8 bottom-12 z-[1] md:-left-6 md:bottom-16"
+        rotate
+        className="absolute -left-16 bottom-12  md:-left-6 md:bottom-16"
       />
 
-      <div className="relative z-[2] px-6 py-16 md:px-12 md:py-20 lg:px-20 lg:py-24">
+      {/* Decorative starburst — bottom-right */}
+      <Starburst
+        color={slide.starburstColor}
+        size="sm"
+        className="absolute  z-3 md:-bottom-20 -right-16"
+      />
+
+      <div className="relative z-1 px-6 py-16 md:px-12 md:py-20 lg:px-20 lg:py-24">
         {/* Eyebrow */}
         <EyebrowTag
           color={slide.eyebrowColor}
-          withLine
           lineColor={slide.eyebrowLineColor}
           duration={DURATION.slow}
         >
@@ -153,9 +170,7 @@ export function CampFoodSwiper() {
               Mój pierwszy ebook.
             </p>
 
-            <h2
-              className={`mt-4 text-heading-md ${slide.headlineColor}`}
-            >
+            <h2 className={`mt-4 text-heading-lg ${slide.headlineColor}`}>
               Camp
               <br />
               Food
@@ -163,7 +178,7 @@ export function CampFoodSwiper() {
 
             <div className="relative mt-6 h-24 md:h-20">
               <AnimatePresence mode="wait">
-                <motion.p
+                <m.p
                   key={activeIndex}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -172,21 +187,26 @@ export function CampFoodSwiper() {
                   className={`absolute inset-0 max-w-[50ch] text-body-lg ${slide.subtitleColor}`}
                 >
                   {slide.description}
-                </motion.p>
+                </m.p>
               </AnimatePresence>
             </div>
 
             <div className="mt-12">
-              <LinkButton href="#" variant={slide.buttonVariant}>
-                Kup ebook
-              </LinkButton>
+              <Button
+                asChild
+                variant={slide.buttonVariant}
+                withArrow
+                size="compact"
+              >
+                <a href="#">Kup ebook</a>
+              </Button>
             </div>
           </div>
 
           {/* Ebook cover — single large image, right side */}
-          <div className="relative h-[50vh] md:col-span-6 md:col-start-7">
+          <div className="relative h-[65vh] md:col-span-7 md:col-start-6">
             <AnimatePresence mode="wait">
-              <motion.div
+              <m.div
                 key={activeIndex}
                 initial={{ opacity: 0, scale: 0.95, rotate: -2 }}
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
@@ -202,27 +222,23 @@ export function CampFoodSwiper() {
                   sizes="(max-width: 768px) 80vw, 50vw"
                   priority
                 />
-              </motion.div>
+              </m.div>
             </AnimatePresence>
           </div>
         </div>
 
-        {/* Controls */}
-        <div className="mt-16 flex items-center justify-between">
-          <ProgressDots
-            total={SLIDES.length}
-            active={activeIndex}
-            onSelect={(i) => {
-              setActiveIndex(i);
-              resetTimer();
-            }}
-          />
-          <div className="flex gap-3">
-            <ArrowButton direction="prev" onClick={handlePrevWithReset} color="yellow" />
-            <ArrowButton direction="next" onClick={handleNextWithReset} color="yellow" />
-          </div>
-        </div>
+        <SwiperControls
+          total={SLIDES.length}
+          active={activeIndex}
+          onPrev={handlePrevWithReset}
+          onNext={handleNextWithReset}
+          onSelect={(i) => {
+            setActiveIndex(i);
+            resetTimer();
+          }}
+          className="mt-16"
+        />
       </div>
-    </section>
+    </Section>
   );
 }

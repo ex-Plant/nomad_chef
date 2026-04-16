@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Image } from "@/components/ui/image";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { EyebrowTag } from "@/components/home/eyebrow-tag";
 import { FadeUp } from "@/components/home/fade-up";
-import { LinkButton } from "@/components/home/button";
+import { Button } from "@/components/home/button";
 import { ProgressDots } from "@/components/home/progress-dots";
-import { ArrowButton } from "@/components/home/arrow-button";
 import { TRANSITION, DURATION, AUTOPLAY_INTERVAL } from "@/components/home/animation-constants";
 
 import type { StaticImageData } from "next/image";
@@ -66,11 +66,12 @@ export function CampFoodSplit() {
   }, []);
 
   useEffect(() => {
-    resetTimer();
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [resetTimer]);
+    const id = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % SLIDES.length);
+    }, AUTOPLAY_INTERVAL);
+    timerRef.current = id;
+    return () => clearInterval(id);
+  }, []);
 
   const handleNextWithReset = useCallback(() => {
     handleNext();
@@ -113,7 +114,7 @@ export function CampFoodSplit() {
 
             <div className="relative mt-6 h-24 md:h-20">
               <AnimatePresence mode="wait">
-                <motion.p
+                <m.p
                   key={activeIndex}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -122,21 +123,21 @@ export function CampFoodSplit() {
                   className="absolute inset-0 max-w-[50ch] text-body-lg text-white/90"
                 >
                   {slide.description}
-                </motion.p>
+                </m.p>
               </AnimatePresence>
             </div>
 
             <div className="mt-12">
-              <LinkButton href="#" variant="yellow-solid">
-                Kup ebook
-              </LinkButton>
+              <Button asChild variant="yellow-solid" withArrow>
+                <a href="#">Kup ebook</a>
+              </Button>
             </div>
           </div>
 
           {/* Ebook cover — right side (on blue) */}
           <div className="relative h-[50vh] md:col-span-6 md:col-start-7">
             <AnimatePresence mode="wait">
-              <motion.div
+              <m.div
                 key={activeIndex}
                 initial={{ opacity: 0, scale: 0.95, rotate: -2 }}
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
@@ -152,7 +153,7 @@ export function CampFoodSplit() {
                   sizes="(max-width: 768px) 80vw, 50vw"
                   priority
                 />
-              </motion.div>
+              </m.div>
             </AnimatePresence>
           </div>
         </div>
@@ -168,8 +169,12 @@ export function CampFoodSplit() {
             }}
           />
           <div className="flex gap-3">
-            <ArrowButton direction="prev" onClick={handlePrevWithReset} color="yellow" />
-            <ArrowButton direction="next" onClick={handleNextWithReset} color="yellow" />
+            <Button variant="yellow" size="icon" onClick={handlePrevWithReset} aria-label="Poprzedni">
+              <ArrowLeft size={20} strokeWidth={2.5} aria-hidden="true" />
+            </Button>
+            <Button variant="yellow" size="icon" onClick={handleNextWithReset} aria-label="Następny">
+              <ArrowRight size={20} strokeWidth={2.5} aria-hidden="true" />
+            </Button>
           </div>
         </div>
       </div>

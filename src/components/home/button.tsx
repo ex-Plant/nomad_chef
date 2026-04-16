@@ -1,160 +1,92 @@
-import { ArrowRight } from 'lucide-react';
+import { Slot, Slottable } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
+import { ArrowRight } from "lucide-react";
+import { cn } from "@/helpers/cn";
 
-const VARIANTS = {
-  coral: {
-    base: 'border-coral text-coral',
-    circle: 'bg-coral/10',
-    hover: 'hover:border-coral hover:bg-coral/5',
-  },
-  'coral-solid': {
-    base: 'border-coral bg-coral text-white',
-    circle: 'bg-white text-coral',
-    hover: 'hover:shadow-[0_4px_20px_rgba(255,99,22,0.35)]',
-  },
-  blue: {
-    base: 'border-electric-blue text-electric-blue',
-    circle: 'bg-electric-blue/10',
-    hover: 'hover:border-electric-blue hover:bg-electric-blue/5',
-  },
-  'blue-solid': {
-    base: 'border-electric-blue bg-electric-blue text-white',
-    circle: 'bg-white text-electric-blue',
-    hover: 'hover:shadow-[0_4px_20px_rgba(25,62,244,0.35)]',
-  },
-  yellow: {
-    base: 'border-yellow text-yellow',
-    circle: 'bg-yellow/10',
-    hover: 'hover:border-yellow hover:bg-yellow/5',
-  },
-  'yellow-solid': {
-    base: 'border-yellow bg-yellow text-off-black',
-    circle: 'bg-off-black/10',
-    hover: 'hover:shadow-[0_4px_20px_rgba(229,245,93,0.35)]',
-  },
-  pink: {
-    base: 'border-pink text-pink',
-    circle: 'bg-pink/10',
-    hover: 'hover:border-pink hover:bg-pink/5',
-  },
-  white: {
-    base: 'border-white/60 text-white',
-    circle: 'bg-white/10',
-    hover: 'hover:border-white hover:bg-white/5',
-  },
-  dark: {
-    base: 'border-off-black/20 text-off-black',
-    circle: 'bg-off-black/10',
-    hover: 'hover:border-off-black/40 hover:bg-off-black/[0.02]',
-  },
+/* ─── Variants ────────────────────────────────────────── */
+
+const buttonVariants = cva(
+  "group inline-flex cursor-pointer items-center justify-center border font-geist text-sm font-medium uppercase tracking-wide transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.97] active:translate-y-[1px] disabled:pointer-events-none disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        coral: "border-coral text-coral hover:bg-coral hover:text-white",
+        "coral-solid":
+          "border-coral bg-coral text-white hover:shadow-[0_4px_20px_rgba(255,99,22,0.35)]",
+        blue: "border-electric-blue text-electric-blue hover:bg-electric-blue hover:text-white",
+        "blue-solid":
+          "border-electric-blue bg-electric-blue text-white hover:shadow-[0_4px_20px_rgba(25,62,244,0.35)]",
+        yellow:
+          "border-yellow text-yellow hover:bg-yellow hover:text-off-black",
+        "yellow-solid":
+          "border-yellow bg-yellow text-off-black hover:shadow-[0_4px_20px_rgba(229,245,93,0.35)]",
+        pink: "border-pink text-pink hover:bg-pink hover:text-white",
+        white: "border-white/60 text-white hover:bg-white hover:text-off-black",
+        dark: "border-off-black/20 text-off-black hover:bg-off-black hover:text-white",
+      },
+      size: {
+        default: "rounded-full px-8 py-4 gap-3",
+        compact: "rounded-lg px-5 py-2.5 gap-2",
+        icon: "rounded-full p-0 h-14 w-14",
+        "icon-sm": "rounded-full p-0 h-10 w-10",
+      },
+    },
+    defaultVariants: {
+      variant: "white",
+      size: "default",
+    },
+  }
+);
+
+/* ─── Arrow circle ────────────────────────────────────── */
+
+const ARROW_SIZES = {
+  default: { circle: "h-7 w-7", icon: 14 },
+  compact: { circle: "h-5 w-5", icon: 12 },
 } as const;
 
-export type ButtonVariantT = keyof typeof VARIANTS;
+/* ─── Types ───────────────────────────────────────────── */
 
-const SHAPES = {
-  pill: {
-    wrapper: 'rounded-full px-8 py-4 gap-3',
-    circle: 'h-7 w-7',
-    icon: 14,
-  },
-  compact: {
-    wrapper: 'rounded-lg px-5 py-2.5 gap-2',
-    circle: 'h-5 w-5',
-    icon: 12,
-  },
-} as const;
+type ButtonPropsT = React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    readonly asChild?: boolean;
+    readonly withArrow?: boolean;
+  };
 
-export type ButtonShapeT = keyof typeof SHAPES;
+/* ─── Component ───────────────────────────────────────── */
 
-const BASE_CLASSES =
-  'group inline-flex items-center border font-geist text-sm font-medium uppercase tracking-wide transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.97] active:translate-y-[1px]';
-
-function ButtonContent({
+function Button({
+  className,
+  variant,
+  size,
+  asChild = false,
+  withArrow = false,
   children,
-  circleClasses,
-  shape = 'pill',
-}: {
-  readonly children: React.ReactNode;
-  readonly circleClasses: string;
-  readonly shape?: ButtonShapeT;
-}) {
-  const s = SHAPES[shape];
-
-  return (
-    <>
-      {children}
-      <span
-        className={`flex ${s.circle} items-center justify-center rounded-full transition-transform duration-300 group-hover:translate-x-0.5 ${circleClasses}`}
-      >
-        <ArrowRight size={s.icon} strokeWidth={2.5} aria-hidden="true" />
-      </span>
-    </>
-  );
-}
-
-type ButtonPropsT = {
-  readonly children: React.ReactNode;
-  readonly variant?: ButtonVariantT;
-  readonly shape?: ButtonShapeT;
-  readonly className?: string;
-  readonly onClick?: () => void;
-  readonly type?: 'button' | 'submit' | 'reset';
-  readonly disabled?: boolean;
-};
-
-export function Button({
-  children,
-  variant = 'white',
-  shape = 'pill',
-  className = '',
-  onClick,
-  type = 'button',
-  disabled,
+  ...props
 }: ButtonPropsT) {
-  const v = VARIANTS[variant];
-  const s = SHAPES[shape];
+  const Comp = asChild ? Slot : "button";
+  const arrowSize = size === "compact" ? ARROW_SIZES.compact : ARROW_SIZES.default;
 
   return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      className={`${BASE_CLASSES} ${s.wrapper} ${v.base} ${v.hover} ${className}`}
+    <Comp
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
     >
-      <ButtonContent circleClasses={v.circle} shape={shape}>{children}</ButtonContent>
-    </button>
+      <Slottable>{children}</Slottable>
+      {withArrow && (
+        <span
+          className={cn(
+            "flex items-center justify-center rounded-full transition-all duration-500",
+            arrowSize.circle,
+            "bg-current/10",
+          )}
+        >
+          <ArrowRight size={arrowSize.icon} strokeWidth={2.5} aria-hidden="true" />
+        </span>
+      )}
+    </Comp>
   );
 }
 
-type LinkButtonPropsT = {
-  readonly children: React.ReactNode;
-  readonly href: string;
-  readonly variant?: ButtonVariantT;
-  readonly shape?: ButtonShapeT;
-  readonly className?: string;
-  readonly target?: string;
-  readonly rel?: string;
-};
-
-export function LinkButton({
-  children,
-  href,
-  variant = 'white',
-  shape = 'pill',
-  className = '',
-  target,
-  rel,
-}: LinkButtonPropsT) {
-  const v = VARIANTS[variant];
-  const s = SHAPES[shape];
-
-  return (
-    <a
-      href={href}
-      target={target}
-      rel={rel}
-      className={`${BASE_CLASSES} ${s.wrapper} ${v.base} ${v.hover} ${className}`}
-    >
-      <ButtonContent circleClasses={v.circle} shape={shape}>{children}</ButtonContent>
-    </a>
-  );
-}
+export { Button, buttonVariants };
+export type { ButtonPropsT };

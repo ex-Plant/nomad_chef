@@ -1,15 +1,19 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Image } from "@/components/ui/image";
 import { SECTION_IDS } from "@/components/home/section-ids";
+import { Section } from "@/components/home/section";
 import { EyebrowTag } from "@/components/home/eyebrow-tag";
 import { FadeUp } from "@/components/home/fade-up";
-import { RotatingStarburst } from "@/components/home/rotating-starburst";
-import { ArrowButton } from "@/components/home/arrow-button";
-import { ProgressDots } from "@/components/home/progress-dots";
-import { TRANSITION, AUTOPLAY_INTERVAL } from "@/components/home/animation-constants";
+import { Starburst } from "@/components/home/starburst";
+import { SwiperControls } from "@/components/home/swiper-controls";
+import { SectionContent } from "@/components/home/section-content";
+import {
+  TRANSITION,
+  AUTOPLAY_INTERVAL,
+} from "@/components/home/animation-constants";
 import { SLIDES_EDITORIAL } from "@/components/home/services-slider-data";
 
 /* ─── Animation presets ─── */
@@ -46,30 +50,30 @@ export function ServicesSlider() {
   }, []);
 
   useEffect(() => {
+    const id = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % SLIDES_EDITORIAL.length);
+    }, AUTOPLAY_INTERVAL);
+    timerRef.current = id;
+    return () => clearInterval(id);
+  }, []);
+
+  const handleNextWithReset = useCallback(() => {
+    handleNext();
     resetTimer();
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [resetTimer]);
+  }, [handleNext, resetTimer]);
 
-  // do not remove
-  // const handleNextWithReset = useCallback(() => {
-  //   handleNext();
-  //   resetTimer();
-  // }, [handleNext, resetTimer]);
-
-  // const handlePrevWithReset = useCallback(() => {
-  //   handlePrev();
-  //   resetTimer();
-  // }, [handlePrev, resetTimer]);
+  const handlePrevWithReset = useCallback(() => {
+    handlePrev();
+    resetTimer();
+  }, [handlePrev, resetTimer]);
 
   const active = SLIDES_EDITORIAL[activeIndex];
 
   return (
-    <section id={SECTION_IDS.services} className="relative min-h-dvh overflow-x-clip">
+    <Section id={SECTION_IDS.services} variant="viewport">
       {/* All images stacked — crossfade via opacity */}
       {SLIDES_EDITORIAL.map((slide, i) => (
-        <motion.div
+        <m.div
           key={slide.title}
           initial={false}
           animate={{ opacity: i === activeIndex ? 1 : 0 }}
@@ -84,22 +88,23 @@ export function ServicesSlider() {
             sizes="100vw"
             priority
           />
-        </motion.div>
+        </m.div>
       ))}
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-off-black/10" />
       <div className="absolute inset-0 bg-lienar-to-t from-off-black/60 via-transparent to-transparent" />
 
-      {/* Decorative starburst — top-right */}
-      <RotatingStarburst
+      {/* Decorative starburst — bottom-right */}
+      <Starburst
         color="yellow"
         size="md"
-        className="absolute -right-10 -top-20 z-2 md:-right-12 md:-top-28 lg:-top-32"
+        rotate
+        className="absolute -right-10 -bottom-28 z-2 md:-right-12 md:-bottom-36 lg:-bottom-50 "
       />
 
       {/* Content layer */}
-      <div className="relative z-1 flex min-h-dvh flex-col justify-between px-6 pb-10 pt-20 md:px-12 md:pb-14 md:pt-28 lg:px-20 lg:pb-16 lg:pt-32">
+      <SectionContent className="z-3 flex min-h-dvh flex-col justify-between pb-10 pt-20 md:pb-14 md:pt-28 lg:pb-16 lg:pt-32 relative">
         {/* Top: eyebrow + heading */}
         <div>
           <EyebrowTag color="yellow" withLine lineColor="yellow">
@@ -122,7 +127,7 @@ export function ServicesSlider() {
         {/* Bottom: slide text + controls */}
         <div>
           <AnimatePresence mode="wait">
-            <motion.div
+            <m.div
               key={activeIndex}
               variants={TEXT_VARIANTS}
               initial="enter"
@@ -142,30 +147,22 @@ export function ServicesSlider() {
               <p className="mt-4 max-w-[42ch] font-sans text-sm leading-relaxed text-muted-on-dark md:text-base">
                 {active.description}
               </p>
-            </motion.div>
+            </m.div>
           </AnimatePresence>
 
-          {/* Controls */}
-          <div className="mt-8 flex items-center justify-between">
-            <ProgressDots
-              total={SLIDES_EDITORIAL.length}
-              active={activeIndex}
-            />
-            {/* <div className="flex gap-3">
-              <ArrowButton
-                direction="prev"
-                onClick={handlePrevWithReset}
-                color="yellow"
-              />
-              <ArrowButton
-                direction="next"
-                onClick={handleNextWithReset}
-                color="yellow"
-              />
-            </div> */}
-          </div>
+          <SwiperControls
+            total={SLIDES_EDITORIAL.length}
+            active={activeIndex}
+            onPrev={handlePrevWithReset}
+            onNext={handleNextWithReset}
+            onSelect={(i) => {
+              setActiveIndex(i);
+              resetTimer();
+            }}
+            className="mt-8 z-10 relative"
+          />
         </div>
-      </div>
-    </section>
+      </SectionContent>
+    </Section>
   );
 }
