@@ -1,4 +1,4 @@
-import { FadeUp } from "@/components/home/fade-up";
+import { FadeUp } from "@/components/shared/fade-up";
 
 type ColorT = "coral" | "blue" | "yellow" | "pink" | "dark" | "white";
 

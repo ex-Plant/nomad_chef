@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { NAV_ITEMS } from "@/components/home/section-ids";
+import { NAV_ITEMS } from "@/config/section-ids";
 
 type NavDesktopPropsT = {
   activeSection: string;

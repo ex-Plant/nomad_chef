@@ -1,9 +1,9 @@
 "use client";
 
 import { m, AnimatePresence } from "framer-motion";
-import { EASE } from "@/components/home/animation-constants";
-import { NAV_ITEMS } from "@/components/home/section-ids";
-import { FadeUp } from "@/components/home/fade-up";
+import { EASE } from "@/config/animation-constants";
+import { NAV_ITEMS } from "@/config/section-ids";
+import { FadeUp } from "@/components/shared/fade-up";
 
 type NavMobilePropsT = {
   isOpen: boolean;

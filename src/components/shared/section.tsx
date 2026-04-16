@@ -1,4 +1,4 @@
-import type { SectionIdT } from "@/components/home/section-ids";
+import type { SectionIdT } from "@/config/section-ids";
 import { cn } from "@/helpers/cn";
 
 type SectionPropsT = {

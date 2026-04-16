@@ -2,15 +2,15 @@
 
 import { useRef } from "react";
 import { useScroll, useTransform } from "framer-motion";
-import { ScatterText } from "@/components/home/scatter-text";
+import { ScatterText } from "@/components/shared/scatter-text";
 import { Image } from "@/components/ui/image";
-import { EyebrowTag } from "@/components/home/eyebrow-tag";
-import { Button } from "@/components/home/button";
-import { Starburst } from "@/components/home/starburst";
-import { FadeUp } from "@/components/home/fade-up";
-import { SectionContent } from "@/components/home/section-content";
-import { SECTION_IDS } from "@/components/home/section-ids";
-import { Section } from "@/components/home/section";
+import { EyebrowTag } from "@/components/shared/eyebrow-tag";
+import { Button } from "@/components/shared/button";
+import { Starburst } from "@/components/shared/starburst";
+import { FadeUp } from "@/components/shared/fade-up";
+import { SectionContent } from "@/components/shared/section-content";
+import { SECTION_IDS } from "@/config/section-ids";
+import { Section } from "@/components/shared/section";
 import ebookImg1 from "@/moodboard/ebook/ebook_1.webp";
 import ebookImg2 from "@/moodboard/ebook/ebook_2.webp";
 

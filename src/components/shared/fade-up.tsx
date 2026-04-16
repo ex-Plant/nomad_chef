@@ -2,7 +2,7 @@
 
 import { m } from "framer-motion";
 import type { ComponentPropsWithoutRef } from "react";
-import { EASE } from "@/components/home/animation-constants";
+import { EASE } from "@/config/animation-constants";
 
 const FADE_UP = {
   hidden: { opacity: 0, y: 24 },

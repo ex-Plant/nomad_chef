@@ -2,20 +2,14 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { ScatterText } from "@/components/home/scatter-text";
 import { Image } from "@/components/ui/image";
-import { SECTION_IDS } from "@/components/home/section-ids";
-import { Section } from "@/components/home/section";
-import { EyebrowTag } from "@/components/home/eyebrow-tag";
-import { Button } from "@/components/home/button";
-import { Starburst } from "@/components/home/starburst";
-import { SwiperControls } from "@/components/home/swiper-controls";
-import { SectionContent } from "@/components/home/section-content";
-import {
-  TRANSITION,
-  DURATION,
-  AUTOPLAY_INTERVAL,
-} from "@/components/home/animation-constants";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { EyebrowTag } from "@/components/shared/eyebrow-tag";
+import { FadeUp } from "@/components/shared/fade-up";
+import { Button } from "@/components/shared/button";
+import { ProgressDots } from "@/components/shared/progress-dots";
+import { SectionContent } from "@/components/shared/section-content";
+import { TRANSITION, DURATION, AUTOPLAY_INTERVAL } from "@/config/animation-constants";
 
 import type { StaticImageData } from "next/image";
 
@@ -27,20 +21,6 @@ import ebookBack from "@/moodboard/ebook/ebook_2.webp";
 type SlideT = {
   readonly image: StaticImageData;
   readonly alt: string;
-  readonly bg: string;
-  readonly textColor: string;
-  readonly headlineColor: string;
-  readonly subtitleColor: string;
-  readonly bodyColor: string;
-  readonly eyebrowColor: "coral" | "blue" | "white" | "yellow";
-  readonly eyebrowLineColor: "coral" | "blue" | "white" | "yellow";
-  readonly buttonVariant:
-    | "coral-solid"
-    | "yellow-solid"
-    | "blue-solid"
-    | "coral"
-    | "blue";
-  readonly starburstColor: "coral" | "blue" | "yellow";
   readonly description: string;
 };
 
@@ -48,30 +28,12 @@ const SLIDES: readonly SlideT[] = [
   {
     image: ebookFront,
     alt: "Camp Food — okładka ebooka, widok z przodu",
-    bg: "bg-coral",
-    textColor: "text-white",
-    headlineColor: "text-electric-blue",
-    subtitleColor: "text-white/90",
-    bodyColor: "text-muted-on-dark",
-    eyebrowColor: "blue",
-    eyebrowLineColor: "blue",
-    buttonVariant: "blue-solid",
-    starburstColor: "blue",
     description:
       "Jedzenie, które zabierasz ze sobą — w ruch, w naturę, w życie.",
   },
   {
     image: ebookBack,
     alt: "Camp Food — okładka ebooka, widok z tyłu",
-    bg: "bg-electric-blue",
-    textColor: "text-white",
-    headlineColor: "text-coral",
-    subtitleColor: "text-white/80",
-    bodyColor: "text-muted-on-dark",
-    eyebrowColor: "coral",
-    eyebrowLineColor: "coral",
-    buttonVariant: "coral-solid",
-    starburstColor: "coral",
     description:
       "38 przepisów opartych na prostocie, jakości i intuicji. Bez spiny. Bez zbędnych zasad.",
   },
@@ -83,7 +45,7 @@ const SLIDE_TRANSITION = TRANSITION.slow;
 
 /* ─── Main component ─── */
 
-export function CampFoodSwiper() {
+export function CampFoodSplit() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const handleNext = useCallback(() => {
@@ -125,59 +87,32 @@ export function CampFoodSwiper() {
   const slide = SLIDES[activeIndex];
 
   return (
-    <Section id={SECTION_IDS.campFood}>
-      {/* Animated background color — crossfade, no gap */}
-      <AnimatePresence>
-        <m.div
-          key={activeIndex}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={SLIDE_TRANSITION}
-          className={`absolute inset-0 ${slide.bg}`}
-          style={{ willChange: "opacity" }}
-        />
-      </AnimatePresence>
+    <section className="relative overflow-hidden">
+      {/* Split background — coral left, blue right */}
+      <div className="absolute inset-0 flex">
+        <div className="w-1/2 bg-coral" />
+        <div className="w-1/2 bg-electric-blue" />
+      </div>
 
-      {/* Decorative starburst — bottom-left */}
-      <Starburst
-        color={slide.starburstColor}
-        size="sm"
-        rotate
-        className="absolute -left-16 bottom-12  md:-left-6 md:bottom-16"
-      />
-
-      {/* Decorative starburst — bottom-right */}
-      <Starburst
-        color={slide.starburstColor}
-        size="sm"
-        className="absolute  z-3 md:-bottom-20 -right-16"
-      />
-
-      <SectionContent className="relative z-1">
+      {/* py-16 md:py-20 lg:py-24 */}
+      <SectionContent className="relative z-[2]">
         {/* Eyebrow */}
-        <EyebrowTag
-          color={slide.eyebrowColor}
-          lineColor={slide.eyebrowLineColor}
-          duration={DURATION.slow}
-        >
+        <EyebrowTag color="white" withLine lineColor="white" duration={DURATION.slow}>
           Ebook
         </EyebrowTag>
 
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
-          {/* Text — left side */}
+          {/* Text — left side (on coral) */}
           <div className="flex flex-col justify-center md:col-span-5 md:col-start-1">
             <p className="text-subtitle-base text-white/90">
               Mój pierwszy ebook.
             </p>
 
-            <ScatterText
-              className={`mt-4 text-heading-lg`}
-              lines={[
-                { text: "Camp", className: slide.headlineColor },
-                { text: "Food", className: slide.headlineColor },
-              ]}
-            />
+            <h2 className="mt-4 text-heading-md text-electric-blue">
+              Camp
+              <br />
+              Food
+            </h2>
 
             <div className="relative mt-6 h-24 md:h-20">
               <AnimatePresence mode="wait">
@@ -187,7 +122,7 @@ export function CampFoodSwiper() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={SLIDE_TRANSITION}
-                  className={`absolute inset-0 max-w-[40ch] text-body-lg ${slide.subtitleColor}`}
+                  className="absolute inset-0 max-w-[50ch] text-body-lg text-white/90"
                 >
                   {slide.description}
                 </m.p>
@@ -195,19 +130,14 @@ export function CampFoodSwiper() {
             </div>
 
             <div className="mt-12">
-              <Button
-                asChild
-                variant={slide.buttonVariant}
-                // withArrow
-                size="compact"
-              >
+              <Button asChild variant="yellow-solid" withArrow>
                 <a href="#">Kup ebook</a>
               </Button>
             </div>
           </div>
 
-          {/* Ebook cover — single large image, right side */}
-          <div className="relative h-[65vh] md:col-span-7 md:col-start-6">
+          {/* Ebook cover — right side (on blue) */}
+          <div className="relative h-[50vh] md:col-span-6 md:col-start-7">
             <AnimatePresence mode="wait">
               <m.div
                 key={activeIndex}
@@ -230,18 +160,26 @@ export function CampFoodSwiper() {
           </div>
         </div>
 
-        <SwiperControls
-          total={SLIDES.length}
-          active={activeIndex}
-          onPrev={handlePrevWithReset}
-          onNext={handleNextWithReset}
-          onSelect={(i) => {
-            setActiveIndex(i);
-            resetTimer();
-          }}
-          className="mt-16"
-        />
+        {/* Controls */}
+        <div className="mt-16 flex items-center justify-between">
+          <ProgressDots
+            total={SLIDES.length}
+            active={activeIndex}
+            onSelect={(i) => {
+              setActiveIndex(i);
+              resetTimer();
+            }}
+          />
+          <div className="flex gap-3">
+            <Button variant="yellow" size="icon" onClick={handlePrevWithReset} aria-label="Poprzedni">
+              <ArrowLeft size={20} strokeWidth={2.5} aria-hidden="true" />
+            </Button>
+            <Button variant="yellow" size="icon" onClick={handleNextWithReset} aria-label="Następny">
+              <ArrowRight size={20} strokeWidth={2.5} aria-hidden="true" />
+            </Button>
+          </div>
+        </div>
       </SectionContent>
-    </Section>
+    </section>
   );
 }

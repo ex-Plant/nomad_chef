@@ -2,11 +2,11 @@
 
 import { Image } from "@/components/ui/image";
 
-import { FadeUp } from "@/components/home/fade-up";
-import { ScatterText } from "@/components/home/scatter-text";
-import { SECTION_IDS } from "@/components/home/section-ids";
-import { Section } from "@/components/home/section";
-import { SectionContent } from "@/components/home/section-content";
+import { FadeUp } from "@/components/shared/fade-up";
+import { ScatterText } from "@/components/shared/scatter-text";
+import { SECTION_IDS } from "@/config/section-ids";
+import { Section } from "@/components/shared/section";
+import { SectionContent } from "@/components/shared/section-content";
 
 import cs1 from "@/moodboard/gallery/client-selected-1.webp";
 import cs2 from "@/moodboard/gallery/client-selected-2.webp";
@@ -34,7 +34,7 @@ import ig37 from "@/moodboard/gallery/secondary-reference-instagram-37.webp";
 import ig38 from "@/moodboard/gallery/secondary-reference-instagram-38.webp";
 import ig39 from "@/moodboard/gallery/secondary-reference-instagram-39.webp";
 
-import { EyebrowTag } from "@/components/home/eyebrow-tag";
+import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 import type { StaticImageData } from "next/image";
 
 type GalleryItemT = {

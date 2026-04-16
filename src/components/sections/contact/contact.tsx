@@ -1,14 +1,14 @@
 "use client";
 
-import { EyebrowTag } from "@/components/home/eyebrow-tag";
-import { ScatterText } from "@/components/home/scatter-text";
-import { Button } from "@/components/home/button";
-import { ContactLink } from "@/components/home/contact-link";
-import { SECTION_IDS } from "@/components/home/section-ids";
-import { Section } from "@/components/home/section";
-import { Starburst } from "@/components/home/starburst";
-import { FadeUp } from "@/components/home/fade-up";
-import { SectionContent } from "@/components/home/section-content";
+import { EyebrowTag } from "@/components/shared/eyebrow-tag";
+import { ScatterText } from "@/components/shared/scatter-text";
+import { Button } from "@/components/shared/button";
+import { ContactLink } from "@/components/sections/contact/contact-link";
+import { SECTION_IDS } from "@/config/section-ids";
+import { Section } from "@/components/shared/section";
+import { Starburst } from "@/components/shared/starburst";
+import { FadeUp } from "@/components/shared/fade-up";
+import { SectionContent } from "@/components/shared/section-content";
 
 export function Contact() {
   return (

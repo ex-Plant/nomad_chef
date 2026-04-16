@@ -1,20 +1,20 @@
 import dynamic from "next/dynamic";
-import { Nav } from "@/components/home/nav";
-import { Hero } from "@/components/home/hero";
-import { About } from "@/components/home/about";
+import { Nav } from "@/components/sections/nav/nav";
+import { Hero } from "@/components/sections/hero/hero";
+import { About } from "@/components/sections/about/about";
 import { GrainOverlay } from "@/components/ui/grain-overlay";
 
 const ServicesSlider = dynamic(() =>
-  import("@/components/home/services-slider").then((m) => m.ServicesSlider)
+  import("@/components/sections/services/services-slider").then((m) => m.ServicesSlider)
 );
 const CampFoodSwiper = dynamic(() =>
-  import("@/components/home/camp-food-swiper").then((m) => m.CampFoodSwiper)
+  import("@/components/sections/camp-food/camp-food-swiper").then((m) => m.CampFoodSwiper)
 );
 const Gallery = dynamic(() =>
-  import("@/components/home/gallery").then((m) => m.Gallery)
+  import("@/components/sections/gallery/gallery").then((m) => m.Gallery)
 );
 const Contact = dynamic(() =>
-  import("@/components/home/contact").then((m) => m.Contact)
+  import("@/components/sections/contact/contact").then((m) => m.Contact)
 );
 
 export default function HomePage() {

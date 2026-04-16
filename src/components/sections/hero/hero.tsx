@@ -2,12 +2,12 @@
 
 // import { useRef } from "react";
 // import { m, useScroll, useTransform } from "framer-motion";
-import { SECTION_IDS } from "@/components/home/section-ids";
-import { Section } from "@/components/home/section";
+import { SECTION_IDS } from "@/config/section-ids";
+import { Section } from "@/components/shared/section";
 import { Image } from "@/components/ui/image";
-import { Button } from "@/components/home/button";
-import { FadeUp } from "@/components/home/fade-up";
-import { SectionContent } from "@/components/home/section-content";
+import { Button } from "@/components/shared/button";
+import { FadeUp } from "@/components/shared/fade-up";
+import { SectionContent } from "@/components/shared/section-content";
 import heroImg from "@/moodboard/gallery/client-selected-8.webp";
 
 export function Hero() {

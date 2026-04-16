@@ -1,6 +1,6 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { Button } from "@/components/home/button";
-import { ProgressDots } from "@/components/home/progress-dots";
+import { Button } from "@/components/shared/button";
+import { ProgressDots } from "@/components/shared/progress-dots";
 
 type SwiperControlsPropsT = {
   readonly total: number;

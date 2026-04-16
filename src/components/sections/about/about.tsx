@@ -2,14 +2,15 @@
 
 import { useRef } from "react";
 import { useScroll } from "framer-motion";
+// useScroll still used by other motion elements in this component
 import { Image } from "@/components/ui/image";
-import { EyebrowTag } from "@/components/home/eyebrow-tag";
-import { FadeUp } from "@/components/home/fade-up";
-import { ScatterText } from "@/components/home/scatter-text";
-import { Starburst } from "@/components/home/starburst";
-import { SectionContent } from "@/components/home/section-content";
-import { SECTION_IDS } from "@/components/home/section-ids";
-import { Section } from "@/components/home/section";
+import { EyebrowTag } from "@/components/shared/eyebrow-tag";
+import { FadeUp } from "@/components/shared/fade-up";
+import { ScatterText } from "@/components/shared/scatter-text";
+import { Starburst } from "@/components/shared/starburst";
+import { SectionContent } from "@/components/shared/section-content";
+import { SECTION_IDS } from "@/config/section-ids";
+import { Section } from "@/components/shared/section";
 // import aboutImg from "@/moodboard/marta_photos/secondary-reference-instagram-3.webp"; // with dogs
 import aboutImg from "@/moodboard/marta_photos/secondary-reference-instagram-24.webp"; // mediterranean terrace
 // import aboutImg2 from "@/moodboard/marta_photos/secondary-reference-instagram-28.webp"; // tropical, coral dress

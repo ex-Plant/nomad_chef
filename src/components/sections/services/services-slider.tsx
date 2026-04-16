@@ -2,20 +2,20 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { ScatterText } from "@/components/home/scatter-text";
+import { ScatterText } from "@/components/shared/scatter-text";
 import { Image } from "@/components/ui/image";
-import { SECTION_IDS } from "@/components/home/section-ids";
-import { Section } from "@/components/home/section";
-import { EyebrowTag } from "@/components/home/eyebrow-tag";
-import { FadeUp } from "@/components/home/fade-up";
-import { Starburst } from "@/components/home/starburst";
-import { SwiperControls } from "@/components/home/swiper-controls";
-import { SectionContent } from "@/components/home/section-content";
+import { SECTION_IDS } from "@/config/section-ids";
+import { Section } from "@/components/shared/section";
+import { EyebrowTag } from "@/components/shared/eyebrow-tag";
+import { FadeUp } from "@/components/shared/fade-up";
+import { Starburst } from "@/components/shared/starburst";
+import { SwiperControls } from "@/components/shared/swiper-controls";
+import { SectionContent } from "@/components/shared/section-content";
 import {
   TRANSITION,
   AUTOPLAY_INTERVAL,
-} from "@/components/home/animation-constants";
-import { SLIDES_EDITORIAL } from "@/components/home/services-slider-data";
+} from "@/config/animation-constants";
+import { SLIDES_EDITORIAL } from "@/components/sections/services/services-slider-data";
 
 /* ─── Animation presets ─── */
 

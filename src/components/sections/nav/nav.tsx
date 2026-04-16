@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { NAV_ITEMS, SECTION_IDS } from "@/components/home/section-ids";
-import { NavDesktop } from "@/components/home/nav-desktop";
+import { NAV_ITEMS, SECTION_IDS } from "@/config/section-ids";
+import { NavDesktop } from "@/components/sections/nav/nav-desktop";
 import {
   NavMobileToggle,
   NavMobileOverlay,
-} from "@/components/home/nav-mobile";
+} from "@/components/sections/nav/nav-mobile";
 
 export function Nav() {
   const [activeSection, setActiveSection] = useState("hero");

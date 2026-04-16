@@ -1,11 +1,11 @@
-import { Nav } from "@/components/home/nav";
-import { Hero } from "@/components/home/hero";
-import { About } from "@/components/home/about";
-import { ServicesSlider } from "@/components/home/services-slider";
-import { CampFoodSwiper } from "@/components/home/camp-food-swiper";
-import { CampFoodSplit } from "@/components/home/camp-food-split";
-import { Gallery } from "@/components/home/gallery";
-import { Contact } from "@/components/home/contact";
+import { Nav } from "@/components/sections/nav/nav";
+import { Hero } from "@/components/sections/hero/hero";
+import { About } from "@/components/sections/about/about";
+import { ServicesSlider } from "@/components/sections/services/services-slider";
+import { CampFoodSwiper } from "@/components/sections/camp-food/camp-food-swiper";
+import { CampFoodSplit } from "@/components/sections/camp-food/camp-food-split";
+import { Gallery } from "@/components/sections/gallery/gallery";
+import { Contact } from "@/components/sections/contact/contact";
 
 export default function EbookSwiperPage() {
   return (
