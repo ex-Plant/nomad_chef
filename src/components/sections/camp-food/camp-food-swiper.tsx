@@ -27,24 +27,24 @@ import ebookBack from "@/moodboard/ebook/ebook_2.webp";
 /* ─── Data ─────────────────────────────────────────────── */
 
 type SlideStyleT = {
-  readonly image: StaticImageData;
-  readonly bg: string;
-  readonly textColor: string;
-  readonly headlineColor: string;
-  readonly subtitleColor: string;
-  readonly bodyColor: string;
-  readonly eyebrowColor: "coral" | "blue" | "white" | "yellow";
-  readonly eyebrowLineColor: "coral" | "blue" | "white" | "yellow";
-  readonly buttonVariant:
+  image: StaticImageData;
+  bg: string;
+  textColor: string;
+  headlineColor: string;
+  subtitleColor: string;
+  bodyColor: string;
+  eyebrowColor: "coral" | "blue" | "white" | "yellow";
+  eyebrowLineColor: "coral" | "blue" | "white" | "yellow";
+  buttonVariant:
     | "coral-solid"
     | "yellow-solid"
     | "blue-solid"
     | "coral"
     | "blue";
-  readonly starburstColor: "coral" | "blue" | "yellow";
+  starburstColor: "coral" | "blue" | "yellow";
 };
 
-const SLIDE_STYLES: readonly SlideStyleT[] = [
+const SLIDE_STYLES: SlideStyleT[] = [
   {
     image: ebookFront,
     bg: "bg-coral",

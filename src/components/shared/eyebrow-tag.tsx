@@ -39,12 +39,12 @@ const COLOR_MAP: Record<
 } as const;
 
 type EyebrowTagPropsT = {
-  readonly children: React.ReactNode;
-  readonly color?: ColorT;
-  readonly withLine?: boolean;
-  readonly lineColor?: ColorT;
-  readonly className?: string;
-  readonly duration?: number;
+  children: React.ReactNode;
+  color?: ColorT;
+  withLine?: boolean;
+  lineColor?: ColorT;
+  className?: string;
+  duration?: number;
 };
 
 export function EyebrowTag({

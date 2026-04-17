@@ -31,14 +31,14 @@ const SIZE_VARIANTS = {
 type StarburstSizeT = keyof typeof SIZE_VARIANTS;
 
 type StarburstPropsT = {
-  readonly color?: StarburstColorT;
-  readonly size?: StarburstSizeT;
-  readonly variant?: StarburstVariantT;
-  readonly rotate?: boolean;
-  readonly speed?: number;
-  readonly offset?: number;
-  readonly className?: string;
-  readonly svgRef?: React.Ref<SVGSVGElement>;
+  color?: StarburstColorT;
+  size?: StarburstSizeT;
+  variant?: StarburstVariantT;
+  rotate?: boolean;
+  speed?: number;
+  offset?: number;
+  className?: string;
+  svgRef?: React.Ref<SVGSVGElement>;
 };
 
 /* Original organic starburst — relatively uniform spikes */
@@ -382,10 +382,10 @@ function StarburstSvg({
   className = "",
   ref,
 }: {
-  readonly color?: StarburstColorT;
-  readonly variant?: StarburstVariantT;
-  readonly className?: string;
-  readonly ref?: React.Ref<SVGSVGElement>;
+  color?: StarburstColorT;
+  variant?: StarburstVariantT;
+  className?: string;
+  ref?: React.Ref<SVGSVGElement>;
 }) {
   return (
     <svg
@@ -408,11 +408,11 @@ function RotatingStarburst({
   offset = 0,
   className = "",
 }: {
-  readonly color?: StarburstColorT;
-  readonly variant?: StarburstVariantT;
-  readonly speed?: number;
-  readonly offset?: number;
-  readonly className?: string;
+  color?: StarburstColorT;
+  variant?: StarburstVariantT;
+  speed?: number;
+  offset?: number;
+  className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 

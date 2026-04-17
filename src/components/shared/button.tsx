@@ -56,8 +56,8 @@ const ARROW_SIZES = {
 
 type ButtonPropsT = React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
-    readonly asChild?: boolean;
-    readonly withArrow?: boolean;
+    asChild?: boolean;
+    withArrow?: boolean;
   };
 
 /* ─── Component ───────────────────────────────────────── */

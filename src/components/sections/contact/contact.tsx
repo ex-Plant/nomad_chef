@@ -33,7 +33,7 @@ export function Contact() {
           <div className="md:col-span-7 flex flex-col justify-center ">
             <ScatterText
               className="text-heading-lg"
-              lines={CONTENT.contact.headingLines}
+              lines={[...CONTENT.contact.headingLines]}
             />
 
             <FadeUp

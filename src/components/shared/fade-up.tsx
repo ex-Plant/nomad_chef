@@ -5,15 +5,15 @@ import type { ComponentPropsWithoutRef } from "react";
 import { EASE } from "@/config/animation-constants";
 
 type FadeUpPropsT = {
-  readonly as?: "div" | "h1" | "h2" | "p" | "section";
-  readonly trigger?: "inView" | "mount";
-  readonly duration?: number;
-  readonly delay?: number;
-  readonly y?: number;
-  readonly amount?: number;
-  readonly margin?: string;
-  readonly className?: string;
-  readonly children?: React.ReactNode;
+  as?: "div" | "h1" | "h2" | "p" | "section";
+  trigger?: "inView" | "mount";
+  duration?: number;
+  delay?: number;
+  y?: number;
+  amount?: number;
+  margin?: string;
+  className?: string;
+  children?: React.ReactNode;
 } & Omit<
   ComponentPropsWithoutRef<typeof m.div>,
   "variants" | "initial" | "whileInView" | "animate" | "viewport" | "transition"

@@ -12,11 +12,11 @@ const ICON_MAP = {
 type ContactLinkIconT = keyof typeof ICON_MAP;
 
 type ContactLinkPropsT = {
-  readonly href: string;
-  readonly icon: ContactLinkIconT;
-  readonly label: string;
-  readonly value: string;
-  readonly external?: boolean;
+  href: string;
+  icon: ContactLinkIconT;
+  label: string;
+  value: string;
+  external?: boolean;
 };
 
 export function ContactLink({

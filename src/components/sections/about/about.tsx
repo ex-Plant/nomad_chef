@@ -55,7 +55,7 @@ export function About() {
             <ScatterText
               className="text-heading-lg"
               triggerRef={sectionRef}
-              lines={CONTENT.about.headingLines}
+              lines={[...CONTENT.about.headingLines]}
             />
 
             <FadeUp className="mt-8 space-y-5" delay={0.4}>

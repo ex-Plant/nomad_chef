@@ -4,12 +4,12 @@ import { ProgressDots } from "@/components/shared/progress-dots";
 import { CONTENT } from "@/config/content";
 
 type SwiperControlsPropsT = {
-  readonly total: number;
-  readonly active: number;
-  readonly onPrev: () => void;
-  readonly onNext: () => void;
-  readonly onSelect: (i: number) => void;
-  readonly className?: string;
+  total: number;
+  active: number;
+  onPrev: () => void;
+  onNext: () => void;
+  onSelect: (i: number) => void;
+  className?: string;
 };
 
 export function SwiperControls({

@@ -4,10 +4,10 @@ import { cn } from "@/helpers/cn";
 
 type GridOverlayPropsT = {
   /** "fixed" = full-page overlay, "absolute" = scoped to nearest positioned parent */
-  readonly position?: "fixed" | "absolute";
+  position?: "fixed" | "absolute";
   /** z-index — use to layer between background and content */
-  readonly z?: number;
-  readonly className?: string;
+  z?: number;
+  className?: string;
 };
 
 /**
@@ -51,7 +51,7 @@ export function GridOverlay({
   );
 }
 
-function GridColumn({ className }: { readonly className?: string }) {
+function GridColumn({ className }: { className?: string }) {
   return (
     <div className={cn("col-span-1 border-[0.5px] border-black/20", className)}>
       <div className="h-full bg-red-500/10" />

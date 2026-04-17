@@ -1,8 +1,8 @@
 import { type SVGProps } from "react";
 
 type IconPropsT = SVGProps<SVGSVGElement> & {
-  readonly size?: number;
-  readonly strokeWidth?: number;
+  size?: number;
+  strokeWidth?: number;
 };
 
 /** Instagram brand icon — matches Lucide API (size, strokeWidth, className) */

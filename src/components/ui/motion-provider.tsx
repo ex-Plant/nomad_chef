@@ -4,7 +4,7 @@ import { LazyMotion, domAnimation } from "framer-motion";
 import type { ReactNode } from "react";
 
 type MotionProviderPropsT = {
-  readonly children: ReactNode;
+  children: ReactNode;
 };
 
 export function MotionProvider({ children }: MotionProviderPropsT) {

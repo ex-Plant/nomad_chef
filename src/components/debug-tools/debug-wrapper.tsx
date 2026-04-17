@@ -8,7 +8,7 @@ import { DebugScreens } from "@/components/debug-tools/debug-screens";
 import { useDebugTools } from "@/components/debug-tools/use-debug-tools";
 
 type DebugWrapperPropsT = {
-  readonly children: ReactNode;
+  children: ReactNode;
 };
 
 export function DebugWrapper({ children }: DebugWrapperPropsT) {

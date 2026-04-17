@@ -90,7 +90,7 @@ export function Hero() {
             as="h1"
             triggerOnMount
             className="font-display text-7xl sm:text-8xl uppercase leading-[0.85] tracking-[-0.05em] md:text-9xl lg:text-[10rem]"
-            lines={CONTENT.hero.headingLines}
+            lines={[...CONTENT.hero.headingLines]}
           />
 
           <BodyText trigger="mount" delay={1.1} className="mt-6 md:pl-2">

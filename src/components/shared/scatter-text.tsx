@@ -8,18 +8,18 @@ import { useGSAP } from "@gsap/react";
 gsap.registerPlugin(ScrollTrigger);
 
 type ScatterLineT = {
-  readonly text: string;
-  readonly className?: string;
+  text: string;
+  className?: string;
 };
 
 type ScatterTextPropsT = {
-  readonly lines: readonly ScatterLineT[];
-  readonly as?: "h1" | "h2" | "h3" | "p";
-  readonly className?: string;
+  lines: ScatterLineT[];
+  as?: "h1" | "h2" | "h3" | "p";
+  className?: string;
   /** External trigger element — if omitted, the component triggers itself */
-  readonly triggerRef?: RefObject<HTMLElement | null>;
+  triggerRef?: RefObject<HTMLElement | null>;
   /** Play immediately on mount instead of on scroll enter */
-  readonly triggerOnMount?: boolean;
+  triggerOnMount?: boolean;
 };
 
 /**

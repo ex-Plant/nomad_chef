@@ -1,6 +1,6 @@
 type SectionContentPropsT = {
-  readonly children: React.ReactNode;
-  readonly className?: string;
+  children: React.ReactNode;
+  className?: string;
 };
 
 export function SectionContent({

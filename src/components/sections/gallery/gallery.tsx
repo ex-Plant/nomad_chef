@@ -33,13 +33,13 @@ import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 import type { StaticImageData } from "next/image";
 
 type GalleryItemT = {
-  readonly src: StaticImageData;
-  readonly alt: string;
+  src: StaticImageData;
+  alt: string;
 };
 
 const { alts } = CONTENT.gallery;
 
-const GALLERY_IMAGES: readonly GalleryItemT[] = [
+const GALLERY_IMAGES: GalleryItemT[] = [
   { src: cs1, alt: alts.cs1 },
   { src: cs2, alt: alts.cs2 },
   { src: ig12, alt: alts.ig12 },
@@ -72,7 +72,7 @@ const GALLERY_IMAGES: readonly GalleryItemT[] = [
 const COLUMN_OFFSETS = ["mt-0", "mt-16", "mt-4", "mt-12"] as const;
 
 function distributeIntoColumns<TItem>(
-  items: readonly TItem[],
+  items: TItem[],
   numCols: number
 ): TItem[][] {
   const columns: TItem[][] = Array.from({ length: numCols }, () => []);
@@ -121,9 +121,9 @@ function MasonryColumns({
   numCols,
   offsets,
 }: {
-  readonly images: readonly GalleryItemT[];
-  readonly numCols: number;
-  readonly offsets: readonly string[];
+  images: GalleryItemT[];
+  numCols: number;
+  offsets: string[];
 }) {
   const cols = distributeIntoColumns(images, numCols);
 
@@ -164,7 +164,7 @@ function MasonryColumns({
   );
 }
 
-function GalleryGrid({ images }: { readonly images: readonly GalleryItemT[] }) {
+function GalleryGrid({ images }: { images: GalleryItemT[] }) {
   return (
     <>
       {/* Mobile: 2 columns */}
@@ -185,7 +185,7 @@ function GalleryGrid({ images }: { readonly images: readonly GalleryItemT[] }) {
       </div>
       {/* Desktop: 4 columns */}
       <div className="hidden lg:block">
-        <MasonryColumns images={images} numCols={4} offsets={COLUMN_OFFSETS} />
+        <MasonryColumns images={images} numCols={4} offsets={[...COLUMN_OFFSETS]} />
       </div>
     </>
   );

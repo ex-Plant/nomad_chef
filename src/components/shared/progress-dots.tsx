@@ -1,7 +1,7 @@
 type ProgressDotsPropsT = {
-  readonly total: number;
-  readonly active: number;
-  readonly onSelect?: (i: number) => void;
+  total: number;
+  active: number;
+  onSelect?: (i: number) => void;
 };
 
 export function ProgressDots({ total, active, onSelect }: ProgressDotsPropsT) {

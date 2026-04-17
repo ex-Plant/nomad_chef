@@ -1,9 +1,9 @@
 "use client";
 
 type DebugToolsCheckboxPropsT = {
-  readonly toggleFunc: () => void;
-  readonly currentVal: boolean;
-  readonly label: string;
+  toggleFunc: () => void;
+  currentVal: boolean;
+  label: string;
 };
 
 export function DebugToolsCheckbox({ toggleFunc, currentVal, label }: DebugToolsCheckboxPropsT) {
