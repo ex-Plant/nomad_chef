@@ -1,23 +1,26 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { NAV_ITEMS, CONTENT } from "@/config/content";
+import { CONTENT } from "@/config/content";
+import type { SiteT } from "@/lib/get-site";
 import { cn } from "@/helpers/cn";
 
 type NavDesktopPropsT = {
+  items: SiteT["nav"];
   activeSection: string;
   isOnYellow: boolean;
   scrollTo: (id: string) => void;
 };
 
 export function NavDesktop({
+  items,
   activeSection,
   isOnYellow,
   scrollTo,
 }: NavDesktopPropsT) {
   return (
     <ul className="hidden items-center gap-1 md:flex">
-      {NAV_ITEMS.map((item) => {
+      {items.map((item) => {
         const isActive = activeSection === item.id;
         return (
           <li key={item.id}>

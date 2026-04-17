@@ -5,7 +5,7 @@ import { m, AnimatePresence } from "framer-motion";
 import { ScatterText } from "@/components/shared/scatter-text";
 import { Image } from "@/components/ui/image";
 import { SECTION_IDS } from "@/config/section-ids";
-import { CONTENT } from "@/config/content";
+import type { SiteT } from "@/lib/get-site";
 import { Section } from "@/components/shared/section";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 import { Button } from "@/components/shared/button";
@@ -71,25 +71,24 @@ const SLIDE_STYLES: SlideStyleT[] = [
   },
 ] as const;
 
-const SLIDES = SLIDE_STYLES.map((style, i) => ({
-  ...style,
-  ...CONTENT.campFood.slides[i],
-}));
-
 /* ─── Animation ─── */
 
 const SLIDE_TRANSITION = TRANSITION.slow;
 
 /* ─── Main component ─── */
 
-export function CampFoodSwiper() {
+type CampFoodPropsT = { data: SiteT["campFood"] };
+
+export function CampFoodSwiper({ data }: CampFoodPropsT) {
   const [activeIndex, setActiveIndex] = useState(0);
   const handleNext = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % SLIDES.length);
+    setActiveIndex((prev) => (prev + 1) % SLIDE_STYLES.length);
   }, []);
 
   const handlePrev = useCallback(() => {
-    setActiveIndex((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+    setActiveIndex(
+      (prev) => (prev - 1 + SLIDE_STYLES.length) % SLIDE_STYLES.length,
+    );
   }, []);
 
   /* Auto-play */
@@ -98,13 +97,13 @@ export function CampFoodSwiper() {
   const resetTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % SLIDES.length);
+      setActiveIndex((prev) => (prev + 1) % SLIDE_STYLES.length);
     }, AUTOPLAY_INTERVAL);
   }, []);
 
   useEffect(() => {
     const id = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % SLIDES.length);
+      setActiveIndex((prev) => (prev + 1) % SLIDE_STYLES.length);
     }, AUTOPLAY_INTERVAL);
     timerRef.current = id;
     return () => clearInterval(id);
@@ -120,6 +119,10 @@ export function CampFoodSwiper() {
     resetTimer();
   }, [handlePrev, resetTimer]);
 
+  const SLIDES = SLIDE_STYLES.map((style, i) => ({
+    ...style,
+    ...(data.slides[i] ?? { alt: "", description: "" }),
+  }));
   const slide = SLIDES[activeIndex];
 
   return (
@@ -150,17 +153,17 @@ export function CampFoodSwiper() {
           lineColor={slide.eyebrowLineColor}
           duration={DURATION.slow}
         >
-          {CONTENT.campFood.eyebrow}
+          {data.eyebrow}
         </EyebrowTag>
 
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8 ">
           {/* Text — left side */}
           <div className="flex flex-col justify-center md:col-span-5 md:col-start-1">
-            <BodyText className="text-white/90">{CONTENT.campFood.kicker}</BodyText>
+            <BodyText className="text-white/90">{data.kicker}</BodyText>
 
             <ScatterText
               className={`mt-4 text-heading-lg tracking-tight `}
-              lines={CONTENT.campFood.headingLines.map((line) => ({
+              lines={data.headingLines.map((line) => ({
                 ...line,
                 className: slide.headlineColor,
               }))}
@@ -189,7 +192,7 @@ export function CampFoodSwiper() {
                 // withArrow
                 size="compact"
               >
-                <a href={CONTENT.campFood.cta.href}>{CONTENT.campFood.cta.label}</a>
+                <a href={data.cta.href}>{data.cta.label}</a>
               </Button>
             </div>
           </div>

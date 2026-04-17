@@ -5,12 +5,14 @@ import { m, AnimatePresence } from "framer-motion";
 import { EASE } from "@/config/animation-constants";
 import { NAV_TOGGLE_COLORS } from "@/config/section-ids";
 import type { NavToggleColorT, SectionIdT } from "@/config/section-ids";
-import { NAV_ITEMS, CONTENT } from "@/config/content";
+import { CONTENT } from "@/config/content";
+import type { SiteT } from "@/lib/get-site";
 import { FadeUp } from "@/components/shared/fade-up";
 import { Starburst } from "@/components/shared/starburst";
 import { cn } from "@/helpers/cn";
 
 type NavMobilePropsT = {
+  items: SiteT["nav"];
   isOpen: boolean;
   isOnYellow: boolean;
   activeSection: SectionIdT;
@@ -71,32 +73,24 @@ export function NavMobileToggle({
 const NAV_ITEM_TILTS = [-2.5, 1.8, -1.2, 2.2, -2, 1.4] as const;
 
 const OVERLAY_VARIANTS = {
-  hidden: { opacity: 0 },
+  hidden: { opacity: 0, y: -32 },
   visible: {
     opacity: 1,
-    transition: {
-      duration: 0.35,
-      ease: EASE,
-      when: "beforeChildren",
-      staggerChildren: 0.06,
-    },
+    y: 0,
+    transition: { duration: 0.4, ease: EASE },
   },
   exit: {
     opacity: 0,
-    transition: {
-      duration: 0.35,
-      ease: EASE,
-      when: "afterChildren",
-      staggerChildren: 0.05,
-      staggerDirection: -1,
-    },
+    y: -32,
+    transition: { duration: 0.5, ease: EASE, delay: 0.25 },
   },
 } as const;
 
 export function NavMobileOverlay({
+  items,
   isOpen,
   scrollTo,
-}: Pick<NavMobilePropsT, "isOpen" | "scrollTo">) {
+}: Pick<NavMobilePropsT, "items" | "isOpen" | "scrollTo">) {
   useEffect(() => {
     document.body.classList.toggle("overflow-hidden", isOpen);
     return () => document.body.classList.remove("overflow-hidden");

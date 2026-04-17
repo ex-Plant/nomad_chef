@@ -1,3 +1,4 @@
+import { getSite } from "@/lib/get-site";
 import { Nav } from "@/components/sections/nav/nav";
 import { Hero } from "@/components/sections/hero/hero";
 import { About } from "@/components/sections/about/about";
@@ -7,17 +8,19 @@ import { Gallery } from "@/components/sections/gallery/gallery";
 import { Contact } from "@/components/sections/contact/contact";
 import { GrainOverlay } from "@/components/ui/grain-overlay";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const site = await getSite("pl");
+
   return (
     <>
-      <Nav />
+      <Nav items={site.nav} />
       <main className="relative">
-        <Hero />
-        <About />
-        <ServicesParallax />
-        <CampFoodSwiper />
-        <Gallery />
-        <Contact />
+        <Hero data={site.hero} />
+        <About data={site.about} />
+        <ServicesParallax data={site.services} />
+        <CampFoodSwiper data={site.campFood} />
+        <Gallery data={site.gallery} />
+        <Contact data={site.contact} />
       </main>
 
       <GrainOverlay position="fixed" zIndex="z-50" />

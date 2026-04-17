@@ -4,7 +4,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { SECTION_IDS } from "@/config/section-ids";
 import type { SectionIdT } from "@/config/section-ids";
-import { NAV_ITEMS, CONTENT } from "@/config/content";
+import { CONTENT } from "@/config/content";
+import type { SiteT } from "@/lib/get-site";
 import { NavDesktop } from "@/components/sections/nav/nav-desktop";
 import {
   NavMobileToggle,
@@ -12,7 +13,9 @@ import {
 } from "@/components/sections/nav/nav-mobile";
 import { cn } from "@/helpers/cn";
 
-export function Nav() {
+type NavPropsT = { items: SiteT["nav"] };
+
+export function Nav({ items }: NavPropsT) {
   const [activeSection, setActiveSection] = useState<SectionIdT>(
     SECTION_IDS.hero
   );
@@ -48,7 +51,7 @@ export function Nav() {
 
       const line = nav ? nav.getBoundingClientRect().bottom : 0;
       let nextId: SectionIdT | null = null;
-      for (const item of NAV_ITEMS) {
+      for (const item of items) {
         const el = document.getElementById(item.id);
         if (!el) continue;
         const top = el.getBoundingClientRect().top;
@@ -74,7 +77,7 @@ export function Nav() {
       window.removeEventListener("resize", onScroll);
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, []);
+  }, [items]);
 
   useEffect(() => {
     document.body.classList.toggle("overflow-hidden", isMobileOpen);
@@ -105,6 +108,7 @@ export function Nav() {
           >
             <div className="flex items-center gap-1">
               <NavDesktop
+                items={items}
                 activeSection={activeSection}
                 isOnYellow={isOnYellow}
                 scrollTo={scrollTo}
@@ -119,7 +123,7 @@ export function Nav() {
         )}
       </AnimatePresence>
 
-      <NavMobileOverlay isOpen={isMobileOpen} scrollTo={scrollTo} />
+      <NavMobileOverlay items={items} isOpen={isMobileOpen} scrollTo={scrollTo} />
     </>
   );
 }

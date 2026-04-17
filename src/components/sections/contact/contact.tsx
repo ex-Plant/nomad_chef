@@ -5,13 +5,15 @@ import { ScatterText } from "@/components/shared/scatter-text";
 import { Button } from "@/components/shared/button";
 import { ContactLink } from "@/components/sections/contact/contact-link";
 import { SECTION_IDS } from "@/config/section-ids";
-import { CONTENT } from "@/config/content";
+import type { SiteT } from "@/lib/get-site";
 import { Section } from "@/components/shared/section";
 import { Starburst } from "@/components/shared/starburst";
 import { FadeUp } from "@/components/shared/fade-up";
 import { SectionContent } from "@/components/shared/section-content";
 
-export function Contact() {
+type ContactPropsT = { data: SiteT["contact"] };
+
+export function Contact({ data }: ContactPropsT) {
   return (
     <Section id={SECTION_IDS.contact} className="bg-yellow min-h-fit">
       <Starburst
@@ -24,7 +26,7 @@ export function Contact() {
       <SectionContent className="relative z-1 ">
         {/* Eyebrow */}
         <EyebrowTag color="coral" withLine>
-          {CONTENT.contact.eyebrow}
+          {data.eyebrow}
         </EyebrowTag>
 
         {/* Asymmetric split: massive heading left, form/links right */}
@@ -33,7 +35,7 @@ export function Contact() {
           <div className="md:col-span-7 flex flex-col justify-center ">
             <ScatterText
               className="text-heading-lg"
-              lines={[...CONTENT.contact.headingLines]}
+              lines={data.headingLines}
             />
 
             <FadeUp
@@ -41,7 +43,7 @@ export function Contact() {
               delay={0.2}
               className=" max-w-md text-subtitle-lg text-coral"
             >
-              {CONTENT.contact.lead}
+              {data.lead}
             </FadeUp>
           </div>
 
@@ -49,16 +51,16 @@ export function Contact() {
           <div className="flex flex-col justify-end md:col-span-7 md:col-start-9">
             <FadeUp delay={0.3} className="">
               <ContactLink
-                href={CONTENT.contact.email.href}
+                href={data.email.href}
                 icon="mail"
-                label={CONTENT.contact.email.label}
-                value={CONTENT.contact.email.value}
+                label={data.email.label}
+                value={data.email.value}
               />
               <ContactLink
-                href={CONTENT.contact.instagram.href}
+                href={data.instagram.href}
                 icon="instagram"
-                label={CONTENT.contact.instagram.label}
-                value={CONTENT.contact.instagram.value}
+                label={data.instagram.label}
+                value={data.instagram.value}
                 external
               />
             </FadeUp>
@@ -67,7 +69,7 @@ export function Contact() {
             <FadeUp delay={0.4} className="mt-8">
               <form className="">
                 <textarea
-                  placeholder={CONTENT.contact.formPlaceholder}
+                  placeholder={data.formPlaceholder}
                   rows={4}
                   className="w-full resize-none  rounded-lg border border-coral bg-yellow px-5 py-4 font-sans text-base text-off-black field-sizing-content transition-colors duration-300 ease-brand placeholder:text-coral focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral min-h-32"
                 />
@@ -77,8 +79,8 @@ export function Contact() {
                   asChild
                   variant="coral-solid"
                 >
-                  <a href={CONTENT.contact.submit.href}>
-                    {CONTENT.contact.submit.label}
+                  <a href={data.submit.href}>
+                    {data.submit.label}
                   </a>
                 </Button>
               </form>
@@ -92,7 +94,7 @@ export function Contact() {
           amount={0.5}
           className=" flex items-center justify-between border-t border-coral pt-8  mt-16 text-heading text-sm tracking-tight text-coral"
         >
-          <span>{CONTENT.contact.footer}</span>
+          <span>{data.footer}</span>
         </FadeUp>
       </SectionContent>
     </Section>

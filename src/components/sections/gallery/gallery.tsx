@@ -9,6 +9,7 @@ import { FadeUp } from "@/components/shared/fade-up";
 import { ScatterText } from "@/components/shared/scatter-text";
 import { SECTION_IDS } from "@/config/section-ids";
 import { CONTENT } from "@/config/content";
+import type { SiteT } from "@/lib/get-site";
 import { Section } from "@/components/shared/section";
 import { SectionContent } from "@/components/shared/section-content";
 
@@ -83,7 +84,9 @@ function distributeIntoColumns<TItem>(
   return columns;
 }
 
-export function Gallery() {
+type GalleryPropsT = { data: SiteT["gallery"] };
+
+export function Gallery({ data }: GalleryPropsT) {
   const [openIndex, setOpenIndex] = useState<number | undefined>(undefined);
 
   return (
@@ -91,13 +94,13 @@ export function Gallery() {
       <SectionContent>
         {/* Header — asymmetric */}
         <EyebrowTag color="coral" withLine>
-          {CONTENT.gallery.eyebrow}
+          {data.eyebrow}
         </EyebrowTag>
 
         <div className="mb-16 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <ScatterText
             className="text-heading-lg"
-            lines={[{ text: CONTENT.gallery.heading, className: "text-off-black" }]}
+            lines={[{ text: data.heading, className: "text-off-black" }]}
           />
         </div>
 
@@ -120,7 +123,7 @@ export function Gallery() {
           delay={0.2}
         >
           <div className="h-px flex-1 bg-coral" />
-          <span className="text-label-sm text-coral">{CONTENT.gallery.handle}</span>
+          <span className="text-label-sm text-coral">{data.handle}</span>
           <div className="h-px flex-1 bg-coral" />
         </FadeUp>
       </SectionContent>

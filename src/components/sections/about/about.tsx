@@ -8,7 +8,7 @@ import { ScatterText } from "@/components/shared/scatter-text";
 import { Starburst } from "@/components/shared/starburst";
 import { SectionContent } from "@/components/shared/section-content";
 import { SECTION_IDS } from "@/config/section-ids";
-import { CONTENT } from "@/config/content";
+import type { SiteT } from "@/lib/get-site";
 import { Section } from "@/components/shared/section";
 // import aboutImg from "@/moodboard/marta_photos/secondary-reference-instagram-3.webp"; // with dogs
 import aboutImg from "@/moodboard/marta_photos/secondary-reference-instagram-24.webp"; // mediterranean terrace
@@ -17,14 +17,16 @@ import aboutImg from "@/moodboard/marta_photos/secondary-reference-instagram-24.
 /* Marta photos — swap into aboutImg / aboutImg2 as needed:
  */
 
-export function About() {
+type AboutPropsT = { data: SiteT["about"] };
+
+export function About({ data }: AboutPropsT) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   return (
     <Section ref={sectionRef} id={SECTION_IDS.about}>
       <SectionContent>
         <EyebrowTag color="coral" withLine>
-          {CONTENT.about.eyebrow}
+          {data.eyebrow}
         </EyebrowTag>
 
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
@@ -33,7 +35,7 @@ export function About() {
             <FadeUp className="relative z-10" amount={0.2} delay={0.1}>
               <Image
                 src={aboutImg}
-                alt={CONTENT.about.imageAlt}
+                alt={data.imageAlt}
                 className="aspect-4/5"
                 sizes="(max-width: 768px) 100vw, 40vw"
                 // placeholder="blur"
@@ -55,22 +57,22 @@ export function About() {
             <ScatterText
               className="text-heading-lg"
               triggerRef={sectionRef}
-              lines={[...CONTENT.about.headingLines]}
+              lines={data.headingLines}
             />
 
             <FadeUp className="mt-8 space-y-5" delay={0.4}>
               <p className="max-w-[55ch] text-sans text-muted">
-                {CONTENT.about.intro}
+                {data.intro}
               </p>
 
               {/* Pull quote — editorial serif, breaks visual rhythm */}
               <blockquote className="border-l-4 border-coral py-2 pl-6">
                 <p className="text-xl md:text-2xl font-quote italic leading-[1.375] text-off-black/90 max-w-[35ch]">
-                  {CONTENT.about.quote}
+                  {data.quote}
                 </p>
               </blockquote>
 
-              {CONTENT.about.paragraphs.map((p) => (
+              {data.paragraphs.map((p) => (
                 <p key={p} className="max-w-[55ch] text-sans text-muted">
                   {p}
                 </p>

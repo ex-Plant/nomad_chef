@@ -5,14 +5,12 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { SECTION_IDS } from "@/config/section-ids";
-import { CONTENT } from "@/config/content";
+import type { SiteT } from "@/lib/get-site";
 import { Image } from "@/components/ui/image";
 import { SectionContent } from "@/components/shared/section-content";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 
 import { Starburst } from "@/components/shared/starburst";
-
-const SLIDES = CONTENT.services.slides;
 
 /* ── Parallax background image — uncomment ONE ──────────────── */
 import parallaxBg from "@/moodboard/gallery/candidates/spread-overhead.jpg";
@@ -26,7 +24,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 /* ─── ServicesParallax — sticky image, scrolling text panels ─── */
 
-export function ServicesParallax() {
+type ServicesPropsT = { data: SiteT["services"] };
+
+export function ServicesParallax({ data }: ServicesPropsT) {
+  const SLIDES = data.slides;
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const starburstRef = useRef<HTMLDivElement>(null);
@@ -132,7 +133,7 @@ export function ServicesParallax() {
           >
             <Image
               src={parallaxBg}
-              alt={CONTENT.services.backgroundAlt}
+              alt={data.backgroundAlt}
               fill
               priority
               className="rounded-none object-cover"
@@ -148,7 +149,7 @@ export function ServicesParallax() {
         <div className="absolute inset-x-0 top-0 z-10 py-24">
           <SectionContent>
             <EyebrowTag color="yellow" withLine lineColor="yellow">
-              {CONTENT.services.eyebrow}
+              {data.eyebrow}
             </EyebrowTag>
           </SectionContent>
         </div>

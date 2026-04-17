@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { SECTION_IDS } from "@/config/section-ids";
-import { CONTENT } from "@/config/content";
+import type { SiteT } from "@/lib/get-site";
 import { Section } from "@/components/shared/section";
 import { Button } from "@/components/shared/button";
 import { FadeUp } from "@/components/shared/fade-up";
@@ -22,7 +22,9 @@ const HERO_VIDEO = "/videos/Can_you_create_another_version_Kling_30__04633.mp4";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function Hero() {
+type HeroPropsT = { data: SiteT["hero"] };
+
+export function Hero({ data }: HeroPropsT) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -84,17 +86,17 @@ export function Hero() {
         {/* Left text block — pushed to bottom-left */}
         <div ref={textRef} className=" text-white">
           <BodyText trigger="mount" delay={0.9} className="mb-2 md:pl-2">
-            {CONTENT.hero.tagline}
+            {data.tagline}
           </BodyText>
           <ScatterText
             as="h1"
             triggerOnMount
             className="font-display text-7xl sm:text-8xl uppercase leading-[0.85] tracking-[-0.05em] md:text-9xl lg:text-[10rem]"
-            lines={[...CONTENT.hero.headingLines]}
+            lines={data.headingLines}
           />
 
           <BodyText trigger="mount" delay={1.1} className="mt-6 md:pl-2">
-            {CONTENT.hero.lead}
+            {data.lead}
           </BodyText>
 
           {/* CTAs */}
@@ -103,17 +105,16 @@ export function Hero() {
             delay={1.3}
             className="mt-8 flex flex-wrap gap-4"
           >
-            <Button
-              asChild
-              variant="coral"
-              size="compact"
-              // withArrow
-            >
-              <a href={CONTENT.hero.ctas[0].href}>{CONTENT.hero.ctas[0].label}</a>
-            </Button>
-            <Button size="compact" asChild variant="yellow">
-              <a href={CONTENT.hero.ctas[1].href}>{CONTENT.hero.ctas[1].label}</a>
-            </Button>
+            {data.ctas[0] && (
+              <Button asChild variant="coral" size="compact">
+                <a href={data.ctas[0].href}>{data.ctas[0].label}</a>
+              </Button>
+            )}
+            {data.ctas[1] && (
+              <Button size="compact" asChild variant="yellow">
+                <a href={data.ctas[1].href}>{data.ctas[1].label}</a>
+              </Button>
+            )}
           </FadeUp>
         </div>
       </SectionContent>
