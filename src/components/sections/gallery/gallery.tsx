@@ -1,6 +1,9 @@
 "use client";
 
+import { useState } from "react";
+
 import { Image } from "@/components/ui/image";
+import { GalleryLightbox } from "@/components/ui/gallery-lightbox";
 
 import { FadeUp } from "@/components/shared/fade-up";
 import { ScatterText } from "@/components/shared/scatter-text";
@@ -81,6 +84,8 @@ function distributeIntoColumns<TItem>(
 }
 
 export function Gallery() {
+  const [openIndex, setOpenIndex] = useState<number | undefined>(undefined);
+
   return (
     <Section id={SECTION_IDS.gallery} className="bg-warm-white">
       <SectionContent>
@@ -97,7 +102,16 @@ export function Gallery() {
         </div>
 
         {/* Staggered masonry — each column starts at a different height */}
-        <GalleryGrid images={GALLERY_IMAGES} />
+        <GalleryGrid
+          images={GALLERY_IMAGES}
+          onImageClick={(index) => setOpenIndex(index)}
+        />
+
+        <GalleryLightbox
+          images={GALLERY_IMAGES}
+          openIndex={openIndex}
+          onClose={() => setOpenIndex(undefined)}
+        />
 
         {/* Bottom accent — flush with grid */}
         <FadeUp
@@ -120,10 +134,12 @@ function MasonryColumns({
   images,
   numCols,
   offsets,
+  onImageClick,
 }: {
   images: GalleryItemT[];
   numCols: number;
   offsets: string[];
+  onImageClick: (index: number) => void;
 }) {
   const cols = distributeIntoColumns(images, numCols);
 
@@ -148,13 +164,20 @@ function MasonryColumns({
                 amount={0.1}
                 delay={(globalIndex % 8) * 0.05}
               >
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  className=" transition-all duration-700 ease-brand group-hover:scale-105 group-hover:brightness-110"
-                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  placeholder="blur"
-                />
+                <button
+                  type="button"
+                  onClick={() => onImageClick(globalIndex)}
+                  className="block w-full cursor-zoom-in overflow-hidden rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-coral"
+                  aria-label={`Otwórz zdjęcie: ${image.alt}`}
+                >
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    className=" transition-all duration-700 ease-brand group-hover:scale-105 group-hover:brightness-110"
+                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    placeholder="blur"
+                  />
+                </button>
               </FadeUp>
             );
           })}
@@ -164,7 +187,13 @@ function MasonryColumns({
   );
 }
 
-function GalleryGrid({ images }: { images: GalleryItemT[] }) {
+function GalleryGrid({
+  images,
+  onImageClick,
+}: {
+  images: GalleryItemT[];
+  onImageClick: (index: number) => void;
+}) {
   return (
     <>
       {/* Mobile: 2 columns */}
@@ -173,6 +202,7 @@ function GalleryGrid({ images }: { images: GalleryItemT[] }) {
           images={images}
           numCols={2}
           offsets={["mt-0", "mt-10"]}
+          onImageClick={onImageClick}
         />
       </div>
       {/* Tablet: 3 columns */}
@@ -181,11 +211,17 @@ function GalleryGrid({ images }: { images: GalleryItemT[] }) {
           images={images}
           numCols={3}
           offsets={["mt-0", "mt-16", "mt-4"]}
+          onImageClick={onImageClick}
         />
       </div>
       {/* Desktop: 4 columns */}
       <div className="hidden lg:block">
-        <MasonryColumns images={images} numCols={4} offsets={[...COLUMN_OFFSETS]} />
+        <MasonryColumns
+          images={images}
+          numCols={4}
+          offsets={[...COLUMN_OFFSETS]}
+          onImageClick={onImageClick}
+        />
       </div>
     </>
   );

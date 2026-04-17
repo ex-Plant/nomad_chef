@@ -4,6 +4,18 @@
    SHARED VARIABLES
    ============================================================ */
 
+/* from spline */
+/* blueHover: "rgba(0, 64, 227, 1)",
+   blue: "rgba(28, 91, 255, 1)",
+   lightBlue: "rgba(114, 168, 255, 1)",
+   ivoryBlack: "rgba(13, 13, 13, 1)",
+   graphite: "rgba(38, 38, 38, 1)",
+   grey: "rgba(164, 164, 164, 1)",
+   lightGrey: "rgba(236, 236, 236, 1)",
+   splineWhite: "rgba(248, 248, 248, 1)",
+   red: "rgba(255, 75, 97, 1)",
+   green: "rgba(0, 216, 177, 1)" */
+
 :root {
   /* Primary palette */
   --coral: #ff6316;
@@ -23,6 +35,7 @@
   /* Text */
   --off-black: #211509;
   --white: #ffffff;
+
 }
 
 @theme inline {
@@ -40,6 +53,18 @@
   --color-off-black: var(--off-black);
   --color-muted: rgb(33 21 9 / 0.7);
   --color-muted-on-dark: rgb(255 255 255 / 0.7);
+
+  /* Spline palette */
+  --color-spline-blue-hover: rgb(0 64 227);
+  --color-spline-blue: rgb(28 91 255);
+  --color-spline-light-blue: rgb(114 168 255);
+  --color-spline-ivory-black: rgb(13 13 13);
+  --color-spline-graphite: rgb(38 38 38);
+  --color-spline-grey: rgb(164 164 164);
+  --color-spline-light-grey: rgb(236 236 236);
+  --color-spline-white: rgb(248 248 248);
+  --color-spline-red: rgb(255 75 97);
+  --color-spline-green: rgb(0 216 177);
 
   /* Font aliases */
   --font-display: var(--font-archivo-black);
@@ -156,7 +181,6 @@
     text-transform: uppercase;
     letter-spacing: 0.2em;
   }
-
 }
 
 /* ============================================================
