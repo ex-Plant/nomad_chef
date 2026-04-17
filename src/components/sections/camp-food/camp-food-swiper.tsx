@@ -5,6 +5,7 @@ import { m, AnimatePresence } from "framer-motion";
 import { ScatterText } from "@/components/shared/scatter-text";
 import { Image } from "@/components/ui/image";
 import { SECTION_IDS } from "@/config/section-ids";
+import { CONTENT } from "@/config/content";
 import { Section } from "@/components/shared/section";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 import { Button } from "@/components/shared/button";
@@ -25,9 +26,8 @@ import ebookBack from "@/moodboard/ebook/ebook_2.webp";
 
 /* ─── Data ─────────────────────────────────────────────── */
 
-type SlideT = {
+type SlideStyleT = {
   readonly image: StaticImageData;
-  readonly alt: string;
   readonly bg: string;
   readonly textColor: string;
   readonly headlineColor: string;
@@ -42,13 +42,11 @@ type SlideT = {
     | "coral"
     | "blue";
   readonly starburstColor: "coral" | "blue" | "yellow";
-  readonly description: string;
 };
 
-const SLIDES: readonly SlideT[] = [
+const SLIDE_STYLES: readonly SlideStyleT[] = [
   {
     image: ebookFront,
-    alt: "Camp Food — okładka ebooka, widok z przodu",
     bg: "bg-coral",
     textColor: "text-white",
     headlineColor: "text-electric-blue",
@@ -58,12 +56,9 @@ const SLIDES: readonly SlideT[] = [
     eyebrowLineColor: "blue",
     buttonVariant: "blue-solid",
     starburstColor: "blue",
-    description:
-      "Jedzenie, które zabierasz ze sobą — w ruch, w naturę, w życie.",
   },
   {
     image: ebookBack,
-    alt: "Camp Food — okładka ebooka, widok z tyłu",
     bg: "bg-electric-blue",
     textColor: "text-white",
     headlineColor: "text-coral",
@@ -73,10 +68,13 @@ const SLIDES: readonly SlideT[] = [
     eyebrowLineColor: "coral",
     buttonVariant: "coral-solid",
     starburstColor: "coral",
-    description:
-      "38 przepisów opartych na prostocie, jakości i intuicji. Bez spiny. Bez zbędnych zasad.",
   },
 ] as const;
+
+const SLIDES = SLIDE_STYLES.map((style, i) => ({
+  ...style,
+  ...CONTENT.campFood.slides[i],
+}));
 
 /* ─── Animation ─── */
 
@@ -152,20 +150,20 @@ export function CampFoodSwiper() {
           lineColor={slide.eyebrowLineColor}
           duration={DURATION.slow}
         >
-          Ebook
+          {CONTENT.campFood.eyebrow}
         </EyebrowTag>
 
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8 ">
           {/* Text — left side */}
           <div className="flex flex-col justify-center md:col-span-5 md:col-start-1">
-            <BodyText className="text-white/90">Mój pierwszy ebook.</BodyText>
+            <BodyText className="text-white/90">{CONTENT.campFood.kicker}</BodyText>
 
             <ScatterText
               className={`mt-4 text-heading-lg tracking-tight `}
-              lines={[
-                { text: "Camp", className: slide.headlineColor },
-                { text: "Food", className: slide.headlineColor },
-              ]}
+              lines={CONTENT.campFood.headingLines.map((line) => ({
+                ...line,
+                className: slide.headlineColor,
+              }))}
             />
 
             <div className="relative mt-6 min-h-12 sm:min-h-14 ">
@@ -191,7 +189,7 @@ export function CampFoodSwiper() {
                 // withArrow
                 size="compact"
               >
-                <a href="#">Kup ebook</a>
+                <a href={CONTENT.campFood.cta.href}>{CONTENT.campFood.cta.label}</a>
               </Button>
             </div>
           </div>

@@ -5,38 +5,14 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { SECTION_IDS } from "@/config/section-ids";
+import { CONTENT } from "@/config/content";
 import { Image } from "@/components/ui/image";
 import { SectionContent } from "@/components/shared/section-content";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 
 import { Starburst } from "@/components/shared/starburst";
 
-const SLIDES = [
-  {
-    title: "Prywatne doświadczenia kulinarne",
-    tagline: "To nie jest catering. To jest doświadczenie.",
-    description:
-      "Kolacje i przyjęcia tworzę od podstaw, z tempem i serwisem dopasowanym do domu, ogrodu albo wyjątkowej przestrzeni.",
-  },
-  {
-    title: "Catering premium i eventy",
-    tagline: "Estetyka, smak i flow wydarzenia trzymam w jednym tonie.",
-    description:
-      "Garden party, bufety, finger food i live cooking bez ciężkości klasycznego cateringu.",
-  },
-  {
-    title: "Retreaty i wyjazdy",
-    tagline: "Menu wspiera energię, regenerację i balans.",
-    description:
-      "Gotowanie w ruchu, dla grup wellness i wyjazdów, gdzie jedzenie ma pracować razem z planem dnia.",
-  },
-  {
-    title: "Warsztaty i współprace",
-    tagline: "Wiedza, która zostaje i wygląda jak część marki.",
-    description:
-      "Warsztaty kulinarne, fermentacja, zero waste i projekty dla marek w bardziej edytorialnym ujęciu.",
-  },
-] as const;
+const SLIDES = CONTENT.services.slides;
 
 /* ── Parallax background image — uncomment ONE ──────────────── */
 import parallaxBg from "@/moodboard/gallery/candidates/spread-overhead.jpg";
@@ -156,7 +132,7 @@ export function ServicesParallax() {
           >
             <Image
               src={parallaxBg}
-              alt="Tło sekcji usług — fotografia kulinarna"
+              alt={CONTENT.services.backgroundAlt}
               fill
               priority
               className="rounded-none object-cover"
@@ -172,7 +148,7 @@ export function ServicesParallax() {
         <div className="absolute inset-x-0 top-0 z-10 py-24">
           <SectionContent>
             <EyebrowTag color="yellow" withLine lineColor="yellow">
-              Usługi
+              {CONTENT.services.eyebrow}
             </EyebrowTag>
           </SectionContent>
         </div>

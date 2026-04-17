@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { NAV_ITEMS } from "@/config/section-ids";
+import { NAV_ITEMS, CONTENT } from "@/config/content";
 import { cn } from "@/helpers/cn";
 
 type NavDesktopPropsT = {
@@ -30,7 +30,7 @@ export function NavDesktop({
                 !isActive && isOnYellow && "text-white hover:text-white/80",
                 !isActive && !isOnYellow && "text-black hover:text-off-black"
               )}
-              aria-label={`Przejdz do sekcji ${item.label}`}
+              aria-label={`${CONTENT.nav.ariaItemPrefix} ${item.label}`}
             >
               {isActive && (
                 <motion.span

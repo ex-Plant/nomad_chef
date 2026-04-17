@@ -5,6 +5,7 @@ import { Image } from "@/components/ui/image";
 import { FadeUp } from "@/components/shared/fade-up";
 import { ScatterText } from "@/components/shared/scatter-text";
 import { SECTION_IDS } from "@/config/section-ids";
+import { CONTENT } from "@/config/content";
 import { Section } from "@/components/shared/section";
 import { SectionContent } from "@/components/shared/section-content";
 
@@ -36,30 +37,32 @@ type GalleryItemT = {
   readonly alt: string;
 };
 
+const { alts } = CONTENT.gallery;
+
 const GALLERY_IMAGES: readonly GalleryItemT[] = [
-  { src: cs1, alt: "Ryż z pistacjami i mango" },
-  { src: cs2, alt: "Zioła w słoiku" },
-  { src: ig12, alt: "Fotografia kulinarna" },
-  { src: cs4, alt: "Stół pełny dań" },
-  { src: cs3, alt: "Złoty drink" },
-  { src: ig17, alt: "Fotografia kulinarna" },
+  { src: cs1, alt: alts.cs1 },
+  { src: cs2, alt: alts.cs2 },
+  { src: ig12, alt: alts.ig12 },
+  { src: cs4, alt: alts.cs4 },
+  { src: cs3, alt: alts.cs3 },
+  { src: ig17, alt: alts.ig17 },
   // { src: ig32, alt: "Jedzenie z Instagrama" },
-  { src: ig33, alt: "Jedzenie z Instagrama" },
-  { src: cs5, alt: "Szefowa kuchni z talerzem" },
+  { src: ig33, alt: alts.ig33 },
+  { src: cs5, alt: alts.cs5 },
   // { src: ig34, alt: "Fotografia kulinarna" },
-  { src: cs6, alt: "Ryż z pistacjami" },
-  { src: ig25, alt: "Jedzenie z Instagrama" },
-  { src: cs7, alt: "Uczta — widok z góry" },
-  { src: ig35, alt: "Fotografia kulinarna" },
-  { src: cs8, alt: "Jajko na niebieskim tle" },
-  { src: ig36, alt: "Jedzenie z Instagrama" },
-  { src: cs9, alt: "Danie na pomarańczowym tle" },
+  { src: cs6, alt: alts.cs6 },
+  { src: ig25, alt: alts.ig25 },
+  { src: cs7, alt: alts.cs7 },
+  { src: ig35, alt: alts.ig35 },
+  { src: cs8, alt: alts.cs8 },
+  { src: ig36, alt: alts.ig36 },
+  { src: cs9, alt: alts.cs9 },
   // { src: ig22, alt: "Fotografia kulinarna" },
-  { src: cs10, alt: "Plating na różowym talerzu" },
-  { src: ig37, alt: "Jedzenie z Instagrama" },
+  { src: cs10, alt: alts.cs10 },
+  { src: ig37, alt: alts.ig37 },
   // { src: cs11, alt: "Close-up plating" },
-  { src: ig38, alt: "Kolorowy talerz" },
-  { src: ig39, alt: "Jedzenie z Instagrama" },
+  { src: ig38, alt: alts.ig38 },
+  { src: ig39, alt: alts.ig39 },
 ] as const;
 
 /* Staggered masonry: images distributed round-robin into columns,
@@ -83,13 +86,13 @@ export function Gallery() {
       <SectionContent>
         {/* Header — asymmetric */}
         <EyebrowTag color="coral" withLine>
-          Galeria
+          {CONTENT.gallery.eyebrow}
         </EyebrowTag>
 
         <div className="mb-16 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <ScatterText
             className="text-heading-lg"
-            lines={[{ text: "Galeria", className: "text-off-black" }]}
+            lines={[{ text: CONTENT.gallery.heading, className: "text-off-black" }]}
           />
         </div>
 
@@ -103,7 +106,7 @@ export function Gallery() {
           delay={0.2}
         >
           <div className="h-px flex-1 bg-coral" />
-          <span className="text-label-sm text-coral">@marta_leśniewska</span>
+          <span className="text-label-sm text-coral">{CONTENT.gallery.handle}</span>
           <div className="h-px flex-1 bg-coral" />
         </FadeUp>
       </SectionContent>

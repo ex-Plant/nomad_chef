@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { NAV_ITEMS, SECTION_IDS } from "@/config/section-ids";
+import { SECTION_IDS } from "@/config/section-ids";
 import type { SectionIdT } from "@/config/section-ids";
+import { NAV_ITEMS, CONTENT } from "@/config/content";
 import { NavDesktop } from "@/components/sections/nav/nav-desktop";
 import {
   NavMobileToggle,
@@ -95,11 +96,11 @@ export function Nav() {
             exit={{ y: -100, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className={cn(
-              "fixed top-6 right-6 z-50 rounded-lg bg-transparent px-2 py-2 transition-colors duration-1000 bg-blend-difference",
-              "md:right-auto md:left-1/2 md:-translate-x-1/2 md:shadow-2xl",
+              "fixed top-6 right-6 z-50 rounded-lg bg-transparent py-2 transition-colors duration-1000 bg-blend-difference",
+              "md:right-auto md:left-1/2 md:-translate-x-1/2 md:px-2 md:shadow-2xl",
               isMobileOpen || isOnYellow ? "md:bg-coral" : "md:bg-yellow"
             )}
-            aria-label="Nawigacja glowna"
+            aria-label={CONTENT.nav.ariaLabel}
           >
             <div className="flex items-center gap-1">
               <NavDesktop

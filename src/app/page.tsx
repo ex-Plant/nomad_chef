@@ -14,12 +14,10 @@ export default function HomePage() {
       <main className="relative">
         <Hero />
         <About />
-        {/* <ServicesSlider /> */}
         <ServicesParallax />
         <CampFoodSwiper />
         <Gallery />
         <Contact />
-        {/* <ContactV2 /> */}
       </main>
 
       <GrainOverlay position="fixed" zIndex="z-50" />

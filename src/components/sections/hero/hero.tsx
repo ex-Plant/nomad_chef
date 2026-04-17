@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { SECTION_IDS } from "@/config/section-ids";
+import { CONTENT } from "@/config/content";
 import { Section } from "@/components/shared/section";
 import { Button } from "@/components/shared/button";
 import { FadeUp } from "@/components/shared/fade-up";
@@ -83,18 +84,17 @@ export function Hero() {
         {/* Left text block — pushed to bottom-left */}
         <div ref={textRef} className=" text-white">
           <BodyText trigger="mount" delay={0.9} className="mb-2 md:pl-2">
-            Jedzenie dopasowane do miejsca, ludzi i momentu
+            {CONTENT.hero.tagline}
           </BodyText>
           <ScatterText
             as="h1"
             triggerOnMount
             className="font-display text-7xl sm:text-8xl uppercase leading-[0.85] tracking-[-0.05em] md:text-9xl lg:text-[10rem]"
-            lines={[{ text: "Nomad" }, { text: "Chef" }]}
+            lines={CONTENT.hero.headingLines}
           />
 
           <BodyText trigger="mount" delay={1.1} className="mt-6 md:pl-2">
-            Gotuje tam, gdzie mnie potrzebujesz — od prywatnych kolacji, przez
-            garden party, po retreaty i wyjazdy w Polsce i za granica.
+            {CONTENT.hero.lead}
           </BodyText>
 
           {/* CTAs */}
@@ -109,10 +109,10 @@ export function Hero() {
               size="compact"
               // withArrow
             >
-              <a href="#uslugi">Zobacz oferte</a>
+              <a href={CONTENT.hero.ctas[0].href}>{CONTENT.hero.ctas[0].label}</a>
             </Button>
             <Button size="compact" asChild variant="yellow">
-              <a href="#kontakt">Napisz do mnie</a>
+              <a href={CONTENT.hero.ctas[1].href}>{CONTENT.hero.ctas[1].label}</a>
             </Button>
           </FadeUp>
         </div>

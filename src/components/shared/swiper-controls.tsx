@@ -1,6 +1,7 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/shared/button";
 import { ProgressDots } from "@/components/shared/progress-dots";
+import { CONTENT } from "@/config/content";
 
 type SwiperControlsPropsT = {
   readonly total: number;
@@ -27,7 +28,7 @@ export function SwiperControls({
           variant="yellow"
           size="icon-sm"
           onClick={onPrev}
-          aria-label="Poprzedni"
+          aria-label={CONTENT.shared.swiperControls.prevLabel}
           // rounded
         >
           <ArrowLeft size={20} strokeWidth={2.5} aria-hidden="true" />
@@ -36,7 +37,7 @@ export function SwiperControls({
           variant="yellow"
           size="icon-sm"
           onClick={onNext}
-          aria-label="Następny"
+          aria-label={CONTENT.shared.swiperControls.nextLabel}
           // rounded
         >
           <ArrowRight size={20} strokeWidth={2.5} aria-hidden="true" />
