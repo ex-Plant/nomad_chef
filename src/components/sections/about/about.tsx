@@ -65,7 +65,7 @@ export function About() {
 
               {/* Pull quote — editorial serif, breaks visual rhythm */}
               <blockquote className="border-l-4 border-coral py-2 pl-6">
-                <p className="text-quote-lg text-off-black/90 max-w-[35ch]">
+                <p className="text-xl md:text-2xl font-quote italic leading-[1.375] text-off-black/90 max-w-[35ch]">
                   {CONTENT.about.quote}
                 </p>
               </blockquote>
