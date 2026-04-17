@@ -2,10 +2,11 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import useEmblaCarousel from "embla-carousel-react";
+import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import NextImage, { type StaticImageData } from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
-import { ChevronIcon, CloseIcon } from "@/components/ui/icons";
+import { Button } from "@/components/shared/button";
 
 type LightboxImageT = {
   src: StaticImageData;
@@ -63,7 +64,7 @@ export function GalleryLightbox({
   return (
     <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-spline-ivory-black data-[state=open]:animate-in data-[state=open]:fade-in data-[state=closed]:animate-out data-[state=closed]:fade-out" />
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-ivory-black data-[state=open]:animate-in data-[state=open]:fade-in data-[state=closed]:animate-out data-[state=closed]:fade-out" />
         <Dialog.Content
           aria-describedby={undefined}
           className="fixed inset-0 z-50 outline-none"
@@ -75,7 +76,7 @@ export function GalleryLightbox({
               {images.map((image, i) => (
                 <div
                   key={i}
-                  className="relative flex h-full min-w-0 flex-[0_0_100%] items-center justify-center p-6 md:p-12"
+                  className="relative flex h-full min-w-0 flex-[0_0_100%] items-center justify-center px-6 pb-24 pt-16 md:px-24 md:py-16"
                 >
                   <div className="relative h-full w-full">
                     <NextImage
@@ -93,37 +94,60 @@ export function GalleryLightbox({
             </div>
           </div>
 
-          <Dialog.Close
-            aria-label="Zamknij"
-            className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-warm-white/10 text-warm-white backdrop-blur-sm transition hover:bg-warm-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-warm-white"
-          >
-            <CloseIcon />
+          <Dialog.Close asChild>
+            <Button
+              variant="yellow"
+              size="icon-sm"
+              aria-label="Zamknij"
+              className="absolute right-6 top-6 z-10"
+            >
+              <X size={20} strokeWidth={2.5} aria-hidden="true" />
+            </Button>
           </Dialog.Close>
 
-          <button
-            type="button"
-            aria-label="Poprzednie zdjęcie"
-            onClick={scrollPrev}
-            className="absolute left-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 cursor-w-resize items-center justify-center rounded-full bg-warm-white/10 text-warm-white backdrop-blur-sm transition hover:bg-warm-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-warm-white"
-          >
-            <ChevronIcon direction="left" />
-          </button>
-
-          <button
-            type="button"
-            aria-label="Następne zdjęcie"
-            onClick={scrollNext}
-            className="absolute right-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 cursor-e-resize items-center justify-center rounded-full bg-warm-white/10 text-warm-white backdrop-blur-sm transition hover:bg-warm-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-warm-white"
-          >
-            <ChevronIcon direction="right" />
-          </button>
-
-          <div className="text-label-sm absolute bottom-6 left-1/2 z-10 -translate-x-1/2 rounded-full bg-warm-white/10 px-4 py-2 text-warm-white tabular-nums backdrop-blur-sm">
+          <div className="absolute bottom-20 left-1/2 z-10 -translate-x-1/2 font-geist text-sm text-yellow md:bottom-8">
             {selectedIndex + 1} / {images.length}
           </div>
+
+          <div className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 gap-3 md:hidden">
+            <Button
+              variant="yellow"
+              size="icon-sm"
+              onClick={scrollPrev}
+              aria-label="Poprzednie zdjęcie"
+            >
+              <ArrowLeft size={20} strokeWidth={2.5} aria-hidden="true" />
+            </Button>
+            <Button
+              variant="yellow"
+              size="icon-sm"
+              onClick={scrollNext}
+              aria-label="Następne zdjęcie"
+            >
+              <ArrowRight size={20} strokeWidth={2.5} aria-hidden="true" />
+            </Button>
+          </div>
+
+          <Button
+            variant="yellow"
+            size="icon-sm"
+            onClick={scrollPrev}
+            aria-label="Poprzednie zdjęcie"
+            className="absolute left-6 top-1/2 z-10 hidden -translate-y-1/2 md:inline-flex"
+          >
+            <ArrowLeft size={20} strokeWidth={2.5} aria-hidden="true" />
+          </Button>
+          <Button
+            variant="yellow"
+            size="icon-sm"
+            onClick={scrollNext}
+            aria-label="Następne zdjęcie"
+            className="absolute right-6 top-1/2 z-10 hidden -translate-y-1/2 md:inline-flex"
+          >
+            <ArrowRight size={20} strokeWidth={2.5} aria-hidden="true" />
+          </Button>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
   );
 }
-

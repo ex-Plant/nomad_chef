@@ -35,7 +35,6 @@
   /* Text */
   --off-black: #211509;
   --white: #ffffff;
-
 }
 
 @theme inline {
@@ -58,7 +57,7 @@
   --color-spline-blue-hover: rgb(0 64 227);
   --color-spline-blue: rgb(28 91 255);
   --color-spline-light-blue: rgb(114 168 255);
-  --color-spline-ivory-black: rgb(13 13 13);
+  --color-ivory-black: rgb(13 13 13);
   --color-spline-graphite: rgb(38 38 38);
   --color-spline-grey: rgb(164 164 164);
   --color-spline-light-grey: rgb(236 236 236);
