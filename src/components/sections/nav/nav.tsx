@@ -22,10 +22,9 @@ export function Nav() {
   const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    // Activation line: fraction of viewport height used as the "you're reading
-    // this section" marker. Section with the largest top ≤ this line wins.
-    const ACTIVATION_RATIO = 0.35;
-
+    // Active section = the one currently sitting under the nav bar.
+    // A section becomes active the moment its top scrolls past the nav's
+    // bottom edge, so the nav always reflects the section it's visually on.
     let rafId = 0;
 
     const update = () => {
@@ -47,7 +46,7 @@ export function Nav() {
         );
       }
 
-      const line = window.innerHeight * ACTIVATION_RATIO;
+      const line = nav ? nav.getBoundingClientRect().bottom : 0;
       let nextId: SectionIdT | null = null;
       for (const item of NAV_ITEMS) {
         const el = document.getElementById(item.id);

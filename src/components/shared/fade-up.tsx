@@ -49,8 +49,8 @@ export function FadeUp({
 
   const motionProps =
     trigger === "mount"
-      ? { initial: hidden, animate: visible }
-      : { initial: hidden, whileInView: visible, viewport };
+      ? { initial: hidden, animate: visible, exit: hidden }
+      : { initial: hidden, whileInView: visible, viewport, exit: hidden };
 
   return (
     <Component

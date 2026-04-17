@@ -45,7 +45,7 @@ export function NavMobileToggle({
         stroke="currentColor"
         fill="none"
         viewBox="-10 -10 105 120"
-        width="36"
+        width="48"
         className={cn(
           "transition-[translate,rotate,color] duration-500 ",
           STROKE_CLASS[color],
@@ -68,18 +68,26 @@ export function NavMobileToggle({
   );
 }
 
+const NAV_ITEM_TILTS = [-2.5, 1.8, -1.2, 2.2, -2, 1.4] as const;
+
 const OVERLAY_VARIANTS = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { duration: 0.5, ease: EASE, staggerChildren: 0.06 },
+    transition: {
+      duration: 0.35,
+      ease: EASE,
+      when: "beforeChildren",
+      staggerChildren: 0.06,
+    },
   },
   exit: {
     opacity: 0,
     transition: {
-      duration: 0.3,
+      duration: 0.35,
       ease: EASE,
-      staggerChildren: 0.03,
+      when: "afterChildren",
+      staggerChildren: 0.05,
       staggerDirection: -1,
     },
   },
@@ -117,10 +125,18 @@ export function NavMobileOverlay({
           />
           <div className="relative z-10 flex flex-col items-center gap-8">
             {NAV_ITEMS.map((item, i) => (
-              <FadeUp key={item.id} delay={i * 0.02} duration={0.8}>
+              <FadeUp
+                key={item.id}
+                trigger="mount"
+                delay={i * 0.04}
+                duration={0.5}
+              >
                 <button
                   onClick={() => scrollTo(item.id)}
-                  className="font-instrument text-4xl uppercase text-coral"
+                  style={{
+                    rotate: `${NAV_ITEM_TILTS[i % NAV_ITEM_TILTS.length]}deg`,
+                  }}
+                  className=" text-4xl uppercase bg-coral text-white pl-1 pr-4"
                 >
                   {item.label}
                 </button>
