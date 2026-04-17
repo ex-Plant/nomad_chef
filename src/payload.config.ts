@@ -5,8 +5,8 @@ import sharp from "sharp";
 import { vercelPostgresAdapter } from "@payloadcms/db-vercel-postgres";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
-import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
-import nodemailer from "nodemailer";
+// import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
+// import nodemailer from "nodemailer";
 import { pl } from "@payloadcms/translations/languages/pl";
 import { en } from "@payloadcms/translations/languages/en";
 
@@ -38,19 +38,21 @@ export default buildConfig({
     push: false,
     migrationDir: path.resolve(dirname, "migrations"),
   }),
-  email: nodemailerAdapter({
-    defaultFromAddress: ENV.EMAIL_USER,
-    defaultFromName: "Chef",
-    transport: nodemailer.createTransport({
-      host: ENV.EMAIL_HOST,
-      port: 465,
-      secure: true,
-      auth: {
-        user: ENV.EMAIL_USER,
-        pass: ENV.EMAIL_PASS,
-      },
-    }),
-  }),
+  // Disabled until real SMTP credentials are set — placeholder EMAIL_HOST
+  // causes a DNS lookup failure ("getaddrinfo ENOTFOUND a") on boot.
+  // email: nodemailerAdapter({
+  //   defaultFromAddress: ENV.EMAIL_USER,
+  //   defaultFromName: "Chef",
+  //   transport: nodemailer.createTransport({
+  //     host: ENV.EMAIL_HOST,
+  //     port: 465,
+  //     secure: true,
+  //     auth: {
+  //       user: ENV.EMAIL_USER,
+  //       pass: ENV.EMAIL_PASS,
+  //     },
+  //   }),
+  // }),
   collections: [Users, Media],
   globals: [Site],
   plugins: [
