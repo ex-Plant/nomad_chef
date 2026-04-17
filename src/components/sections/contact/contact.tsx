@@ -39,7 +39,7 @@ export function Contact() {
             <FadeUp
               as="p"
               delay={0.2}
-              className="mt- max-w-md text-subtitle-lg text-coral"
+              className=" max-w-md text-subtitle-lg text-coral"
             >
               {CONTENT.contact.lead}
             </FadeUp>
@@ -77,7 +77,9 @@ export function Contact() {
                   asChild
                   variant="coral-solid"
                 >
-                  <a href={CONTENT.contact.submit.href}>{CONTENT.contact.submit.label}</a>
+                  <a href={CONTENT.contact.submit.href}>
+                    {CONTENT.contact.submit.label}
+                  </a>
                 </Button>
               </form>
             </FadeUp>

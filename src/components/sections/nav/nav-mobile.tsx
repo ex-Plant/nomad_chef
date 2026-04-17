@@ -30,14 +30,15 @@ export function NavMobileToggle({
 }: Pick<NavMobilePropsT, "isOpen" | "activeSection" | "onToggle">) {
   const color = NAV_TOGGLE_COLORS[activeSection];
 
-  return;
   return (
     <button
       onClick={onToggle}
       // variant="white"
       // size="icon-sm"
-      className="md:hidden bg-red-200"
-      aria-label={isOpen ? CONTENT.nav.toggleCloseLabel : CONTENT.nav.toggleOpenLabel}
+      className="md:hidden"
+      aria-label={
+        isOpen ? CONTENT.nav.toggleCloseLabel : CONTENT.nav.toggleOpenLabel
+      }
       aria-expanded={isOpen}
     >
       <svg
@@ -46,7 +47,7 @@ export function NavMobileToggle({
         viewBox="-10 -10 105 120"
         width="36"
         className={cn(
-          "transition-[translate,rotate,color] duration-500 bg-red-200 ",
+          "transition-[translate,rotate,color] duration-500 ",
           STROKE_CLASS[color],
           isOpen && "translate-[-2px_-2px] rotate-45"
         )}
