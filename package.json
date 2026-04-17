@@ -14,6 +14,7 @@
     "migrate:create": "payload migrate:create",
     "migrate": "payload migrate",
     "seed:admin": "node --env-file=.env --import tsx src/scripts/seed-admin.ts",
+    "seed:content": "node --env-file=.env --import tsx src/scripts/seed-content.ts",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
     "db:dump": "set -a && source .env && set +a && mkdir -p dumps && docker exec -i \"$DOCKER_CONTAINER\" pg_dump -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\" --clean --no-owner --no-acl > dumps/dump-latest.sql && cp dumps/dump-latest.sql \"dumps/dump-$(date +%Y-%m-%d_%H-%M).sql\"",

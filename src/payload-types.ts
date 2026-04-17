@@ -325,42 +325,97 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Site {
   id: number;
-  hero_eyebrow?: string | null;
-  hero_title?: string | null;
+  hero_tagline?: string | null;
+  hero_heading_lines?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
   hero_lead?: string | null;
+  hero_ctas?:
+    | {
+        label?: string | null;
+        href?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   hero_image?: (number | null) | Media;
-  about_title?: string | null;
-  about_body?: string | null;
+  about_eyebrow?: string | null;
+  about_heading_lines?:
+    | {
+        text: string;
+        color: 'off-black' | 'coral' | 'blue' | 'white' | 'pink' | 'yellow';
+        id?: string | null;
+      }[]
+    | null;
+  about_intro?: string | null;
+  about_quote?: string | null;
+  about_paragraphs?:
+    | {
+        text?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  about_image_alt?: string | null;
   about_image?: (number | null) | Media;
-  services_title?: string | null;
-  services_items?:
+  services_eyebrow?: string | null;
+  services_background_alt?: string | null;
+  services_slides?:
     | {
         title?: string | null;
-        body?: string | null;
-        image?: (number | null) | Media;
+        tagline?: string | null;
+        description?: string | null;
         id?: string | null;
       }[]
     | null;
-  camp_food_title?: string | null;
-  camp_food_lead?: string | null;
-  camp_food_images?:
+  camp_food_eyebrow?: string | null;
+  camp_food_kicker?: string | null;
+  camp_food_heading_lines?:
     | {
-        image?: (number | null) | Media;
+        text: string;
         id?: string | null;
       }[]
     | null;
-  gallery_title?: string | null;
-  gallery_items?:
+  camp_food_cta?: {
+    label?: string | null;
+    href?: string | null;
+  };
+  camp_food_slides?:
     | {
-        image?: (number | null) | Media;
+        alt?: string | null;
+        description?: string | null;
         id?: string | null;
       }[]
     | null;
-  contact_title?: string | null;
+  gallery_eyebrow?: string | null;
+  gallery_heading?: string | null;
+  gallery_handle?: string | null;
+  contact_eyebrow?: string | null;
+  contact_heading_lines?:
+    | {
+        text: string;
+        color: 'off-black' | 'coral' | 'blue' | 'white' | 'pink' | 'yellow';
+        id?: string | null;
+      }[]
+    | null;
   contact_lead?: string | null;
-  contact_email?: string | null;
-  contact_phone?: string | null;
-  contact_instagram?: string | null;
+  contact_email?: {
+    label?: string | null;
+    value?: string | null;
+    href?: string | null;
+  };
+  contact_instagram?: {
+    label?: string | null;
+    value?: string | null;
+    href?: string | null;
+  };
+  contact_form_placeholder?: string | null;
+  contact_submit?: {
+    label?: string | null;
+    href?: string | null;
+  };
+  contact_footer?: string | null;
   site_title?: string | null;
   site_description?: string | null;
   nav_items?:
@@ -378,42 +433,105 @@ export interface Site {
  * via the `definition` "site_select".
  */
 export interface SiteSelect<T extends boolean = true> {
-  hero_eyebrow?: T;
-  hero_title?: T;
+  hero_tagline?: T;
+  hero_heading_lines?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
   hero_lead?: T;
+  hero_ctas?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        id?: T;
+      };
   hero_image?: T;
-  about_title?: T;
-  about_body?: T;
+  about_eyebrow?: T;
+  about_heading_lines?:
+    | T
+    | {
+        text?: T;
+        color?: T;
+        id?: T;
+      };
+  about_intro?: T;
+  about_quote?: T;
+  about_paragraphs?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  about_image_alt?: T;
   about_image?: T;
-  services_title?: T;
-  services_items?:
+  services_eyebrow?: T;
+  services_background_alt?: T;
+  services_slides?:
     | T
     | {
         title?: T;
-        body?: T;
-        image?: T;
+        tagline?: T;
+        description?: T;
         id?: T;
       };
-  camp_food_title?: T;
-  camp_food_lead?: T;
-  camp_food_images?:
+  camp_food_eyebrow?: T;
+  camp_food_kicker?: T;
+  camp_food_heading_lines?:
     | T
     | {
-        image?: T;
+        text?: T;
         id?: T;
       };
-  gallery_title?: T;
-  gallery_items?:
+  camp_food_cta?:
     | T
     | {
-        image?: T;
+        label?: T;
+        href?: T;
+      };
+  camp_food_slides?:
+    | T
+    | {
+        alt?: T;
+        description?: T;
         id?: T;
       };
-  contact_title?: T;
+  gallery_eyebrow?: T;
+  gallery_heading?: T;
+  gallery_handle?: T;
+  contact_eyebrow?: T;
+  contact_heading_lines?:
+    | T
+    | {
+        text?: T;
+        color?: T;
+        id?: T;
+      };
   contact_lead?: T;
-  contact_email?: T;
-  contact_phone?: T;
-  contact_instagram?: T;
+  contact_email?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        href?: T;
+      };
+  contact_instagram?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        href?: T;
+      };
+  contact_form_placeholder?: T;
+  contact_submit?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+      };
+  contact_footer?: T;
   site_title?: T;
   site_description?: T;
   nav_items?:
