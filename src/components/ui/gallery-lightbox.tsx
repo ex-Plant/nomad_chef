@@ -5,6 +5,8 @@ import useEmblaCarousel from "embla-carousel-react";
 import NextImage, { type StaticImageData } from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
+import { ChevronIcon, CloseIcon } from "@/components/ui/icons";
+
 type LightboxImageT = {
   src: StaticImageData;
   alt: string;
@@ -125,43 +127,3 @@ export function GalleryLightbox({
   );
 }
 
-function CloseIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={20}
-      height={20}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M18 6 6 18" />
-      <path d="m6 6 12 12" />
-    </svg>
-  );
-}
-
-function ChevronIcon({ direction }: { direction: "left" | "right" }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={22}
-      height={22}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      {direction === "left" ? (
-        <path d="m15 18-6-6 6-6" />
-      ) : (
-        <path d="m9 18 6-6-6-6" />
-      )}
-    </svg>
-  );
-}

@@ -15,7 +15,7 @@ export const NAV_TOGGLE_COLORS = {
   [SECTION_IDS.hero]: "yellow",
   [SECTION_IDS.about]: "coral",
   [SECTION_IDS.services]: "yellow",
-  [SECTION_IDS.campFood]: "coral",
-  [SECTION_IDS.gallery]: "yellow",
+  [SECTION_IDS.campFood]: "yellow",
+  [SECTION_IDS.gallery]: "coral",
   [SECTION_IDS.contact]: "coral",
 } as const satisfies Record<SectionIdT, NavToggleColorT>;
