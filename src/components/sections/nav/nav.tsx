@@ -22,14 +22,22 @@ export function Nav() {
   const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
+    // Activation line: fraction of viewport height used as the "you're reading
+    // this section" marker. Section with the largest top ≤ this line wins.
+    const ACTIVATION_RATIO = 0.35;
+
+    let rafId = 0;
+
+    const update = () => {
+      rafId = 0;
+
       const shouldBeVisible = window.scrollY > 100;
       setIsVisible((prev) =>
         prev === shouldBeVisible ? prev : shouldBeVisible
       );
 
-      const kontakt = document.getElementById(SECTION_IDS.contact);
       const nav = navRef.current;
+      const kontakt = document.getElementById(SECTION_IDS.contact);
       if (kontakt && nav) {
         const kontaktRect = kontakt.getBoundingClientRect();
         const navRect = nav.getBoundingClientRect();
@@ -38,40 +46,34 @@ export function Nav() {
           prev === shouldBeOnYellow ? prev : shouldBeOnYellow
         );
       }
+
+      const line = window.innerHeight * ACTIVATION_RATIO;
+      let nextId: SectionIdT | null = null;
+      for (const item of NAV_ITEMS) {
+        const el = document.getElementById(item.id);
+        if (!el) continue;
+        const top = el.getBoundingClientRect().top;
+        if (top <= line) nextId = item.id as SectionIdT;
+        else break; // NAV_ITEMS are in DOM order; once one is below, rest are too
+      }
+      if (nextId) {
+        setActiveSection((prev) => (prev === nextId ? prev : nextId));
+      }
     };
 
-    const intersecting = new Set<string>();
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(update);
+    };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) intersecting.add(entry.target.id);
-          else intersecting.delete(entry.target.id);
-        }
-        // Pick the deepest-scrolled intersecting section (last in DOM order).
-        // Using a band via rootMargin + threshold: 0 so sections taller than
-        // the viewport (services parallax, camp-food swiper) still register.
-        for (let i = NAV_ITEMS.length - 1; i >= 0; i--) {
-          if (intersecting.has(NAV_ITEMS[i].id)) {
-            const nextId = NAV_ITEMS[i].id as SectionIdT;
-            setActiveSection((prev) => (prev === nextId ? prev : nextId));
-            break;
-          }
-        }
-      },
-      { rootMargin: "-40% 0px -40% 0px", threshold: 0 }
-    );
-
-    window.addEventListener("scroll", handleScroll);
-
-    for (const item of NAV_ITEMS) {
-      const el = document.getElementById(item.id);
-      if (el) observer.observe(el);
-    }
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-      observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 
