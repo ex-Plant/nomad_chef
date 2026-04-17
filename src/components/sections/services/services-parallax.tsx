@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { SECTION_IDS } from "@/config/section-ids";
 import { Image } from "@/components/ui/image";
 import { SectionContent } from "@/components/shared/section-content";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
@@ -18,19 +19,19 @@ const SLIDES = [
       "Kolacje i przyjęcia tworzę od podstaw, z tempem i serwisem dopasowanym do domu, ogrodu albo wyjątkowej przestrzeni.",
   },
   {
-    title: "Catering premium & eventy",
+    title: "Catering premium i eventy",
     tagline: "Estetyka, smak i flow wydarzenia trzymam w jednym tonie.",
     description:
       "Garden party, bufety, finger food i live cooking bez ciężkości klasycznego cateringu.",
   },
   {
-    title: "Retreaty & wyjazdy",
+    title: "Retreaty i wyjazdy",
     tagline: "Menu wspiera energię, regenerację i balans.",
     description:
       "Gotowanie w ruchu, dla grup wellness i wyjazdów, gdzie jedzenie ma pracować razem z planem dnia.",
   },
   {
-    title: "Warsztaty & współprace",
+    title: "Warsztaty i współprace",
     tagline: "Wiedza, która zostaje i wygląda jak część marki.",
     description:
       "Warsztaty kulinarne, fermentacja, zero waste i projekty dla marek w bardziej edytorialnym ujęciu.",
@@ -143,7 +144,7 @@ export function ServicesParallax() {
   );
 
   return (
-    <div ref={containerRef} className="relative z-1 ">
+    <div ref={containerRef} id={SECTION_IDS.services} className="relative z-1 ">
       {/* Sticky layer — image + eyebrow + heading + starburst stay fixed */}
       <div className="sticky top-0 z-1 h-dvh overflow-x-clip">
         {/* Image wrapper — 180% tall, GSAP translates it upward for parallax.
@@ -179,7 +180,7 @@ export function ServicesParallax() {
         {/* Decorative starburst — starts top-right, GSAP moves it to bottom-right */}
         <div
           ref={starburstRef}
-          className="absolute -right-6 top-0 z-4 -translate-y-1/3  md:-right-8 lg:-right-20"
+          className="absolute -right-6 top-0 z-4 -translate-y-1/3  md:-right-20"
         >
           <Starburst
             variant="v1-b"
@@ -199,7 +200,7 @@ export function ServicesParallax() {
           <div
             key={slide.title}
             className={cn(
-              `flex min-h-[50dvh] flex-col py-24 pointer-events-auto
+              `flex min-h-dvh flex-col py-24 pointer-events-auto
                drop-shadow-[0_0_60px_rgba(0,0,0,0.5)]
                
                `,

@@ -14,7 +14,8 @@ import { SectionContent } from "@/components/shared/section-content";
 
 /* ── Hero background video — uncomment ONE ──────────────── */
 // const HERO_VIDEO = "/videos/_Slow_overhead_camera_drift_ac_Veo_31_61972.mp4";
-// const HERO_VIDEO = "/videos/_Cinematic_slow-motion_overhea_Veo_31_Fast_98682.mp4";
+// const HERO_VIDEO =
+// ("/videos/_Cinematic_slow-motion_overhea_Veo_31_Fast_98682.mp4");
 // const HERO_VIDEO = "/videos/Can_you_create_another_version_Veo_31_79044.mp4";
 const HERO_VIDEO = "/videos/Can_you_create_another_version_Kling_30__04633.mp4";
 

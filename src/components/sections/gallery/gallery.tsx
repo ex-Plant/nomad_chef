@@ -88,7 +88,7 @@ export function Gallery() {
 
         <div className="mb-16 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <ScatterText
-            className="text-heading-xl"
+            className="text-heading-lg"
             lines={[{ text: "Galeria", className: "text-off-black" }]}
           />
         </div>

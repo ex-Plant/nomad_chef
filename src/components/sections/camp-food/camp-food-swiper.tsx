@@ -201,7 +201,7 @@ export function CampFoodSwiper() {
             <Starburst
               color={slide.starburstColor}
               size="sm"
-              className="absolute z-1 -right-4 md:-left-52 -top-12"
+              className="absolute z-1 -right-4 md:-left-72  -top-16 "
               variant="logo-a"
             />
             <AnimatePresence>

@@ -31,10 +31,10 @@ export function Contact() {
           {/* Left — large heading block */}
           <div className="md:col-span-7 flex flex-col justify-center ">
             <ScatterText
-              className="text-heading-lg xl:text-heading-xl"
+              className="text-heading-lg"
               lines={[
-                { text: "Jesli czujesz,", className: "text-coral" },
-                { text: "ze to cos", className: "text-coral" },
+                { text: "Jeśli czujesz,", className: "text-coral" },
+                { text: "że to coś", className: "text-coral" },
                 { text: "dla Ciebie", className: "text-off-black" },
               ]}
             />
@@ -42,7 +42,7 @@ export function Contact() {
             <FadeUp
               as="p"
               delay={0.2}
-              className="mt-6 max-w-md text-subtitle-lg text-coral"
+              className="mt- max-w-md text-subtitle-lg text-coral"
             >
               — napisz.
             </FadeUp>
@@ -70,7 +70,7 @@ export function Contact() {
             <FadeUp delay={0.4} className="mt-8">
               <form className="">
                 <textarea
-                  placeholder="Twoja wiadomosc..."
+                  placeholder="Twoja wiadomość..."
                   rows={4}
                   className="w-full resize-none  rounded-lg border border-coral bg-yellow px-5 py-4 font-sans text-base text-off-black field-sizing-content transition-colors duration-300 ease-brand placeholder:text-coral focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral min-h-32"
                 />
