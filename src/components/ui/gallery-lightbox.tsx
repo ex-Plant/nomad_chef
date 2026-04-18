@@ -9,7 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/shared/button";
 
 type LightboxImageT = {
-  src: StaticImageData;
+  src: StaticImageData | string;
   alt: string;
 };
 
@@ -76,7 +76,7 @@ export function GalleryLightbox({
               {images.map((image, i) => (
                 <div
                   key={i}
-                  className="relative flex h-full min-w-0 flex-[0_0_100%] items-center justify-center px-6 pb-24 pt-16 md:px-24 md:py-16"
+                  className="relative flex h-full min-w-0 flex-[0_0_100%] items-center justify-center px-6 pb-32 pt-12 md:px-24 md:py-16"
                 >
                   <div className="relative h-full w-full">
                     <NextImage
@@ -105,7 +105,7 @@ export function GalleryLightbox({
             </Button>
           </Dialog.Close>
 
-          <div className="absolute bottom-20 left-1/2 z-10 -translate-x-1/2 font-geist text-sm text-yellow md:bottom-8">
+          <div className="absolute bottom-24 left-1/2 z-10 -translate-x-1/2 font-geist text-sm text-yellow md:bottom-8">
             {selectedIndex + 1} / {images.length}
           </div>
 

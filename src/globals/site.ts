@@ -130,9 +130,9 @@ export const Site: GlobalConfig = {
                 ),
               ],
             },
-            upload("hero_image", {
-              pl: "Zdjęcie w sekcji głównej",
-              en: "Hero image",
+            upload("hero_media", {
+              pl: "Zdjęcie lub wideo w sekcji głównej",
+              en: "Hero image or video",
             }),
           ],
         },
@@ -248,6 +248,7 @@ export const Site: GlobalConfig = {
               fields: [
                 text("alt", { pl: "Alt zdjęcia", en: "Image alt" }),
                 textarea("description", { pl: "Opis", en: "Description" }),
+                upload("image", { pl: "Zdjęcie", en: "Image" }),
               ],
             },
           ],
@@ -267,6 +268,12 @@ export const Site: GlobalConfig = {
               pl: "Uchwyt (np. @instagram)",
               en: "Handle (e.g. @instagram)",
             }),
+            {
+              name: "gallery_images",
+              type: "array",
+              label: { pl: "Zdjęcia galerii", en: "Gallery images" },
+              fields: [upload("image", { pl: "Zdjęcie", en: "Image" })],
+            },
           ],
         },
         {

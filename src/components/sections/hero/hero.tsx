@@ -12,13 +12,7 @@ import { FadeUp } from "@/components/shared/fade-up";
 import { BodyText } from "@/components/shared/body-text";
 import { ScatterText } from "@/components/shared/scatter-text";
 import { SectionContent } from "@/components/shared/section-content";
-
-/* ── Hero background video — uncomment ONE ──────────────── */
-// const HERO_VIDEO = "/videos/_Slow_overhead_camera_drift_ac_Veo_31_61972.mp4";
-// const HERO_VIDEO =
-// ("/videos/_Cinematic_slow-motion_overhea_Veo_31_Fast_98682.mp4");
-// const HERO_VIDEO = "/videos/Can_you_create_another_version_Veo_31_79044.mp4";
-const HERO_VIDEO = "/videos/Can_you_create_another_version_Kling_30__04633.mp4";
+import { Image } from "@/components/ui/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -67,16 +61,27 @@ export function Hero({ data }: HeroPropsT) {
       id={SECTION_IDS.hero}
       className="overflow-hidden bg-coral"
     >
-      {/* Primary background video with parallax */}
+      {/* Primary background media with parallax */}
       <div ref={imageRef} className="absolute inset-0 z-0 overflow-hidden">
-        <video
-          src={HERO_VIDEO}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="min-h-full min-w-full object-cover"
-        />
+        {data.media?.mimeType.startsWith("video/") ? (
+          <video
+            src={data.media.url}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="min-h-full min-w-full object-cover"
+          />
+        ) : data.media ? (
+          <Image
+            src={data.media.url}
+            alt={data.media.alt}
+            fill
+            priority
+            sizes="100vw"
+            className="min-h-full min-w-full object-cover"
+          />
+        ) : null}
         <div className="absolute inset-0 bg-coral/30" />
         <div className="absolute inset-0 bg-black/20" />
       </div>

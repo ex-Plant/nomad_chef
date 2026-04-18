@@ -19,15 +19,9 @@ import {
   AUTOPLAY_INTERVAL,
 } from "@/config/animation-constants";
 
-import type { StaticImageData } from "next/image";
-
-import ebookFront from "@/moodboard/ebook/ebook_1.webp";
-import ebookBack from "@/moodboard/ebook/ebook_2.webp";
-
 /* ─── Data ─────────────────────────────────────────────── */
 
 type SlideStyleT = {
-  image: StaticImageData;
   bg: string;
   textColor: string;
   headlineColor: string;
@@ -46,7 +40,6 @@ type SlideStyleT = {
 
 const SLIDE_STYLES: SlideStyleT[] = [
   {
-    image: ebookFront,
     bg: "bg-coral",
     textColor: "text-white",
     headlineColor: "text-electric-blue",
@@ -58,7 +51,6 @@ const SLIDE_STYLES: SlideStyleT[] = [
     starburstColor: "blue",
   },
   {
-    image: ebookBack,
     bg: "bg-electric-blue",
     textColor: "text-white",
     headlineColor: "text-coral",
@@ -87,7 +79,7 @@ export function CampFoodSwiper({ data }: CampFoodPropsT) {
 
   const handlePrev = useCallback(() => {
     setActiveIndex(
-      (prev) => (prev - 1 + SLIDE_STYLES.length) % SLIDE_STYLES.length,
+      (prev) => (prev - 1 + SLIDE_STYLES.length) % SLIDE_STYLES.length
     );
   }, []);
 
@@ -198,7 +190,7 @@ export function CampFoodSwiper({ data }: CampFoodPropsT) {
           </div>
 
           {/* Ebook cover — single large image, right side */}
-          <div className="relative h-[40vh] md:h-[65vh] md:col-span-7 md:col-start-6 ">
+          <div className="relative h-[40vh] md:h-[min(65dvh,800px)] md:col-span-7 md:col-start-6 ">
             <Starburst
               color={slide.starburstColor}
               size="sm"
@@ -215,13 +207,17 @@ export function CampFoodSwiper({ data }: CampFoodPropsT) {
                 className="absolute inset-0 flex h-full items-center justify-center z-4"
                 style={{ willChange: "transform, opacity" }}
               >
-                <Image
-                  src={slide.image}
-                  alt={slide.alt}
-                  className="h-full w-auto max-w-full rounded-xl object-contain"
-                  sizes="(max-width: 768px) 80vw, (max-width:1440px) 50vw, 750px"
-                  priority
-                />
+                {slide.image && (
+                  <Image
+                    src={slide.image.url}
+                    alt={slide.alt || slide.image.alt}
+                    width={slide.image.width ?? 1200}
+                    height={slide.image.height ?? 1500}
+                    className="h-full w-auto max-w-full rounded-xl object-contain"
+                    sizes="(max-width: 768px) 80vw, (max-width:1440px) 50vw, 750px"
+                    priority
+                  />
+                )}
               </m.div>
             </AnimatePresence>
             {/* Decorative starburst — bottom-right */}

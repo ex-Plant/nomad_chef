@@ -340,7 +340,7 @@ export interface Site {
         id?: string | null;
       }[]
     | null;
-  hero_image?: (number | null) | Media;
+  hero_media?: (number | null) | Media;
   about_eyebrow?: string | null;
   about_heading_lines?:
     | {
@@ -385,12 +385,19 @@ export interface Site {
     | {
         alt?: string | null;
         description?: string | null;
+        image?: (number | null) | Media;
         id?: string | null;
       }[]
     | null;
   gallery_eyebrow?: string | null;
   gallery_heading?: string | null;
   gallery_handle?: string | null;
+  gallery_images?:
+    | {
+        image?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
   contact_eyebrow?: string | null;
   contact_heading_lines?:
     | {
@@ -448,7 +455,7 @@ export interface SiteSelect<T extends boolean = true> {
         href?: T;
         id?: T;
       };
-  hero_image?: T;
+  hero_media?: T;
   about_eyebrow?: T;
   about_heading_lines?:
     | T
@@ -496,11 +503,18 @@ export interface SiteSelect<T extends boolean = true> {
     | {
         alt?: T;
         description?: T;
+        image?: T;
         id?: T;
       };
   gallery_eyebrow?: T;
   gallery_heading?: T;
   gallery_handle?: T;
+  gallery_images?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
   contact_eyebrow?: T;
   contact_heading_lines?:
     | T

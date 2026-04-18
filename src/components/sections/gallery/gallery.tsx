@@ -8,66 +8,11 @@ import { GalleryLightbox } from "@/components/ui/gallery-lightbox";
 import { FadeUp } from "@/components/shared/fade-up";
 import { ScatterText } from "@/components/shared/scatter-text";
 import { SECTION_IDS } from "@/config/section-ids";
-import { CONTENT } from "@/config/content";
-import type { SiteT } from "@/lib/get-site";
+import type { MediaT, SiteT } from "@/lib/get-site";
 import { Section } from "@/components/shared/section";
 import { SectionContent } from "@/components/shared/section-content";
 
-import cs1 from "@/moodboard/gallery/client-selected-1.webp";
-import cs2 from "@/moodboard/gallery/client-selected-2.webp";
-import cs3 from "@/moodboard/gallery/client-selected-3.webp";
-import cs4 from "@/moodboard/gallery/client-selected-4.webp";
-import cs5 from "@/moodboard/gallery/client-selected-5.webp";
-import cs6 from "@/moodboard/gallery/client-selected-6.webp";
-import cs7 from "@/moodboard/gallery/client-selected-7.webp";
-import cs8 from "@/moodboard/gallery/client-selected-8.webp";
-import cs9 from "@/moodboard/gallery/client-selected-9.webp";
-import cs10 from "@/moodboard/gallery/client-selected-10.webp";
-import ig12 from "@/moodboard/gallery/secondary-reference-instagram-12.webp";
-import ig17 from "@/moodboard/gallery/secondary-reference-instagram-17.webp";
-import ig25 from "@/moodboard/gallery/secondary-reference-instagram-25.webp";
-import ig33 from "@/moodboard/gallery/secondary-reference-instagram-33.webp";
-import ig35 from "@/moodboard/gallery/secondary-reference-instagram-35.webp";
-import ig36 from "@/moodboard/gallery/secondary-reference-instagram-36.webp";
-import ig37 from "@/moodboard/gallery/secondary-reference-instagram-37.webp";
-import ig38 from "@/moodboard/gallery/secondary-reference-instagram-38.webp";
-import ig39 from "@/moodboard/gallery/secondary-reference-instagram-39.webp";
-
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
-import type { StaticImageData } from "next/image";
-
-type GalleryItemT = {
-  src: StaticImageData;
-  alt: string;
-};
-
-const { alts } = CONTENT.gallery;
-
-const GALLERY_IMAGES: GalleryItemT[] = [
-  { src: cs1, alt: alts.cs1 },
-  { src: cs2, alt: alts.cs2 },
-  { src: ig12, alt: alts.ig12 },
-  { src: cs4, alt: alts.cs4 },
-  { src: cs3, alt: alts.cs3 },
-  { src: ig17, alt: alts.ig17 },
-  // { src: ig32, alt: "Jedzenie z Instagrama" },
-  { src: ig33, alt: alts.ig33 },
-  { src: cs5, alt: alts.cs5 },
-  // { src: ig34, alt: "Fotografia kulinarna" },
-  { src: cs6, alt: alts.cs6 },
-  { src: ig25, alt: alts.ig25 },
-  { src: cs7, alt: alts.cs7 },
-  { src: ig35, alt: alts.ig35 },
-  { src: cs8, alt: alts.cs8 },
-  { src: ig36, alt: alts.ig36 },
-  { src: cs9, alt: alts.cs9 },
-  // { src: ig22, alt: "Fotografia kulinarna" },
-  { src: cs10, alt: alts.cs10 },
-  { src: ig37, alt: alts.ig37 },
-  // { src: cs11, alt: "Close-up plating" },
-  { src: ig38, alt: alts.ig38 },
-  { src: ig39, alt: alts.ig39 },
-] as const;
 
 /* Staggered masonry: images distributed round-robin into columns,
    each column starts at a different vertical offset for organic rhythm.
@@ -106,12 +51,12 @@ export function Gallery({ data }: GalleryPropsT) {
 
         {/* Staggered masonry — each column starts at a different height */}
         <GalleryGrid
-          images={GALLERY_IMAGES}
+          images={data.images}
           onImageClick={(index) => setOpenIndex(index)}
         />
 
         <GalleryLightbox
-          images={GALLERY_IMAGES}
+          images={data.images.map((img) => ({ src: img.url, alt: img.alt }))}
           openIndex={openIndex}
           onClose={() => setOpenIndex(undefined)}
         />
@@ -139,7 +84,7 @@ function MasonryColumns({
   offsets,
   onImageClick,
 }: {
-  images: GalleryItemT[];
+  images: MediaT[];
   numCols: number;
   offsets: string[];
   onImageClick: (index: number) => void;
@@ -162,7 +107,7 @@ function MasonryColumns({
             const globalIndex = imgIndex * numCols + colIndex;
             return (
               <FadeUp
-                key={`${image.alt}-${globalIndex}`}
+                key={`${image.url}-${globalIndex}`}
                 className="group"
                 amount={0.1}
                 delay={(globalIndex % 8) * 0.05}
@@ -174,11 +119,12 @@ function MasonryColumns({
                   aria-label={`Otwórz zdjęcie: ${image.alt}`}
                 >
                   <Image
-                    src={image.src}
+                    src={image.url}
                     alt={image.alt}
+                    width={image.width ?? 1200}
+                    height={image.height ?? 1200}
                     className=" transition-all duration-700 ease-brand group-hover:scale-105 group-hover:brightness-110"
                     sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                    placeholder="blur"
                   />
                 </button>
               </FadeUp>
@@ -194,7 +140,7 @@ function GalleryGrid({
   images,
   onImageClick,
 }: {
-  images: GalleryItemT[];
+  images: MediaT[];
   onImageClick: (index: number) => void;
 }) {
   return (
