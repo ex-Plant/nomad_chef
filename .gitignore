@@ -40,6 +40,9 @@ yarn-error.log*
 # db dumps
 /dumps
 
+# payload local media uploads
+/media
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
