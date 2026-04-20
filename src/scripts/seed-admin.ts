@@ -1,9 +1,14 @@
 import { getPayload } from 'payload'
 import config from '../payload.config.js'
-import { ENV } from '../config/env.js'
 
-const email = ENV.SEED_ADMIN_EMAIL
-const password = ENV.SEED_ADMIN_PASSWORD
+function requireEnv(key: string): string {
+  const value = process.env[key]
+  if (!value) throw new Error(`Missing required env var: ${key}`)
+  return value
+}
+
+const email = requireEnv('SEED_ADMIN_EMAIL')
+const password = requireEnv('SEED_ADMIN_PASSWORD')
 
 const payload = await getPayload({ config })
 
