@@ -56,10 +56,10 @@ export default buildConfig({
   collections: [Users, Media],
   globals: [Site],
   plugins: [
-    // vercelBlobStorage({
-    //   collections: { media: true },
-    //   token: ENV.BLOB_READ_WRITE_TOKEN,
-    // }),
+    vercelBlobStorage({
+      collections: { media: true },
+      token: ENV.BLOB_READ_WRITE_TOKEN,
+    }),
   ],
   secret: ENV.PAYLOAD_SECRET,
   sharp,
