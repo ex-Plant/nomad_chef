@@ -44,6 +44,7 @@ export const CONTENT = {
       "Łączę smak z funkcją — jedzenie ma nie tylko smakować, ale też działać.",
     paragraphs: [
       "Pracuję na ekologicznych produktach, korzystam z fermentacji, świeżych ziół i składników wspierających organizm.",
+      " Każde menu tworzę od podstaw. Dopasowuję je do stylu życia, potrzeb i energii wydarzenia.",
       "Moja droga do kuchni nie była oczywista — od banku, przez modę, po własną restaurację. Dziś pracuję jako nomadyczna kucharka, gotując w różnych miejscach świata.",
     ],
   },
@@ -56,25 +57,24 @@ export const CONTENT = {
         title: "Prywatne doświadczenia kulinarne",
         tagline: "To nie jest catering. To jest doświadczenie.",
         description:
-          "Kolacje i przyjęcia tworzę od podstaw, z tempem i serwisem dopasowanym do domu, ogrodu albo wyjątkowej przestrzeni.",
+          "Kolacje i przyjęcia tworzę od podstaw -  w Twoim domu, ogrodzie lub wybranej przestrzeni.",
       },
       {
         title: "Catering premium i eventy",
-        tagline: "Estetyka, smak i flow wydarzenia trzymam w jednym tonie.",
+        tagline: "Estetyka, smak i flow wydarzenia — wszystko spójne",
         description:
-          "Garden party, bufety, finger food i live cooking bez ciężkości klasycznego cateringu.",
+          "Garden party, bufet i finger food, live cooking. Estetyka, smak i flow wydarzenia - wszystko spójne.",
       },
       {
         title: "Retreaty i wyjazdy",
-        tagline: "Menu wspiera energię, regenerację i balans.",
+        tagline: "Gotowanie w ruchu. Adaptacja do miejsca i ludzi.",
         description:
-          "Gotowanie w ruchu, dla grup wellness i wyjazdów, gdzie jedzenie ma pracować razem z planem dnia.",
+          "Retreaty jogowe, wyjazdy wellness i sportowe, długoterminowa współpraca. Menu wspiera energię, regenerację i balans.",
       },
       {
         title: "Warsztaty i współprace",
-        tagline: "Wiedza, która zostaje i wygląda jak część marki.",
-        description:
-          "Warsztaty kulinarne, fermentacja, zero waste i projekty dla marek w bardziej edytorialnym ujęciu.",
+        tagline: "Fermentacja / zero waste / kuchnia funkcjonalna.",
+        description: "Projekty dla firm i marek",
       },
     ],
   },
@@ -150,7 +150,7 @@ export const CONTENT = {
       label: "Wyślij wiadomość",
       href: "mailto:hello@nomadchef.pl",
     },
-    footer: "Nomad Chef 2026",
+    footer: "Nomad Chef",
   },
 } as const;
 

@@ -23,20 +23,20 @@ export function About({ data }: AboutPropsT) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   return (
-    <Section ref={sectionRef} id={SECTION_IDS.about}>
+    <Section ref={sectionRef} id={SECTION_IDS.about} className="bg-warm-white">
       <SectionContent>
-        <EyebrowTag color="coral" withLine>
+        <EyebrowTag color="coral" className={`z-1 relative`} withLine>
           {data.eyebrow}
         </EyebrowTag>
 
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           {/* Images column — 5 of 12 cols, staggered */}
-          <div className="relative md:col-span-5">
-            <FadeUp className="relative z-10" amount={0.2} delay={0.1}>
+          <div className="relative  md:col-span-5">
+            <FadeUp className="relative z-1" amount={0.2} delay={0.1}>
               <Image
                 src={aboutImg}
                 alt={data.imageAlt}
-                className="aspect-4/5"
+                className="aspect-4/5 "
                 sizes="(max-width: 768px) 100vw, 40vw"
                 // placeholder="blur"
               />
@@ -44,11 +44,11 @@ export function About({ data }: AboutPropsT) {
 
             {/* Yellow starburst accent — behind image */}
             <FadeUp
-              className="absolute -left-8 -top-12 md:-top-24 z-[-2] md:-left-24 "
+              className="absolute -left-16 -top-20 md:-top-36 md:-left-32 "
               amount={0.2}
               delay={0.5}
             >
-              <Starburst color="yellow" size="md" />
+              <Starburst color="yellow" size="lg" />
             </FadeUp>
           </div>
 
@@ -61,9 +61,7 @@ export function About({ data }: AboutPropsT) {
             />
 
             <FadeUp className="mt-8 space-y-5" delay={0.4}>
-              <p className="max-w-[55ch] text-sans text-muted whitespace-pre-line">
-                {data.intro}
-              </p>
+              <p className="max-w-[55ch] text-sans text-muted whitespace-pre-line">{data.intro}</p>
 
               {/* Pull quote — editorial serif, breaks visual rhythm */}
               <blockquote className="border-l-4 border-coral py-2 pl-6">

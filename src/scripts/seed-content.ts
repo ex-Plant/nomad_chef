@@ -63,8 +63,7 @@ async function uploadFile(relPath: string, alt: string): Promise<number> {
 
 /* ── Media to seed ──────────────────────────────────── */
 
-const HERO_MEDIA_PATH =
-  "public/videos/Can_you_create_another_version_Kling_30__04633.mp4";
+const HERO_MEDIA_PATH = "public/videos/marta_vid.mp4";
 
 const GALLERY_ITEMS: { file: string; alt: string }[] = [
   { file: "client-selected-1.webp", alt: CONTENT.gallery.alts.cs1 },

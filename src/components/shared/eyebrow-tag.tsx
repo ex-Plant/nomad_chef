@@ -1,4 +1,5 @@
 import { FadeUp } from "@/components/shared/fade-up";
+import { cn } from "../../helpers/cn";
 
 type ColorT = "coral" | "blue" | "yellow" | "pink" | "dark" | "white";
 
@@ -52,7 +53,7 @@ export function EyebrowTag({
   color = "dark",
   withLine = true,
   lineColor,
-  className = "mb-12 sm:mb-16",
+  className,
   duration,
 }: EyebrowTagPropsT) {
   const { border, text } = COLOR_MAP[color];
@@ -76,7 +77,7 @@ export function EyebrowTag({
   );
 
   return (
-    <FadeUp className={className} duration={duration}>
+    <FadeUp className={cn("mb-12 sm:mb-16 ", className)} duration={duration}>
       {content}
     </FadeUp>
   );

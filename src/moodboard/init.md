@@ -12,13 +12,14 @@ insta to check for mood https://www.instagram.com/mart_lesniewska/
    🔥 HERO (pierwszy ekran)
    Nagłówek:
    Nomad Chef
-   Jedzenie dopasowane do miejsca, ludzi i momentu
+   Jedzenie dopasowwane do miejsca, ludzi i momentu
    Podtytuł:
    Gotuję tam, gdzie mnie potrzebujesz — od prywatnych kolacji, przez garden party, po
    retreaty i wyjazdy w Polsce i za granicą.
    CTA:
    → Zobacz ofertę
    → Napisz do mnie
+
    🌿 O MNIE
    Nie skracaj za bardzo — to sprzedaje.
    Tekst:
@@ -31,8 +32,10 @@ insta to check for mood https://www.instagram.com/mart_lesniewska/
    Moja droga do kuchni nie była oczywista — od banku, przez modę, po własną restaurację.
    Dziś pracuję jako nomadyczna kucharka, gotując w różnych miejscach świata.
    Gotuję prosto, ale nigdy banalnie.
+
    🍽 USŁUGI
    Podzielone na 4 filary:
+
 7. Prywatne doświadczenia kulinarne
    Kolacje i przyjęcia tworzone od podstaw — w Twoim domu, ogrodzie lub wybranej
    przestrzeni.
@@ -86,4 +89,4 @@ insta to check for mood https://www.instagram.com/mart_lesniewska/
     📩 KONTAKT
     Tekst:
     Jeśli czujesz, że to coś dla Ciebie — napisz.
-    Każdą współpracę zaczynam od roz
+    Każdą współpracę zaczynam od rozowy.

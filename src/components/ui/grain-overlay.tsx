@@ -13,7 +13,7 @@ type GrainOverlayPropsT = {
 export function GrainOverlay({
   position = "absolute",
   zIndex = "z-0",
-  opacity = "opacity-[0.35]",
+  opacity = "opacity-[0.3]",
   className = "",
 }: GrainOverlayPropsT) {
   return (

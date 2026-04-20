@@ -7,22 +7,21 @@ import { ContactLink } from "@/components/sections/contact/contact-link";
 import { SECTION_IDS } from "@/config/section-ids";
 import type { SiteT } from "@/lib/get-site";
 import { Section } from "@/components/shared/section";
-import { Starburst } from "@/components/shared/starburst";
 import { FadeUp } from "@/components/shared/fade-up";
-import { BodyText } from "@/components/shared/body-text";
 import { SectionContent } from "@/components/shared/section-content";
+import { BodyText } from "@/components/shared/body-text";
 
 type ContactPropsT = { data: SiteT["contact"] };
 
 export function Contact({ data }: ContactPropsT) {
   return (
-    <Section id={SECTION_IDS.contact} className="bg-yellow min-h-fit">
-      <Starburst
+    <Section id={SECTION_IDS.contact} className="bg-yellow ">
+      {/* <Starburst
         color="pink"
         rotate
-        variant="logo-h"
+        variant="logo-c"
         className="absolute -right-8 bottom-12 z-0 w-36 md:-right-6 md:bottom-2 md:w-44 lg:w-52"
-      />
+      /> */}
 
       <SectionContent className="relative z-1 ">
         {/* Eyebrow */}
@@ -33,9 +32,9 @@ export function Contact({ data }: ContactPropsT) {
         {/* Asymmetric split: massive heading left, form/links right */}
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           {/* Left — large heading block */}
-          <div className="md:col-span-7 flex flex-col justify-center ">
+          <div className="md:col-span-7 flex flex-col justify-center leading-loose ">
             <ScatterText
-              className="text-heading-lg"
+              className="text-heading-lg leading-[95%]"
               lines={data.headingLines}
             />
 
@@ -84,14 +83,14 @@ export function Contact({ data }: ContactPropsT) {
                   className="w-full resize-none  rounded-lg border border-coral bg-yellow px-5 py-4 font-sans text-base text-off-black field-sizing-content transition-colors duration-300 ease-brand placeholder:text-coral focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral min-h-32"
                 />
                 <Button
+                  onClick={() => alert("🏄")}
+                  type="button"
                   className={`mt-4`}
                   size="compact"
                   asChild
                   variant="coral-solid"
                 >
-                  <a href={data.submit.href}>
-                    {data.submit.label}
-                  </a>
+                  <a href={data.submit.href}>{data.submit.label}</a>
                 </Button>
               </form>
             </FadeUp>
@@ -105,6 +104,7 @@ export function Contact({ data }: ContactPropsT) {
           className=" flex items-center justify-between border-t border-coral pt-8  mt-16 text-heading text-sm tracking-tight text-coral"
         >
           <span>{data.footer}</span>
+          <span>{2026}</span>
         </FadeUp>
       </SectionContent>
     </Section>

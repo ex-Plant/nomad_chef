@@ -11,6 +11,7 @@ import { SectionContent } from "@/components/shared/section-content";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 
 import { Starburst } from "@/components/shared/starburst";
+import { useBreakpoint } from "@/hooks/use-media-query";
 
 import { cn } from "../../../helpers/cn";
 
@@ -25,15 +26,15 @@ export function ServicesParallax({ data }: ServicesPropsT) {
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const starburstRef = useRef<HTMLDivElement>(null);
-  const starburstSvgRef = useRef<SVGSVGElement>(null);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const isTablet = useBreakpoint("md");
+  const isDesktop = useBreakpoint("lg");
 
   useGSAP(
     () => {
       const container = containerRef.current;
       const imageWrap = imageRef.current;
       const starburst = starburstRef.current;
-      const svg = starburstSvgRef.current;
       if (!container) return;
 
       /* Classic parallax: image is 180% viewport height, translates slowly upward.
@@ -56,47 +57,25 @@ export function ServicesParallax({ data }: ServicesPropsT) {
         );
       }
 
-      /* Starburst position and rotation are separate tweens because they need
-         different ScrollTrigger ranges: position stops at 90% (parks before the
-         last slide), rotation spans 100% (never stops spinning). A single tween
-         can only have one start/end range. */
       if (starburst) {
+        const starburstTop = isDesktop ? "calc(90%)" : isTablet ? "92%" : "98%";
         gsap.fromTo(
           starburst,
-          { top: "0%" },
+          { top: "0%", rotation: 0 },
           {
-            top: "calc(100% - 6rem)",
-            ease: "none",
-            scrollTrigger: {
-              trigger: container,
-              start: "top top",
-              end: "90% bottom",
-              scrub: 1.5,
-            },
-          }
-        );
-      }
-
-      /* Starburst rotation — spans full scroll so it never stops spinning */
-      if (svg) {
-        gsap.fromTo(
-          svg,
-          { rotation: 0 },
-          {
+            top: starburstTop,
             rotation: 720,
             ease: "none",
             scrollTrigger: {
               trigger: container,
-              start: "top top",
+              start: "top center",
               end: "bottom bottom",
-              scrub: 1.5,
+              scrub: 1,
             },
           }
         );
       }
 
-      /* Text panels — fade out as they scroll up out of the viewport.
-         Each panel is 100dvh. Fade from 1→0 as it exits upward. */
       panelRefs.current.forEach((panel) => {
         if (!panel) return;
         gsap.to(panel, {
@@ -111,7 +90,7 @@ export function ServicesParallax({ data }: ServicesPropsT) {
         });
       });
     },
-    { scope: containerRef, dependencies: [] }
+    { scope: containerRef, dependencies: [isTablet, isDesktop] }
   );
 
   return (
@@ -153,14 +132,9 @@ export function ServicesParallax({ data }: ServicesPropsT) {
         {/* Decorative starburst — starts top-right, GSAP moves it to bottom-right */}
         <div
           ref={starburstRef}
-          className="absolute -right-12 top-0 z-4 -translate-y-1/3  md:-right-20"
+          className="absolute -right-12 top-0 z-4 -translate-y-1/3  md:-right-28"
         >
-          <Starburst
-            variant="v1-b"
-            color="yellow"
-            size="md"
-            svgRef={starburstSvgRef}
-          />
+          <Starburst variant="v1-b" color="yellow" size="md" />
         </div>
       </div>
 
@@ -173,11 +147,11 @@ export function ServicesParallax({ data }: ServicesPropsT) {
           <div
             key={slide.title}
             className={cn(
-              `flex min-h-dvh flex-col py-24 pointer-events-auto
+              `flex min-h-[min(80dvh,600px)] flex-col py-24 pointer-events-auto
                drop-shadow-[0_0_60px_rgba(0,0,0,0.5)]
-               
                `,
-              i === 0 && "mt-[50dvh]"
+              i === 0 && "mt-[50dvh]",
+              i === SLIDES.length - 1 && "pb-[400px]"
             )}
           >
             <div

@@ -75,7 +75,7 @@ export default function RootLayout({
   return (
     <html
       lang="pl"
-      className={`${archivoBlack.variable} ${archivo.variable} ${instrumentSerif.variable} ${geistSans.variable} ${playfair.variable} ${outfit.variable} ${bebasNeue.variable} h-full antialiased`}
+      className={`${archivoBlack.variable} ${archivo.variable} ${instrumentSerif.variable} ${geistSans.variable} ${playfair.variable} ${outfit.variable} ${bebasNeue.variable} h-full antialiased scroll-smooth overscroll-none `}
     >
       <body className="min-h-full flex flex-col bg-warm-white overflow-x-hidden">
         <MotionProvider>

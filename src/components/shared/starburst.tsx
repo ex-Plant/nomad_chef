@@ -25,7 +25,7 @@ type StarburstColorT = keyof typeof STARBURST_COLORS;
 const SIZE_VARIANTS = {
   sm: "w-24 md:w-40 lg:w-44",
   md: "w-28 md:w-60 lg:w-72",
-  lg: "w-44 md:w-72 lg:w-88",
+  lg: "w-64 md:w-96 lg:w-120",
 } as const;
 
 type StarburstSizeT = keyof typeof SIZE_VARIANTS;
@@ -38,7 +38,6 @@ type StarburstPropsT = {
   speed?: number;
   offset?: number;
   className?: string;
-  svgRef?: React.Ref<SVGSVGElement>;
 };
 
 /* Original organic starburst — relatively uniform spikes */
@@ -380,16 +379,13 @@ function StarburstSvg({
   color = "blue",
   variant = "organic",
   className = "",
-  ref,
 }: {
   color?: StarburstColorT;
   variant?: StarburstVariantT;
   className?: string;
-  ref?: React.Ref<SVGSVGElement>;
 }) {
   return (
     <svg
-      ref={ref}
       viewBox="0 0 200 200"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -458,7 +454,6 @@ export function Starburst({
   speed = 1,
   offset = 0,
   className = "",
-  svgRef,
 }: StarburstPropsT) {
   const sizeClass = size ? SIZE_VARIANTS[size] : "";
   const combined = `${sizeClass} ${className}`;
@@ -477,7 +472,7 @@ export function Starburst({
 
   return (
     <div className={`pointer-events-none ${combined}`}>
-      <StarburstSvg color={color} variant={variant} ref={svgRef} />
+      <StarburstSvg color={color} variant={variant} />
     </div>
   );
 }
