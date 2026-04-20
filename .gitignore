@@ -46,3 +46,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# seed source assets (local-only, not checked in)
+/seed-assets
+
+# personal notes
+.notes

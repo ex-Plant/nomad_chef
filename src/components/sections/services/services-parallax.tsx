@@ -13,11 +13,9 @@ import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 import { Starburst } from "@/components/shared/starburst";
 import { useBreakpoint } from "@/hooks/use-media-query";
 
-import { cn } from "../../../helpers/cn";
+import { cn } from "@/helpers/cn";
 
 gsap.registerPlugin(ScrollTrigger);
-
-/* ─── ServicesParallax — sticky image, scrolling text panels ─── */
 
 type ServicesPropsT = { data: SiteT["services"] };
 

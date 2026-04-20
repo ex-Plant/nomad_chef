@@ -23,11 +23,13 @@ export type SiteT = {
     headingLines: HeadingLineT[];
     lead: string;
     ctas: CtaT[];
-    media?: MediaT;
+    mediaDesktop?: MediaT;
+    mediaMobile?: MediaT;
   };
   about: {
     eyebrow: string;
     imageAlt: string;
+    image?: MediaT;
     headingLines: HeadingLineT[];
     intro: string;
     quote: string;
@@ -133,11 +135,13 @@ const fetchSite = (locale: LocaleT) =>
           })),
           lead: raw.hero_lead ?? "",
           ctas: (raw.hero_ctas ?? []).map((c) => toCta(c)),
-          media: toMedia(raw.hero_media),
+          mediaDesktop: toMedia(raw.hero_media_desktop),
+          mediaMobile: toMedia(raw.hero_media_mobile),
         },
         about: {
           eyebrow: raw.about_eyebrow ?? "",
           imageAlt: raw.about_image_alt ?? "",
+          image: toMedia(raw.about_image),
           headingLines: toLines(raw.about_heading_lines),
           intro: raw.about_intro ?? "",
           quote: raw.about_quote ?? "",

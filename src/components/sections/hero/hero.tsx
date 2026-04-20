@@ -27,7 +27,9 @@ export function Hero({ data }: HeroPropsT) {
   const imageRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
 
-  const isVideo = data.media?.mimeType.startsWith("video/") ?? false;
+  const desktopMedia = data.mediaDesktop;
+  const mobileMedia = data.mediaMobile;
+  const isVideo = desktopMedia?.mimeType.startsWith("video/") ?? false;
   const isLg = useBreakpoint("lg");
   const posterSrc = isLg
     ? "/videos/hero-poster.jpg"
@@ -73,7 +75,7 @@ export function Hero({ data }: HeroPropsT) {
     <Section ref={sectionRef} id={SECTION_IDS.hero} className=" min-h-dvh">
       {/* Primary background media with parallax */}
       <div ref={imageRef} className="absolute inset-0 z-0 overflow-hidden ">
-        {isVideo && data.media ? (
+        {isVideo && desktopMedia ? (
           <>
             {/* Poster underneath — also the fallback surface if video never plays */}
             <NextImage
@@ -85,9 +87,25 @@ export function Hero({ data }: HeroPropsT) {
               sizes="100vw"
               className="object-cover"
             />
+            {/* TODO: once client picks final videos, serve optimized variants from /public/videos
+                and switch back to static <source> tags like the commented block below.
+                For now videos are served from Payload media (desktop + mobile uploads). */}
+            {/*
             <video
               ref={videoRef}
               poster="/videos/hero-poster.jpg"
+              autoPlay loop muted playsInline preload="auto"
+              className="relative min-h-full min-w-full object-cover"
+            >
+              <source media="(max-width: 768px)" src="/videos/marta-464x832-crf22.mp4" type="video/mp4" />
+              <source media="(max-width: 1366px)" src="/videos/hero-1280w-crf37.webm" type="video/webm" />
+              <source media="(max-width: 1600px)" src="/videos/hero-1440w-crf37.webm" type="video/webm" />
+              <source src="/videos/hero-1920w-crf37.webm" type="video/webm" />
+            </video>
+            */}
+            <video
+              ref={videoRef}
+              poster={posterSrc}
               autoPlay
               loop
               muted
@@ -95,28 +113,20 @@ export function Hero({ data }: HeroPropsT) {
               preload="auto"
               className="relative min-h-full min-w-full object-cover"
             >
-              <source
-                media="(max-width: 768px)"
-                src="/videos/marta-464x832-crf22.mp4"
-                type="video/mp4"
-              />
-              <source
-                media="(max-width: 1366px)"
-                src="/videos/hero-1280w-crf37.webm"
-                type="video/webm"
-              />
-              <source
-                media="(max-width: 1600px)"
-                src="/videos/hero-1440w-crf37.webm"
-                type="video/webm"
-              />
-              <source src="/videos/hero-1920w-crf37.webm" type="video/webm" />
+              {mobileMedia && (
+                <source
+                  media="(max-width: 768px)"
+                  src={mobileMedia.url}
+                  type={mobileMedia.mimeType}
+                />
+              )}
+              <source src={desktopMedia.url} type={desktopMedia.mimeType} />
             </video>
           </>
-        ) : data.media ? (
+        ) : desktopMedia ? (
           <Image
-            src={data.media.url}
-            alt={data.media.alt}
+            src={desktopMedia.url}
+            alt={desktopMedia.alt}
             fill
             priority
             sizes="100vw"

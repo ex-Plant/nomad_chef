@@ -63,7 +63,8 @@ async function uploadFile(relPath: string, alt: string): Promise<number> {
 
 /* ── Media to seed ──────────────────────────────────── */
 
-const HERO_MEDIA_PATH = "public/videos/marta_vid.mp4";
+const HERO_DESKTOP_PATH = "seed-assets/hero/desktop.webm";
+const HERO_MOBILE_PATH = "seed-assets/hero/mobile.mp4";
 
 const GALLERY_ITEMS: { file: string; alt: string }[] = [
   { file: "client-selected-1.webp", alt: CONTENT.gallery.alts.cs1 },
@@ -88,22 +89,28 @@ const GALLERY_ITEMS: { file: string; alt: string }[] = [
 ];
 
 const EBOOK_FILES = [
-  "src/moodboard/ebook/ebook_1.webp",
-  "src/moodboard/ebook/ebook_2.webp",
+  "seed-assets/ebook/ebook_1.webp",
+  "seed-assets/ebook/ebook_2.webp",
 ];
 
 /* ── Upload everything ──────────────────────────────── */
 
-const heroMediaId = await uploadFile(HERO_MEDIA_PATH, "Hero background");
+const heroDesktopId = await uploadFile(HERO_DESKTOP_PATH, "Hero desktop video");
+const heroMobileId = await uploadFile(HERO_MOBILE_PATH, "Hero mobile video");
 
 const servicesBackgroundId = await uploadFile(
-  "src/moodboard/gallery/candidates/spread-overhead.jpg",
+  "seed-assets/services/spread-overhead.jpg",
   CONTENT.services.backgroundAlt,
+);
+
+const aboutImageId = await uploadFile(
+  "seed-assets/about/secondary-reference-instagram-24.webp",
+  CONTENT.about.imageAlt,
 );
 
 const galleryIds = await Promise.all(
   GALLERY_ITEMS.map((g) =>
-    uploadFile(`src/moodboard/gallery/${g.file}`, g.alt),
+    uploadFile(`seed-assets/gallery/${g.file}`, g.alt),
   ),
 );
 
@@ -123,7 +130,8 @@ await payload.updateGlobal({
     hero_heading_lines: CONTENT.hero.headingLines.map((l) => ({ text: l.text })),
     hero_lead: CONTENT.hero.lead,
     hero_ctas: CONTENT.hero.ctas.map((c) => ({ label: c.label, href: c.href })),
-    hero_media: heroMediaId,
+    hero_media_desktop: heroDesktopId,
+    hero_media_mobile: heroMobileId,
 
     about_eyebrow: CONTENT.about.eyebrow,
     about_heading_lines: CONTENT.about.headingLines.map((l) => ({
@@ -134,6 +142,7 @@ await payload.updateGlobal({
     about_quote: CONTENT.about.quote,
     about_paragraphs: CONTENT.about.paragraphs.map((text) => ({ text })),
     about_image_alt: CONTENT.about.imageAlt,
+    about_image: aboutImageId,
 
     services_eyebrow: CONTENT.services.eyebrow,
     services_background_alt: CONTENT.services.backgroundAlt,

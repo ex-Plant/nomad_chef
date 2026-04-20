@@ -10,12 +10,6 @@ import { SectionContent } from "@/components/shared/section-content";
 import { SECTION_IDS } from "@/config/section-ids";
 import type { SiteT } from "@/lib/get-site";
 import { Section } from "@/components/shared/section";
-// import aboutImg from "@/moodboard/marta_photos/secondary-reference-instagram-3.webp"; // with dogs
-import aboutImg from "@/moodboard/marta_photos/secondary-reference-instagram-24.webp"; // mediterranean terrace
-// import aboutImg2 from "@/moodboard/marta_photos/secondary-reference-instagram-28.webp"; // tropical, coral dress
-// import aboutImg from "@/moodboard/marta_photos/secondary-reference-instagram-31.webp"; // bicycle, purple outfit
-/* Marta photos — swap into aboutImg / aboutImg2 as needed:
- */
 
 type AboutPropsT = { data: SiteT["about"] };
 
@@ -32,15 +26,18 @@ export function About({ data }: AboutPropsT) {
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           {/* Images column — 5 of 12 cols, staggered */}
           <div className="relative  md:col-span-5">
-            <FadeUp className="relative z-1" amount={0.2} delay={0.1}>
-              <Image
-                src={aboutImg}
-                alt={data.imageAlt}
-                className="aspect-4/5 "
-                sizes="(max-width: 768px) 100vw, 40vw"
-                // placeholder="blur"
-              />
-            </FadeUp>
+            {data.image && (
+              <FadeUp className="relative z-1" amount={0.2} delay={0.1}>
+                <Image
+                  src={data.image.url}
+                  alt={data.imageAlt || data.image.alt}
+                  width={data.image.width ?? 1200}
+                  height={data.image.height ?? 1500}
+                  className="aspect-4/5 "
+                  sizes="(max-width: 768px) 100vw, 40vw"
+                />
+              </FadeUp>
+            )}
 
             {/* Yellow starburst accent — behind image */}
             <FadeUp
@@ -61,17 +58,22 @@ export function About({ data }: AboutPropsT) {
             />
 
             <FadeUp className="mt-8 space-y-5" delay={0.4}>
-              <p className="max-w-[55ch] text-sans text-muted whitespace-pre-line">{data.intro}</p>
+              <p className="max-w-[55ch] text-sans text-muted whitespace-pre-line">
+                {data.intro}
+              </p>
 
               {/* Pull quote — editorial serif, breaks visual rhythm */}
               <blockquote className="border-l-4 border-coral py-2 pl-6">
-                <p className="text-xl md:text-2xl font-quote italic leading-[1.375] text-off-black/90 max-w-[35ch] whitespace-pre-line">
+                <p className="text-xl md:text-2xl font-quote italic leading-snug text-off-black/90 max-w-[35ch] whitespace-pre-line">
                   {data.quote}
                 </p>
               </blockquote>
 
               {data.paragraphs.map((p) => (
-                <p key={p} className="max-w-[55ch] text-sans text-muted whitespace-pre-line">
+                <p
+                  key={p}
+                  className="max-w-[55ch] text-sans text-muted whitespace-pre-line"
+                >
                   {p}
                 </p>
               ))}
