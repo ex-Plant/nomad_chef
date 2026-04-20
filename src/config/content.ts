@@ -134,6 +134,7 @@ export const CONTENT = {
       { text: "dla Ciebie", className: "text-off-black" },
     ],
     lead: "— napisz.",
+    description: "Każdą współpracę zaczynam od rozmowy.",
     email: {
       href: "mailto:hello@nomadchef.pl",
       label: "Email",

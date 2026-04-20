@@ -199,6 +199,10 @@ export const Site: GlobalConfig = {
               pl: "Alt tła",
               en: "Background alt",
             }),
+            upload("services_background", {
+              pl: "Tło (zdjęcie)",
+              en: "Background image",
+            }),
             {
               name: "services_slides",
               type: "array",
@@ -304,6 +308,10 @@ export const Site: GlobalConfig = {
             textarea("contact_lead", {
               pl: "Tekst wprowadzający",
               en: "Intro text",
+            }),
+            textarea("contact_description", {
+              pl: "Opis",
+              en: "Description",
             }),
             contactChannel("contact_email", {
               pl: "Email",

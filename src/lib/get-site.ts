@@ -36,6 +36,7 @@ export type SiteT = {
   services: {
     eyebrow: string;
     backgroundAlt: string;
+    background?: MediaT;
     slides: { title: string; tagline: string; description: string }[];
   };
   campFood: {
@@ -55,6 +56,7 @@ export type SiteT = {
     eyebrow: string;
     headingLines: HeadingLineT[];
     lead: string;
+    description: string;
     email: ContactChannelT;
     instagram: ContactChannelT;
     formPlaceholder: string;
@@ -146,6 +148,7 @@ const fetchSite = (locale: LocaleT) =>
         services: {
           eyebrow: raw.services_eyebrow ?? "",
           backgroundAlt: raw.services_background_alt ?? "",
+          background: toMedia(raw.services_background),
           slides: (raw.services_slides ?? []).map((s) => ({
             title: s.title ?? "",
             tagline: s.tagline ?? "",
@@ -177,6 +180,7 @@ const fetchSite = (locale: LocaleT) =>
           eyebrow: raw.contact_eyebrow ?? "",
           headingLines: toLines(raw.contact_heading_lines),
           lead: raw.contact_lead ?? "",
+          description: raw.contact_description ?? "",
           email: toChannel(raw.contact_email),
           instagram: toChannel(raw.contact_instagram),
           formPlaceholder: raw.contact_form_placeholder ?? "",

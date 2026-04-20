@@ -12,13 +12,7 @@ import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 
 import { Starburst } from "@/components/shared/starburst";
 
-/* ── Parallax background image — uncomment ONE ──────────────── */
-import parallaxBg from "@/moodboard/gallery/candidates/spread-overhead.jpg";
 import { cn } from "../../../helpers/cn";
-// import parallaxBg from "@/moodboard/gallery/candidates/table-feast.jpg";
-// import parallaxBg from "@/moodboard/gallery/candidates/fresh-ingredients-topdown.jpg";
-// import parallaxBg from "@/moodboard/gallery/candidates/spices-colorful-topdown.jpg";
-// import parallaxBg from "@/moodboard/gallery/candidates/noodles-fullit's good, but I needed to be more aligned with the scroll justframe.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -131,14 +125,16 @@ export function ServicesParallax({ data }: ServicesPropsT) {
             ref={imageRef}
             className="absolute inset-x-0 top-0 h-[180%] will-change-transform"
           >
-            <Image
-              src={parallaxBg}
-              alt={data.backgroundAlt}
-              fill
-              priority
-              className="rounded-none object-cover"
-              sizes="100vw"
-            />
+            {data.background?.url && (
+              <Image
+                src={data.background.url}
+                alt={data.backgroundAlt || data.background.alt}
+                fill
+                priority
+                className="rounded-none object-cover"
+                sizes="100vw"
+              />
+            )}
           </div>
         </div>
         {/* Overlay for text legibility */}
@@ -197,14 +193,14 @@ export function ServicesParallax({ data }: ServicesPropsT) {
                 </h3>
                 {"tagline" in slide && (
                   <p className="mt-8 max-w-sm sm:max-w-md leading-tight mb-2 ">
-                    <span className="bg-yellow text-off-black box-decoration-clone leading-[0.9] px-1 pr-2  font-sans text-sm md:text-base  ">
+                    <span className="bg-yellow text-off-black box-decoration-clone leading-[0.9] px-1 pr-2  font-sans text-sm md:text-base whitespace-pre-line">
                       {slide.tagline}
                     </span>
                   </p>
                 )}
                 {"description" in slide && (
                   <p className="max-w-sm lg:max-w-md  leading-tight  ">
-                    <span className="bg-pink text-off-black box-decoration-clone leading-[0.8] px-1 pr-2  font-sans text-sm md:text-base">
+                    <span className="bg-pink text-off-black box-decoration-clone leading-[0.8] px-1 pr-2  font-sans text-sm md:text-base whitespace-pre-line">
                       {slide.description}
                     </span>
                   </p>

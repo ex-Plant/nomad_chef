@@ -90,7 +90,7 @@ export function Hero({ data }: HeroPropsT) {
       <SectionContent className="relative z-10 flex flex-1 flex-col justify-end md:flex-row md:items-end md:justify-between pb-12 ">
         {/* Left text block — pushed to bottom-left */}
         <div ref={textRef} className=" text-white">
-          <BodyText trigger="mount" delay={0.9} className="mb-2 md:pl-2">
+          <BodyText trigger="mount" delay={0.9} className="mb-2 md:pl-2 whitespace-pre-line">
             {data.tagline}
           </BodyText>
           <ScatterText
@@ -100,7 +100,7 @@ export function Hero({ data }: HeroPropsT) {
             lines={data.headingLines}
           />
 
-          <BodyText trigger="mount" delay={1.1} className="mt-6 md:pl-2">
+          <BodyText trigger="mount" delay={1.1} className="mt-6 md:pl-2 whitespace-pre-line">
             {data.lead}
           </BodyText>
 

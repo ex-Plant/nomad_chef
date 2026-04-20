@@ -361,6 +361,7 @@ export interface Site {
   about_image?: (number | null) | Media;
   services_eyebrow?: string | null;
   services_background_alt?: string | null;
+  services_background?: (number | null) | Media;
   services_slides?:
     | {
         title?: string | null;
@@ -407,6 +408,7 @@ export interface Site {
       }[]
     | null;
   contact_lead?: string | null;
+  contact_description?: string | null;
   contact_email?: {
     label?: string | null;
     value?: string | null;
@@ -476,6 +478,7 @@ export interface SiteSelect<T extends boolean = true> {
   about_image?: T;
   services_eyebrow?: T;
   services_background_alt?: T;
+  services_background?: T;
   services_slides?:
     | T
     | {
@@ -524,6 +527,7 @@ export interface SiteSelect<T extends boolean = true> {
         id?: T;
       };
   contact_lead?: T;
+  contact_description?: T;
   contact_email?:
     | T
     | {

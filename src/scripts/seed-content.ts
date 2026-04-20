@@ -97,6 +97,11 @@ const EBOOK_FILES = [
 
 const heroMediaId = await uploadFile(HERO_MEDIA_PATH, "Hero background");
 
+const servicesBackgroundId = await uploadFile(
+  "src/moodboard/gallery/candidates/spread-overhead.jpg",
+  CONTENT.services.backgroundAlt,
+);
+
 const galleryIds = await Promise.all(
   GALLERY_ITEMS.map((g) =>
     uploadFile(`src/moodboard/gallery/${g.file}`, g.alt),
@@ -133,6 +138,7 @@ await payload.updateGlobal({
 
     services_eyebrow: CONTENT.services.eyebrow,
     services_background_alt: CONTENT.services.backgroundAlt,
+    services_background: servicesBackgroundId,
     services_slides: CONTENT.services.slides.map((s) => ({
       title: s.title,
       tagline: s.tagline,
@@ -165,6 +171,7 @@ await payload.updateGlobal({
       color: classToColor(l.className),
     })),
     contact_lead: CONTENT.contact.lead,
+    contact_description: CONTENT.contact.description,
     contact_email: {
       label: CONTENT.contact.email.label,
       value: CONTENT.contact.email.value,

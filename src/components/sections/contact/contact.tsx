@@ -9,6 +9,7 @@ import type { SiteT } from "@/lib/get-site";
 import { Section } from "@/components/shared/section";
 import { Starburst } from "@/components/shared/starburst";
 import { FadeUp } from "@/components/shared/fade-up";
+import { BodyText } from "@/components/shared/body-text";
 import { SectionContent } from "@/components/shared/section-content";
 
 type ContactPropsT = { data: SiteT["contact"] };
@@ -41,10 +42,19 @@ export function Contact({ data }: ContactPropsT) {
             <FadeUp
               as="p"
               delay={0.2}
-              className=" max-w-md text-subtitle-lg text-coral"
+              className=" max-w-md text-subtitle-lg text-coral whitespace-pre-line"
             >
               {data.lead}
             </FadeUp>
+
+            {data.description && (
+              <BodyText
+                delay={0.3}
+                className="mt-4 md:pl-2 whitespace-pre-line text-orange  "
+              >
+                {data.description}
+              </BodyText>
+            )}
           </div>
 
           {/* Right — contact links */}

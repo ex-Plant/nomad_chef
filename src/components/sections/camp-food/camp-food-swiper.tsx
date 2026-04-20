@@ -170,7 +170,7 @@ export function CampFoodSwiper({ data }: CampFoodPropsT) {
                   exit={{ opacity: 0, y: -20 }}
                   transition={SLIDE_TRANSITION}
                   className={`absolute inset-0 max-w-[320px] sm:max-w-[36ch]  text-body-lg
-                    font-sans text-sm sm:text-base ${slide.subtitleColor}`}
+                    font-sans text-sm sm:text-base whitespace-pre-line ${slide.subtitleColor}`}
                 >
                   {slide.description}
                 </m.p>

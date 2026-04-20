@@ -61,19 +61,19 @@ export function About({ data }: AboutPropsT) {
             />
 
             <FadeUp className="mt-8 space-y-5" delay={0.4}>
-              <p className="max-w-[55ch] text-sans text-muted">
+              <p className="max-w-[55ch] text-sans text-muted whitespace-pre-line">
                 {data.intro}
               </p>
 
               {/* Pull quote — editorial serif, breaks visual rhythm */}
               <blockquote className="border-l-4 border-coral py-2 pl-6">
-                <p className="text-xl md:text-2xl font-quote italic leading-[1.375] text-off-black/90 max-w-[35ch]">
+                <p className="text-xl md:text-2xl font-quote italic leading-[1.375] text-off-black/90 max-w-[35ch] whitespace-pre-line">
                   {data.quote}
                 </p>
               </blockquote>
 
               {data.paragraphs.map((p) => (
-                <p key={p} className="max-w-[55ch] text-sans text-muted">
+                <p key={p} className="max-w-[55ch] text-sans text-muted whitespace-pre-line">
                   {p}
                 </p>
               ))}
