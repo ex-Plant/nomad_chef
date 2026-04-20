@@ -146,7 +146,6 @@ export function ServicesParallax({ data }: ServicesPropsT) {
             key={slide.title}
             className={cn(
               `flex min-h-[min(80dvh,600px)] flex-col py-24 pointer-events-auto
-               drop-shadow-[0_0_60px_rgba(0,0,0,0.5)]
                `,
               i === 0 && "mt-[50dvh]",
               i === SLIDES.length - 1 && "pb-[400px]"

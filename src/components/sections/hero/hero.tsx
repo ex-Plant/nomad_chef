@@ -15,8 +15,9 @@ import { SectionContent } from "@/components/shared/section-content";
 import { Image } from "@/components/ui/image";
 import NextImage from "next/image";
 import { useVideoReady } from "@/hooks/use-video-ready";
-import { useBreakpoint } from "@/hooks/use-media-query";
 import { Loader } from "@/components/shared/loader";
+
+const POSTER_SRC = "/videos/hero-poster.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -30,10 +31,6 @@ export function Hero({ data }: HeroPropsT) {
   const desktopMedia = data.mediaDesktop;
   const mobileMedia = data.mediaMobile;
   const isVideo = desktopMedia?.mimeType.startsWith("video/") ?? false;
-  const isLg = useBreakpoint("lg");
-  const posterSrc = isLg
-    ? "/videos/hero-poster.jpg"
-    : "/videos/hero-poster-mobile.jpg";
   const { videoRef, isReady } = useVideoReady({
     enabled: isVideo,
     timeoutMs: 3000,
@@ -47,7 +44,7 @@ export function Hero({ data }: HeroPropsT) {
       if (!section || !image || !text) return;
 
       gsap.to(image, {
-        // scale: 1,
+        scale: 1.5,
         ease: "none",
         scrollTrigger: {
           trigger: section,
@@ -68,7 +65,7 @@ export function Hero({ data }: HeroPropsT) {
         },
       });
     },
-    { scope: sectionRef, dependencies: [] }
+    { scope: sectionRef, dependencies: [isReady] }
   );
 
   return (
@@ -79,7 +76,7 @@ export function Hero({ data }: HeroPropsT) {
           <>
             {/* Poster underneath — also the fallback surface if video never plays */}
             <NextImage
-              src={posterSrc}
+              src={POSTER_SRC}
               alt=""
               aria-hidden="true"
               fill
@@ -105,7 +102,7 @@ export function Hero({ data }: HeroPropsT) {
             */}
             <video
               ref={videoRef}
-              poster={posterSrc}
+              poster={POSTER_SRC}
               autoPlay
               loop
               muted
@@ -134,6 +131,7 @@ export function Hero({ data }: HeroPropsT) {
           />
         ) : null}
         <div className="absolute inset-0 bg-coral/20" />
+        <div className="absolute inset-0 bg-black/20" />
       </div>
 
       {/* Coral loader overlay — blocks content until video actually plays (or 3s fallback) */}
@@ -153,10 +151,14 @@ export function Hero({ data }: HeroPropsT) {
             <div
               aria-hidden
               className="pointer-events-none absolute -inset-16 -z-10 
-                 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.5)_0%,transparent_70%)]
               "
             />
-            <BodyText trigger="mount" delay={0.9} className="mb-2 md:pl-2 whitespace-pre-line">
+            <BodyText
+              trigger="mount"
+              delay={0.9}
+              className="mb-2 md:pl-2 whitespace-pre-line
+              "
+            >
               {data.tagline}
             </BodyText>
             <ScatterText
@@ -166,7 +168,11 @@ export function Hero({ data }: HeroPropsT) {
               lines={data.headingLines}
             />
 
-            <BodyText trigger="mount" delay={1.1} className="mt-6 md:pl-2 whitespace-pre-line">
+            <BodyText
+              trigger="mount"
+              delay={1.1}
+              className="mt-6 md:pl-2 whitespace-pre-line"
+            >
               {data.lead}
             </BodyText>
 
