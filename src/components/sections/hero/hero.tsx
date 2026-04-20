@@ -33,7 +33,7 @@ export function Hero({ data }: HeroPropsT) {
   const isVideo = desktopMedia?.mimeType.startsWith("video/") ?? false;
   const { videoRef, isReady } = useVideoReady({
     enabled: isVideo,
-    timeoutMs: 3000,
+    timeoutMs: 5000,
   });
 
   useGSAP(
@@ -155,7 +155,7 @@ export function Hero({ data }: HeroPropsT) {
             />
             <BodyText
               trigger="mount"
-              delay={0.9}
+              delay={1.4}
               className="mb-2 md:pl-2 whitespace-pre-line
               "
             >
@@ -170,7 +170,7 @@ export function Hero({ data }: HeroPropsT) {
 
             <BodyText
               trigger="mount"
-              delay={1.1}
+              delay={1.8}
               className="mt-6 md:pl-2 whitespace-pre-line"
             >
               {data.lead}
@@ -179,7 +179,7 @@ export function Hero({ data }: HeroPropsT) {
             {/* CTAs */}
             <FadeUp
               trigger="mount"
-              delay={1.3}
+              delay={2.2}
               className="mt-8 flex flex-wrap gap-4"
             >
               {data.ctas[0] && (

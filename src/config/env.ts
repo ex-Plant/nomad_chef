@@ -5,10 +5,7 @@
 // read directly where they're used, so production deploys don't crash on
 // unused requirements.
 
-type EnvKeyT =
-  | "DB_POSTGRES_URL"
-  | "PAYLOAD_SECRET"
-  | "BLOB_READ_WRITE_TOKEN";
+type EnvKeyT = "DB_POSTGRES_URL" | "PAYLOAD_SECRET" | "BLOB_READ_WRITE_TOKEN";
 // TODO: re-enable when nodemailer adapter is uncommented in payload.config.ts
 // | "EMAIL_HOST"
 // | "EMAIL_USER"

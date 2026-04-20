@@ -44,9 +44,19 @@ export function Nav({ items }: NavPropsT) {
         const kontaktRect = kontakt.getBoundingClientRect();
         const navRect = nav.getBoundingClientRect();
         const shouldBeOnYellow = kontaktRect.top < navRect.bottom;
+
         setIsOnYellow((prev) =>
           prev === shouldBeOnYellow ? prev : shouldBeOnYellow
         );
+      }
+
+      const isAtBottom =
+        window.scrollY + window.innerHeight >=
+        document.documentElement.scrollHeight;
+
+      if (isAtBottom) {
+        setActiveSection("kontakt");
+        return;
       }
 
       const line = nav ? nav.getBoundingClientRect().bottom : 0;

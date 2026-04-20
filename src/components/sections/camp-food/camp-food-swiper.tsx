@@ -13,11 +13,7 @@ import { Starburst } from "@/components/shared/starburst";
 import { SwiperControls } from "@/components/shared/swiper-controls";
 import { SectionContent } from "@/components/shared/section-content";
 import { BodyText } from "@/components/shared/body-text";
-import {
-  TRANSITION,
-  DURATION,
-  AUTOPLAY_INTERVAL,
-} from "@/config/animation-constants";
+import { TRANSITION, AUTOPLAY_INTERVAL } from "@/config/animation-constants";
 
 /* ─── Data ─────────────────────────────────────────────── */
 
@@ -143,7 +139,6 @@ export function CampFoodSwiper({ data }: CampFoodPropsT) {
         <EyebrowTag
           color={slide.eyebrowColor}
           lineColor={slide.eyebrowLineColor}
-          duration={DURATION.slow}
         >
           {data.eyebrow}
         </EyebrowTag>

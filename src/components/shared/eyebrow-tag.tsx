@@ -45,7 +45,6 @@ type EyebrowTagPropsT = {
   withLine?: boolean;
   lineColor?: ColorT;
   className?: string;
-  duration?: number;
 };
 
 export function EyebrowTag({
@@ -54,7 +53,6 @@ export function EyebrowTag({
   withLine = true,
   lineColor,
   className,
-  duration,
 }: EyebrowTagPropsT) {
   const { border, text } = COLOR_MAP[color];
   const lineBg = COLOR_MAP[lineColor ?? color].line;
@@ -77,7 +75,7 @@ export function EyebrowTag({
   );
 
   return (
-    <FadeUp className={cn("mb-12 sm:mb-16 ", className)} duration={duration}>
+    <FadeUp className={cn("mb-12 sm:mb-16 ", className)}>
       {content}
     </FadeUp>
   );

@@ -48,7 +48,7 @@ export function Contact({ data }: ContactPropsT) {
 
             {data.description && (
               <BodyText
-                delay={0.3}
+                delay={0.6}
                 className="mt-4 md:pl-2 whitespace-pre-line text-orange  "
               >
                 {data.description}
@@ -65,6 +65,8 @@ export function Contact({ data }: ContactPropsT) {
                 label={data.email.label}
                 value={data.email.value}
               />
+            </FadeUp>
+            <FadeUp delay={0.6} className="">
               <ContactLink
                 href={data.instagram.href}
                 icon="instagram"

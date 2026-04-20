@@ -130,9 +130,9 @@ export function ServicesParallax({ data }: ServicesPropsT) {
         {/* Decorative starburst — starts top-right, GSAP moves it to bottom-right */}
         <div
           ref={starburstRef}
-          className="absolute -right-12 top-0 z-4 -translate-y-1/3  md:-right-28"
+          className="absolute -right-8 top-0 z-4 -translate-y-1/3  md:-right-24"
         >
-          <Starburst variant="v1-b" color="yellow" size="md" />
+          <Starburst variant="v1-b" color="yellow" size="sm" />
         </div>
       </div>
 

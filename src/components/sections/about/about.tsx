@@ -40,13 +40,13 @@ export function About({ data }: AboutPropsT) {
             )}
 
             {/* Yellow starburst accent — behind image */}
-            <FadeUp
+            {/* <FadeUp
               className="absolute -left-16 -top-20 md:-top-36 md:-left-32 "
               amount={0.2}
               delay={0.5}
             >
-              <Starburst color="yellow" size="lg" />
-            </FadeUp>
+              <Starburst color="blue" size="" />
+            </FadeUp> */}
           </div>
 
           {/* Text column — 6 of 12 cols, offset start */}
@@ -57,27 +57,44 @@ export function About({ data }: AboutPropsT) {
               lines={data.headingLines}
             />
 
-            <FadeUp className="mt-8 space-y-5" delay={0.4}>
-              <p className="max-w-[55ch] text-sans text-muted whitespace-pre-line">
-                {data.intro}
-              </p>
-
-              {/* Pull quote — editorial serif, breaks visual rhythm */}
-              <blockquote className="border-l-4 border-coral py-2 pl-6">
-                <p className="text-xl md:text-2xl font-quote italic leading-snug text-off-black/90 max-w-[35ch] whitespace-pre-line">
-                  {data.quote}
-                </p>
-              </blockquote>
-
-              {data.paragraphs.map((p) => (
+            {(() => {
+              const BASE_DELAY = 0.5;
+              const STAGGER = 0.25;
+              const items = [
                 <p
-                  key={p}
+                  key="intro"
                   className="max-w-[55ch] text-sans text-muted whitespace-pre-line"
                 >
-                  {p}
-                </p>
-              ))}
-            </FadeUp>
+                  {data.intro}
+                </p>,
+                <blockquote
+                  key="quote"
+                  className="border-l-4 border-coral py-2 pl-6"
+                >
+                  <p className="text-xl md:text-2xl font-quote italic leading-snug text-off-black/90 max-w-[35ch] whitespace-pre-line">
+                    {data.quote}
+                  </p>
+                </blockquote>,
+                ...data.paragraphs.map((p) => (
+                  <p
+                    key={p}
+                    className="max-w-[55ch] text-sans text-muted whitespace-pre-line"
+                  >
+                    {p}
+                  </p>
+                )),
+              ];
+
+              return (
+                <div className="mt-8 space-y-5">
+                  {items.map((node, i) => (
+                    <FadeUp key={i} delay={BASE_DELAY + i * STAGGER}>
+                      {node}
+                    </FadeUp>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
         </div>
       </SectionContent>
