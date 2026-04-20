@@ -21,31 +21,30 @@ export function useVideoReady({
   enabled = true,
 }: UseVideoReadyOptionsT = {}) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isReady, setIsReady] = useState(false);
+  const [isInternalReady, setIsInternalReady] = useState(false);
+
+  const isReady = !enabled || isInternalReady;
 
   useEffect(() => {
-    if (!enabled) {
-      requestAnimationFrame(() => setIsReady(true));
-      return;
-    }
+    if (!enabled) return;
 
     const startedAt = performance.now();
     let settled = false;
-    let minDelayId: number | undefined;
+    let minDelayId: ReturnType<typeof setTimeout> | undefined;
 
     const commitReady = () => {
       if (settled) return;
       settled = true;
       const elapsed = performance.now() - startedAt;
       const remaining = Math.max(0, minVisibleMs - elapsed);
-      minDelayId = window.setTimeout(() => setIsReady(true), remaining);
+      minDelayId = setTimeout(() => setIsInternalReady(true), remaining);
     };
 
     const video = videoRef.current;
     if (!video) {
       commitReady();
       return () => {
-        if (minDelayId !== undefined) window.clearTimeout(minDelayId);
+        if (minDelayId) clearTimeout(minDelayId);
       };
     }
 
@@ -56,13 +55,13 @@ export function useVideoReady({
       video.addEventListener("playing", commitReady);
       video.addEventListener("error", commitReady);
     }
-    const timeoutId = window.setTimeout(commitReady, timeoutMs);
+    const timeoutId = setTimeout(commitReady, timeoutMs);
 
     return () => {
       video.removeEventListener("playing", commitReady);
       video.removeEventListener("error", commitReady);
-      window.clearTimeout(timeoutId);
-      if (minDelayId !== undefined) window.clearTimeout(minDelayId);
+      clearTimeout(timeoutId);
+      if (minDelayId !== undefined) clearTimeout(minDelayId);
     };
   }, [enabled, timeoutMs, minVisibleMs]);
 
