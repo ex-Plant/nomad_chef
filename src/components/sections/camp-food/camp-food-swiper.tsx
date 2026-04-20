@@ -129,12 +129,6 @@ export function CampFoodSwiper({ data }: CampFoodPropsT) {
       </AnimatePresence>
 
       <SectionContent className="relative z-3">
-        <Starburst
-          color={slide.starburstColor}
-          size="sm"
-          rotate
-          className="absolute -left-12 -bottom-26 z-[-1] md:-left-6 "
-        />
         {/* Eyebrow */}
         <EyebrowTag
           color={slide.eyebrowColor}
@@ -164,7 +158,7 @@ export function CampFoodSwiper({ data }: CampFoodPropsT) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={SLIDE_TRANSITION}
-                  className={`absolute inset-0 max-w-[320px] sm:max-w-[36ch]  text-body-lg
+                  className={`absolute inset-0 max-w-[240px] sm:max-w-[36ch]  text-body-lg
                     font-sans text-sm sm:text-base whitespace-pre-line ${slide.subtitleColor}`}
                 >
                   {slide.description}
@@ -186,12 +180,6 @@ export function CampFoodSwiper({ data }: CampFoodPropsT) {
 
           {/* Ebook cover — single large image, right side */}
           <div className="relative h-[40vh] md:h-[min(65dvh,800px)] md:col-span-7 md:col-start-6 ">
-            <Starburst
-              color={slide.starburstColor}
-              size="sm"
-              className="absolute z-1 -right-4 md:-left-72  -top-16 "
-              variant="logo-a"
-            />
             <AnimatePresence>
               <m.div
                 key={activeIndex}

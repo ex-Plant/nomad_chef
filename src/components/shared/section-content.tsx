@@ -8,7 +8,7 @@ export function SectionContent({
   className = "",
 }: SectionContentPropsT) {
   return (
-    <div className={` fest-container max-w-[1440px]  ${className}`}>
+    <div className={` fest-container max-w-[1440px]   ${className}`}>
       {children}
     </div>
   );

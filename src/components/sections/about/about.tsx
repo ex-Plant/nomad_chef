@@ -1,15 +1,34 @@
 "use client";
 
 import { useRef } from "react";
+import { m, type Variants } from "framer-motion";
 import { Image } from "@/components/ui/image";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 import { FadeUp } from "@/components/shared/fade-up";
 import { ScatterText } from "@/components/shared/scatter-text";
-import { Starburst } from "@/components/shared/starburst";
 import { SectionContent } from "@/components/shared/section-content";
 import { SECTION_IDS } from "@/config/section-ids";
 import type { SiteT } from "@/lib/get-site";
 import { Section } from "@/components/shared/section";
+
+const containerVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      delayChildren: 0.3,
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 8 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 120, damping: 22, mass: 1 },
+  },
+};
 
 type AboutPropsT = { data: SiteT["about"] };
 
@@ -57,44 +76,39 @@ export function About({ data }: AboutPropsT) {
               lines={data.headingLines}
             />
 
-            {(() => {
-              const BASE_DELAY = 0.5;
-              const STAGGER = 0.25;
-              const items = [
-                <p
-                  key="intro"
+            <m.div
+              className="mt-8 space-y-5"
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+            >
+              <m.p
+                variants={itemVariants}
+                className="max-w-[55ch] text-sans text-muted whitespace-pre-line"
+              >
+                {data.intro}
+              </m.p>
+
+              <m.blockquote
+                variants={itemVariants}
+                className="border-l-4 border-coral py-2 pl-6"
+              >
+                <p className="text-xl md:text-2xl font-quote italic leading-snug text-off-black/90 max-w-[35ch] whitespace-pre-line">
+                  {data.quote}
+                </p>
+              </m.blockquote>
+
+              {data.paragraphs.map((p) => (
+                <m.p
+                  key={p}
+                  variants={itemVariants}
                   className="max-w-[55ch] text-sans text-muted whitespace-pre-line"
                 >
-                  {data.intro}
-                </p>,
-                <blockquote
-                  key="quote"
-                  className="border-l-4 border-coral py-2 pl-6"
-                >
-                  <p className="text-xl md:text-2xl font-quote italic leading-snug text-off-black/90 max-w-[35ch] whitespace-pre-line">
-                    {data.quote}
-                  </p>
-                </blockquote>,
-                ...data.paragraphs.map((p) => (
-                  <p
-                    key={p}
-                    className="max-w-[55ch] text-sans text-muted whitespace-pre-line"
-                  >
-                    {p}
-                  </p>
-                )),
-              ];
-
-              return (
-                <div className="mt-8 space-y-5">
-                  {items.map((node, i) => (
-                    <FadeUp key={i} delay={BASE_DELAY + i * STAGGER}>
-                      {node}
-                    </FadeUp>
-                  ))}
-                </div>
-              );
-            })()}
+                  {p}
+                </m.p>
+              ))}
+            </m.div>
           </div>
         </div>
       </SectionContent>

@@ -10,7 +10,6 @@ import { Image } from "@/components/ui/image";
 import { SectionContent } from "@/components/shared/section-content";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 
-import { Starburst } from "@/components/shared/starburst";
 import { useBreakpoint } from "@/hooks/use-media-query";
 
 import { cn } from "@/helpers/cn";
@@ -23,7 +22,6 @@ export function ServicesParallax({ data }: ServicesPropsT) {
   const SLIDES = data.slides;
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
-  const starburstRef = useRef<HTMLDivElement>(null);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const isTablet = useBreakpoint("md");
   const isDesktop = useBreakpoint("lg");
@@ -32,7 +30,6 @@ export function ServicesParallax({ data }: ServicesPropsT) {
     () => {
       const container = containerRef.current;
       const imageWrap = imageRef.current;
-      const starburst = starburstRef.current;
       if (!container) return;
 
       /* Classic parallax: image is 180% viewport height, translates slowly upward.
@@ -50,25 +47,6 @@ export function ServicesParallax({ data }: ServicesPropsT) {
               start: "top top",
               end: "bottom bottom",
               scrub: true,
-            },
-          }
-        );
-      }
-
-      if (starburst) {
-        const starburstTop = isDesktop ? "calc(90%)" : isTablet ? "92%" : "98%";
-        gsap.fromTo(
-          starburst,
-          { top: "0%", rotation: 0 },
-          {
-            top: starburstTop,
-            rotation: 720,
-            ease: "none",
-            scrollTrigger: {
-              trigger: container,
-              start: "top center",
-              end: "bottom bottom",
-              scrub: 1,
             },
           }
         );
@@ -115,24 +93,15 @@ export function ServicesParallax({ data }: ServicesPropsT) {
           </div>
         </div>
         {/* Overlay for text legibility */}
-        <div className="absolute inset-0 bg-off-black/30" />
-        {/* <div className="absolute inset-0 bg-gradient-to-t from-off-black/60 via-transparent to-transparent" /> */}
+        <div className="absolute inset-0 bg-off-black/20" />
 
         {/* Eyebrow — inside the sticky layer so it stays pinned for the full section */}
-        <div className="absolute inset-x-0 top-0 z-10 py-24">
+        <div className="absolute inset-x-0 top-0 z-10 pt-12 md:pt-24 ">
           <SectionContent>
             <EyebrowTag color="yellow" withLine lineColor="yellow">
               {data.eyebrow}
             </EyebrowTag>
           </SectionContent>
-        </div>
-
-        {/* Decorative starburst — starts top-right, GSAP moves it to bottom-right */}
-        <div
-          ref={starburstRef}
-          className="absolute -right-8 top-0 z-4 -translate-y-1/3  md:-right-24"
-        >
-          <Starburst variant="v1-b" color="yellow" size="sm" />
         </div>
       </div>
 
