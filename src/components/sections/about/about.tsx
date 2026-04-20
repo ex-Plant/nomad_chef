@@ -10,6 +10,7 @@ import { SectionContent } from "@/components/shared/section-content";
 import { SECTION_IDS } from "@/config/section-ids";
 import type { SiteT } from "@/lib/get-site";
 import { Section } from "@/components/shared/section";
+import { Starburst } from "../../shared/starburst";
 
 const containerVariants: Variants = {
   hidden: {},
@@ -59,13 +60,13 @@ export function About({ data }: AboutPropsT) {
             )}
 
             {/* Yellow starburst accent — behind image */}
-            {/* <FadeUp
+            <FadeUp
               className="absolute -left-16 -top-20 md:-top-36 md:-left-32 "
               amount={0.2}
               delay={0.5}
             >
-              <Starburst color="blue" size="" />
-            </FadeUp> */}
+              <Starburst color="yellow" size="lg" />
+            </FadeUp>
           </div>
 
           {/* Text column — 6 of 12 cols, offset start */}

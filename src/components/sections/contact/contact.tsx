@@ -49,7 +49,7 @@ export function Contact({ data }: ContactPropsT) {
             {data.description && (
               <BodyText
                 delay={0.6}
-                className="mt-4 md:pl-2 whitespace-pre-line text-orange  "
+                className="mt-4 md:pl-2 whitespace-pre-line text-coral  "
               >
                 {data.description}
               </BodyText>
