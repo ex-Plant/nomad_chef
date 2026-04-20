@@ -96,7 +96,7 @@ export function ScatterText({
       } else {
         ScrollTrigger.create({
           trigger: triggerEl,
-          start: "top 80%",
+          start: "top 90%",
           once: true,
           onEnter: () => tl.restart(),
         });
