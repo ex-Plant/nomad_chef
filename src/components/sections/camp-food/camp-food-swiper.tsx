@@ -179,7 +179,7 @@ export function CampFoodSwiper({ data }: CampFoodPropsT) {
           </div>
 
           {/* Ebook cover — single large image, right side */}
-          <div className="relative h-[40vh] md:h-[min(65dvh,800px)] md:col-span-7 md:col-start-6 ">
+          <div className="relative h-[40vh] md:h-[min(65lvh,800px)] md:col-span-7 md:col-start-6 ">
             <AnimatePresence>
               <m.div
                 key={activeIndex}

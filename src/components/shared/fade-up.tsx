@@ -38,7 +38,7 @@ export function FadeUp({
   trigger = "inView",
   delay,
   y: yOffset = 16,
-  amount = 0.3,
+  amount = 0.2,
   margin,
   spring = "default",
   className,

@@ -47,26 +47,48 @@ export function NavMobileToggle({
       <svg
         stroke="currentColor"
         fill="none"
-        viewBox="-10 -10 105 120"
+        viewBox="0 0 96 96"
         width="48"
         className={cn(
-          "transition-[translate,rotate,color]",
-          STROKE_CLASS[color],
-          isOpen && "translate-[-2px_-2px] rotate-45"
+          "overflow-visible transition-colors",
+          STROKE_CLASS[color]
         )}
         style={{ transitionDuration: `${lineDurationMs}ms` }}
       >
-        <path
-          strokeWidth="8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="m 20 40 h 60 a 1 1 0 0 1 0 20 h -60 a 1 1 0 0 1 0 -40 h 30 v 70"
+        <g
+          className="origin-center transition-transform"
           style={{
-            transition: `${lineDurationMs}ms`,
-            strokeDasharray: isOpen ? "60 105 60 300" : "60 31 60 300",
-            strokeDashoffset: isOpen ? -90 : 0,
+            transitionDuration: `${lineDurationMs}ms`,
+            transform: isOpen
+              ? "translate(-2px, -2px) rotate(45deg)"
+              : "translate(0, 0) rotate(0)",
           }}
-        />
+        >
+          <path
+            strokeWidth="8"
+            strokeLinecap="round"
+            d="M 18 40 H 78"
+            className="transition-transform"
+            style={{
+              transitionDuration: `${lineDurationMs}ms`,
+              transform: isOpen
+                ? "translate(0, 10px)"
+                : "translate(0, 0)",
+            }}
+          />
+          <path
+            strokeWidth="8"
+            strokeLinecap="round"
+            d="M 18 60 H 78"
+            className="transition-transform"
+            style={{
+              transitionDuration: `${lineDurationMs}ms`,
+              transform: isOpen
+                ? "translate(0, -10px) rotate(90deg)"
+                : "translate(0, 0) rotate(0)",
+            }}
+          />
+        </g>
       </svg>
     </button>
   );

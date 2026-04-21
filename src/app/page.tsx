@@ -14,7 +14,7 @@ export default async function HomePage() {
   return (
     <>
       <Nav items={site.nav} />
-      <main className="relative">
+      <main className="relative bg-warm-white">
         <Hero data={site.hero} />
         <About data={site.about} />
         <ServicesParallax data={site.services} />

@@ -12,6 +12,7 @@ import {
   NavMobileOverlay,
 } from "@/components/sections/nav/nav-mobile";
 import { cn } from "@/helpers/cn";
+import { scrollToSection } from "@/helpers/scroll-to-section";
 
 type NavPropsT = { items: SiteT["nav"] };
 
@@ -96,7 +97,7 @@ export function Nav({ items }: NavPropsT) {
 
   const scrollTo = useCallback((id: string) => {
     setIsMobileOpen(false);
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    scrollToSection(id);
   }, []);
 
   return (
@@ -110,7 +111,7 @@ export function Nav({ items }: NavPropsT) {
             exit={{ y: -100, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className={cn(
-              "fixed top:2 md:top-6 right-6 z-50 rounded-lg bg-transparent py-1 transition-colors duration-1000 ",
+              "fixed top-2 md:top-6 right-6 z-50 rounded-lg bg-transparent py-1 transition-colors duration-1000 ",
               "md:right-auto md:left-1/2 md:-translate-x-1/2 md:px-2 md:shadow-2xl",
               isMobileOpen || isOnYellow ? "md:bg-coral" : "md:bg-yellow"
             )}

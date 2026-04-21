@@ -72,7 +72,7 @@ export function ServicesParallax({ data }: ServicesPropsT) {
   return (
     <div ref={containerRef} id={SECTION_IDS.services} className="relative z-1 ">
       {/* Sticky layer — image + eyebrow + heading + starburst stay fixed */}
-      <div className="sticky top-0 z-1 h-dvh overflow-x-clip">
+      <div className="sticky top-0 z-1 h-lvh overflow-x-clip">
         {/* Image wrapper — 180% tall, GSAP translates it upward for parallax.
             Own overflow-clip so the scaled image doesn't leak vertically. */}
         <div className="absolute inset-0 overflow-clip">
@@ -108,15 +108,15 @@ export function ServicesParallax({ data }: ServicesPropsT) {
       {/* Scrolling text panels — pulled up over the sticky layer via negative margin */}
       <div
         className="relative z-5 pointer-events-none"
-        style={{ marginTop: "-100dvh" }}
+        style={{ marginTop: "-100lvh" }}
       >
         {SLIDES.map((slide, i) => (
           <div
             key={slide.title}
             className={cn(
-              `flex min-h-[min(80dvh,600px)] flex-col py-24 pointer-events-auto
+              `flex min-h-[min(80lvh,600px)] flex-col py-24 pointer-events-auto
                `,
-              i === 0 && "mt-[50dvh]",
+              i === 0 && "mt-[50lvh]",
               i === SLIDES.length - 1 && "pb-[400px]"
             )}
           >

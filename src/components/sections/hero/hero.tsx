@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -16,6 +16,7 @@ import { Image } from "@/components/ui/image";
 import NextImage from "next/image";
 import { useVideoReady } from "@/hooks/use-video-ready";
 import { Loader } from "@/components/shared/loader";
+import { scrollToSection } from "@/helpers/scroll-to-section";
 
 const POSTER_SRC = "/videos/hero-poster.jpg";
 
@@ -35,6 +36,15 @@ export function Hero({ data }: HeroPropsT) {
     enabled: isVideo,
     timeoutMs: 5000,
   });
+
+  useEffect(() => {
+    if (isReady) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isReady]);
 
   useGSAP(
     () => {
@@ -69,7 +79,7 @@ export function Hero({ data }: HeroPropsT) {
   );
 
   return (
-    <Section ref={sectionRef} id={SECTION_IDS.hero} className=" min-h-dvh">
+    <Section ref={sectionRef} id={SECTION_IDS.hero} className=" min-h-lvh">
       {/* Primary background media with parallax */}
       <div ref={imageRef} className="absolute inset-0 z-0 overflow-hidden ">
         {isVideo && desktopMedia ? (
@@ -183,13 +193,21 @@ export function Hero({ data }: HeroPropsT) {
               className="mt-8 flex flex-wrap gap-4"
             >
               {data.ctas[0] && (
-                <Button asChild variant="coral" size="compact">
-                  <a href={data.ctas[0].href}>{data.ctas[0].label}</a>
+                <Button
+                  variant="coral"
+                  size="compact"
+                  onClick={() => scrollToSection(data.ctas[0].href)}
+                >
+                  {data.ctas[0].label}
                 </Button>
               )}
               {data.ctas[1] && (
-                <Button size="compact" asChild variant="yellow">
-                  <a href={data.ctas[1].href}>{data.ctas[1].label}</a>
+                <Button
+                  size="compact"
+                  variant="yellow"
+                  onClick={() => scrollToSection(data.ctas[1].href)}
+                >
+                  {data.ctas[1].label}
                 </Button>
               )}
             </FadeUp>

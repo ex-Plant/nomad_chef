@@ -241,3 +241,46 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ============================================================
+   SERVICES PARALLAX — scroll-driven pin
+   Fallback: position: sticky for older browsers (iOS 25 and
+   older, Firefox pre-130), which don't have the iOS 26 sticky
+   regression. Modern browsers (iOS 26+, Chrome 115+) use a
+   CSS scroll-driven animation that translates the layer via
+   the compositor — bypasses the iOS 26 sticky bug entirely.
+   --pin-distance is set in JS (services-parallax.tsx) as
+   containerHeight - viewportHeight.
+   ============================================================ */
+
+.services-pin-target {
+  position: sticky;
+  top: 0;
+}
+
+@supports (animation-timeline: view()) {
+  .services-pin-container {
+    view-timeline-name: --services-pin;
+    view-timeline-axis: block;
+  }
+
+  .services-pin-target {
+    position: relative;
+    top: auto;
+    animation-name: services-pin;
+    animation-timeline: --services-pin;
+    animation-range: entry 100% exit 0%;
+    animation-fill-mode: both;
+    animation-timing-function: linear;
+    will-change: transform;
+  }
+
+  @keyframes services-pin {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(0, var(--pin-distance, 0px), 0);
+    }
+  }
+}
