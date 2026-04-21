@@ -79,7 +79,7 @@ export function Hero({ data }: HeroPropsT) {
   );
 
   return (
-    <Section ref={sectionRef} id={SECTION_IDS.hero} className=" min-h-lvh">
+    <Section ref={sectionRef} id={SECTION_IDS.hero} className=" min-h-[120lvh]">
       {/* Primary background media with parallax */}
       <div ref={imageRef} className="absolute inset-0 z-0 overflow-hidden ">
         {isVideo && desktopMedia ? (
@@ -141,7 +141,7 @@ export function Hero({ data }: HeroPropsT) {
           />
         ) : null}
         <div className="absolute inset-0 bg-coral/20" />
-        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-0 bg-black/30" />
       </div>
 
       {/* Coral loader overlay — blocks content until video actually plays (or 3s fallback) */}
@@ -150,7 +150,7 @@ export function Hero({ data }: HeroPropsT) {
           isReady ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
       >
-        <Loader className="h-full w-full" />
+        <Loader className="h-full w-full -translate-y-12" />
       </div>
 
       {/* Asymmetric layout: text left, floating image right */}

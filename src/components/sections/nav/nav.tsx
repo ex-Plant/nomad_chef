@@ -112,6 +112,7 @@ export function Nav({ items }: NavPropsT) {
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className={cn(
               "fixed top-2 md:top-6 right-6 z-50 rounded-lg bg-transparent py-1 transition-colors duration-1000 ",
+              "mobile-nav-stable",
               "md:right-auto md:left-1/2 md:-translate-x-1/2 md:px-2 md:shadow-2xl",
               isMobileOpen || isOnYellow ? "md:bg-coral" : "md:bg-yellow"
             )}

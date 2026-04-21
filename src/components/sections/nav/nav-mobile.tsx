@@ -24,6 +24,15 @@ const STROKE_CLASS: Record<NavToggleColorT, string> = {
   coral: "text-coral",
 };
 
+const MOBILE_TOGGLE_PATH =
+  "m 20 40 h 60 a 1 1 0 0 1 0 20 h -60 a 1 1 0 0 1 0 -40 h 30 v 70";
+const MOBILE_TOGGLE_DASH = {
+  // Pull the dash boundary a fraction off the arc join where WebKit was
+  // leaking a cap pixel. The visual delta is under a device pixel at 48px.
+  closed: "59.75 31.25 60 300",
+  open: "59.75 105.25 60 300",
+} as const;
+
 export function NavMobileToggle({
   isOpen,
   activeSection,
@@ -35,6 +44,7 @@ export function NavMobileToggle({
 
   return (
     <button
+      type="button"
       onClick={onToggle}
       // variant="white"
       // size="icon-sm"
@@ -45,121 +55,40 @@ export function NavMobileToggle({
       aria-expanded={isOpen}
     >
       <svg
+        aria-hidden="true"
+        focusable="false"
         stroke="currentColor"
         fill="none"
-        viewBox="0 0 96 96"
+        viewBox="-10 -10 105 120"
         width="48"
         className={cn(
-          "overflow-visible transition-colors",
-          STROKE_CLASS[color]
+          "transition-[translate,rotate,color]",
+          STROKE_CLASS[color],
+          isOpen && "translate-[-2px_-2px] rotate-45"
         )}
         style={{ transitionDuration: `${lineDurationMs}ms` }}
       >
-        <g
-          className="origin-center transition-transform"
+        <path
+          strokeWidth="8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d={MOBILE_TOGGLE_PATH}
           style={{
-            transitionDuration: `${lineDurationMs}ms`,
-            transform: isOpen
-              ? "translate(-2px, -2px) rotate(45deg)"
-              : "translate(0, 0) rotate(0)",
+            transition: `${lineDurationMs}ms`,
+            strokeDasharray: isOpen
+              ? MOBILE_TOGGLE_DASH.open
+              : MOBILE_TOGGLE_DASH.closed,
+            strokeDashoffset: isOpen ? -90 : 0,
           }}
-        >
-          <path
-            strokeWidth="8"
-            strokeLinecap="round"
-            d="M 18 40 H 78"
-            className="transition-transform"
-            style={{
-              transitionDuration: `${lineDurationMs}ms`,
-              transform: isOpen
-                ? "translate(0, 10px)"
-                : "translate(0, 0)",
-            }}
-          />
-          <path
-            strokeWidth="8"
-            strokeLinecap="round"
-            d="M 18 60 H 78"
-            className="transition-transform"
-            style={{
-              transitionDuration: `${lineDurationMs}ms`,
-              transform: isOpen
-                ? "translate(0, -10px) rotate(90deg)"
-                : "translate(0, 0) rotate(0)",
-            }}
-          />
-        </g>
+        />
       </svg>
     </button>
   );
 }
 
-/**
- * Random-looking rotation per nav item. Add/remove entries or tweak magnitudes
- * to change how "playful" the stack looks. Values are degrees.
- */
 const NAV_ITEM_TILTS = [-2.5, 1.8, -1.2, 2.2, -2, 1.4] as const;
 
-/* ─────────────────────────────────────────────────────────────
- * MOBILE MENU — CURTAIN CHOREOGRAPHY
- * ─────────────────────────────────────────────────────────────
- * Two-stage drop: coral falls from the top, then yellow falls on top of it
- * carrying the menu items. Exit reverses the order (items fade, yellow lifts,
- * coral lifts).
- *
- * Timeline (enter):
- *   0 ────────► CORAL_DURATION ── STAGE_GAP ──► YELLOW_DURATION ──► items fade in
- *   [coral drop]                  [yellow drop]          [items delayed by MENU_ITEM_DELAY_BASE + i*0.05]
- *
- * Timeline (exit):
- *   0 ──► items fade ──► yellow lifts ── STAGE_GAP ──► coral lifts
- *        (EXIT_ITEM_DURATION + stagger ends at EXIT_CURTAIN_DELAY)
- *
- * ── Knobs you will actually touch ──
- *
- * CURTAIN_EASE
- *   Cubic-bezier [p1x, p1y, p2x, p2y]. Current curve is aggressive ease-in:
- *   barely moves at the start, rockets at the end ("laggy snap").
- *   • Softer ease-in (less lag):       [0.7, 0, 0.84, 0]   ← original feel
- *   • Medium ease-in:                  [0.88, 0, 0.95, 0.1]
- *   • Current, very laggy:             [0.95, 0, 1, 0.25]
- *   • Symmetric ease-in-out:           [0.65, 0, 0.35, 1]
- *   • Classic ease-out (snap first):   [0.16, 1, 0.3, 1]
- *   Play at https://cubic-bezier.com
- *
- * FIRST_DURATION / SECOND_DURATION (seconds)
- *   Role-based durations. The leading curtain always takes FIRST_DURATION,
- *   the follower always takes SECOND_DURATION — independent of which color
- *   it happens to be. Keep SECOND shorter for the "catches up" feel.
- *   Try 0.45/0.3 for slower, 0.28/0.18 for snappy.
- *
- * STAGE_GAP (seconds)
- *   Overlap between the two curtain stages. Negative = they overlap (yellow
- *   starts before coral finishes). 0 = back-to-back. Positive = a pause.
- *
- * EXIT_ITEM_DURATION / EXIT_ITEM_STAGGER
- *   How menu items disappear on close. Duration too short and the ease
- *   becomes invisible — bump to 0.3+ to really feel the lag.
- *
- * MENU_ITEM_DELAY_BASE
- *   When items start fading IN during open. Tied to the curtain timing so
- *   items appear as the yellow panel is mid-drop.
- *
- * ── Sync with the hamburger icon ──
- * The toggle SVG uses `duration-[600ms]` (see NavMobileToggle above).
- * Total curtain-in time = CORAL_DURATION + STAGE_GAP + YELLOW_DURATION.
- * If you change the durations here, update the SVG's `duration-[Xms]` and
- * the inline `transition: "600ms"` on the <path> to match.
- * ───────────────────────────────────────────────────────────── */
 const CURTAIN_EASE = [0.95, 0, 1, 0.25] as const;
-/**
- * Durations are role-based, not color-based:
- *   FIRST_DURATION  — the leading curtain (slow, laggy). Always the longer one.
- *   SECOND_DURATION — the follower that "catches up" (shorter).
- * On enter: coral = first, yellow = second.
- * On exit: yellow = first, coral = second (sequence reverses).
- * This keeps the "long leader → short catcher" feel identical both directions.
- */
 const FIRST_DURATION = 0.38;
 const SECOND_DURATION = 0.18;
 const CORAL_ENTER_DURATION = FIRST_DURATION;
@@ -255,11 +184,6 @@ export function NavMobileOverlay({
               className="absolute left-[0%] bottom-[0%]"
               variant="v1-a"
             />
-            {/* <Starburst
-              color="coral"
-              size="lg"
-              className="absolute left-[-11%] bottom-[-7%]"
-            /> */}
             <div className="relative z-10 flex flex-col items-center gap-8">
               {items.map((item, i) => (
                 <m.button

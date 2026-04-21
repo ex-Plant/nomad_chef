@@ -82,7 +82,7 @@ export function About({ data }: AboutPropsT) {
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
+              viewport={{ once: true, amount: 0.1 }} /*  */
             >
               <m.p
                 variants={itemVariants}

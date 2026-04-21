@@ -14,16 +14,15 @@ export default async function HomePage() {
   return (
     <>
       <Nav items={site.nav} />
-      <main className="relative bg-warm-white">
+      <main className="relative bg-warm-white ">
         <Hero data={site.hero} />
         <About data={site.about} />
         <ServicesParallax data={site.services} />
         <CampFoodSwiper data={site.campFood} />
         <Gallery data={site.gallery} />
         <Contact data={site.contact} />
+        <GrainOverlay position="absolute" zIndex="z-50" />
       </main>
-
-      <GrainOverlay position="fixed" zIndex="z-50" />
     </>
   );
 }
