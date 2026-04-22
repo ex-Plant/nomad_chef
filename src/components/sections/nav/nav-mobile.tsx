@@ -62,7 +62,7 @@ export function NavMobileToggle({
         viewBox="-10 -10 105 120"
         width="48"
         className={cn(
-          "transition-[translate,rotate,color]",
+          "transition-[translate,rotate,color]  -mr-1",
           STROKE_CLASS[color],
           isOpen && "translate-[-2px_-2px] rotate-45"
         )}
@@ -154,7 +154,7 @@ export function NavMobileOverlay({
       {isOpen && (
         <m.div
           key="mobile-overlay"
-          className="fixed inset-0 z-40 md:hidden pointer-events-none overflow-hidden"
+          className="fixed inset-0 z-40 md:hidden pointer-events-none "
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 1 }}
@@ -163,13 +163,13 @@ export function NavMobileOverlay({
           }}
         >
           {/* Stage 1 — coral drops from top */}
-          <m.div
-            className="absolute inset-0 bg-coral/90"
+          {/* <m.div
+            className="absolute inset-0 bg-coral"
             variants={CORAL_VARIANTS}
             initial="hidden"
             animate="visible"
             exit="exit"
-          />
+          /> */}
           {/* Stage 2 — yellow + menu content rises from bottom, covers coral */}
           <m.div
             className="absolute inset-0 bg-yellow pointer-events-auto flex items-center justify-center overflow-hidden"
@@ -181,7 +181,10 @@ export function NavMobileOverlay({
             <Starburst
               color="pink"
               size="md"
-              className="absolute left-[0%] bottom-[0%]"
+              className={cn(
+                "absolute left-[0%] bottom-[0%] duration-500",
+                isOpen ? "opacity-100" : "opacity-0"
+              )}
               variant="v1-a"
             />
             <div className="relative z-10 flex flex-col items-center gap-8">

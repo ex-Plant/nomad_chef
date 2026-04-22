@@ -4,18 +4,6 @@
    SHARED VARIABLES
    ============================================================ */
 
-/* from spline */
-/* blueHover: "rgba(0, 64, 227, 1)",
-   blue: "rgba(28, 91, 255, 1)",
-   lightBlue: "rgba(114, 168, 255, 1)",
-   ivoryBlack: "rgba(13, 13, 13, 1)",
-   graphite: "rgba(38, 38, 38, 1)",
-   grey: "rgba(164, 164, 164, 1)",
-   lightGrey: "rgba(236, 236, 236, 1)",
-   splineWhite: "rgba(248, 248, 248, 1)",
-   red: "rgba(255, 75, 97, 1)",
-   green: "rgba(0, 216, 177, 1)" */
-
 :root {
   /* Primary palette */
   --coral: #ff6316;
@@ -23,13 +11,7 @@
   --warm-white: #f5eee5;
 
   /* Secondary palette */
-  --orange: #ff6316;
-  --pink: #ffade6;
-  /* hot pink */
   --pink: #ff69b4;
-  /* magenta pink  */
-  /* --pink: #ff2d9b; */
-  /* --pink: #FF1493;    */
   --yellow: #e1f532;
 
   /* Text */
@@ -44,7 +26,6 @@
   --color-warm-white: var(--warm-white);
 
   /* Secondary */
-  --color-orange: var(--orange);
   --color-pink: var(--pink);
   --color-yellow: var(--yellow);
 
@@ -52,18 +33,6 @@
   --color-off-black: var(--off-black);
   --color-muted: rgb(33 21 9 / 0.7);
   --color-muted-on-dark: rgb(255 255 255 / 0.7);
-
-  /* Spline palette */
-  --color-spline-blue-hover: rgb(0 64 227);
-  --color-spline-blue: rgb(28 91 255);
-  --color-spline-light-blue: rgb(114 168 255);
-  --color-ivory-black: rgb(13 13 13);
-  --color-spline-graphite: rgb(38 38 38);
-  --color-spline-grey: rgb(164 164 164);
-  --color-spline-light-grey: rgb(236 236 236);
-  --color-spline-white: rgb(248 248 248);
-  --color-spline-red: rgb(255 75 97);
-  --color-spline-green: rgb(0 216 177);
 
   /* Font aliases */
   --font-display: var(--font-archivo-black);
@@ -73,7 +42,6 @@
   --font-quote: var(--font-playfair);
 
   /* Tracking overrides for text-label */
-  --tracking-counter: 0.24em;
   --tracking-link: 0.15em;
 
   /* Easing */
@@ -218,69 +186,4 @@ body {
 ::-webkit-scrollbar-thumb {
   background: var(--coral);
   border-radius: 9999px;
-}
-
-/* Grain overlay on body */
-.grain-overlay::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 999;
-  pointer-events: none;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-}
-
-/* Hide scrollbar utility */
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-/* ============================================================
-   SERVICES PARALLAX — scroll-driven pin
-   Fallback: position: sticky for older browsers (iOS 25 and
-   older, Firefox pre-130), which don't have the iOS 26 sticky
-   regression. Modern browsers (iOS 26+, Chrome 115+) use a
-   CSS scroll-driven animation that translates the layer via
-   the compositor — bypasses the iOS 26 sticky bug entirely.
-   --pin-distance is set in JS (services-parallax.tsx) as
-   containerHeight - viewportHeight.
-   ============================================================ */
-
-.services-pin-target {
-  position: sticky;
-  top: 0;
-}
-
-@supports (animation-timeline: view()) {
-  .services-pin-container {
-    view-timeline-name: --services-pin;
-    view-timeline-axis: block;
-  }
-
-  .services-pin-target {
-    position: relative;
-    top: auto;
-    animation-name: services-pin;
-    animation-timeline: --services-pin;
-    animation-range: entry 100% exit 0%;
-    animation-fill-mode: both;
-    animation-timing-function: linear;
-    will-change: transform;
-  }
-
-  @keyframes services-pin {
-    from {
-      transform: translate3d(0, 0, 0);
-    }
-    to {
-      transform: translate3d(0, var(--pin-distance, 0px), 0);
-    }
-  }
 }

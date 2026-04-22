@@ -65,7 +65,7 @@ export function Hero({ data }: HeroPropsT) {
       });
 
       gsap.to(text, {
-        y: -400,
+        y: -800,
         ease: "none",
         scrollTrigger: {
           trigger: section,
@@ -79,9 +79,13 @@ export function Hero({ data }: HeroPropsT) {
   );
 
   return (
-    <Section ref={sectionRef} id={SECTION_IDS.hero} className=" min-h-[120lvh]">
+    <Section ref={sectionRef} id={SECTION_IDS.hero} className=" min-h-[110lvh]">
       {/* Primary background media with parallax */}
-      <div ref={imageRef} className="absolute inset-0 z-0 overflow-hidden ">
+      <div
+        ref={imageRef}
+        className="absolute inset-0 z-0 overflow-hidden"
+        style={{ contain: "layout paint" }}
+      >
         {isVideo && desktopMedia ? (
           <>
             {/* Poster underneath — also the fallback surface if video never plays */}
@@ -117,7 +121,7 @@ export function Hero({ data }: HeroPropsT) {
               loop
               muted
               playsInline
-              preload="auto"
+              preload="metadata"
               className="relative min-h-full min-w-full object-cover"
             >
               {mobileMedia && (
@@ -146,7 +150,7 @@ export function Hero({ data }: HeroPropsT) {
 
       {/* Coral loader overlay — blocks content until video actually plays (or 3s fallback) */}
       <div
-        className={`absolute inset-0 z-20 bg-coral transition-opacity duration-500 ${
+        className={`absolute inset-0 z-20 bg-coral transition-opacity duration-1000 ${
           isReady ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
       >
@@ -155,7 +159,7 @@ export function Hero({ data }: HeroPropsT) {
 
       {/* Asymmetric layout: text left, floating image right */}
       {isReady && (
-        <SectionContent className="relative z-10 flex flex-1 flex-col justify-end md:flex-row md:items-end md:justify-between pb-12 ">
+        <SectionContent className="relative z-10 flex flex-1 flex-col justify-end md:flex-row md:items-end md:justify-between pb-[12lvh] md:pb-32 ">
           {/* Left text block — pushed to bottom-left */}
           <div ref={textRef} className="relative text-white ">
             <div

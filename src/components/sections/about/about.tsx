@@ -63,7 +63,7 @@ export function About({ data }: AboutPropsT) {
             <FadeUp
               className="absolute -left-16 -top-20 md:-top-36 md:-left-32 "
               amount={0.2}
-              delay={0.5}
+              delay={0}
             >
               <Starburst color="yellow" size="lg" />
             </FadeUp>
@@ -82,7 +82,7 @@ export function About({ data }: AboutPropsT) {
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, amount: 0.1 }} /*  */
+              viewport={{ once: true, amount: 0.1 }}
             >
               <m.p
                 variants={itemVariants}

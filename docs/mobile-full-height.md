@@ -1,107 +1,204 @@
-# iOS Safari — Full-Height & Sticky Debugging Log
+# iOS Safari Mobile Services Debugging Log
 
-Two related mobile-Safari issues are tracked here:
+Status: significantly improved, still needs final device polish.
 
-1. **Full-height rendering** — making the app paint under the iOS bottom chrome / home indicator.
-2. **`position: sticky` regression on iOS 26** — sticky elements trigger a viewport recalc mid-scroll, shortening the visible area by the chrome height.
+Last updated: 2026-04-21.
 
----
+## Goal
 
-## Issue 1 — Full-height / edge-to-edge rendering
+Mobile Services should preserve the intended experience:
 
-### Goal
+- full-screen image-backed section
+- pinned/parallax feel
+- zoom/depth on the image
+- text scrolling over the image
+- no jump on refresh
+- no Safari viewport-height collapse
+- no visible image shake
 
-Force the app to paint edge-to-edge so background color (warm-white / section colors) fills into the bottom safe-area inset, and sections using `100lvh` / `100dvh` fill the full device height.
+Removing the design, pinning, animation, or parallax is not considered a solution. Those changes are useful only as diagnostics.
 
-### Fixes applied (resolved)
+## Confirmed Triggers
 
-1. **`viewport-fit=cover`** via Next.js Viewport export (`src/app/layout.tsx`).
-   ```ts
-   export const viewport: Viewport = {
-     width: "device-width",
-     initialScale: 1,
-     viewportFit: "cover",
-   };
-   ```
-   Enables `env(safe-area-inset-*)`. Insufficient on its own.
+### Grain Overlay
 
-2. **Removed `h-full` from `<html>`**. `h-full` pins html to the small viewport (svh) on iOS. `min-h-lvh` on body is enough.
+`GrainOverlay position="fixed"` caused Safari full-height issues.
 
-3. **Changed `<body>` from `overflow-x-hidden` → `overflow-x-clip`**. `overflow-hidden` creates a scroll container on body, which on iOS Safari disables chrome auto-collapse because body stops being the root scroller. `overflow-clip` just clips paint — no scroll container, chrome collapse works again.
+Current workaround:
 
-### Key insight
+```tsx
+<main className="relative bg-warm-white">
+  ...
+  <GrainOverlay position="absolute" zIndex="z-50" />
+</main>
+```
 
-iOS Safari collapses its bottom chrome **only while the page behaves like a plain document scroll** — i.e. `html`/`body` are the root scroller and there are no CSS properties creating a sub-scroll context on the root.
+Keep the grain non-fixed unless deliberately retesting.
 
----
+### Native Sticky / Fixed Family
 
-## Issue 2 — iOS 26 Safari sticky/fixed regression
+The original mobile Services implementation used a full-height sticky image layer. It had the right feel, but on iOS Safari it triggered viewport/full-height instability.
 
-### Symptom
+Symptoms included:
 
-On iOS 26.0, scrolling into a section that contains a `position: sticky` (or `position: fixed`) descendant causes Safari to:
+- section no longer feeling as tall as the screen
+- gaps/padding around the image
+- layout not recovering after entering Services
+- worse behavior when scroll direction changed
 
-- Stop collapsing the URL chrome.
-- Recalc the visible viewport to `svh`.
-- The sections sized with `100lvh` overflow by the chrome height → apparent "bottom padding" / short viewport.
-- The effect does **not** happen on page load — it is triggered when the sticky element enters the viewport during scroll.
+### JS Fake Pin Without Scroll Normalization
 
-### Root cause
+The absolute image-track approach preserved the design better, but when driven by normal native iOS scrolling it still shook. This appears to be the classic iOS Safari async scrolling problem: the page scrolls on the compositor thread while JS transform updates arrive on the main thread.
 
-Confirmed WebKit regression introduced in iOS 26.0. Apple partially fixed it in **iOS 26.1**.
+## Fixes That Helped
 
-- **WebKit bug 297779** — Fixed elements move up and down when scroll direction changes: https://bugs.webkit.org/show_bug.cgi?id=297779
-- **mastodon/mastodon#36144** — Incorrectly positioned elements and broken scrolling on iOS 26: https://github.com/mastodon/mastodon/issues/36144
-- **Discourse Meta** — iOS 26 bugs with fixed position elements: https://meta.discourse.org/t/ios-26-bugs-with-fixed-position-elements-in-discourse/382831
-- **Apple Community** — iOS 26 viewport bug: https://discussions.apple.com/thread/256138682
+### Refresh Jump
 
-### Affected surfaces in this project
+`src/app/layout.tsx` now injects a `beforeInteractive` script that sets:
 
-- `src/components/sections/services/services-parallax.tsx` — sticky parallax hero was the initial reproduction case.
-- `src/components/ui/grain-overlay.tsx` when used with `position="fixed"` — same bug family (full-viewport fixed element pins chrome visible).
+```ts
+history.scrollRestoration = "manual";
+```
 
-### Attempts log
+On reload without a hash, it forces `scrollTo(0, 0)` early and shortly after load. This fixed the delayed jump from top to Services.
 
-#### 1. Swap `lvh` → `svh` / `dvh` on sticky layer
-**Result:** No effect on the recalc. Symptom is the sticky itself, not the viewport unit.
+### Root Scroller
 
-#### 2. `[transform:translateZ(0)]` GPU-layer promotion on sticky
-**Canonical workaround** from WebKit/LinkedIn threads. Forces the element onto its own compositor layer.
-**Result:** No effect on our test device (iOS 26.0). Promotes the layer but doesn't stop sticky re-evaluation.
+`body` now uses:
 
-#### 3. GSAP `ScrollTrigger.pin: true` with `pinSpacing: false`
-Replaces CSS sticky with GSAP-driven `position: fixed` during the pinned phase.
-**Result:** Same bug. GSAP pin uses `position: fixed` internally, which falls into the same iOS 26 regression family as sticky.
+```tsx
+className="min-h-lvh flex flex-col bg-black overflow-x-clip"
+```
 
-#### 4. `ScrollTrigger.config({ ignoreMobileResize: true })`
-Prevents GSAP from refreshing on chrome-toggle resize events.
-**Result:** Helpful as a general hygiene, but does **not** fix the underlying layout recalc triggered by Safari itself. Kept regardless.
+This avoids root `overflow-x-hidden`, which can create bad Safari root-scroller behavior.
 
-#### 5. Transform-based fake sticky — `position: relative` + GSAP-animated `translateY`
-Avoids both `position: sticky` and `position: fixed` entirely. Layer is in normal flow; GSAP scrubs `translateY` from `0` to `containerHeight - viewportHeight` across the container scroll, producing the same visual effect as sticky.
-**Result:** The Safari bug does not trigger (no sticky, no fixed). However, motion is visibly janky on ProMotion (120Hz native scroll vs. 60Hz rAF-driven JS transform).
+### GSAP Normalize Scroll
 
-#### 6. CSS scroll-driven animation with `@supports` fallback (current)
-- Fallback: `position: sticky` (works on iOS ≤25 and all other non-affected browsers — those versions don't have the bug).
-- Modern browsers (iOS 26+, Chrome 115+, Firefox 130+): `@supports (animation-timeline: view())` matches and the sticky is replaced with `position: relative` + a compositor-driven scroll-timeline animation. The `view-timeline` is on the container; the animation translates the pinned layer by `var(--pin-distance)` (set in JS to `containerHeight - viewportHeight`) across `animation-range: entry 100% exit 0%`.
-- CSS in `src/app/globals.css` (`.services-pin-container` / `.services-pin-target`).
-- JS updates `--pin-distance` in `useLayoutEffect` on mount and `resize`.
+Web research found the most relevant official workaround: [`ScrollTrigger.normalizeScroll()`](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.normalizeScroll%28%29/).
 
-**Why this sidesteps the bug:** no `position: sticky` and no `position: fixed` on the modern path; the translate is composited by the browser and runs at native scroll rate.
+GSAP documents this as a fix for:
 
-**Known trade-off:** older browsers (iOS ≤25) still use `position: sticky` via the fallback, but those versions don't carry the iOS 26 regression, so they're fine.
+- mobile address bar resizing
+- native scroll/main-thread synchronization problems
+- iOS Safari jitter from misreported scroll/touch positions
 
-### Not yet tried / to revisit
+Current mobile Services enables it while the mobile branch is active:
 
-- Nested scroll container — putting the sticky inside a local `overflow-y: auto` that owns its own scroll rather than participating in the root scroll. (User experimented with this in services-parallax.tsx around 2026-04-21; leaving to evaluate.)
-- `contain: paint` / `isolation: isolate` on the sticky to hint at compositor isolation. Theoretical, not tested.
-- Testing on iOS 26.1+. Several reports indicate the regression is largely fixed in 26.1.
+```ts
+const normalizer = ScrollTrigger.normalizeScroll(true);
+```
 
----
+Cleanup:
 
-## Environment
+```ts
+normalizer?.kill();
+ScrollTrigger.normalizeScroll(false);
+```
 
-- Device: iPhone (model TBD — confirm)
-- iOS version: **26.0** (upgrade to 26.1+ partially mitigates issue 2)
-- Browser: Safari
-- Build: local dev
+Manual result: significantly better.
+
+## Current Services Strategy
+
+File: `src/components/sections/services/services-parallax.tsx`
+
+Desktop:
+
+- keeps the original sticky/parallax structure
+- uses ScrollTrigger for image parallax and text fading
+
+Mobile:
+
+- does not use native sticky
+- does not use fixed positioning
+- does not use ScrollTrigger pinning
+- does not use CSS scroll-timeline
+- uses a stable absolute image track
+- uses cached measurements plus one rAF transform write
+- uses `ScrollTrigger.normalizeScroll(true)` to keep scroll and transforms synchronized on iOS
+
+Mobile structure:
+
+```tsx
+<div ref={mobileSectionRef} className="services-mobile-section">
+  <div ref={mobileViewportRef} className="services-mobile-viewport-probe" />
+  <div className="services-mobile-stage">
+    <div ref={mobileImageRef} className="services-mobile-image-track">
+      <Image ... />
+    </div>
+  </div>
+  <div className="relative z-10 pt-[50lvh]">
+    {slides}
+  </div>
+</div>
+```
+
+The mobile image transform is derived from cached values:
+
+- section start
+- section scroll distance
+- viewport probe height
+- image depth distance
+
+During scroll, the code only writes:
+
+```ts
+translate3d(0, y, 0) scale(scale)
+```
+
+No layout reads happen during scroll.
+
+## Current Tuning Values
+
+In `services-parallax.tsx`:
+
+```ts
+const MOBILE_START_SCALE = 1.03;
+const MOBILE_END_SCALE = 1.12;
+const MOBILE_DEPTH_RATIO = 0.22;
+```
+
+In `globals.css`:
+
+```css
+.services-mobile-viewport-probe {
+  height: max(100vh, 100lvh);
+}
+
+.services-mobile-stage {
+  inset: 0;
+}
+
+.services-mobile-image-track {
+  top: calc(-1 * max(10vh, 10lvh));
+  height: max(150vh, 150lvh);
+}
+```
+
+## Attempts That Did Not Work
+
+- Global fixed grain overlay.
+- Native sticky as originally implemented.
+- `translateZ(0)` / `will-change` as the main fix.
+- `visualViewport.height` CSS variables. This made the section too short.
+- CSS scroll-timeline for the mobile image track. It was smooth, but Safari appeared to recalculate/reposition during tiny scroll changes.
+- JS fake pinning without `normalizeScroll`. It preserved the look but still shook.
+- Reintroducing native sticky after other root fixes. This lost the image / regressed.
+
+## Remaining Concern
+
+`normalizeScroll(true)` improved the Services interaction significantly, but it is a hybrid scroll-normalization approach. It should be tested for:
+
+- native-feeling touch momentum
+- interaction with the mobile nav
+- behavior when entering/leaving Services
+- behavior after orientation changes
+- any accessibility side effects
+
+If further polish is needed, tune only the current mobile strategy first:
+
+- `MOBILE_DEPTH_RATIO`
+- `MOBILE_START_SCALE`
+- `MOBILE_END_SCALE`
+- image track height / overscan
+
+Avoid jumping back to unrelated architecture changes unless this strategy is proven unshippable.

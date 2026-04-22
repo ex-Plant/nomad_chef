@@ -37,7 +37,7 @@ export function useVideoReady({
       settled = true;
       const elapsed = performance.now() - startedAt;
       const remaining = Math.max(0, minVisibleMs - elapsed);
-      minDelayId = setTimeout(() => setIsInternalReady(true), remaining);
+      minDelayId = setTimeout(() => setIsInternalReady(true), remaining + 2000);
     };
 
     const video = videoRef.current;

@@ -64,10 +64,10 @@ export function GalleryLightbox({
   return (
     <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-ivory-black data-[state=open]:animate-in data-[state=open]:fade-in data-[state=closed]:animate-out data-[state=closed]:fade-out" />
+        <Dialog.Overlay className="fixed inset-0 z-300 bg-black data-[state=open]:animate-in data-[state=open]:fade-in data-[state=closed]:animate-out data-[state=closed]:fade-out" />
         <Dialog.Content
           aria-describedby={undefined}
-          className="fixed inset-0 z-50 outline-none"
+          className="fixed inset-0 z-300 outline-none"
         >
           <Dialog.Title className="sr-only">Galeria</Dialog.Title>
 
