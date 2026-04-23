@@ -1,0 +1,146 @@
+.lid {
+  transform-origin: 50px 40px;
+  transform-box: view-box;
+  will-change: transform;
+  animation: lid-hop 6s ease-in-out infinite;
+}
+button[data-on="false"] .lid {
+  animation: none;
+  transform: translateY(0) rotate(0deg);
+}
+/* Preview the hop on hover — one quick bounce when animations are globally off */
+button[data-on="false"]:hover .lid,
+button[data-on="false"]:focus-visible .lid {
+  animation: lid-hop-preview 0.56s ease-in-out;
+}
+/* Pause motion on hover when animations are on — previews the off-state */
+button[data-on="true"]:hover .lid,
+button[data-on="true"]:focus-visible .lid,
+button[data-on="true"]:hover .bubble,
+button[data-on="true"]:focus-visible .bubble {
+  animation-play-state: paused;
+}
+/* Main lid animation — irregular hops separated by long rests.
+   Cycle = 6s, with three hop events at non-uniform timings (17%, 42%, 78%)
+   and a seamless rest-to-rest loop. */
+@keyframes lid-hop {
+  0%,
+  15% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  /* hop 1 — single tiny bump */
+  17% {
+    transform: translateY(-2px) rotate(2deg);
+  }
+  20% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  40% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  /* hop 2 — bigger wobble */
+  42% {
+    transform: translateY(-3.5px) rotate(3deg);
+  }
+  44% {
+    transform: translateY(-1px) rotate(-2deg);
+  }
+  46% {
+    transform: translateY(-3px) rotate(1deg);
+  }
+  49% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  76% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  /* hop 3 — quick double bump */
+  78% {
+    transform: translateY(-3px) rotate(2deg);
+  }
+  80% {
+    transform: translateY(-1px) rotate(-1deg);
+  }
+  82% {
+    transform: translateY(-2.5px) rotate(2deg);
+  }
+  85% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+}
+/* Short preview used on hover when animations are off — one quick bump */
+@keyframes lid-hop-preview {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-3.5px) rotate(3deg);
+  }
+}
+
+.bubble {
+  transform-origin: center;
+  transform-box: fill-box;
+  will-change: transform, opacity;
+  opacity: 0;
+  animation: bubble-rise 10s cubic-bezier(0.33, 0.6, 0.3, 1) infinite;
+}
+button[data-on="false"] .bubble {
+  animation: none;
+  opacity: 0;
+}
+/* 10s cycle — active for ~2.4s (0-24%), then invisible idle for ~7.6s.
+   Staggered delays in the component make one bubble pop roughly every 3.3s. */
+@keyframes bubble-rise {
+  0% {
+    transform: translate(0, 0) scale(0.3);
+    opacity: 0;
+  }
+  4% {
+    opacity: 0.5;
+  }
+  20% {
+    transform: translate(
+        calc(var(--dx, 0px) * 0.85),
+        calc(var(--dy, -60px) * 0.85)
+      )
+      scale(1.4);
+    opacity: 0.5;
+  }
+  22% {
+    transform: translate(
+        calc(var(--dx, 0px) * 0.9),
+        calc(var(--dy, -60px) * 0.9)
+      )
+      scale(1.5);
+    opacity: 0.55;
+  }
+  23% {
+    transform: translate(
+        calc(var(--dx, 0px) * 0.95),
+        calc(var(--dy, -60px) * 0.95)
+      )
+      scale(3.5);
+    opacity: 0.25;
+  }
+  24% {
+    transform: translate(var(--dx, 0px), var(--dy, -60px)) scale(4.5);
+    opacity: 0;
+  }
+  25%,
+  100% {
+    transform: translate(0, 0) scale(0.3);
+    opacity: 0;
+  }
+}
+
+.zzz {
+  transition: opacity 0.15s ease-out;
+}
+button[data-on="false"] .zzz {
+  opacity: 1;
+}

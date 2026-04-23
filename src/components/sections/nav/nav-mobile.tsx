@@ -9,6 +9,7 @@ import { CONTENT } from "@/config/content";
 import type { SiteT } from "@/lib/get-site";
 import { Starburst } from "@/components/shared/starburst";
 import { cn } from "@/helpers/cn";
+import { AnimationTogglePot as AnimationToggle } from "@/components/shared/animation-toggle-pot/animation-toggle-pot";
 
 type NavMobilePropsT = {
   items: SiteT["nav"];
@@ -62,7 +63,7 @@ export function NavMobileToggle({
         viewBox="-10 -10 105 120"
         width="48"
         className={cn(
-          "transition-[translate,rotate,color]  -mr-1",
+          "transition-[translate,rotate]  -mr-1",
           STROKE_CLASS[color],
           isOpen && "translate-[-2px_-2px] rotate-45"
         )}
@@ -218,6 +219,26 @@ export function NavMobileOverlay({
                   {item.label}
                 </m.button>
               ))}
+              <m.div
+                className=""
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{
+                  opacity: 0,
+                  y: -12,
+                  transition: {
+                    duration: EXIT_ITEM_DURATION,
+                    ease: CURTAIN_EASE,
+                  },
+                }}
+                transition={{
+                  duration: 0.35,
+                  ease: EASE,
+                  delay: MENU_ITEM_DELAY_BASE + items.length * 0.05,
+                }}
+              >
+                <AnimationToggle />
+              </m.div>
             </div>
           </m.div>
         </m.div>

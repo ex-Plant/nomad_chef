@@ -10,15 +10,19 @@ import { Contact } from "@/components/sections/contact/contact";
 import { GrainOverlay } from "@/components/ui/grain-overlay";
 import type { SiteT } from "@/lib/get-site";
 import { useVideoReady } from "../hooks/use-video-ready";
-import { useState } from "react";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { AnimationHint } from "@/components/ui/animation-hint";
 
 type HomepageShellPropsT = {
   site: SiteT;
 };
 
 export function HomepageShell({ site }: HomepageShellPropsT) {
+  const reducedMotion = useReducedMotion();
+  // Skip the play() attempt when the user has opted out — no reason to
+  // round-trip through NotAllowedError if we're not going to animate.
   const { videoRef, isReady } = useVideoReady({
-    enabled: true,
+    enabled: !reducedMotion,
     timeoutMs: 5000,
   });
 
@@ -38,6 +42,7 @@ export function HomepageShell({ site }: HomepageShellPropsT) {
           </>
         )}
       </main>
+      {isReady && <AnimationHint />}
     </>
   );
 }
