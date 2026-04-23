@@ -11,6 +11,7 @@ import {
 import { DebugWrapper } from "@/components/debug-tools/debug-wrapper";
 import { MotionProvider } from "@/components/ui/motion-provider";
 import "./globals.css";
+import { GrainOverlay } from "../components/ui/grain-overlay";
 
 /* Design 1 fonts */
 const archivoBlack = Archivo_Black({

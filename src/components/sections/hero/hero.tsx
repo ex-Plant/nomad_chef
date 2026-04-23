@@ -27,24 +27,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 type HeroPropsT = { data: SiteT["hero"] };
 
-export function Hero({ data }: HeroPropsT) {
+export function Hero({ data, videoRef, isReady }: HeroPropsT) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
-
-  const { videoRef, isReady } = useVideoReady({
-    enabled: true,
-    timeoutMs: 5000,
-  });
-
-  useEffect(() => {
-    if (isReady) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [isReady]);
 
   useGSAP(
     () => {

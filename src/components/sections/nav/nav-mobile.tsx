@@ -144,6 +144,8 @@ export function NavMobileOverlay({
   isOpen,
   scrollTo,
 }: Pick<NavMobilePropsT, "items" | "isOpen" | "scrollTo">) {
+  // Scroll is handled by HomepageShell unmounting below-hero content while
+  // open — no scroll lock needed here.
   useEffect(() => {
     document.body.classList.toggle("overflow-hidden", isOpen);
     return () => document.body.classList.remove("overflow-hidden");
@@ -154,7 +156,7 @@ export function NavMobileOverlay({
       {isOpen && (
         <m.div
           key="mobile-overlay"
-          className="fixed inset-0 z-40 md:hidden pointer-events-none "
+          className="fixed inset-0 z-40 md:hidden pointer-events-none"
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 1 }}
@@ -187,7 +189,7 @@ export function NavMobileOverlay({
               )}
               variant="v1-a"
             />
-            <div className="relative z-10 flex flex-col items-center gap-8">
+            <div className="relative z-51 flex flex-col items-center gap-8">
               {items.map((item, i) => (
                 <m.button
                   key={item.id}
