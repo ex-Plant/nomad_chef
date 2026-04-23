@@ -10,6 +10,7 @@ import { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -411,9 +412,11 @@ function RotatingStarburst({
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
 
   useGSAP(
     () => {
+      if (reducedMotion) return;
       const el = ref.current;
       if (!el) return;
 
@@ -432,7 +435,7 @@ function RotatingStarburst({
         }
       );
     },
-    { scope: ref, dependencies: [] }
+    { scope: ref, dependencies: [reducedMotion] }
   );
 
   return (

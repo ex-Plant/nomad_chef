@@ -15,6 +15,7 @@ import { SectionContent } from "@/components/shared/section-content";
 import NextImage from "next/image";
 import { Loader } from "@/components/shared/loader";
 import { scrollToSection } from "@/helpers/scroll-to-section";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 const POSTER_DESKTOP_SRC = "/videos/hero-poster.jpg";
 const POSTER_MOBILE_SRC = "/videos/hero-poster-mobile.jpg";
@@ -34,9 +35,11 @@ export function Hero({ data, videoRef, isReady }: HeroPropsT) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
 
   useGSAP(
     () => {
+      if (reducedMotion) return;
       const section = sectionRef.current;
       const image = imageRef.current;
       const text = textRef.current;
@@ -64,7 +67,7 @@ export function Hero({ data, videoRef, isReady }: HeroPropsT) {
         },
       });
     },
-    { scope: sectionRef, dependencies: [isReady] }
+    { scope: sectionRef, dependencies: [isReady, reducedMotion] }
   );
 
   return (

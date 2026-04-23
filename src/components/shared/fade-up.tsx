@@ -1,7 +1,7 @@
 "use client";
 
 import { m } from "framer-motion";
-import type { ComponentPropsWithoutRef } from "react";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 const SPRING_PRESETS = {
   /** Gentle, editorial — slow settle, zero overshoot */
@@ -28,10 +28,7 @@ type FadeUpPropsT = {
   spring?: SpringKeyT;
   className?: string;
   children?: React.ReactNode;
-} & Omit<
-  ComponentPropsWithoutRef<typeof m.div>,
-  "variants" | "initial" | "whileInView" | "animate" | "viewport" | "transition"
->;
+};
 
 export function FadeUp({
   as = "div",
@@ -43,8 +40,20 @@ export function FadeUp({
   spring = "default",
   className,
   children,
-  ...rest
 }: FadeUpPropsT) {
+  const reducedMotion = useReducedMotion();
+
+  // When reduced, render a plain HTML tag. Going through <m.*> with no
+  // animation props leaves framer-motion stuck at whatever motion values
+  // it was holding — if the element was mid-animation from hidden=opacity:0
+  // when the user flipped the toggle, it stays invisible. Bypassing the
+  // motion component guarantees the element renders at its natural DOM
+  // state (opacity: 1, no transform).
+  if (reducedMotion) {
+    const Tag = as;
+    return <Tag className={className}>{children}</Tag>;
+  }
+
   const Component = m[as];
 
   const hidden = { opacity: 0, y: yOffset };
@@ -71,7 +80,6 @@ export function FadeUp({
       {...motionProps}
       transition={transition}
       className={className}
-      {...rest}
     >
       {children}
     </Component>

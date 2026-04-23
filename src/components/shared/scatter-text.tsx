@@ -4,6 +4,7 @@ import { useRef, type RefObject } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -45,16 +46,30 @@ export function ScatterText({
   triggerOnMount = false,
 }: ScatterTextPropsT) {
   const containerRef = useRef<HTMLElement>(null);
+  const reducedMotion = useReducedMotion();
 
   useGSAP(
     () => {
       const container = containerRef.current;
       if (!container) return;
 
-      const triggerEl = triggerRef?.current ?? container;
       const lineEls = container.querySelectorAll<HTMLElement>(
         "[data-scatter-line]"
       );
+      const letterEls = container.querySelectorAll<HTMLElement>(
+        "[data-scatter-letter]"
+      );
+
+      // Always clear any leftover transforms before building (or skipping)
+      // the timeline. Without this, a prior non-reduced run may have left
+      // letters in the scattered initial state (applied by tl.progress(0)),
+      // and context.revert() doesn't always undo it — letters stay visibly
+      // scattered even after reducedMotion flips on.
+      gsap.set([...lineEls, ...letterEls], { clearProps: "transform" });
+
+      if (reducedMotion) return;
+
+      const triggerEl = triggerRef?.current ?? container;
 
       // Build a paused timeline — ScrollTrigger plays/resets it
       const tl = gsap.timeline({ paused: true });
@@ -102,7 +117,7 @@ export function ScatterText({
         });
       }
     },
-    { scope: containerRef, dependencies: [] }
+    { scope: containerRef, dependencies: [reducedMotion] }
   );
 
   return (
