@@ -17,8 +17,6 @@ type HomepageShellPropsT = {
 };
 
 export function HomepageShell({ site }: HomepageShellPropsT) {
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-
   const { videoRef, isReady } = useVideoReady({
     enabled: true,
     timeoutMs: 5000,
@@ -26,22 +24,18 @@ export function HomepageShell({ site }: HomepageShellPropsT) {
 
   return (
     <>
-      <Nav
-        items={site.nav}
-        isMobileOpen={isMobileOpen}
-        setIsMobileOpen={setIsMobileOpen}
-      />
+      <Nav items={site.nav} />
       <main className="relative bg-warm-white">
         <GrainOverlay position="absolute" zIndex="z-50" />
         <Hero data={site.hero} videoRef={videoRef} isReady={isReady} />
         {isReady && (
-          <div className={!isMobileOpen ? "opacity-0" : "opacity-0"}>
+          <>
             <About data={site.about} />
             <Services data={site.services} />
             <CampFoodSwiper data={site.campFood} />
             <Gallery data={site.gallery} />
             <Contact data={site.contact} />
-          </div>
+          </>
         )}
       </main>
     </>

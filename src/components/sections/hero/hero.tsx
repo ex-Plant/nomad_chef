@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { RefObject, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -13,7 +13,6 @@ import { BodyText } from "@/components/shared/body-text";
 import { ScatterText } from "@/components/shared/scatter-text";
 import { SectionContent } from "@/components/shared/section-content";
 import NextImage from "next/image";
-import { useVideoReady } from "@/hooks/use-video-ready";
 import { Loader } from "@/components/shared/loader";
 import { scrollToSection } from "@/helpers/scroll-to-section";
 
@@ -25,7 +24,11 @@ const VIDEO_1440_SRC = "/videos/hero-1440w-crf37.webm";
 
 gsap.registerPlugin(ScrollTrigger);
 
-type HeroPropsT = { data: SiteT["hero"] };
+type HeroPropsT = {
+  data: SiteT["hero"];
+  isReady: boolean;
+  videoRef: RefObject<HTMLVideoElement | null>;
+};
 
 export function Hero({ data, videoRef, isReady }: HeroPropsT) {
   const sectionRef = useRef<HTMLDivElement>(null);

@@ -16,11 +16,12 @@ import { scrollToSection } from "@/helpers/scroll-to-section";
 
 type NavPropsT = { items: SiteT["nav"] };
 
-export function Nav({ items, setIsMobileOpen, isMobileOpen }: NavPropsT) {
+export function Nav({ items }: NavPropsT) {
   const [activeSection, setActiveSection] = useState<SectionIdT>(
     SECTION_IDS.hero
   );
   const [isVisible, setIsVisible] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isOnYellow, setIsOnYellow] = useState(false);
   const navRef = useRef<HTMLElement>(null);
 
