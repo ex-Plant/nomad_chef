@@ -90,50 +90,25 @@ export function NavMobileToggle({
 const NAV_ITEM_TILTS = [-2.5, 1.8, -1.2, 2.2, -2, 1.4] as const;
 
 const CURTAIN_EASE = [0.95, 0, 1, 0.25] as const;
-const FIRST_DURATION = 0.38;
-const SECOND_DURATION = 0.18;
-const CORAL_ENTER_DURATION = FIRST_DURATION;
-const YELLOW_ENTER_DURATION = SECOND_DURATION;
-const YELLOW_EXIT_DURATION = FIRST_DURATION;
-const CORAL_EXIT_DURATION = SECOND_DURATION;
-const STAGE_GAP = -0.04;
-/** Gap between first-curtain-start and second-curtain-start. Same both ways. */
-const CURTAIN_GAP = FIRST_DURATION + STAGE_GAP;
-const MENU_ITEM_DELAY_BASE = CURTAIN_GAP + SECOND_DURATION * 0.5;
+const CURTAIN_ENTER_DURATION = 0.45;
+const CURTAIN_EXIT_DURATION = 0.4;
 const EXIT_ITEM_DURATION = 0.24;
 const EXIT_ITEM_STAGGER = 0.03;
+/** Items exit first, then the curtain retracts. */
 const EXIT_CURTAIN_DELAY = EXIT_ITEM_DURATION + EXIT_ITEM_STAGGER * 2;
-
-const CORAL_VARIANTS = {
-  hidden: { y: "-100%" },
-  visible: {
-    y: "0%",
-    transition: { duration: CORAL_ENTER_DURATION, ease: CURTAIN_EASE },
-  },
-  exit: {
-    y: "-100%",
-    transition: {
-      duration: CORAL_EXIT_DURATION,
-      ease: CURTAIN_EASE,
-      delay: EXIT_CURTAIN_DELAY + CURTAIN_GAP,
-    },
-  },
-} as const;
+/** Menu items start animating when the curtain is ~halfway down. */
+const MENU_ITEM_DELAY_BASE = CURTAIN_ENTER_DURATION * 0.5;
 
 const YELLOW_VARIANTS = {
   hidden: { y: "-100%" },
   visible: {
     y: "0%",
-    transition: {
-      duration: YELLOW_ENTER_DURATION,
-      ease: CURTAIN_EASE,
-      delay: CURTAIN_GAP,
-    },
+    transition: { duration: CURTAIN_ENTER_DURATION, ease: CURTAIN_EASE },
   },
   exit: {
     y: "-100%",
     transition: {
-      duration: YELLOW_EXIT_DURATION,
+      duration: CURTAIN_EXIT_DURATION,
       ease: CURTAIN_EASE,
       delay: EXIT_CURTAIN_DELAY,
     },
@@ -162,18 +137,10 @@ export function NavMobileOverlay({
           animate={{ opacity: 1 }}
           exit={{ opacity: 1 }}
           transition={{
-            duration: EXIT_CURTAIN_DELAY + CURTAIN_GAP + CORAL_EXIT_DURATION,
+            duration: EXIT_CURTAIN_DELAY + CURTAIN_EXIT_DURATION,
           }}
         >
-          {/* Stage 1 — coral drops from top */}
-          {/* <m.div
-            className="absolute inset-0 bg-coral"
-            variants={CORAL_VARIANTS}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-          /> */}
-          {/* Stage 2 — yellow + menu content rises from bottom, covers coral */}
+          {/* Yellow curtain — drops from top, holds the menu. */}
           <m.div
             className="absolute inset-0 bg-yellow pointer-events-auto flex items-center justify-center overflow-hidden"
             variants={YELLOW_VARIANTS}

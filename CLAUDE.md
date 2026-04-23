@@ -1,5 +1,9 @@
 @AGENTS.md
 
+## Commit Policy
+
+Operating under cover — do NOT add `Co-Authored-By: Claude` or any other AI co-author trailer to commit messages. Commit messages must look fully human-authored.
+
 # Project: Chef Personal Brand Website
 
 ## Overview

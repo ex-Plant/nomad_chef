@@ -34,9 +34,13 @@ export function GalleryLightbox({
 
   // Jump to the clicked image; embla fires `select` afterwards,
   // which keeps selectedIndex in sync via the effect below.
+  // Also sync selectedIndex eagerly so the counter never flashes a stale
+  // value when openIndex changes (component stays mounted across open/close,
+  // and scrollTo is a no-op when the target equals the current snap).
   useEffect(() => {
-    if (!emblaApi || openIndex === undefined) return;
-    emblaApi.scrollTo(openIndex, true);
+    if (openIndex === undefined) return;
+    setSelectedIndex(openIndex);
+    if (emblaApi) emblaApi.scrollTo(openIndex, true);
   }, [emblaApi, openIndex]);
 
   useEffect(() => {
