@@ -21,7 +21,13 @@ export function useVideoReady({
   const isReady = !enabled || isInternalReady;
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) {
+      // User toggled reduced motion on after the video had started — stop it
+      // so the decoder work ends and the poster stays in view.
+      const video = videoRef.current;
+      if (video && !video.paused) video.pause();
+      return;
+    }
 
     let settled = false;
 
@@ -44,6 +50,19 @@ export function useVideoReady({
       video.addEventListener("playing", commitReady);
       video.addEventListener("error", commitReady);
     }
+
+    // Explicit play() call — the autoplay attribute alone fails silently
+    // on iOS Low Power Mode. Catching NotAllowedError lets us unblock the
+    // loader immediately instead of waiting out the timeout.
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((err: unknown) => {
+        if (err instanceof DOMException && err.name === "NotAllowedError") {
+          commitReady();
+        }
+      });
+    }
+
     const timeoutId = setTimeout(commitReady, timeoutMs);
 
     return () => {
