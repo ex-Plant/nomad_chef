@@ -16,7 +16,7 @@ export function AnimationHint() {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
-        className="fixed bottom-4 left-4 right-4 z-60 md:left-auto md:right-6 md:bottom-6 rounded-xl items-center w-fit gap- scroll p-2 hidden md:flex "
+        className="fixed bottom-0 right-0  z-60  rounded-xl items-center w-fit gap- scroll p-2 hidden md:flex "
       >
         <AnimationToggle />
       </m.div>
