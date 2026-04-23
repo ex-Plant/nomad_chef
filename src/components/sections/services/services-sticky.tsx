@@ -11,6 +11,7 @@ import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 import { ServicesBackground } from "./services-background";
 import { ServicesSlideText } from "./services-slide-text";
 import { cn } from "../../../helpers/cn";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -28,20 +29,20 @@ export function ServicesSticky({ data }: PropsT) {
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const reducedMotion = useReducedMotion();
 
   useGSAP(
     () => {
+      if (reducedMotion) return;
       const container = containerRef.current;
       const imageWrap = imageRef.current;
       if (!container || !imageWrap) return;
 
-      // Parallax: image 180% tall, translates slowly upward + scales up.
       gsap.fromTo(
         imageWrap,
-        { yPercent: 0, scale: 1 },
+        { yPercent: 0 },
         {
-          yPercent: -35,
-          scale: 1.15,
+          yPercent: -28,
           ease: "none",
           scrollTrigger: {
             trigger: container,
@@ -67,11 +68,15 @@ export function ServicesSticky({ data }: PropsT) {
         });
       });
     },
-    { scope: containerRef, dependencies: [data.slides.length] }
+    { scope: containerRef, dependencies: [data.slides.length, reducedMotion] }
   );
 
   return (
-    <div ref={containerRef} id={SECTION_IDS.services} className="relative z-1">
+    <div
+      ref={containerRef}
+      id={SECTION_IDS.services}
+      className="relative z-1"
+    >
       {/* Sticky image + eyebrow — pinned for the full section */}
       <div className="sticky top-0 z-1 h-dvh overflow-hidden">
         <ServicesBackground data={data} imageRef={imageRef} />
@@ -90,7 +95,7 @@ export function ServicesSticky({ data }: PropsT) {
           <div
             key={slide.title}
             className={cn(
-              "flex min-h-[80lvh] w-screen shrink-0 flex-col justify-end pb-24 md:pb-32 will-change-[opacity, height]   ",
+              "flex min-h-[80lvh] w-screen shrink-0 flex-col justify-end pb-24 md:pb-32 will-change-[opacity,height]",
               i === 0 && "h-lvh"
             )}
           >
@@ -99,14 +104,13 @@ export function ServicesSticky({ data }: PropsT) {
                 ref={(el) => {
                   panelRefs.current[i] = el;
                 }}
-                // className={cn(``, i === 0 && "pt-[30lvh]")}
               >
                 <ServicesSlideText slide={slide} />
               </div>
             </SectionContent>
           </div>
         ))}
-        <div className={`h-[50lvh]`}></div>
+        <div className="h-[50lvh]" />
       </div>
     </div>
   );

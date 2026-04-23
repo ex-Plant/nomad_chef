@@ -10,6 +10,7 @@ import { SectionContent } from "@/components/shared/section-content";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 import { ServicesBackground } from "./services-background";
 import { ServicesSlideText } from "./services-slide-text";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,12 +34,18 @@ type ServicesPropsT = { data: SiteT["services"] };
    - `ScrollTrigger.normalizeScroll(true)` is enabled for the lifetime of
      this effect to keep GSAP's scroll events in sync with iOS's deferred
      scroll updates.
-   - Stage is h-[120lvh] so the image still covers the viewport when iOS's
-     URL bar is visible and innerHeight < lvh.
-   Stage is constrained to the section's own bounds — never extended above
-   `top-0` — because extending upward causes the image to draw over the
-   previous section (About). Accept the brief pre-pin strip of the previous
-   section at the top as a consequence. */
+   Stage is extended 20lvh above section top and the section has
+   `overflow-clip` so the extension is hidden from the preceding section.
+   The 20lvh upward buffer lets the image pre-cover the viewport top when
+   the iOS URL bar toggles during the pin. */
+
+/* Stage geometry — everything downstream (section height, track offset,
+   eyebrow offset) is derived from these. */
+const STAGE_HEIGHT_LVH = 140;
+const STAGE_OFFSET_LVH = 20;
+const STAGE_COVERAGE_LVH = STAGE_HEIGHT_LVH - STAGE_OFFSET_LVH;
+const IMAGE_TRAVEL_PCT = 28;
+
 export function ServicesParallax({ data }: ServicesPropsT) {
   const SLIDES = data.slides;
   const slideCount = SLIDES.length;
@@ -48,21 +55,25 @@ export function ServicesParallax({ data }: ServicesPropsT) {
   const trackRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const reducedMotion = useReducedMotion();
 
   // Extra slide-heights of travel past the last slide's center so it fully
   // fades/exits before the pin releases.
-  const EXIT_BUFFER = 0.75;
+  const EXIT_BUFFER = 0.8;
 
   useGSAP(
     () => {
+      if (reducedMotion) return;
       const section = sectionRef.current;
       const stage = stageRef.current;
       const track = trackRef.current;
-      if (!section || !stage || !track) return;
+      const imageWrap = imageRef.current;
+      if (!section || !stage || !track || !imageWrap) return;
 
       const normalizer = ScrollTrigger.normalizeScroll(true);
 
       const travelUnits = Math.max(slideCount - 1 + EXIT_BUFFER, 0);
+      const lastOpacities = new Array(contentRefs.current.length).fill(-1);
 
       let pinDistance = 0;
       let maxTrackTranslate = 0;
@@ -71,10 +82,11 @@ export function ServicesParallax({ data }: ServicesPropsT) {
         const vh = window.innerHeight;
         pinDistance = travelUnits * vh;
         maxTrackTranslate = travelUnits * vh;
-        // Lock section height to pinDistance (px, from innerHeight) + the
-        // actual stage height so the stage fully exits before the section
-        // ends, even when the stage is taller than the viewport on mobile.
-        const stageHeight = stage.offsetHeight;
+        // Derive effective stage coverage from offsetHeight so the section
+        // height stays lvh-consistent across iOS URL bar toggles (innerHeight
+        // shrinks with the URL bar but lvh does not).
+        const stageHeight =
+          (stage.offsetHeight * STAGE_COVERAGE_LVH) / STAGE_HEIGHT_LVH;
         section.style.height = `${pinDistance + stageHeight}px`;
       };
 
@@ -90,17 +102,7 @@ export function ServicesParallax({ data }: ServicesPropsT) {
         const trackTy = -progress * maxTrackTranslate;
         stage.style.transform = `translate3d(0, ${ty}px, 0)`;
         track.style.transform = `translate3d(0, ${trackTy}px, 0)`;
-
-        // Image parallax: yPercent 0 → -35, scale 1 → 1.15 across the pin
-        // range. 2D transform (no translate3d) so the image stays in the
-        // stage's compositor layer and doesn't get pre-rasterized then
-        // upscaled.
-        const image = imageRef.current;
-        if (image) {
-          const iy = -progress * 35;
-          const scale = 1 + progress * 0.15;
-          image.style.transform = `translateY(${iy}%) scale(${scale})`;
-        }
+        imageWrap.style.transform = `translateY(${-progress * IMAGE_TRAVEL_PCT}%)`;
 
         const offset = progress * travelUnits;
         for (let i = 0; i < contentRefs.current.length; i++) {
@@ -113,6 +115,10 @@ export function ServicesParallax({ data }: ServicesPropsT) {
               : d >= INVISIBLE
                 ? 0
                 : 1 - (d - FULL_VISIBLE) / (INVISIBLE - FULL_VISIBLE);
+          // Skip redundant DOM writes when the value hasn't meaningfully
+          // changed — non-active slides stay pinned at 0 for most of the pin.
+          if (Math.abs(opacity - lastOpacities[i]) < 0.001) continue;
+          lastOpacities[i] = opacity;
           el.style.opacity = `${opacity}`;
         }
       };
@@ -138,29 +144,32 @@ export function ServicesParallax({ data }: ServicesPropsT) {
         ScrollTrigger.normalizeScroll(false);
       };
     },
-    { scope: sectionRef, dependencies: [slideCount] }
+    { scope: sectionRef, dependencies: [slideCount, reducedMotion] }
   );
 
   return (
     <div
       ref={sectionRef}
       id={SECTION_IDS.services}
-      className="relative z-1 bg-off-black"
+      className="relative z-1 overflow-clip bg-off-black"
       style={{ height: `calc(${slideCount + EXIT_BUFFER} * 100lvh)` }}
     >
-      {/* Stage — absolute inside the tall section, constrained to section
-          bounds (top-0). JS drives translateY to fake a CSS `sticky`. Image
-          is pinned; the vertical slide track inside is counter-translated so
-          slides read as normal scroll. Stage is 120lvh tall so the image
-          covers the viewport when the iOS URL bar is visible. */}
       <div
         ref={stageRef}
-        className="absolute inset-x-0 top-0 h-[120lvh] w-full overflow-hidden will-change-transform"
+        className="absolute inset-x-0 w-full overflow-hidden will-change-transform"
+        style={{
+          top: `-${STAGE_OFFSET_LVH}lvh`,
+          height: `${STAGE_HEIGHT_LVH}lvh`,
+        }}
       >
         <ServicesBackground data={data} imageRef={imageRef} />
 
-        {/* Eyebrow — pinned to top of stage */}
-        <div className="absolute inset-x-0 top-0 z-20 pt-12">
+        {/* Eyebrow and track are offset by STAGE_OFFSET_LVH so they visually
+            sit at section-top, compensating the stage's upward extension. */}
+        <div
+          className="absolute inset-x-0 z-20 pt-12"
+          style={{ top: `${STAGE_OFFSET_LVH}lvh` }}
+        >
           <SectionContent>
             <EyebrowTag color="yellow" withLine lineColor="yellow">
               {data.eyebrow}
@@ -168,11 +177,13 @@ export function ServicesParallax({ data }: ServicesPropsT) {
           </SectionContent>
         </div>
 
-        {/* Vertical track — N × 100lvh tall, translateY driven by scroll */}
         <div
           ref={trackRef}
-          className="absolute top-0 left-0 flex w-screen flex-col items-stretch will-change-transform z-10"
-          style={{ height: `${slideCount * 100}lvh` }}
+          className="absolute left-0 flex w-screen flex-col items-stretch will-change-transform z-10"
+          style={{
+            top: `${STAGE_OFFSET_LVH}lvh`,
+            height: `${slideCount * 100}lvh`,
+          }}
         >
           {SLIDES.map((slide, i) => (
             <div

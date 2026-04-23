@@ -8,13 +8,15 @@ type PropsT = {
 };
 
 /* Image layer shared by ServicesSticky (desktop) and ServicesParallax (mobile).
-   180% tall wrapper so GSAP can translate it upward for parallax without
-   leaving a gap. Own overflow-clip so the scaled image doesn't leak. */
+   Inner wrapper is 140% tall so GSAP can translate it upward (-28%) for
+   parallax without exposing the bottom edge. `sizes` is tuned to the real
+   rendered size so Next/Image ships a source big enough to render crisply
+   without upscaling. */
 export function ServicesBackground({ data, imageRef }: PropsT) {
   return (
     <>
       <div className="absolute inset-0 overflow-clip">
-        <div ref={imageRef} className="absolute inset-x-0 top-0 h-[180%]">
+        <div ref={imageRef} className="absolute inset-x-0 top-0 h-[140%]">
           {data.background?.url && (
             <Image
               src={data.background.url}
@@ -22,7 +24,7 @@ export function ServicesBackground({ data, imageRef }: PropsT) {
               fill
               priority
               className="rounded-none object-cover"
-              sizes="100vw"
+              sizes="140vh"
             />
           )}
         </div>
