@@ -270,6 +270,20 @@ Wired into `hero.tsx` via a `<source media>` ladder. Loader overlay gated on `us
 
 Portrait-orientation landscape Veo variants (540×960, 720×1280, 1080×1920) were dropped — Marta's portrait video covers mobile, no need to crop Veo to 9:16.
 
+## Production vs tests path
+
+Two hero components exist on purpose — same `SiteT["hero"]` data shape, different media sources:
+
+| Route                    | Component    | Video source                                        |
+| ------------------------ | ------------ | --------------------------------------------------- |
+| `/` (`app/page.tsx`)     | `<Hero>`     | Hardcoded `/videos/*` in `public/` (CDN-served)     |
+| `/tests` (`app/tests/`)  | `<HeroTests>` | Payload — reads `data.mediaDesktop` / `data.mediaMobile` |
+
+- **Production `/`** ships locked-in encodes from `public/videos/`. Fast, predictable, no runtime dependency on Payload for the hero. Mobile portrait source (`(orientation: portrait) and (max-width: 767px)`) serves `marta-464x832-crf22.mp4`; larger viewports fall through to the landscape WebM ladder.
+- **Tests `/tests`** reads uploaded files from the Site global's `hero_media_desktop` / `hero_media_mobile` fields. Lets the client swap videos via Payload admin without a deploy. URLs flow through `toMedia()` so cache-busting `?v=<updatedAt>` is automatic.
+
+Client uploads on `/tests` aren't put through the CRF ladder — whatever they upload is what plays. For the shipped `/` route, re-encode per this doc's recipe and drop into `public/videos/`.
+
 ## Open decisions
 
 - [ ] Regenerate `hero-poster.jpg` smaller (currently 329 KB; can be ≤ 80 KB without quality loss).

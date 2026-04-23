@@ -81,8 +81,7 @@ export const Site: GlobalConfig = {
     afterChange: [
       () => {
         try {
-          revalidateTag("site:pl", "max");
-          revalidateTag("site:en", "max");
+          revalidateTag("site", "max");
         } catch {}
       },
     ],

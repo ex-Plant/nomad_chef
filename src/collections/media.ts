@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { revalidateTag } from "next/cache";
 
 export const Media: CollectionConfig = {
   slug: "media",
@@ -10,6 +11,15 @@ export const Media: CollectionConfig = {
     read: () => true,
   },
   upload: true,
+  hooks: {
+    afterChange: [
+      () => {
+        try {
+          revalidateTag("site", "max");
+        } catch {}
+      },
+    ],
+  },
   fields: [
     {
       name: "alt",

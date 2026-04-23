@@ -105,11 +105,16 @@ type RawMedia = {
   alt?: string | null;
   width?: number | null;
   height?: number | null;
+  updatedAt?: string | null;
 };
+// Append ?v=<updatedAt-ms> so replacing a file in Payload (which keeps the same
+// URL) produces a fresh key for Next's image optimizer and browser caches.
 const toMedia = (m: number | RawMedia | null | undefined): MediaT | undefined => {
   if (!m || typeof m === "number" || !m.url) return undefined;
+  const version = m.updatedAt ? Date.parse(m.updatedAt) : undefined;
+  const url = version && !Number.isNaN(version) ? `${m.url}?v=${version}` : m.url;
   return {
-    url: m.url,
+    url,
     mimeType: m.mimeType ?? "",
     alt: m.alt ?? "",
     width: m.width ?? undefined,
@@ -200,7 +205,7 @@ const fetchSite = (locale: LocaleT) =>
       };
     },
     ["site", locale],
-    { tags: [`site:${locale}`] },
+    { tags: ["site"] },
   );
 
 export const getSite = cache(

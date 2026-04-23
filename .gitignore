@@ -53,5 +53,10 @@ next-env.d.ts
 # personal notes
 .notes
 
-# hero video variants — kept locally, re-enabled once final videos are picked
+# hero videos — raw sources and experimental encodes stay local;
+# the three shipping variants below are allowlisted so they reach Vercel
 /public/videos/hero-*.webm
+/public/videos/*.mp4
+!/public/videos/hero-1280w-crf37.webm
+!/public/videos/hero-1440w-crf37.webm
+!/public/videos/marta-464x832-crf22.mp4

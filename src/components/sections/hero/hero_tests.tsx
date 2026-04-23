@@ -12,28 +12,28 @@ import { FadeUp } from "@/components/shared/fade-up";
 import { BodyText } from "@/components/shared/body-text";
 import { ScatterText } from "@/components/shared/scatter-text";
 import { SectionContent } from "@/components/shared/section-content";
+import { Image } from "@/components/ui/image";
 import NextImage from "next/image";
 import { useVideoReady } from "@/hooks/use-video-ready";
 import { Loader } from "@/components/shared/loader";
 import { scrollToSection } from "@/helpers/scroll-to-section";
 
-const POSTER_DESKTOP_SRC = "/videos/hero-poster.jpg";
-const POSTER_MOBILE_SRC = "/videos/hero-poster-mobile.jpg";
-const VIDEO_MOBILE_SRC = "/videos/marta-464x832-crf22.mp4";
-const VIDEO_1280_SRC = "/videos/hero-1280w-crf37.webm";
-const VIDEO_1440_SRC = "/videos/hero-1440w-crf37.webm";
+const POSTER_SRC = "/videos/hero-poster.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
 type HeroPropsT = { data: SiteT["hero"] };
 
-export function Hero({ data }: HeroPropsT) {
+export function HeroTests({ data }: HeroPropsT) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
 
+  const desktopMedia = data.mediaDesktop;
+  const mobileMedia = data.mediaMobile;
+  const isVideo = desktopMedia?.mimeType.startsWith("video/") ?? false;
   const { videoRef, isReady } = useVideoReady({
-    enabled: true,
+    enabled: isVideo,
     timeoutMs: 5000,
   });
 
@@ -86,55 +86,55 @@ export function Hero({ data }: HeroPropsT) {
         className="absolute inset-0 z-0 overflow-hidden"
         style={{ contain: "layout paint" }}
       >
-        {/* Poster underneath — also the fallback surface if video never plays */}
-        <NextImage
-          src={POSTER_MOBILE_SRC}
-          alt=""
-          aria-hidden="true"
-          fill
-          priority
-          sizes="(max-width: 767px) 100vw, 0px"
-          className="object-cover md:hidden"
-        />
-        <NextImage
-          src={POSTER_DESKTOP_SRC}
-          alt=""
-          aria-hidden="true"
-          fill
-          priority
-          sizes="(min-width: 768px) 100vw, 0px"
-          className="hidden object-cover md:block"
-        />
-        <video
-          ref={videoRef}
-          poster={POSTER_MOBILE_SRC}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          className="relative min-h-full min-w-full object-cover"
-        >
-          {/* Portrait mobile: Marta's clip; order matters — first match wins */}
-          <source
-            media="(orientation: portrait) and (max-width: 767px)"
-            src={VIDEO_MOBILE_SRC}
-            type="video/mp4"
+        {isVideo && desktopMedia ? (
+          <>
+            {/* Poster underneath — also the fallback surface if video never plays */}
+            <NextImage
+              src={POSTER_SRC}
+              alt=""
+              aria-hidden="true"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+            <video
+              ref={videoRef}
+              poster={POSTER_SRC}
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="metadata"
+              className="relative min-h-full min-w-full object-cover"
+            >
+              {mobileMedia && (
+                <source
+                  media="(max-width: 768px)"
+                  src={mobileMedia.url}
+                  type={mobileMedia.mimeType}
+                />
+              )}
+              <source src={desktopMedia.url} type={desktopMedia.mimeType} />
+            </video>
+          </>
+        ) : desktopMedia ? (
+          <Image
+            src={desktopMedia.url}
+            alt={desktopMedia.alt}
+            fill
+            priority
+            sizes="100vw"
+            className="min-h-full min-w-full object-cover"
           />
-          <source
-            media="(max-width: 1366px)"
-            src={VIDEO_1280_SRC}
-            type="video/webm"
-          />
-          <source src={VIDEO_1440_SRC} type="video/webm" />
-        </video>
+        ) : null}
         <div className="absolute inset-0 bg-coral/20" />
         <div className="absolute inset-0 bg-black/30" />
       </div>
 
       {/* Coral loader overlay — blocks content until video actually plays (or 3s fallback) */}
       <div
-        className={`absolute inset-0 z-20 bg-coral transition-opacity duration-2000 ${
+        className={`absolute inset-0 z-20 bg-coral transition-opacity duration-000 ${
           isReady ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
       >

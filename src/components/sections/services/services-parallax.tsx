@@ -6,9 +6,10 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { SECTION_IDS } from "@/config/section-ids";
 import type { SiteT } from "@/lib/get-site";
-import { Image } from "@/components/ui/image";
 import { SectionContent } from "@/components/shared/section-content";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
+import { ServicesBackground } from "./services-background";
+import { ServicesSlideText } from "./services-slide-text";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,11 +17,11 @@ type ServicesPropsT = { data: SiteT["services"] };
 
 /* Services parallax — fake-pin workaround for iOS Safari 26 sticky bug.
    =====================================================================
-   The entire mechanism in this component is a workaround for a regression
-   in iOS Safari 26 where `position: sticky` (and `ScrollTrigger.pin`, which
-   relies on the same compositor path) jitters or detaches mid-scroll while
-   the URL bar collapses/expands. The previous implementation used native
-   CSS sticky (see git history) and broke on iOS 26.
+   Mobile variant (<md). Desktop uses the simpler CSS-sticky version in
+   services-sticky.tsx — iOS Safari 26 introduced a regression where
+   `position: sticky` (and `ScrollTrigger.pin`, which rides the same
+   compositor path) jitters or detaches mid-scroll while the URL bar
+   collapses/expands, so mobile gets this JS-driven fake pin instead.
    Workaround approach:
    - No CSS sticky, no ScrollTrigger.pin. The pin is faked entirely in JS:
      an absolutely-positioned stage inside a tall section, with a scroll-
@@ -32,14 +33,12 @@ type ServicesPropsT = { data: SiteT["services"] };
    - `ScrollTrigger.normalizeScroll(true)` is enabled for the lifetime of
      this effect to keep GSAP's scroll events in sync with iOS's deferred
      scroll updates.
-   - Mobile stage is h-[120lvh] (vs h-lvh on desktop) so the image still
-     covers the viewport when iOS's URL bar is visible and innerHeight < lvh.
+   - Stage is h-[120lvh] so the image still covers the viewport when iOS's
+     URL bar is visible and innerHeight < lvh.
    Stage is constrained to the section's own bounds — never extended above
    `top-0` — because extending upward causes the image to draw over the
    previous section (About). Accept the brief pre-pin strip of the previous
-   section at the top as a consequence.
-   When iOS 26 sticky is fixed (or when iOS 27 ships without the bug), this
-   file can be replaced with the simpler CSS-sticky version. */
+   section at the top as a consequence. */
 export function ServicesParallax({ data }: ServicesPropsT) {
   const SLIDES = data.slides;
   const slideCount = SLIDES.length;
@@ -152,34 +151,16 @@ export function ServicesParallax({ data }: ServicesPropsT) {
       {/* Stage — absolute inside the tall section, constrained to section
           bounds (top-0). JS drives translateY to fake a CSS `sticky`. Image
           is pinned; the vertical slide track inside is counter-translated so
-          slides read as normal scroll. Mobile stage is 120lvh tall so the
-          image covers the viewport when the iOS URL bar is visible. */}
+          slides read as normal scroll. Stage is 120lvh tall so the image
+          covers the viewport when the iOS URL bar is visible. */}
       <div
         ref={stageRef}
-        className="absolute inset-x-0 top-0 h-[120lvh] md:h-lvh w-full overflow-hidden will-change-transform"
+        className="absolute inset-x-0 top-0 h-[120lvh] w-full overflow-hidden will-change-transform"
       >
-        {/* Background image — 180% tall wrapper, GSAP translates upward for
-            parallax. Own overflow-clip so the scaled image doesn't leak. */}
-        <div className="absolute inset-0 overflow-clip">
-          <div ref={imageRef} className="absolute inset-x-0 top-0 h-[180%]">
-            {data.background?.url && (
-              <Image
-                src={data.background.url}
-                alt={data.backgroundAlt || data.background.alt}
-                fill
-                priority
-                className="rounded-none object-cover"
-                sizes="100vw"
-              />
-            )}
-          </div>
-        </div>
-
-        {/* Legibility overlay */}
-        <div className="absolute inset-0 bg-off-black/20" />
+        <ServicesBackground data={data} imageRef={imageRef} />
 
         {/* Eyebrow — pinned to top of stage */}
-        <div className="absolute inset-x-0 top-0 z-20 pt-12 md:pt-24">
+        <div className="absolute inset-x-0 top-0 z-20 pt-12">
           <SectionContent>
             <EyebrowTag color="yellow" withLine lineColor="yellow">
               {data.eyebrow}
@@ -196,7 +177,7 @@ export function ServicesParallax({ data }: ServicesPropsT) {
           {SLIDES.map((slide, i) => (
             <div
               key={slide.title}
-              className="flex h-lvh w-screen shrink-0 flex-col justify-end pb-24 md:pb-32"
+              className="flex h-lvh w-screen shrink-0 flex-col justify-end pb-24"
             >
               <div
                 ref={(el) => {
@@ -206,25 +187,7 @@ export function ServicesParallax({ data }: ServicesPropsT) {
                 className="will-change-[opacity]"
               >
                 <SectionContent>
-                  <h3 className="max-w-sm sm:max-w-xl lg:max-w-2xl">
-                    <span className="bg-coral text-white box-decoration-clone leading-[0.9] pr-2 max-w-[12ch] text-heading-lg tracking-tight">
-                      {slide.title}
-                    </span>
-                  </h3>
-                  {"tagline" in slide && (
-                    <p className="mt-8 max-w-sm sm:max-w-md leading-tight mb-2">
-                      <span className="bg-yellow text-off-black box-decoration-clone leading-[0.9] px-1 pr-2 font-sans text-sm md:text-base whitespace-pre-line">
-                        {slide.tagline}
-                      </span>
-                    </p>
-                  )}
-                  {"description" in slide && (
-                    <p className="max-w-sm lg:max-w-md leading-tight">
-                      <span className="bg-pink text-off-black box-decoration-clone leading-[0.8] px-1 pr-2 font-sans text-sm md:text-base whitespace-pre-line">
-                        {slide.description}
-                      </span>
-                    </p>
-                  )}
+                  <ServicesSlideText slide={slide} />
                 </SectionContent>
               </div>
             </div>
