@@ -114,8 +114,8 @@ function MasonryColumns({
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true, amount: 0.1 }}
                 transition={{
-                  duration: 0.7,
-                  delay: (globalIndex % 8) * 0.1,
+                  duration: 0.5,
+                  delay: (globalIndex % 8) * 0.02,
                   ease: "easeOut",
                 }}
               >
