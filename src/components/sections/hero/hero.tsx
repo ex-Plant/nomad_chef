@@ -135,7 +135,7 @@ export function Hero({ data, videoRef, isReady }: HeroPropsT) {
 
       {/* Asymmetric layout: text left, floating image right */}
       {isReady && (
-        <SectionContent className="relative z-10 flex flex-1 flex-col justify-end md:flex-row md:items-end md:justify-between pb-24 ">
+        <SectionContent className="relative z-10 flex flex-1 flex-col justify-end md:flex-row md:items-end md:justify-between pb-12 ">
           {/* Left text block — pushed to bottom-left */}
           <div ref={textRef} className="relative text-white ">
             <div
