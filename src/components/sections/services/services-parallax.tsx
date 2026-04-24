@@ -45,6 +45,10 @@ const STAGE_HEIGHT_LVH = 140;
 const STAGE_OFFSET_LVH = 20;
 const STAGE_COVERAGE_LVH = STAGE_HEIGHT_LVH - STAGE_OFFSET_LVH;
 const IMAGE_TRAVEL_PCT = 28;
+// Per-slide height in lvh. Drives track height, per-slide travel distance,
+// and section total height — changing this shrinks/stretches the pin range.
+const SLIDE_HEIGHT_LVH = 70;
+const SLIDE_HEIGHT_FRAC = SLIDE_HEIGHT_LVH / 100;
 
 export function ServicesParallax({ data }: ServicesPropsT) {
   const SLIDES = data.slides;
@@ -59,7 +63,7 @@ export function ServicesParallax({ data }: ServicesPropsT) {
 
   // Extra slide-heights of travel past the last slide's center so it fully
   // fades/exits before the pin releases.
-  const EXIT_BUFFER = 0.8;
+  const EXIT_BUFFER = 0;
 
   useGSAP(
     () => {
@@ -80,8 +84,9 @@ export function ServicesParallax({ data }: ServicesPropsT) {
 
       const measure = () => {
         const vh = window.innerHeight;
-        pinDistance = travelUnits * vh;
-        maxTrackTranslate = travelUnits * vh;
+        const slidePx = vh * SLIDE_HEIGHT_FRAC;
+        pinDistance = travelUnits * slidePx;
+        maxTrackTranslate = travelUnits * slidePx;
         // Derive effective stage coverage from offsetHeight so the section
         // height stays lvh-consistent across iOS URL bar toggles (innerHeight
         // shrinks with the URL bar but lvh does not).
@@ -152,7 +157,9 @@ export function ServicesParallax({ data }: ServicesPropsT) {
       ref={sectionRef}
       id={SECTION_IDS.services}
       className="relative z-1 overflow-clip bg-off-black"
-      style={{ height: `calc(${slideCount + EXIT_BUFFER} * 100lvh)` }}
+      style={{
+        height: `calc(${(slideCount - 1 + EXIT_BUFFER) * SLIDE_HEIGHT_LVH + STAGE_COVERAGE_LVH}lvh)`,
+      }}
     >
       <div
         ref={stageRef}
@@ -182,13 +189,14 @@ export function ServicesParallax({ data }: ServicesPropsT) {
           className="absolute left-0 flex w-screen flex-col items-stretch will-change-transform z-10"
           style={{
             top: `${STAGE_OFFSET_LVH}lvh`,
-            height: `${slideCount * 100}lvh`,
+            height: `${slideCount * SLIDE_HEIGHT_LVH}lvh`,
           }}
         >
           {SLIDES.map((slide, i) => (
             <div
               key={slide.title}
-              className="flex h-lvh w-screen shrink-0 flex-col justify-end pb-24"
+              className="flex w-screen shrink-0 flex-col justify-end pb-24"
+              style={{ height: `${SLIDE_HEIGHT_LVH}lvh` }}
             >
               <div
                 ref={(el) => {

@@ -148,15 +148,39 @@ export function NavMobileOverlay({
             animate="visible"
             exit="exit"
           >
-            <Starburst
-              color="pink"
-              size="md"
-              className={cn(
-                "absolute left-[0%] bottom-[0%] duration-500",
-                isOpen ? "opacity-100" : "opacity-0"
-              )}
-              variant="v1-a"
-            />
+            <div
+              className={`absolute bottom-0 right-0 left-0 flex justify-between  items-center`}
+            >
+              <Starburst
+                color="pink"
+                size="md"
+                className={cn(
+                  " duration-500",
+                  isOpen ? "opacity-100" : "opacity-0"
+                )}
+                variant="v1-a"
+              />
+              <m.div
+                className="z-52"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{
+                  opacity: 0,
+                  y: -12,
+                  transition: {
+                    duration: EXIT_ITEM_DURATION,
+                    ease: CURTAIN_EASE,
+                  },
+                }}
+                transition={{
+                  duration: 0.35,
+                  ease: EASE,
+                  delay: MENU_ITEM_DELAY_BASE + items.length * 0.05,
+                }}
+              >
+                <AnimationToggle />
+              </m.div>
+            </div>
             <div className="relative z-51 flex flex-col items-center gap-8">
               {items.map((item, i) => (
                 <m.button
@@ -186,26 +210,6 @@ export function NavMobileOverlay({
                   {item.label}
                 </m.button>
               ))}
-              <m.div
-                className=""
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{
-                  opacity: 0,
-                  y: -12,
-                  transition: {
-                    duration: EXIT_ITEM_DURATION,
-                    ease: CURTAIN_EASE,
-                  },
-                }}
-                transition={{
-                  duration: 0.35,
-                  ease: EASE,
-                  delay: MENU_ITEM_DELAY_BASE + items.length * 0.05,
-                }}
-              >
-                <AnimationToggle />
-              </m.div>
             </div>
           </m.div>
         </m.div>

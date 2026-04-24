@@ -55,23 +55,12 @@ export function Hero({ data, videoRef, isReady }: HeroPropsT) {
           scrub: true,
         },
       });
-
-      gsap.to(text, {
-        y: -800,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
     },
     { scope: sectionRef, dependencies: [isReady, reducedMotion] }
   );
 
   return (
-    <Section ref={sectionRef} id={SECTION_IDS.hero} className=" min-h-[110lvh]">
+    <Section ref={sectionRef} id={SECTION_IDS.hero} className=" min-h-lvh">
       {/* Primary background media with parallax */}
       <div
         ref={imageRef}

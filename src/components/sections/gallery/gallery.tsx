@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { m } from "framer-motion";
 
 import { Image } from "@/components/ui/image";
 import { GalleryLightbox } from "@/components/ui/gallery-lightbox";
@@ -106,11 +107,17 @@ function MasonryColumns({
           {column.map((image, imgIndex) => {
             const globalIndex = imgIndex * numCols + colIndex;
             return (
-              <FadeUp
+              <m.div
                 key={`${image.url}-${globalIndex}`}
                 className="group"
-                amount={0.1}
-                delay={(globalIndex % 8) * 0.05}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{
+                  duration: 0.6,
+                  delay: (globalIndex % 8) * 0.05,
+                  ease: "easeOut",
+                }}
               >
                 <button
                   type="button"
@@ -123,11 +130,11 @@ function MasonryColumns({
                     alt={image.alt}
                     width={image.width ?? 1200}
                     height={image.height ?? 1200}
-                    className=" transition-all duration-700 ease-brand group-hover:scale-105 group-hover:brightness-110"
+                    className="transition-all duration-700 ease-brand group-hover:scale-105 group-hover:brightness-110"
                     sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                   />
                 </button>
-              </FadeUp>
+              </m.div>
             );
           })}
         </div>
