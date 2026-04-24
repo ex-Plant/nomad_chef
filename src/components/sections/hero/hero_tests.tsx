@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -37,14 +37,6 @@ export function HeroTests({ data }: HeroPropsT) {
     timeoutMs: 5000,
   });
 
-  useEffect(() => {
-    if (isReady) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [isReady]);
 
   useGSAP(
     () => {

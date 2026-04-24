@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { EASE } from "@/config/animation-constants";
-import { NAV_TOGGLE_COLORS } from "@/config/section-ids";
+import { NAV_TOGGLE_COLORS, SECTION_IDS } from "@/config/section-ids";
 import type { NavToggleColorT, SectionIdT } from "@/config/section-ids";
 import { CONTENT } from "@/config/content";
 import type { SiteT } from "@/lib/get-site";
 import { Starburst } from "@/components/shared/starburst";
 import { cn } from "@/helpers/cn";
 import { AnimationTogglePot as AnimationToggle } from "@/components/shared/animation-toggle-pot/animation-toggle-pot";
+import { scrollToSection } from "@/helpers/scroll-to-section";
 
 type NavMobilePropsT = {
   items: SiteT["nav"];
@@ -120,12 +121,7 @@ export function NavMobileOverlay({
   isOpen,
   scrollTo,
 }: Pick<NavMobilePropsT, "items" | "isOpen" | "scrollTo">) {
-  // Scroll is handled by HomepageShell unmounting below-hero content while
-  // open — no scroll lock needed here.
-  useEffect(() => {
-    document.body.classList.toggle("overflow-hidden", isOpen);
-    return () => document.body.classList.remove("overflow-hidden");
-  }, [isOpen]);
+  // Scroll lock lives in <Nav> (owner of isMobileOpen) — see useScrollLock.
 
   return (
     <AnimatePresence>
@@ -215,5 +211,33 @@ export function NavMobileOverlay({
         </m.div>
       )}
     </AnimatePresence>
+  );
+}
+
+/* Mobile-only shell — no scroll listener. Only the toggle + overlay + scroll
+   lock while open. Toggle color is fixed to the hero default; it won't react
+   to the active section on scroll. */
+export function NavMobileShell({ items }: { items: SiteT["nav"] }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const scrollTo = useCallback((id: string) => {
+    setIsOpen(false);
+    scrollToSection(id);
+  }, []);
+
+  return (
+    <>
+      <nav
+        className="md:hidden fixed top-0 right-6 z-250 rounded-lg bg-transparent py-1"
+        aria-label={CONTENT.nav.ariaLabel}
+      >
+        <NavMobileToggle
+          isOpen={isOpen}
+          activeSection={SECTION_IDS.hero}
+          onToggle={() => setIsOpen((v) => !v)}
+        />
+      </nav>
+      <NavMobileOverlay items={items} isOpen={isOpen} scrollTo={scrollTo} />
+    </>
   );
 }
