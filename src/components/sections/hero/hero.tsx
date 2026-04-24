@@ -1,6 +1,6 @@
 "use client";
 
-import { RefObject, useRef } from "react";
+import { RefObject, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -16,6 +16,7 @@ import NextImage from "next/image";
 import { Loader } from "@/components/shared/loader";
 import { scrollToSection } from "@/helpers/scroll-to-section";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 const POSTER_DESKTOP_SRC = "/videos/hero-poster.jpg";
 const POSTER_MOBILE_SRC = "/videos/hero-poster-mobile.jpg";
@@ -36,6 +37,29 @@ export function Hero({ data, videoRef, isReady }: HeroPropsT) {
   const imageRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
+
+  // Source selection via JS — `<source media>` inside <video> is unreliable
+  // across browsers (Chrome/iOS Safari sometimes pick the first decodable
+  // source regardless of media). Assign src client-side after mount so the
+  // server HTML never embeds a src — avoids the browser preloading the wrong
+  // variant before hydration can correct it.
+  const isPortraitMobile = useMediaQuery(
+    "(orientation: portrait) and (max-width: 767px)"
+  );
+  const isMidViewport = useMediaQuery("(max-width: 1366px)");
+  const videoSrc = isPortraitMobile
+    ? VIDEO_MOBILE_SRC
+    : isMidViewport
+      ? VIDEO_1280_SRC
+      : VIDEO_1440_SRC;
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.src.endsWith(videoSrc)) return;
+    video.src = videoSrc;
+    video.load();
+  }, [videoSrc, videoRef]);
 
   useGSAP(
     () => {
@@ -95,27 +119,14 @@ export function Hero({ data, videoRef, isReady }: HeroPropsT) {
           playsInline
           preload="auto"
           className="relative min-h-full min-w-full object-cover"
-        >
-          {/* Portrait mobile: Marta's clip; order matters — first match wins */}
-          <source
-            media="(orientation: portrait) and (max-width: 767px)"
-            src={VIDEO_MOBILE_SRC}
-            type="video/mp4"
-          />
-          <source
-            media="(max-width: 1366px)"
-            src={VIDEO_1280_SRC}
-            type="video/webm"
-          />
-          <source src={VIDEO_1440_SRC} type="video/webm" />
-        </video>
+        />
         <div className="absolute inset-0 bg-coral/20" />
         <div className="absolute inset-0 bg-black/30" />
       </div>
 
       {/* Coral loader overlay — blocks content until video actually plays (or 3s fallback) */}
       <div
-        className={`absolute inset-0 z-20 bg-coral transition-opacity duration-2000 ${
+        className={`absolute top-0 right-0 left-0 h-[110lvh] z-20 bg-coral transition-opacity duration-2000 ${
           isReady ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
       >
