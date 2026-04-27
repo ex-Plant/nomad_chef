@@ -5,7 +5,11 @@ import { m, AnimatePresence } from "framer-motion";
 import { ScatterText } from "@/components/shared/scatter-text";
 import { Image } from "@/components/ui/image";
 import { SECTION_IDS } from "@/config/section-ids";
-import type { SiteT } from "@/lib/get-site";
+import type {
+  SiteT,
+  CampFoodThemeT,
+  CampFoodOrientationT,
+} from "@/lib/get-site";
 import { Section } from "@/components/shared/section";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 import { Button } from "@/components/shared/button";
@@ -34,8 +38,8 @@ type SlideStyleT = {
   starburstColor: "coral" | "blue" | "yellow";
 };
 
-const SLIDE_STYLES: SlideStyleT[] = [
-  {
+const THEMES: Record<CampFoodThemeT, SlideStyleT> = {
+  orange: {
     bg: "bg-coral",
     textColor: "text-white",
     headlineColor: "text-electric-blue",
@@ -46,7 +50,7 @@ const SLIDE_STYLES: SlideStyleT[] = [
     buttonVariant: "blue-solid",
     starburstColor: "blue",
   },
-  {
+  blue: {
     bg: "bg-electric-blue",
     textColor: "text-white",
     headlineColor: "text-coral",
@@ -57,7 +61,15 @@ const SLIDE_STYLES: SlideStyleT[] = [
     buttonVariant: "coral-solid",
     starburstColor: "coral",
   },
-] as const;
+};
+
+/* Image fit per orientation. Container size stays constant across slides
+   to keep the cross-fade visually stable; only the image's own sizing
+   changes — vertical fills height, horizontal fills width. */
+const IMAGE_CLASS_BY_ORIENTATION: Record<CampFoodOrientationT, string> = {
+  vertical: "h-full w-auto max-w-full",
+  horizontal: "w-full h-auto max-h-full",
+};
 
 /* ─── Animation ─── */
 
@@ -68,16 +80,16 @@ const SLIDE_TRANSITION = TRANSITION.slow;
 type CampFoodPropsT = { data: SiteT["campFood"] };
 
 export function CampFoodSwiper({ data }: CampFoodPropsT) {
+  const slideCount = data.slides.length;
   const [activeIndex, setActiveIndex] = useState(0);
+
   const handleNext = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % SLIDE_STYLES.length);
-  }, []);
+    setActiveIndex((prev) => (prev + 1) % slideCount);
+  }, [slideCount]);
 
   const handlePrev = useCallback(() => {
-    setActiveIndex(
-      (prev) => (prev - 1 + SLIDE_STYLES.length) % SLIDE_STYLES.length
-    );
-  }, []);
+    setActiveIndex((prev) => (prev - 1 + slideCount) % slideCount);
+  }, [slideCount]);
 
   /* Auto-play */
   const timerRef = useRef<ReturnType<typeof setInterval>>(undefined);
@@ -85,17 +97,17 @@ export function CampFoodSwiper({ data }: CampFoodPropsT) {
   const resetTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % SLIDE_STYLES.length);
+      setActiveIndex((prev) => (prev + 1) % slideCount);
     }, AUTOPLAY_INTERVAL);
-  }, []);
+  }, [slideCount]);
 
   useEffect(() => {
     const id = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % SLIDE_STYLES.length);
+      setActiveIndex((prev) => (prev + 1) % slideCount);
     }, AUTOPLAY_INTERVAL);
     timerRef.current = id;
     return () => clearInterval(id);
-  }, []);
+  }, [slideCount]);
 
   const handleNextWithReset = useCallback(() => {
     handleNext();
@@ -107,14 +119,17 @@ export function CampFoodSwiper({ data }: CampFoodPropsT) {
     resetTimer();
   }, [handlePrev, resetTimer]);
 
-  const SLIDES = SLIDE_STYLES.map((style, i) => ({
-    ...style,
-    ...(data.slides[i] ?? { alt: "", description: "" }),
-  }));
-  const slide = SLIDES[activeIndex];
+  const slideData = data.slides[activeIndex];
+  const slide = { ...THEMES[slideData?.theme ?? "orange"], ...slideData };
 
   return (
     <Section id={SECTION_IDS.campFood}>
+      <Starburst
+        color={slide.starburstColor}
+        size="md"
+        variant="v1-b"
+        className={`z-100 absolute top-0 -translate-y-1/2 right-0 translate-x-1/3`}
+      />
       {/* Animated background color — crossfade, no gap */}
       <AnimatePresence>
         <m.div
@@ -196,7 +211,7 @@ export function CampFoodSwiper({ data }: CampFoodPropsT) {
                     alt={slide.alt || slide.image.alt}
                     width={slide.image.width ?? 1200}
                     height={slide.image.height ?? 1500}
-                    className="h-full w-auto max-w-full rounded-xl object-contain"
+                    className={`rounded-xl object-contain ${IMAGE_CLASS_BY_ORIENTATION[slide.imageOrientation ?? "vertical"]}`}
                     sizes="(max-width: 768px) 80vw, (max-width:1440px) 50vw, 750px"
                     priority
                   />
@@ -208,7 +223,7 @@ export function CampFoodSwiper({ data }: CampFoodPropsT) {
         </div>
 
         <SwiperControls
-          total={SLIDES.length}
+          total={slideCount}
           active={activeIndex}
           onPrev={handlePrevWithReset}
           onNext={handleNextWithReset}

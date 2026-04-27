@@ -89,11 +89,41 @@ export const CONTENT = {
         alt: "Camp Food — okładka ebooka, widok z przodu",
         description:
           "Jedzenie, które zabierasz ze sobą — w ruch, w naturę, w życie.",
+        image: "seed-assets/ebook/ebook_1.webp",
+        theme: "orange" as const,
+        imageOrientation: "vertical" as const,
       },
       {
         alt: "Camp Food — okładka ebooka, widok z tyłu",
         description:
           "38 przepisów opartych na prostocie, jakości i intuicji. Bez spiny. Bez zbędnych zasad.",
+        image: "seed-assets/ebook/ebook_2.webp",
+        theme: "blue" as const,
+        imageOrientation: "vertical" as const,
+      },
+      {
+        alt: "Stół pełny dań",
+        description:
+          "Obfite, kolorowe, dzielone — kuchnia, która łączy ludzi przy stole.",
+        image: "seed-assets/gallery/client-selected-4.webp",
+        theme: "orange" as const,
+        imageOrientation: "horizontal" as const,
+      },
+      {
+        alt: "Plating na różowym talerzu",
+        description:
+          "Każdy talerz to mała opowieść — kompozycja barw, struktur i smaków.",
+        image: "seed-assets/gallery/client-selected-10.webp",
+        theme: "blue" as const,
+        imageOrientation: "horizontal" as const,
+      },
+      {
+        alt: "Złoty drink",
+        description:
+          "Bez spiny, bez zbędnych zasad — domowy bittersweet na koniec dnia.",
+        image: "seed-assets/gallery/client-selected-3.webp",
+        theme: "orange" as const,
+        imageOrientation: "vertical" as const,
       },
     ],
   },

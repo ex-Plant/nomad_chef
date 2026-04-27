@@ -88,10 +88,6 @@ const GALLERY_ITEMS: { file: string; alt: string }[] = [
   { file: "secondary-reference-instagram-39.webp", alt: CONTENT.gallery.alts.ig39 },
 ];
 
-const EBOOK_FILES = [
-  "seed-assets/ebook/ebook_1.webp",
-  "seed-assets/ebook/ebook_2.webp",
-];
 
 /* ── Upload everything ──────────────────────────────── */
 
@@ -114,10 +110,8 @@ const galleryIds = await Promise.all(
   ),
 );
 
-const ebookIds = await Promise.all(
-  EBOOK_FILES.map((path, i) =>
-    uploadFile(path, CONTENT.campFood.slides[i]?.alt ?? ""),
-  ),
+const campFoodImageIds = await Promise.all(
+  CONTENT.campFood.slides.map((s) => uploadFile(s.image, s.alt)),
 );
 
 /* ── Seed the global ────────────────────────────────── */
@@ -165,7 +159,9 @@ await payload.updateGlobal({
     camp_food_slides: CONTENT.campFood.slides.map((s, i) => ({
       alt: s.alt,
       description: s.description,
-      image: ebookIds[i],
+      image: campFoodImageIds[i],
+      theme: s.theme,
+      image_orientation: s.imageOrientation,
     })),
 
     gallery_eyebrow: CONTENT.gallery.eyebrow,

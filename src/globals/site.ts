@@ -256,6 +256,31 @@ export const Site: GlobalConfig = {
                 text("alt", { pl: "Alt zdjęcia", en: "Image alt" }),
                 textarea("description", { pl: "Opis", en: "Description" }),
                 upload("image", { pl: "Zdjęcie", en: "Image" }),
+                {
+                  name: "theme",
+                  type: "select",
+                  label: { pl: "Motyw kolorystyczny", en: "Color theme" },
+                  options: [
+                    { label: "Pomarańczowy", value: "orange" },
+                    { label: "Niebieski", value: "blue" },
+                  ],
+                  defaultValue: "orange",
+                  required: true,
+                },
+                {
+                  name: "image_orientation",
+                  type: "select",
+                  label: {
+                    pl: "Orientacja zdjęcia",
+                    en: "Image orientation",
+                  },
+                  options: [
+                    { label: "Pionowe", value: "vertical" },
+                    { label: "Poziome", value: "horizontal" },
+                  ],
+                  defaultValue: "vertical",
+                  required: true,
+                },
               ],
             },
           ],

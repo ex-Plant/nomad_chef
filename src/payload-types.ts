@@ -388,6 +388,8 @@ export interface Site {
         alt?: string | null;
         description?: string | null;
         image?: (number | null) | Media;
+        theme: 'orange' | 'blue';
+        image_orientation: 'vertical' | 'horizontal';
         id?: string | null;
       }[]
     | null;
@@ -509,6 +511,8 @@ export interface SiteSelect<T extends boolean = true> {
         alt?: T;
         description?: T;
         image?: T;
+        theme?: T;
+        image_orientation?: T;
         id?: T;
       };
   gallery_eyebrow?: T;

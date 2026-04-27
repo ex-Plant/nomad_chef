@@ -17,6 +17,9 @@ export type MediaT = {
   height?: number;
 };
 
+export type CampFoodThemeT = "orange" | "blue";
+export type CampFoodOrientationT = "vertical" | "horizontal";
+
 export type SiteT = {
   hero: {
     tagline: string;
@@ -46,7 +49,13 @@ export type SiteT = {
     kicker: string;
     headingLines: HeadingLineT[];
     cta: CtaT;
-    slides: { alt: string; description: string; image?: MediaT }[];
+    slides: {
+      alt: string;
+      description: string;
+      image?: MediaT;
+      theme: CampFoodThemeT;
+      imageOrientation: CampFoodOrientationT;
+    }[];
   };
   gallery: {
     eyebrow: string;
@@ -175,6 +184,9 @@ const fetchSite = (locale: LocaleT) =>
             alt: s.alt ?? "",
             description: s.description ?? "",
             image: toMedia(s.image),
+            theme: (s.theme ?? "orange") as CampFoodThemeT,
+            imageOrientation: (s.image_orientation ??
+              "vertical") as CampFoodOrientationT,
           })),
         },
         gallery: {
