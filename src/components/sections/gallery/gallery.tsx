@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { m } from "framer-motion";
 
 import { Image } from "@/components/ui/image";
@@ -107,39 +107,111 @@ function MasonryColumns({
           {column.map((image, imgIndex) => {
             const globalIndex = imgIndex * numCols + colIndex;
             return (
-              <m.div
+              <GalleryTile
                 key={`${image.url}-${globalIndex}`}
-                className="group"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true, amount: 0.1 }}
-                transition={{
-                  duration: 0.5,
-                  delay: (globalIndex % 8) * 0.02,
-                  ease: "easeOut",
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={() => onImageClick(globalIndex)}
-                  className="block w-full cursor-zoom-in overflow-hidden rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-coral"
-                  aria-label={`Otwórz zdjęcie: ${image.alt}`}
-                >
-                  <Image
-                    src={image.url}
-                    alt={image.alt}
-                    width={image.width ?? 1200}
-                    height={image.height ?? 1200}
-                    className="transition-all duration-700 ease-brand group-hover:scale-105 group-hover:brightness-110"
-                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  />
-                </button>
-              </m.div>
+                image={image}
+                index={globalIndex}
+                onTap={onImageClick}
+              />
             );
           })}
         </div>
       ))}
     </div>
+  );
+}
+
+/* Tap-vs-scroll guard: on a wall-to-wall masonry, the browser's default
+   click heuristic fires too eagerly on near-stationary touches. We track
+   pointer movement / duration and suppress the open if the gesture looks
+   like a scroll attempt. Keyboard activations bypass the guard.
+
+   Tuning: if misfires persist on mobile, drop TAP_MAX_MOVE_PX to 4. If real
+   taps feel laggy or missed, raise TAP_MAX_DURATION_MS to 500. */
+const TAP_MAX_MOVE_PX = 6;
+const TAP_MAX_DURATION_MS = 400;
+
+function GalleryTile({
+  image,
+  index,
+  onTap,
+}: {
+  image: MediaT;
+  index: number;
+  onTap: (index: number) => void;
+}) {
+  const tapRef = useRef<{
+    x: number;
+    y: number;
+    t: number;
+    valid: boolean;
+  } | null>(null);
+
+  function handlePointerDown(e: React.PointerEvent<HTMLButtonElement>) {
+    tapRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      t: performance.now(),
+      valid: true,
+    };
+  }
+
+  function handlePointerMove(e: React.PointerEvent<HTMLButtonElement>) {
+    const start = tapRef.current;
+    if (!start || !start.valid) return;
+    const dx = Math.abs(e.clientX - start.x);
+    const dy = Math.abs(e.clientY - start.y);
+    if (dx > TAP_MAX_MOVE_PX || dy > TAP_MAX_MOVE_PX) start.valid = false;
+  }
+
+  function handlePointerCancel() {
+    tapRef.current = null;
+  }
+
+  function handleClick() {
+    const start = tapRef.current;
+    tapRef.current = null;
+    // Keyboard / non-pointer activation: no tracked touch — allow.
+    if (!start) {
+      onTap(index);
+      return;
+    }
+    if (start.valid && performance.now() - start.t < TAP_MAX_DURATION_MS) {
+      onTap(index);
+    }
+  }
+
+  return (
+    <m.div
+      className="group"
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{
+        duration: 0.5,
+        delay: (index % 8) * 0.02,
+        ease: "easeOut",
+      }}
+    >
+      <button
+        type="button"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerCancel={handlePointerCancel}
+        onClick={handleClick}
+        className="block w-full touch-pan-y cursor-zoom-in overflow-hidden rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-coral"
+        aria-label={`Otwórz zdjęcie: ${image.alt}`}
+      >
+        <Image
+          src={image.url}
+          alt={image.alt}
+          width={image.width ?? 1200}
+          height={image.height ?? 1200}
+          className="transition-all duration-700 ease-brand group-hover:scale-105 group-hover:brightness-110"
+          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+        />
+      </button>
+    </m.div>
   );
 }
 
