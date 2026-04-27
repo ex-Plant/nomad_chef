@@ -124,12 +124,20 @@ export function CampFoodSwiper({ data }: CampFoodPropsT) {
 
   return (
     <Section id={SECTION_IDS.campFood}>
-      <Starburst
-        color={slide.starburstColor}
-        size="md"
-        variant="v1-b"
-        className={`z-100 absolute top-0 -translate-y-1/2 right-0 translate-x-1/3`}
-      />
+      {/* Starburst — cross-fades on slide change, mirrors the bg transition */}
+      <AnimatePresence>
+        <m.div
+          key={activeIndex}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={SLIDE_TRANSITION}
+          className="absolute top-0 right-0 translate-x-1/3 -translate-y-1/2 z-100"
+          style={{ willChange: "opacity" }}
+        >
+          <Starburst color={slide.starburstColor} size="md" variant="v1-b" />
+        </m.div>
+      </AnimatePresence>
       {/* Animated background color — crossfade, no gap */}
       <AnimatePresence>
         <m.div

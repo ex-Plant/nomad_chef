@@ -7,6 +7,7 @@ import NextImage, { type StaticImageData } from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
 import { Button } from "@/components/shared/button";
+import { Loader } from "@/components/shared/loader";
 
 type LightboxImageT = {
   src: StaticImageData | string;
@@ -77,24 +78,36 @@ export function GalleryLightbox({
 
           <div ref={emblaRef} className="h-full w-full overflow-hidden">
             <div className="flex h-full">
-              {images.map((image, i) => (
-                <div
-                  key={i}
-                  className="relative flex h-full min-w-0 flex-[0_0_100%] items-center justify-center px-6 pb-32 pt-12 md:px-24 md:py-16"
-                >
-                  <div className="relative h-full w-full">
-                    <NextImage
-                      src={image.src}
-                      alt={image.alt}
-                      fill
-                      quality={90}
-                      sizes="100vw"
-                      className="object-contain"
-                      priority={i === selectedIndex}
-                    />
+              {images.map((image, i) => {
+                /* Preload neighbors of the current slide so swipes feel instant. */
+                const distance = Math.min(
+                  Math.abs(i - selectedIndex),
+                  images.length - Math.abs(i - selectedIndex),
+                );
+                const isNearby = distance <= 1;
+                return (
+                  <div
+                    key={i}
+                    className="relative flex h-full min-w-0 flex-[0_0_100%] items-center justify-center px-6 pb-32 pt-12 md:px-24 md:py-16"
+                  >
+                    <div className="relative h-full w-full">
+                      {/* Always rendered underneath — the image paints over it once decoded. */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Loader color="yellow" />
+                      </div>
+                      <NextImage
+                        src={image.src}
+                        alt={image.alt}
+                        fill
+                        quality={90}
+                        sizes="(max-width: 768px) 100vw, 90vw"
+                        className="relative object-contain"
+                        priority={isNearby}
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
