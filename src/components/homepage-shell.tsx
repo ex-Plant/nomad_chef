@@ -11,6 +11,7 @@ import { GrainOverlay } from "@/components/ui/grain-overlay";
 import type { SiteT } from "@/lib/get-site";
 import { useVideoReady } from "../hooks/use-video-ready";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 import { AnimationHint } from "@/components/ui/animation-hint";
 
 type HomepageShellPropsT = {
@@ -26,21 +27,22 @@ export function HomepageShell({ site }: HomepageShellPropsT) {
     timeoutMs: 5000,
   });
 
+  // Lock the page while the hero video is still loading; release once ready.
+  useScrollLock(!isReady);
+
   return (
     <>
       <Nav items={site.nav} />
       <main className="relative bg-warm-white">
         <GrainOverlay position="absolute" zIndex="z-50" />
         <Hero data={site.hero} videoRef={videoRef} isReady={isReady} />
-        {isReady && (
-          <>
-            <About data={site.about} />
-            <Services data={site.services} />
-            <CampFoodSwiper data={site.campFood} />
-            <Gallery data={site.gallery} />
-            <Contact data={site.contact} />
-          </>
-        )}
+        <div className={isReady ? `opacity-100` : `opacity-0`}>
+          <About data={site.about} />
+          <Services data={site.services} />
+          <CampFoodSwiper data={site.campFood} />
+          <Gallery data={site.gallery} />
+          <Contact data={site.contact} />
+        </div>
       </main>
       {isReady && <AnimationHint />}
     </>

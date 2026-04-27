@@ -10,8 +10,8 @@ import {
 } from "next/font/google";
 import { DebugWrapper } from "@/components/debug-tools/debug-wrapper";
 import { MotionProvider } from "@/components/ui/motion-provider";
+import { Logo } from "@/components/shared/logo";
 import "./globals.css";
-import { GrainOverlay } from "../components/ui/grain-overlay";
 
 /* Design 1 fonts */
 const archivoBlack = Archivo_Black({
@@ -84,7 +84,11 @@ export default function RootLayout({
       lang="pl"
       className={`${archivoBlack.variable} ${archivo.variable} ${instrumentSerif.variable} ${geistSans.variable} ${playfair.variable} ${outfit.variable} ${bebasNeue.variable} antialiased scroll-smooth overscroll-none `}
     >
-      <body className="min-h-lvh flex flex-col bg-black overflow-x-clip">
+      <body className="min-h-lvh flex flex-col bg-black overflow-x-clip relative">
+        {/* Brand logo — top-right. Hidden on mobile (menu toggle sits there). */}
+        <div className="fixed top-0 right-0 z-200 max-w-[1440px] px-6 mx-auto">
+          <Logo priority className="" />
+        </div>
         <MotionProvider>
           <DebugWrapper>{children}</DebugWrapper>
         </MotionProvider>

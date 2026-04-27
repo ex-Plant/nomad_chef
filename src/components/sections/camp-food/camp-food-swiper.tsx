@@ -132,7 +132,7 @@ export function CampFoodSwiper({ data }: CampFoodPropsT) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={SLIDE_TRANSITION}
-          className="absolute top-0 right-0 translate-x-1/3 -translate-y-1/2 z-100"
+          className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 z-100"
           style={{ willChange: "opacity" }}
         >
           <Starburst color={slide.starburstColor} size="md" variant="v1-b" />

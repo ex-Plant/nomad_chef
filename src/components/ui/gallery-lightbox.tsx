@@ -32,16 +32,17 @@ export function GalleryLightbox({
     startIndex: openIndex ?? 0,
   });
   const [selectedIndex, setSelectedIndex] = useState(openIndex ?? 0);
+  const [lastOpenIndex, setLastOpenIndex] = useState(openIndex);
 
-  // Jump to the clicked image; embla fires `select` afterwards,
-  // which keeps selectedIndex in sync via the effect below.
-  // Also sync selectedIndex eagerly so the counter never flashes a stale
-  // value when openIndex changes (component stays mounted across open/close,
-  // and scrollTo is a no-op when the target equals the current snap).
+  if (openIndex !== lastOpenIndex) {
+    setLastOpenIndex(openIndex);
+    if (openIndex !== undefined) setSelectedIndex(openIndex);
+  }
+
+  // Imperatively tell embla to jump to the clicked image.
   useEffect(() => {
     if (openIndex === undefined) return;
-    setSelectedIndex(openIndex);
-    if (emblaApi) emblaApi.scrollTo(openIndex, true);
+    emblaApi?.scrollTo(openIndex, true);
   }, [emblaApi, openIndex]);
 
   useEffect(() => {
@@ -82,7 +83,7 @@ export function GalleryLightbox({
                 /* Preload neighbors of the current slide so swipes feel instant. */
                 const distance = Math.min(
                   Math.abs(i - selectedIndex),
-                  images.length - Math.abs(i - selectedIndex),
+                  images.length - Math.abs(i - selectedIndex)
                 );
                 const isNearby = distance <= 1;
                 return (

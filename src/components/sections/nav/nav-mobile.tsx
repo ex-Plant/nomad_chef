@@ -11,6 +11,7 @@ import { Starburst } from "@/components/shared/starburst";
 import { cn } from "@/helpers/cn";
 import { AnimationTogglePot as AnimationToggle } from "@/components/shared/animation-toggle-pot/animation-toggle-pot";
 import { scrollToSection } from "@/helpers/scroll-to-section";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 type NavMobilePropsT = {
   items: SiteT["nav"];
@@ -219,6 +220,7 @@ export function NavMobileOverlay({
    to the active section on scroll. */
 export function NavMobileShell({ items }: { items: SiteT["nav"] }) {
   const [isOpen, setIsOpen] = useState(false);
+  useScrollLock(isOpen);
 
   const scrollTo = useCallback((id: string) => {
     setIsOpen(false);
