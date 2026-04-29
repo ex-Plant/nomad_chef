@@ -15,7 +15,8 @@ export function AddressFields({ form, prefix, disabled }: AddressFieldsPropsT) {
   const line2Name = `${prefix}Line2` as const;
   const cityName = `${prefix}City` as const;
   const postalName = `${prefix}PostalCode` as const;
-  const countryName = `${prefix}Country` as const;
+  // Country is locked to "PL" via defaultCartValues + schema postal regex.
+  // Not rendered in the UI — see cart-schema.ts.
   return (
     <div className="flex flex-col gap-3">
       <form.Field name={line1Name}>
@@ -60,16 +61,6 @@ export function AddressFields({ form, prefix, disabled }: AddressFieldsPropsT) {
           )}
         </form.Field>
       </div>
-      <form.Field name={countryName}>
-        {(field: AnyFieldApi) => (
-          <FormTextInput
-            field={field}
-            placeholder="Kraj"
-            autoComplete={prefix === "shipping" ? "shipping country-name" : "billing country-name"}
-            disabled={disabled}
-          />
-        )}
-      </form.Field>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useForm, useStore } from "@tanstack/react-form";
+import { useForm, useStore, type AnyFieldApi } from "@tanstack/react-form";
 import { useCartFormStore } from "@/stores/form-stores";
 import {
   cartFormSchema,
@@ -10,6 +10,7 @@ import {
 } from "@/lib/cart-schema";
 import { createOrder } from "@/lib/orders";
 import { Button } from "@/components/shared/button";
+import { FormCheckbox } from "@/components/forms";
 import type { Product } from "@/payload-types";
 import { BuyerFields } from "./buyer-fields";
 import { ShippingFields } from "./shipping-fields";
@@ -84,6 +85,11 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
 
       <BuyerFields form={form} />
       {isPhysical && <ShippingFields form={form} />}
+      <form.Field name="wantsInvoice">
+        {(field: AnyFieldApi) => (
+          <FormCheckbox field={field} label="Chcę fakturę VAT" />
+        )}
+      </form.Field>
       {wantsInvoice && <InvoiceFields form={form} />}
 
       <form.Subscribe

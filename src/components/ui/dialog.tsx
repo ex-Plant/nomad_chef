@@ -77,7 +77,7 @@ export function Dialog({
       {isOpen && (
         <m.div
           key="dialog-overlay"
-          className="fixed inset-0 z-[400] pointer-events-none"
+          className="fixed inset-0 z-[500] pointer-events-none"
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 1 }}

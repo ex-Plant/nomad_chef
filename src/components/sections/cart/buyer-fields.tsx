@@ -1,7 +1,7 @@
 "use client";
 
 import type { AnyFieldApi } from "@tanstack/react-form";
-import { FormTextInput, FormCheckbox } from "@/components/forms";
+import { FormTextInput } from "@/components/forms";
 import type { CartFormApiT } from "./types";
 
 type BuyerFieldsPropsT = {
@@ -45,11 +45,6 @@ export function BuyerFields({ form, disabled }: BuyerFieldsPropsT) {
           )}
         </form.Field>
       </div>
-      <form.Field name="wantsInvoice">
-        {(field: AnyFieldApi) => (
-          <FormCheckbox field={field} label="Chcę fakturę VAT" disabled={disabled} />
-        )}
-      </form.Field>
     </div>
   );
 }
