@@ -3,11 +3,14 @@ import { z } from "zod";
 const POSTAL_CODE_RE = /^\d{2}-\d{3}$/;
 const NIP_RE = /^\d{10}$/;
 
+// Flat object (not z.discriminatedUnion). TanStack Form keeps unmounted field
+// values in a single state shape; flattening here lets the form layer use one
+// stable type. Conditional requiredness lives in superRefine below.
 export const cartFormSchema = z
   .object({
     format: z.enum(["digital", "physical"]),
     productSlug: z.string().min(1),
-    email: z.email().trim(),
+    email: z.email().trim().toLowerCase(),
     firstName: z.string().trim().min(1, "Wymagane"),
     lastName: z.string().trim().min(1, "Wymagane"),
     wantsInvoice: z.boolean(),
