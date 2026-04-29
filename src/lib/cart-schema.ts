@@ -42,7 +42,11 @@ export const cartFormSchema = z
       if (!data.companyName)
         ctx.addIssue({ path: ["companyName"], code: "custom", message: "Wymagane" });
       if (!NIP_RE.test(data.nip))
-        ctx.addIssue({ path: ["nip"], code: "custom", message: "10 cyfr" });
+        ctx.addIssue({
+          path: ["nip"],
+          code: "custom",
+          message: "Nieprawidłowy numer NIP",
+        });
       const needsInvoiceAddress =
         data.format === "digital" || !data.useShippingAsInvoice;
       if (needsInvoiceAddress) {

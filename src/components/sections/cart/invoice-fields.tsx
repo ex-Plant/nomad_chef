@@ -39,6 +39,7 @@ export function InvoiceFields({ form, disabled }: InvoiceFieldsPropsT) {
           <FormTextInput
             field={field}
             label="NIP"
+            placeholder="10 cyfr"
             inputMode="numeric"
             disabled={disabled}
             className="max-w-[12rem]"

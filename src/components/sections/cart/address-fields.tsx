@@ -55,6 +55,7 @@ export function AddressFields({ form, prefix, disabled }: AddressFieldsPropsT) {
             <FormTextInput
               field={field}
               label="Kod pocztowy"
+              placeholder="00-000"
               autoComplete={prefix === "shipping" ? "shipping postal-code" : "billing postal-code"}
               disabled={disabled}
             />
