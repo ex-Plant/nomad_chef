@@ -81,18 +81,26 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
       className="flex flex-col gap-8 relative "
     >
       <header className="flex flex-col gap-1 text-electric-blue">
-        <h3 className="font-display text-2xl">{product.title}</h3>
+        <h3 className="font-display text-2xl uppercase">{product.title}</h3>
       </header>
 
       <BuyerFields form={form} />
       {isPhysical && (
         <>
-          <hr className="border-0 border-t-[3px] border-yellow" />
+          <div
+            role="separator"
+            aria-hidden
+            className="h-[3px] rounded-full bg-yellow"
+          />
           <ShippingFields form={form} />
         </>
       )}
 
-      <hr className="border-0 border-t-[3px] border-yellow" />
+      <div
+        role="separator"
+        aria-hidden
+        className="h-[3px] rounded-full bg-yellow"
+      />
       <div className="flex flex-col gap-3">
         <form.Field name="wantsInvoice">
           {(field: AnyFieldApi) => (
@@ -102,14 +110,22 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
         {wantsInvoice && <InvoiceFields form={form} />}
       </div>
 
-      <hr className="border-0 border-t-[3px] border-yellow" />
+      <div
+        role="separator"
+        aria-hidden
+        className="h-[3px] rounded-full bg-yellow"
+      />
       <form.Field name="notes">
         {(field: AnyFieldApi) => (
           <FormTextarea field={field} label="Wiadomość" rows={3} />
         )}
       </form.Field>
 
-      <hr className="border-0 border-t-[3px] border-yellow" />
+      <div
+        role="separator"
+        aria-hidden
+        className="h-[3px] rounded-full bg-yellow"
+      />
       <form.Subscribe
         selector={(s) => ({
           canSubmit: s.canSubmit,
