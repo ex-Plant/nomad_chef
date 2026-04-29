@@ -1,4 +1,5 @@
 import type { Access, CollectionConfig } from "payload";
+import { generateOrderNumber } from "./hooks/generate-order-number";
 
 const requireAuth: Access = ({ req: { user } }) => Boolean(user);
 
@@ -16,6 +17,9 @@ const whenPhysicalOrder = (data: unknown) => getProductFormat(data) === "physica
 
 export const Orders: CollectionConfig = {
   slug: "orders",
+  hooks: {
+    beforeChange: [generateOrderNumber],
+  },
   labels: {
     singular: { pl: "Zamówienie", en: "Order" },
     plural: { pl: "Zamówienia", en: "Orders" },
