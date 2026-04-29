@@ -3,6 +3,7 @@ import { generateOrderNumber } from "./hooks/generate-order-number";
 import { snapshotOrder } from "./hooks/snapshot";
 import { upsertCustomer } from "./hooks/upsert-customer";
 import { digitalFulfillment } from "./hooks/digital-fulfillment";
+import { physicalShipped } from "./hooks/physical-shipped";
 
 const requireAuth: Access = ({ req: { user } }) => Boolean(user);
 
@@ -22,7 +23,7 @@ export const Orders: CollectionConfig = {
   slug: "orders",
   hooks: {
     beforeChange: [upsertCustomer, snapshotOrder, generateOrderNumber],
-    afterChange: [digitalFulfillment],
+    afterChange: [digitalFulfillment, physicalShipped],
   },
   labels: {
     singular: { pl: "Zamówienie", en: "Order" },
