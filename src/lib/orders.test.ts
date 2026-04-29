@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { mergeAddresses, type AddressT } from "./orders";
+import { mergeAddresses, type AddressT } from "./cart-merge";
 
 const baseShipping: AddressT = {
   line1: "ul. Klonowa 5",
