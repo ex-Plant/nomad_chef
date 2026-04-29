@@ -39,7 +39,6 @@ export function InvoiceFields({ form, disabled }: InvoiceFieldsPropsT) {
             placeholder="10 cyfr"
             inputMode="numeric"
             disabled={disabled}
-            className="max-w-[12rem]"
           />
         )}
       </form.Field>
