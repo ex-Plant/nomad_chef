@@ -14,6 +14,9 @@
   --pink: #ff69b4;
   --yellow: #e1f532;
 
+  /* Validation / error — strong red borrowed from the fest design system */
+  --error: #ff0000;
+
   /* Text */
   --off-black: #211509;
   --white: #ffffff;
@@ -28,6 +31,9 @@
   /* Secondary */
   --color-pink: var(--pink);
   --color-yellow: var(--yellow);
+
+  /* Validation / error */
+  --color-error: var(--error);
 
   /* Text */
   --color-off-black: var(--off-black);

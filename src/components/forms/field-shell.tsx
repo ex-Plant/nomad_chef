@@ -14,7 +14,7 @@ export function FieldShell({ field, children }: FieldShellPropsT) {
     <div className="relative h-fit">
       {children}
       {hasErrors && (
-        <p id={errorId} role="alert" className="mt-1 px-1 text-sm text-red-600">
+        <p id={errorId} role="alert" className="mt-1 px-1 text-sm text-error">
           {errors
             .map((e) => (typeof e === "string" ? e : (e?.message ?? "")))
             .filter(Boolean)

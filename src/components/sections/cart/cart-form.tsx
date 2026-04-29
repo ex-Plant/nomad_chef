@@ -93,7 +93,7 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
           canSubmit: s.canSubmit,
           isSubmitting: s.isSubmitting,
           hasFieldErrors: Object.values(s.fieldMeta).some(
-            (meta) => meta.errors.length > 0,
+            (meta) => meta.errors.length > 0
           ),
           attempted: s.submissionAttempts > 0,
         })}
@@ -109,10 +109,7 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
               </span>
             </div>
             {attempted && hasFieldErrors && (
-              <p
-                role="alert"
-                className="rounded-md border border-red-600 bg-red-600/10 px-3 py-2 text-sm text-red-600"
-              >
+              <p role="alert" className="rounded-md py-2 text-sm text-error">
                 Koszyk zawiera błędy
               </p>
             )}
