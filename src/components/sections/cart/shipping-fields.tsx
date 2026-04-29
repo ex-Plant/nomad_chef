@@ -24,6 +24,7 @@ export function ShippingFields({ form, disabled }: ShippingFieldsPropsT) {
             type="number"
             inputMode="numeric"
             disabled={disabled}
+            className="max-w-[8rem]"
           />
         )}
       </form.Field>
