@@ -34,7 +34,7 @@ export function HomepageShell({ site }: HomepageShellPropsT) {
     <>
       <Nav items={site.nav} />
       <main className="relative bg-warm-white">
-        <GrainOverlay position="absolute" zIndex="z-50" />
+        <GrainOverlay position="fixed" zIndex="z-[600]" />
         <Hero data={site.hero} videoRef={videoRef} isReady={isReady} />
         <div className={isReady ? `opacity-100` : `opacity-0`}>
           <About data={site.about} />
