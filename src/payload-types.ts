@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     customers: Customer;
     products: Product;
+    orders: Order;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,6 +83,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     customers: CustomersSelect<false> | CustomersSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -240,6 +242,51 @@ export interface Product {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: number;
+  orderNumber?: string | null;
+  customer: number | Customer;
+  product: number | Product;
+  quantity: number;
+  /**
+   * Snapshot at sale time
+   */
+  unitPriceGross: number;
+  totalGross: number;
+  priceNet: number;
+  vatRate: number;
+  vatAmount: number;
+  currency: 'PLN';
+  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
+  paymentProvider?: string | null;
+  paymentRef?: string | null;
+  fulfillmentStatus: 'pending' | 'fulfilled' | 'shipped' | 'delivered';
+  downloadToken?: string | null;
+  downloadCount?: number | null;
+  downloadLimit?: number | null;
+  downloadExpiresAt?: string | null;
+  shippingAddress?: {
+    firstName?: string | null;
+    lastName?: string | null;
+    line1?: string | null;
+    line2?: string | null;
+    city?: string | null;
+    postalCode?: string | null;
+    country?: string | null;
+  };
+  tracking?: string | null;
+  courier?: ('inpost' | 'dpd' | 'dhl' | 'poczta-polska' | 'other') | null;
+  shippedAt?: string | null;
+  notes?: string | null;
+  paidAt?: string | null;
+  fulfilledAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -277,6 +324,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'products';
         value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'orders';
+        value: number | Order;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -406,6 +457,49 @@ export interface ProductsSelect<T extends boolean = true> {
         height?: T;
       };
   active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders_select".
+ */
+export interface OrdersSelect<T extends boolean = true> {
+  orderNumber?: T;
+  customer?: T;
+  product?: T;
+  quantity?: T;
+  unitPriceGross?: T;
+  totalGross?: T;
+  priceNet?: T;
+  vatRate?: T;
+  vatAmount?: T;
+  currency?: T;
+  paymentStatus?: T;
+  paymentProvider?: T;
+  paymentRef?: T;
+  fulfillmentStatus?: T;
+  downloadToken?: T;
+  downloadCount?: T;
+  downloadLimit?: T;
+  downloadExpiresAt?: T;
+  shippingAddress?:
+    | T
+    | {
+        firstName?: T;
+        lastName?: T;
+        line1?: T;
+        line2?: T;
+        city?: T;
+        postalCode?: T;
+        country?: T;
+      };
+  tracking?: T;
+  courier?: T;
+  shippedAt?: T;
+  notes?: T;
+  paidAt?: T;
+  fulfilledAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
