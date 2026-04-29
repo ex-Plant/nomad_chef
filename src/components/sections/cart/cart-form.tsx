@@ -10,7 +10,12 @@ import {
 } from "@/lib/cart-schema";
 import { createOrder } from "@/lib/orders";
 import { Button } from "@/components/shared/button";
-import { FormCheckbox, FormTextarea, FormTextInput } from "@/components/forms";
+import {
+  FormCheckbox,
+  FormSeparator,
+  FormTextarea,
+  FormTextInput,
+} from "@/components/forms";
 import type { Product } from "@/payload-types";
 import { BuyerFields } from "./buyer-fields";
 import { ShippingFields } from "./shipping-fields";
@@ -87,20 +92,12 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
       <BuyerFields form={form} />
       {isPhysical && (
         <>
-          <div
-            role="separator"
-            aria-hidden
-            className="h-[3px] rounded-full bg-yellow"
-          />
+          <FormSeparator />
           <ShippingFields form={form} />
         </>
       )}
 
-      <div
-        role="separator"
-        aria-hidden
-        className="h-[3px] rounded-full bg-yellow"
-      />
+      <FormSeparator />
       <div className="flex flex-col gap-3">
         <form.Field name="wantsInvoice">
           {(field: AnyFieldApi) => (
@@ -110,22 +107,14 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
         {wantsInvoice && <InvoiceFields form={form} />}
       </div>
 
-      <div
-        role="separator"
-        aria-hidden
-        className="h-[3px] rounded-full bg-yellow"
-      />
+      <FormSeparator />
       <form.Field name="notes">
         {(field: AnyFieldApi) => (
           <FormTextarea field={field} label="Wiadomość" rows={3} />
         )}
       </form.Field>
 
-      <div
-        role="separator"
-        aria-hidden
-        className="h-[3px] rounded-full bg-yellow"
-      />
+      <FormSeparator />
       <form.Subscribe
         selector={(s) => ({
           canSubmit: s.canSubmit,

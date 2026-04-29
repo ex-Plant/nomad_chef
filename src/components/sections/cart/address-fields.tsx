@@ -19,26 +19,28 @@ export function AddressFields({ form, prefix, disabled }: AddressFieldsPropsT) {
   // Not rendered in the UI — see cart-schema.ts.
   return (
     <div className="flex flex-col gap-3">
-      <form.Field name={line1Name}>
-        {(field: AnyFieldApi) => (
-          <FormTextInput
-            field={field}
-            label="Ulica i numer"
-            autoComplete={prefix === "shipping" ? "shipping address-line1" : "billing address-line1"}
-            disabled={disabled}
-          />
-        )}
-      </form.Field>
-      <form.Field name={line2Name}>
-        {(field: AnyFieldApi) => (
-          <FormTextInput
-            field={field}
-            label="Lokal / dodatkowo"
-            autoComplete={prefix === "shipping" ? "shipping address-line2" : "billing address-line2"}
-            disabled={disabled}
-          />
-        )}
-      </form.Field>
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <form.Field name={line1Name}>
+          {(field: AnyFieldApi) => (
+            <FormTextInput
+              field={field}
+              label="Ulica i numer"
+              autoComplete={prefix === "shipping" ? "shipping address-line1" : "billing address-line1"}
+              disabled={disabled}
+            />
+          )}
+        </form.Field>
+        <form.Field name={line2Name}>
+          {(field: AnyFieldApi) => (
+            <FormTextInput
+              field={field}
+              label="Lokal / dodatkowo"
+              autoComplete={prefix === "shipping" ? "shipping address-line2" : "billing address-line2"}
+              disabled={disabled}
+            />
+          )}
+        </form.Field>
+      </div>
       <div className="grid grid-cols-[1fr_8rem] gap-3">
         <form.Field name={cityName}>
           {(field: AnyFieldApi) => (

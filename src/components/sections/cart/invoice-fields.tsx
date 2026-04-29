@@ -21,28 +21,29 @@ export function InvoiceFields({ form, disabled }: InvoiceFieldsPropsT) {
     format === "digital" || !useShippingAsInvoice;
   return (
     <div className="flex flex-col gap-3">
-      <form.Field name="companyName">
-        {(field: AnyFieldApi) => (
-          <FormTextInput
-            field={field}
-            label="Nazwa firmy"
-            autoComplete="organization"
-            disabled={disabled}
-          />
-        )}
-      </form.Field>
-      <form.Field name="nip">
-        {(field: AnyFieldApi) => (
-          <FormTextInput
-            field={field}
-            label="NIP"
-            placeholder="10 cyfr"
-            inputMode="numeric"
-            disabled={disabled}
-            className="max-w-[12rem]"
-          />
-        )}
-      </form.Field>
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <form.Field name="companyName">
+          {(field: AnyFieldApi) => (
+            <FormTextInput
+              field={field}
+              label="Nazwa firmy"
+              autoComplete="organization"
+              disabled={disabled}
+            />
+          )}
+        </form.Field>
+        <form.Field name="nip">
+          {(field: AnyFieldApi) => (
+            <FormTextInput
+              field={field}
+              label="NIP"
+              placeholder="10 cyfr"
+              inputMode="numeric"
+              disabled={disabled}
+            />
+          )}
+        </form.Field>
+      </div>
       {format === "physical" && (
         <div className="pt-2">
           <form.Field name="useShippingAsInvoice">
