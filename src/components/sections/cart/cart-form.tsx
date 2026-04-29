@@ -92,9 +92,13 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
         selector={(s) => ({
           canSubmit: s.canSubmit,
           isSubmitting: s.isSubmitting,
+          hasFieldErrors: Object.values(s.fieldMeta).some(
+            (meta) => meta.errors.length > 0,
+          ),
+          attempted: s.submissionAttempts > 0,
         })}
       >
-        {({ canSubmit, isSubmitting }) => (
+        {({ canSubmit, isSubmitting, hasFieldErrors, attempted }) => (
           <div className="flex flex-col gap-3 pt-4">
             <div className="flex items-baseline justify-between border-t border-coral/20 pt-3">
               <span className="font-sans text-xs uppercase tracking-wide text-coral">
@@ -104,6 +108,14 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
                 {product.priceGross} PLN
               </span>
             </div>
+            {attempted && hasFieldErrors && (
+              <p
+                role="alert"
+                className="rounded-md border border-red-600 bg-red-600/10 px-3 py-2 text-sm text-red-600"
+              >
+                Koszyk zawiera błędy
+              </p>
+            )}
             <Button
               type="submit"
               size="compact"
