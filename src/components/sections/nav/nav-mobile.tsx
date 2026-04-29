@@ -47,9 +47,9 @@ export function NavMobileToggle({
   activeSection,
   onToggle,
 }: Pick<NavMobilePropsT, "isOpen" | "activeSection" | "onToggle">) {
-  // TODO: temporary — force coral; restore section-driven color after testing.
-  const color: NavToggleColorT = "coral";
-  void activeSection;
+  const color: NavToggleColorT = isOpen
+    ? "coral"
+    : NAV_TOGGLE_COLORS[activeSection];
   // Sync with curtain choreography below: open = 520ms, close = 820ms.
   const lineDurationMs = isOpen ? 520 : 820;
 

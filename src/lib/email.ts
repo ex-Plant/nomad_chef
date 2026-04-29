@@ -12,11 +12,6 @@ type SendEmailArgsT = {
 };
 
 export async function sendEmail(args: SendEmailArgsT): Promise<void> {
-  if (!ENV.EMAIL_HOST || !ENV.EMAIL_USER || !ENV.EMAIL_PASS) {
-    console.log("[email:stub]", JSON.stringify(args, null, 2));
-    return;
-  }
-
   const transport = nodemailer.createTransport({
     host: ENV.EMAIL_HOST,
     port: 465,
@@ -45,11 +40,6 @@ export async function sendContactEmail(
     return { success: false, error: "Nieprawidłowe dane formularza" };
   }
 
-  if (!ENV.EMAIL_HOST || !ENV.EMAIL_USER || !ENV.EMAIL_PASS) {
-    console.error("[email] Missing SMTP credentials");
-    return { success: false, error: "Wysyłka e-maili nie jest skonfigurowana" };
-  }
-
   const { email, message } = parsed.data;
 
   const transport = nodemailer.createTransport({
@@ -62,14 +52,14 @@ export async function sendContactEmail(
   try {
     await transport.sendMail({
       from: ENV.EMAIL_USER,
-      to: ENV.EMAIL_TO ?? ENV.EMAIL_USER,
+      to: ENV.EMAIL_TO,
       replyTo: email,
-      subject: `Wiadomość ze strony: ${email}`,
+      subject: `Wiadomość z formularza kontaktowego chaoskitchen `,
       text: [
-        `E-mail: ${email}`,
         "",
         `Wiadomość:`,
         message.trim() ? message : "(brak wiadomości)",
+        `E-mail nadawcy : ${email}`,
       ].join("\n"),
     });
     return { success: true };

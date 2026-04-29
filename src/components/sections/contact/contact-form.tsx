@@ -7,7 +7,7 @@ import { Button } from "@/components/shared/button";
 import { FieldShell } from "@/components/sections/contact/field-shell";
 import { ContactSuccessDialog } from "@/components/sections/contact/contact-success-dialog";
 import { cn } from "@/helpers/cn";
-import { contactFormSchema } from "../../../lib/contact-schema";
+import { contactFormSchema } from "@/lib/contact-schema";
 
 type ContactFormPropsT = {
   messagePlaceholder: string;
@@ -15,7 +15,7 @@ type ContactFormPropsT = {
 };
 
 const inputClasses =
-  "w-full rounded border border-coral bg-yellow px-4 py-2.5 font-sans text-sm text-off-black transition-colors duration-300 ease-brand placeholder:text-coral focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral ";
+  "w-full rounded-lg border border-coral bg-yellow px-4 py-2.5 font-sans text-sm text-off-black transition-colors duration-300 ease-brand placeholder:text-coral focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral ";
 
 export function ContactForm({
   messagePlaceholder,

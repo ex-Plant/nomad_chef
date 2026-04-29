@@ -20,18 +20,14 @@ function required(key: EnvKeyT): string {
   return value;
 }
 
-function optional(key: EnvKeyT): string | undefined {
-  return process.env[key];
-}
-
 export const ENV = {
   DB_POSTGRES_URL: required("DB_POSTGRES_URL"),
   PAYLOAD_SECRET: required("PAYLOAD_SECRET"),
   BLOB_READ_WRITE_TOKEN: required("BLOB_READ_WRITE_TOKEN"),
 
   // TODO: re-enable when nodemailer adapter is uncommented in payload.config.ts
-  EMAIL_HOST: optional("EMAIL_HOST"),
-  EMAIL_USER: optional("EMAIL_USER"),
-  EMAIL_PASS: optional("EMAIL_PASS"),
-  EMAIL_TO: optional("EMAIL_TO"),
+  EMAIL_HOST: required("EMAIL_HOST"),
+  EMAIL_USER: required("EMAIL_USER"),
+  EMAIL_PASS: required("EMAIL_PASS"),
+  EMAIL_TO: required("EMAIL_TO"),
 } as const;

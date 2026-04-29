@@ -10,7 +10,7 @@ import {
 } from "next/font/google";
 import { DebugWrapper } from "@/components/debug-tools/debug-wrapper";
 import { MotionProvider } from "@/components/ui/motion-provider";
-import "./globals.css";
+import "../globals.css";
 
 /* Design 1 fonts */
 const archivoBlack = Archivo_Black({
@@ -47,7 +47,7 @@ const playfair = Playfair_Display({
   style: ["normal", "italic"],
 });
 
-/* Ebook headline match — compressed heavy sans */
+/* Ebook headline match - compressed heavy sans */
 const bebasNeue = Bebas_Neue({
   variable: "--font-bebas-neue",
   subsets: ["latin"],
