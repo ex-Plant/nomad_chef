@@ -12,7 +12,7 @@ type LogoPropsT = {
 
 export function Logo({
   className,
-  priority = false,
+  priority = true,
   sizes = "128px",
 }: LogoPropsT) {
   return (
