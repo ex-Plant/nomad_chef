@@ -25,7 +25,6 @@ export const ENV = {
   PAYLOAD_SECRET: required("PAYLOAD_SECRET"),
   BLOB_READ_WRITE_TOKEN: required("BLOB_READ_WRITE_TOKEN"),
 
-  // TODO: re-enable when nodemailer adapter is uncommented in payload.config.ts
   EMAIL_HOST: required("EMAIL_HOST"),
   EMAIL_USER: required("EMAIL_USER"),
   EMAIL_PASS: required("EMAIL_PASS"),

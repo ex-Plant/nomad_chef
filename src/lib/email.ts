@@ -1,6 +1,7 @@
 "use server";
 
-import nodemailer from "nodemailer";
+import { getPayload } from "payload";
+import config from "@payload-config";
 import { ENV } from "@/config/env";
 import { contactFormSchema } from "@/lib/contact-schema";
 
@@ -9,22 +10,17 @@ type SendEmailArgsT = {
   subject: string;
   text: string;
   html?: string;
+  replyTo?: string;
 };
 
 export async function sendEmail(args: SendEmailArgsT): Promise<void> {
-  const transport = nodemailer.createTransport({
-    host: ENV.EMAIL_HOST,
-    port: 465,
-    secure: true,
-    auth: { user: ENV.EMAIL_USER, pass: ENV.EMAIL_PASS },
-  });
-
-  await transport.sendMail({
-    from: ENV.EMAIL_USER,
+  const payload = await getPayload({ config });
+  await payload.sendEmail({
     to: args.to,
     subject: args.subject,
     text: args.text,
     html: args.html,
+    replyTo: args.replyTo,
   });
 }
 
@@ -42,24 +38,16 @@ export async function sendContactEmail(
 
   const { email, message } = parsed.data;
 
-  const transport = nodemailer.createTransport({
-    host: ENV.EMAIL_HOST,
-    port: 465,
-    secure: true,
-    auth: { user: ENV.EMAIL_USER, pass: ENV.EMAIL_PASS },
-  });
-
   try {
-    await transport.sendMail({
-      from: ENV.EMAIL_USER,
+    await sendEmail({
       to: ENV.EMAIL_TO,
       replyTo: email,
-      subject: `Wiadomość z formularza kontaktowego chaoskitchen `,
+      subject: `Wiadomość z formularza kontaktowego chaoskitchen`,
       text: [
         "",
         `Wiadomość:`,
         message.trim() ? message : "(brak wiadomości)",
-        `E-mail nadawcy : ${email}`,
+        `E-mail nadawcy: ${email}`,
       ].join("\n"),
     });
     return { success: true };
