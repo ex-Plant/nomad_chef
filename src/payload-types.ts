@@ -254,7 +254,7 @@ export interface Product {
  */
 export interface Order {
   id: number;
-  orderNumber?: string | null;
+  orderNumber: string;
   customer: number | Customer;
   product: number | Product;
   quantity: number;

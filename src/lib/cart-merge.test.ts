@@ -1,6 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { mergeAddresses, type AddressT } from "./cart-merge";
+import { buildAddressesToAdd, mergeAddresses, type AddressT } from "./cart-merge";
+import { defaultCartValues } from "./cart-schema";
 
 const baseShipping: AddressT = {
   line1: "ul. Klonowa 5",
@@ -87,5 +88,91 @@ describe("mergeAddresses", () => {
     const { merged, changed } = mergeAddresses([], [baseShipping, otherInvoice]);
     assert.equal(changed, true);
     assert.equal(merged.length, 2);
+  });
+});
+
+describe("buildAddressesToAdd", () => {
+  it("digital + no invoice → empty list", () => {
+    const v = defaultCartValues("digital", "cookbook-digital");
+    assert.deepEqual(buildAddressesToAdd(v), []);
+  });
+
+  it("digital + invoice → single invoice address with company/nip", () => {
+    const v = {
+      ...defaultCartValues("digital", "cookbook-digital"),
+      wantsInvoice: true,
+      companyName: "Smaki Sp. z o.o.",
+      nip: "5252352342",
+      invoiceLine1: "Al. Jerozolimskie 100",
+      invoiceCity: "Warszawa",
+      invoicePostalCode: "02-001",
+    };
+    const result = buildAddressesToAdd(v);
+    assert.equal(result.length, 1);
+    assert.equal(result[0].companyName, "Smaki Sp. z o.o.");
+    assert.equal(result[0].nip, "5252352342");
+    assert.equal(result[0].line1, "Al. Jerozolimskie 100");
+    assert.equal(result[0].city, "Warszawa");
+    assert.equal(result[0].postalCode, "02-001");
+  });
+
+  it("physical + no invoice → single shipping address (no company/nip)", () => {
+    const v = {
+      ...defaultCartValues("physical", "cookbook-physical"),
+      shippingLine1: "ul. Klonowa 5",
+      shippingCity: "Warszawa",
+      shippingPostalCode: "00-001",
+    };
+    const result = buildAddressesToAdd(v);
+    assert.equal(result.length, 1);
+    assert.equal(result[0].companyName, undefined);
+    assert.equal(result[0].nip, undefined);
+    assert.equal(result[0].line1, "ul. Klonowa 5");
+    assert.equal(result[0].postalCode, "00-001");
+  });
+
+  it("physical + invoice + useShippingAsInvoice → single merged entry (shipping address + company/nip)", () => {
+    const v = {
+      ...defaultCartValues("physical", "cookbook-physical"),
+      shippingLine1: "ul. Klonowa 5",
+      shippingCity: "Warszawa",
+      shippingPostalCode: "00-001",
+      wantsInvoice: true,
+      useShippingAsInvoice: true,
+      companyName: "Smaki Sp. z o.o.",
+      nip: "5252352342",
+    };
+    const result = buildAddressesToAdd(v);
+    assert.equal(result.length, 1);
+    assert.equal(result[0].companyName, "Smaki Sp. z o.o.");
+    assert.equal(result[0].nip, "5252352342");
+    assert.equal(result[0].line1, "ul. Klonowa 5");
+    assert.equal(result[0].postalCode, "00-001");
+  });
+
+  it("physical + invoice + !useShippingAsInvoice → two entries (shipping then invoice)", () => {
+    const v = {
+      ...defaultCartValues("physical", "cookbook-physical"),
+      shippingLine1: "ul. Klonowa 5",
+      shippingCity: "Warszawa",
+      shippingPostalCode: "00-001",
+      wantsInvoice: true,
+      useShippingAsInvoice: false,
+      companyName: "Smaki Sp. z o.o.",
+      nip: "5252352342",
+      invoiceLine1: "Al. Jerozolimskie 100",
+      invoiceCity: "Warszawa",
+      invoicePostalCode: "02-001",
+    };
+    const result = buildAddressesToAdd(v);
+    assert.equal(result.length, 2);
+    // first entry: shipping (no company/nip)
+    assert.equal(result[0].line1, "ul. Klonowa 5");
+    assert.equal(result[0].companyName, undefined);
+    assert.equal(result[0].nip, undefined);
+    // second entry: invoice (with company/nip, different address)
+    assert.equal(result[1].line1, "Al. Jerozolimskie 100");
+    assert.equal(result[1].companyName, "Smaki Sp. z o.o.");
+    assert.equal(result[1].nip, "5252352342");
   });
 });

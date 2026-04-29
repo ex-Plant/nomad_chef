@@ -56,6 +56,7 @@ export const Orders: CollectionConfig = {
     {
       name: "orderNumber",
       type: "text",
+      required: true,
       unique: true,
       index: true,
       admin: { readOnly: true },

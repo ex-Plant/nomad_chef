@@ -84,6 +84,9 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
         }
       : undefined;
 
+  // Payload's generated create type demands hook-populated fields (orderNumber,
+  // totalGross, etc.) which are set by beforeChange hooks. The cast is the documented
+  // workaround; same pattern in src/scripts/seed-orders.ts.
   const order = await payload.create({
     collection: "orders",
     data: {
@@ -112,7 +115,7 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
 
   return {
     ok: true,
-    orderNumber: order.orderNumber!,
+    orderNumber: order.orderNumber,
     totalGross: order.totalGross,
   };
 }
