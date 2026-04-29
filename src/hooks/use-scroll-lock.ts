@@ -71,6 +71,10 @@ function releaseLock() {
   savedStyles = undefined;
   // Two-arg form is always instant — bypasses html.scroll-smooth.
   window.scrollTo(0, savedScrollY);
+  // Notify subscribers that the lock just released — used by GSAP
+  // ScrollTrigger consumers (services-sticky) to refresh positions that were
+  // computed against the locked layout (body { position: fixed; top: -Y }).
+  window.dispatchEvent(new CustomEvent("scroll-lock-released"));
 }
 
 export function useScrollLock(isLocked: boolean): void {

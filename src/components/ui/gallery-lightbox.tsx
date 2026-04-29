@@ -94,7 +94,7 @@ export function GalleryLightbox({
                     <div className="relative h-full w-full">
                       {/* Always rendered underneath — the image paints over it once decoded. */}
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <Loader color="yellow" />
+                        <Loader />
                       </div>
                       <NextImage
                         src={image.src}

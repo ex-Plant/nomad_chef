@@ -67,6 +67,18 @@ export function ServicesSticky({ data }: PropsT) {
           },
         });
       });
+
+      // If the page mounted while scroll-locked (hero video loading) the body
+      // was `position: fixed; top: -Y`, which shifted every panel's
+      // getBoundingClientRect() into deeply negative space — ScrollTrigger
+      // cached those positions and the scrub progress pegged to 1 (opacity 0)
+      // for every panel. Refresh once the lock releases so positions are
+      // recomputed against the restored layout.
+      const onLockReleased = () => ScrollTrigger.refresh();
+      window.addEventListener("scroll-lock-released", onLockReleased);
+      return () => {
+        window.removeEventListener("scroll-lock-released", onLockReleased);
+      };
     },
     { scope: containerRef, dependencies: [data.slides.length, reducedMotion] }
   );

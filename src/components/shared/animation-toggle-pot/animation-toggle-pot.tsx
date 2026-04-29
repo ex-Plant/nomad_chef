@@ -85,7 +85,7 @@ export function AnimationTogglePot({
     >
       <span
         className={cn(
-          "text-sm md:text-xs uppercase tracking-wider font-medium text-white bg-coral pl-1 pr-2 -rotate-4 mt-8 md:mt-4 -mr-2 md:opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100",
+          "text-sm lg:text-xs uppercase tracking-wider font-medium text-white bg-coral pl-1 pr-2 -rotate-4 mt-8 -mr-2 lg:opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100",
           !animationsOn && "line-through"
         )}
       >
@@ -94,7 +94,7 @@ export function AnimationTogglePot({
       <svg
         viewBox="0 0 100 100"
         aria-hidden="true"
-        className="block size-24 md:size-16 overflow-visible"
+        className="block size-24 lg:size-16 overflow-visible"
       >
         {/* Bubbles — rise from the pot and pop at the top */}
         {BUBBLES.map((b, i) => (

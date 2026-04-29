@@ -12,9 +12,9 @@ export type SectionIdT = (typeof SECTION_IDS)[keyof typeof SECTION_IDS];
 export type NavToggleColorT = "yellow" | "coral";
 
 export const NAV_TOGGLE_COLORS = {
-  [SECTION_IDS.hero]: "yellow",
+  [SECTION_IDS.hero]: "coral",
   [SECTION_IDS.about]: "coral",
-  [SECTION_IDS.services]: "yellow",
+  [SECTION_IDS.services]: "coral",
   [SECTION_IDS.campFood]: "yellow",
   [SECTION_IDS.gallery]: "coral",
   [SECTION_IDS.contact]: "coral",

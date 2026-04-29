@@ -129,14 +129,6 @@ export const Site: GlobalConfig = {
                 ),
               ],
             },
-            upload("hero_media_desktop", {
-              pl: "Wideo/zdjęcie desktop",
-              en: "Desktop video/image",
-            }),
-            upload("hero_media_mobile", {
-              pl: "Wideo/zdjęcie mobile",
-              en: "Mobile video/image",
-            }),
           ],
         },
         {

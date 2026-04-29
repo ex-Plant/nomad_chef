@@ -69,6 +69,9 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    customers: Customer;
+    products: Product;
+    orders: Order;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +81,9 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    customers: CustomersSelect<false> | CustomersSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -127,6 +133,8 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  name?: string | null;
+  role: 'admin' | 'editor';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -167,6 +175,120 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers".
+ */
+export interface Customer {
+  id: number;
+  email: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  addresses?:
+    | {
+        line1: string;
+        line2?: string | null;
+        city: string;
+        postalCode: string;
+        country: string;
+        id?: string | null;
+      }[]
+    | null;
+  marketingConsent?: boolean | null;
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  slug: string;
+  title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  format: 'digital' | 'physical';
+  /**
+   * Value in cents. 49.99 PLN = 4999.
+   */
+  priceGross: number;
+  currency: 'PLN';
+  /**
+   * 0.05 = 5%, 0.23 = 23%, 0 = none.
+   */
+  vatRate: number;
+  coverImage: number | Media;
+  file?: (number | null) | Media;
+  weightGrams?: number | null;
+  dimensions?: {
+    length?: number | null;
+    width?: number | null;
+    height?: number | null;
+  };
+  active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: number;
+  orderNumber?: string | null;
+  customer: number | Customer;
+  product: number | Product;
+  quantity: number;
+  /**
+   * Snapshot at sale time
+   */
+  unitPriceGross: number;
+  totalGross: number;
+  priceNet: number;
+  vatRate: number;
+  vatAmount: number;
+  currency: 'PLN';
+  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
+  paymentProvider?: string | null;
+  paymentRef?: string | null;
+  fulfillmentStatus: 'pending' | 'fulfilled' | 'shipped' | 'delivered';
+  downloadToken?: string | null;
+  downloadCount?: number | null;
+  downloadLimit?: number | null;
+  downloadExpiresAt?: string | null;
+  shippingAddress?: {
+    firstName?: string | null;
+    lastName?: string | null;
+    line1?: string | null;
+    line2?: string | null;
+    city?: string | null;
+    postalCode?: string | null;
+    country?: string | null;
+  };
+  tracking?: string | null;
+  courier?: ('inpost' | 'dpd' | 'dhl' | 'poczta-polska' | 'other') | null;
+  shippedAt?: string | null;
+  notes?: string | null;
+  paidAt?: string | null;
+  fulfilledAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -196,6 +318,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'customers';
+        value: number | Customer;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'orders';
+        value: number | Order;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -244,6 +378,8 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -278,6 +414,98 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers_select".
+ */
+export interface CustomersSelect<T extends boolean = true> {
+  email?: T;
+  firstName?: T;
+  lastName?: T;
+  addresses?:
+    | T
+    | {
+        line1?: T;
+        line2?: T;
+        city?: T;
+        postalCode?: T;
+        country?: T;
+        id?: T;
+      };
+  marketingConsent?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  slug?: T;
+  title?: T;
+  description?: T;
+  format?: T;
+  priceGross?: T;
+  currency?: T;
+  vatRate?: T;
+  coverImage?: T;
+  file?: T;
+  weightGrams?: T;
+  dimensions?:
+    | T
+    | {
+        length?: T;
+        width?: T;
+        height?: T;
+      };
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders_select".
+ */
+export interface OrdersSelect<T extends boolean = true> {
+  orderNumber?: T;
+  customer?: T;
+  product?: T;
+  quantity?: T;
+  unitPriceGross?: T;
+  totalGross?: T;
+  priceNet?: T;
+  vatRate?: T;
+  vatAmount?: T;
+  currency?: T;
+  paymentStatus?: T;
+  paymentProvider?: T;
+  paymentRef?: T;
+  fulfillmentStatus?: T;
+  downloadToken?: T;
+  downloadCount?: T;
+  downloadLimit?: T;
+  downloadExpiresAt?: T;
+  shippingAddress?:
+    | T
+    | {
+        firstName?: T;
+        lastName?: T;
+        line1?: T;
+        line2?: T;
+        city?: T;
+        postalCode?: T;
+        country?: T;
+      };
+  tracking?: T;
+  courier?: T;
+  shippedAt?: T;
+  notes?: T;
+  paidAt?: T;
+  fulfilledAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -340,8 +568,6 @@ export interface Site {
         id?: string | null;
       }[]
     | null;
-  hero_media_desktop?: (number | null) | Media;
-  hero_media_mobile?: (number | null) | Media;
   about_eyebrow?: string | null;
   about_heading_lines?:
     | {
@@ -460,8 +686,6 @@ export interface SiteSelect<T extends boolean = true> {
         href?: T;
         id?: T;
       };
-  hero_media_desktop?: T;
-  hero_media_mobile?: T;
   about_eyebrow?: T;
   about_heading_lines?:
     | T

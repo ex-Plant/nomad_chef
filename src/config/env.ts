@@ -5,11 +5,14 @@
 // read directly where they're used, so production deploys don't crash on
 // unused requirements.
 
-type EnvKeyT = "DB_POSTGRES_URL" | "PAYLOAD_SECRET" | "BLOB_READ_WRITE_TOKEN";
-// TODO: re-enable when nodemailer adapter is uncommented in payload.config.ts
-// | "EMAIL_HOST"
-// | "EMAIL_USER"
-// | "EMAIL_PASS";
+type EnvKeyT =
+  | "DB_POSTGRES_URL"
+  | "PAYLOAD_SECRET"
+  | "BLOB_READ_WRITE_TOKEN"
+  | "EMAIL_HOST"
+  | "EMAIL_USER"
+  | "EMAIL_PASS"
+  | "EMAIL_TO";
 
 function required(key: EnvKeyT): string {
   const value = process.env[key];
@@ -23,7 +26,8 @@ export const ENV = {
   BLOB_READ_WRITE_TOKEN: required("BLOB_READ_WRITE_TOKEN"),
 
   // TODO: re-enable when nodemailer adapter is uncommented in payload.config.ts
-  // EMAIL_HOST: required("EMAIL_HOST"),
-  // EMAIL_USER: required("EMAIL_USER"),
-  // EMAIL_PASS: required("EMAIL_PASS"),
+  EMAIL_HOST: required("EMAIL_HOST"),
+  EMAIL_USER: required("EMAIL_USER"),
+  EMAIL_PASS: required("EMAIL_PASS"),
+  EMAIL_TO: required("EMAIL_TO"),
 } as const;

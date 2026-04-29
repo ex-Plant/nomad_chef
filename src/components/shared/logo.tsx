@@ -7,18 +7,23 @@ const LOGO_ALT = "Marta Leśniewska — Chaos Kitchen";
 type LogoPropsT = {
   className?: string;
   priority?: boolean;
+  sizes?: string;
 };
 
-export function Logo({ className, priority = false }: LogoPropsT) {
+export function Logo({
+  className,
+  priority = false,
+  sizes = "128px",
+}: LogoPropsT) {
   return (
     <NextImage
       src={logoSrc}
       alt={LOGO_ALT}
       priority={priority}
-      // Matches the rendered size from the className: 128px below lg, 160px above.
-      // If the className is overridden to a different size, update this too.
-      sizes="(min-width: 1024px) 160px, 128px"
-      className={cn("h-32 w-32 lg:h-40 lg:w-40", className)}
+      // Default `sizes` matches the default className (size-32 = 128px).
+      // Override `sizes` when the consumer passes a different rendered size.
+      sizes={sizes}
+      className={cn("size-32", className)}
     />
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { EASE } from "@/config/animation-constants";
 import { NAV_TOGGLE_COLORS, SECTION_IDS } from "@/config/section-ids";
@@ -12,6 +12,12 @@ import { cn } from "@/helpers/cn";
 import { AnimationTogglePot as AnimationToggle } from "@/components/shared/animation-toggle-pot/animation-toggle-pot";
 import { scrollToSection } from "@/helpers/scroll-to-section";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
+import { useBreakpoint } from "@/hooks/use-media-query";
+import { Logo } from "@/components/shared/logo";
+
+/* Pixel offset used as the section-detection line — roughly the bottom of the
+   toggle button at top-0. A section is "active" once its top crosses this line. */
+const MOBILE_ACTIVE_LINE = 80;
 
 type NavMobilePropsT = {
   items: SiteT["nav"];
@@ -41,7 +47,9 @@ export function NavMobileToggle({
   activeSection,
   onToggle,
 }: Pick<NavMobilePropsT, "isOpen" | "activeSection" | "onToggle">) {
-  const color = isOpen ? "coral" : NAV_TOGGLE_COLORS[activeSection];
+  const color: NavToggleColorT = isOpen
+    ? "coral"
+    : NAV_TOGGLE_COLORS[activeSection];
   // Sync with curtain choreography below: open = 520ms, close = 820ms.
   const lineDurationMs = isOpen ? 520 : 820;
 
@@ -51,7 +59,7 @@ export function NavMobileToggle({
       onClick={onToggle}
       // variant="white"
       // size="icon-sm"
-      className="md:hidden relative z-50"
+      className="lg:hidden relative z-50 -ml-3"
       aria-label={
         isOpen ? CONTENT.nav.toggleCloseLabel : CONTENT.nav.toggleOpenLabel
       }
@@ -129,7 +137,7 @@ export function NavMobileOverlay({
       {isOpen && (
         <m.div
           key="mobile-overlay"
-          className="fixed inset-0 z-40 md:hidden pointer-events-none"
+          className="fixed inset-0 z-40 lg:hidden pointer-events-none"
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 1 }}
@@ -146,11 +154,11 @@ export function NavMobileOverlay({
             exit="exit"
           >
             <div
-              className={`absolute bottom-0 right-0 left-0 flex justify-between  items-center`}
+              className={`absolute bottom-0 fest-container right-0 left-0 flex justify-between  items-end`}
             >
               <Starburst
-                color="pink"
-                size="md"
+                color="coral"
+                size="sm"
                 className={cn(
                   " duration-500",
                   isOpen ? "opacity-100" : "opacity-0"
@@ -215,12 +223,62 @@ export function NavMobileOverlay({
   );
 }
 
-/* Mobile-only shell — no scroll listener. Only the toggle + overlay + scroll
-   lock while open. Toggle color is fixed to the hero default; it won't react
-   to the active section on scroll. */
+/* Mobile-only shell — owns scroll lock while open + an active-section tracker
+   that drives the toggle color (mirrors the desktop logic, gated to <lg). */
 export function NavMobileShell({ items }: { items: SiteT["nav"] }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<SectionIdT>(
+    SECTION_IDS.hero
+  );
+  const isDesktop = useBreakpoint("lg");
   useScrollLock(isOpen);
+
+  useEffect(() => {
+    if (isDesktop) return;
+    let rafId = 0;
+
+    const update = () => {
+      rafId = 0;
+
+      const isAtBottom =
+        window.scrollY + window.innerHeight >=
+        document.documentElement.scrollHeight;
+
+      if (isAtBottom) {
+        setActiveSection((prev) =>
+          prev === SECTION_IDS.contact ? prev : SECTION_IDS.contact
+        );
+        return;
+      }
+
+      let nextId: SectionIdT | null = null;
+      for (const item of items) {
+        const el = document.getElementById(item.id);
+        if (!el) continue;
+        const top = el.getBoundingClientRect().top;
+        if (top <= MOBILE_ACTIVE_LINE) nextId = item.id as SectionIdT;
+        else break;
+      }
+      if (nextId) {
+        setActiveSection((prev) => (prev === nextId ? prev : nextId));
+      }
+    };
+
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [items, isDesktop]);
 
   const scrollTo = useCallback((id: string) => {
     setIsOpen(false);
@@ -230,14 +288,15 @@ export function NavMobileShell({ items }: { items: SiteT["nav"] }) {
   return (
     <>
       <nav
-        className="md:hidden fixed top-0 right-6 z-250 rounded-lg bg-transparent py-1"
+        className="lg:hidden fixed -top-2 fest-container z-250 flex items-center justify-between"
         aria-label={CONTENT.nav.ariaLabel}
       >
         <NavMobileToggle
           isOpen={isOpen}
-          activeSection={SECTION_IDS.hero}
+          activeSection={activeSection}
           onToggle={() => setIsOpen((v) => !v)}
         />
+        <Logo priority />
       </nav>
       <NavMobileOverlay items={items} isOpen={isOpen} scrollTo={scrollTo} />
     </>
