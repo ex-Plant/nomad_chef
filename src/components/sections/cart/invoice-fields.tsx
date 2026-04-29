@@ -21,7 +21,7 @@ export function InvoiceFields({ form, disabled }: InvoiceFieldsPropsT) {
     format === "digital" || !useShippingAsInvoice;
   return (
     <div className="flex flex-col gap-3">
-      <p className="font-sans text-xs uppercase tracking-wide text-coral">
+      <p className="font-sans text-xs uppercase tracking-wide text-off-black">
         Dane do faktury
       </p>
       <form.Field name="companyName">
