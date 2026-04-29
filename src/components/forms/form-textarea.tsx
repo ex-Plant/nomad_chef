@@ -3,7 +3,7 @@ import { FieldShell } from "./field-shell";
 import { cn } from "@/helpers/cn";
 
 const textareaClasses =
-  "w-full rounded-md border border-coral bg-yellow px-4 py-2.5 font-sans text-sm text-off-black transition-colors duration-300 ease-brand placeholder:text-coral focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral disabled:opacity-60 min-h-24 resize-none field-sizing-content";
+  "w-full rounded-md border border-coral bg-yellow px-4 py-1.5 font-sans text-sm text-off-black transition-colors duration-300 ease-brand placeholder:text-coral focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral disabled:opacity-60 min-h-24 resize-none field-sizing-content";
 
 type FormTextareaPropsT = {
   field: AnyFieldApi;

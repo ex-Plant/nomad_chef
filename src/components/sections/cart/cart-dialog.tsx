@@ -34,7 +34,7 @@ export function CartDialog({ product, isOpen, onClose }: CartDialogPropsT) {
       ariaLabel="Zamówienie"
       className="bg-yellow"
     >
-      <div className="w-[min(90vw,32rem)] rounded-lg bg-yellow p-6 md:p-8">
+      <div className="w-[min(90vw,32rem)] max-h-[90vh] overflow-y-auto rounded-lg bg-yellow px-6 py-10 md:px-8 md:py-12">
         {status.kind === "form" && (
           <CartForm
             product={product}

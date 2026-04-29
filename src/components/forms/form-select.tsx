@@ -4,7 +4,7 @@ import { FieldShell } from "./field-shell";
 import { cn } from "@/helpers/cn";
 
 const selectClasses =
-  "w-full rounded-md border border-coral bg-yellow px-4 py-2.5 font-sans text-sm text-off-black transition-colors duration-300 ease-brand focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral disabled:opacity-60";
+  "w-full rounded-md border border-coral bg-yellow px-4 py-1.5 font-sans text-sm text-off-black transition-colors duration-300 ease-brand focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral disabled:opacity-60";
 
 type FormSelectPropsT = {
   field: AnyFieldApi;
