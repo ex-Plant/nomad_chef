@@ -12,6 +12,7 @@ import { en } from "@payloadcms/translations/languages/en";
 
 import { Users } from "@/collections/users";
 import { Media } from "@/collections/media";
+import { Customers } from "@/collections/customers";
 import { Site } from "@/globals/site";
 import { ENV } from "@/config/env";
 
@@ -53,7 +54,7 @@ export default buildConfig({
   //     },
   //   }),
   // }),
-  collections: [Users, Media],
+  collections: [Users, Media, Customers],
   globals: [Site],
   plugins: [
     vercelBlobStorage({
