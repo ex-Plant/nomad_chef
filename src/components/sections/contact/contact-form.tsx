@@ -53,7 +53,7 @@ export function ContactForm({
               type="email"
               placeholder="Twój e-mail..."
               autoComplete="email"
-              className="bg-yellow focus:bg-white"
+              className="bg-yellow focus:bg-white ring-0 border border-coral focus:ring-2 focus:ring-coral"
             />
           )}
         </form.Field>
@@ -63,7 +63,7 @@ export function ContactForm({
               field={field}
               placeholder={messagePlaceholder}
               rows={4}
-              className="bg-yellow focus:bg-white"
+              className="bg-yellow focus:bg-white ring-0 border border-coral focus:ring-2 focus:ring-coral"
             />
           )}
         </form.Field>

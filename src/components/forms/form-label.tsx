@@ -11,8 +11,8 @@ export function FormLabel({ htmlFor, children, className }: FormLabelPropsT) {
     <label
       htmlFor={htmlFor}
       className={cn(
-        "mb-1 block font-sans text-xs font-medium text-off-black",
-        className,
+        "mb-2 block font-sans text-xs font-medium text-white",
+        className
       )}
     >
       {children}

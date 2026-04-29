@@ -4,7 +4,7 @@ import { FormLabel } from "./form-label";
 import { cn } from "@/helpers/cn";
 
 const inputClasses =
-  "w-full rounded-md ring-[3px] ring-yellow bg-white px-4 py-1.5 font-sans text-sm text-off-black transition-colors duration-300 ease-brand placeholder:text-coral focus:outline-none focus:ring-coral disabled:opacity-60";
+  "w-full rounded-md ring-[1px] ring-electric-blue bg-white px-4 py-1.5 font-sans text-sm text-off-black transition-colors duration-300 ease-brand placeholder:text-coral focus:outline-none focus:ring-electric-blue disabled:opacity-60";
 const invalidClasses = "ring-error focus:ring-error";
 
 type FormTextInputPropsT = {

@@ -74,9 +74,9 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
         form.handleSubmit();
       }}
       noValidate
-      className="flex flex-col gap-5 "
+      className="flex flex-col gap-5 relative "
     >
-      <header className="flex flex-col gap-1 text-off-black">
+      <header className="flex flex-col gap-1 text-electric-blue">
         <h3 className="font-display text-2xl">{product.title}</h3>
       </header>
 

@@ -40,7 +40,7 @@ export function CartDialog({ product, isOpen, onClose }: CartDialogPropsT) {
         <div className="hide-scrollbar w-[min(100%,28rem)] max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-lg bg-coral px-6 pb-8 relative ">
           <div
             aria-hidden
-            className="pointer-events-none absolute top-0 right-4 z-[0] flex items-center justify-center"
+            className="pointer-events-none absolute -top-8 -right-12 z-[0] flex items-center justify-center"
           >
             <Starburst color="pink" variant="organic" size="md" />
           </div>
@@ -49,9 +49,9 @@ export function CartDialog({ product, isOpen, onClose }: CartDialogPropsT) {
             type="button"
             onClick={handleClose}
             aria-label="Zamknij"
-            className="sticky top-2 z-10 -mr-2 ml-auto mb-3 flex h-10 w-10 cursor-pointer items-center justify-end bg-coral text-yellow transition-transform duration-300 ease-brand hover:scale-110 active:scale-95"
+            className="sticky top-2 z-10 -mr-2 ml-auto mb-3 flex h-10 w-10 cursor-pointer items-center justify-end  text-yellow transition-transform duration-300 ease-brand hover:scale-110 active:scale-95"
           >
-            <X size={24} strokeWidth={2.75} aria-hidden="true" />
+            <X size={32} strokeWidth={2.75} aria-hidden="true" />
           </button>
           {status.kind === "form" && (
             <CartForm
