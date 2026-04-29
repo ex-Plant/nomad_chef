@@ -1,7 +1,7 @@
 "use client";
 
 import type { AnyFieldApi } from "@tanstack/react-form";
-import { FormTextInput } from "@/components/forms";
+import { FormTextInput, FormTextarea } from "@/components/forms";
 import type { CartFormApiT } from "./types";
 
 type BuyerFieldsPropsT = {
@@ -45,6 +45,16 @@ export function BuyerFields({ form, disabled }: BuyerFieldsPropsT) {
           )}
         </form.Field>
       </div>
+      <form.Field name="notes">
+        {(field: AnyFieldApi) => (
+          <FormTextarea
+            field={field}
+            label="Wiadomość"
+            rows={3}
+            disabled={disabled}
+          />
+        )}
+      </form.Field>
     </div>
   );
 }

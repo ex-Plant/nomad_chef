@@ -13,7 +13,6 @@ import { Button } from "@/components/shared/button";
 import {
   FormCheckbox,
   FormSeparator,
-  FormTextarea,
   FormTextInput,
 } from "@/components/forms";
 import type { Product } from "@/payload-types";
@@ -106,13 +105,6 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
         </form.Field>
         {wantsInvoice && <InvoiceFields form={form} />}
       </div>
-
-      <FormSeparator />
-      <form.Field name="notes">
-        {(field: AnyFieldApi) => (
-          <FormTextarea field={field} label="Wiadomość" rows={3} />
-        )}
-      </form.Field>
 
       <FormSeparator />
       <form.Subscribe

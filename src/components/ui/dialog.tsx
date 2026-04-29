@@ -165,6 +165,7 @@ function ModalDialog({
         >
           <div className="flex min-h-full items-center justify-center">
             <m.div
+              className="w-full flex justify-center"
               initial={
                 reduced ? { opacity: 0 } : { opacity: 0, y: 16, scale: 0.98 }
               }
