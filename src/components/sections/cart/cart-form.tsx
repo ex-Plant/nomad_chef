@@ -11,7 +11,6 @@ import {
 import { createOrder } from "@/lib/orders";
 import { Button } from "@/components/shared/button";
 import { FormCheckbox } from "@/components/forms";
-import { Starburst } from "@/components/shared/starburst";
 import type { Product } from "@/payload-types";
 import { BuyerFields } from "./buyer-fields";
 import { ShippingFields } from "./shipping-fields";
@@ -89,10 +88,6 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
       </form.Field>
       {wantsInvoice && <InvoiceFields form={form} />}
 
-      <div className="flex justify-center py-2">
-        <Starburst color="pink" variant="organic" size="md" />
-      </div>
-
       <form.Subscribe
         selector={(s) => ({
           canSubmit: s.canSubmit,
@@ -106,7 +101,7 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
         {({ canSubmit, isSubmitting, hasFieldErrors, attempted }) => (
           <div className="flex flex-col gap-3 pt-4">
             <div className="flex items-baseline justify-between border-t border-coral/20 pt-3">
-              <span className="font-sans text-xs uppercase tracking-wide text-coral">
+              <span className="font-sans text-xs uppercase tracking-wide text-off-black">
                 Do zapłaty
               </span>
               <span className="font-display text-2xl text-off-black">
@@ -121,7 +116,7 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
             <Button
               type="submit"
               size="compact"
-              variant="coral-solid"
+              variant="blue-solid"
               disabled={!canSubmit}
               aria-busy={isSubmitting}
             >

@@ -19,7 +19,7 @@ export function FormCheckbox({
     <label
       htmlFor={field.name}
       className={cn(
-        "flex cursor-pointer items-start gap-3 select-none font-sans text-sm text-off-black",
+        "flex cursor-pointer items-start gap-3 select-none font-sans text-sm text-white",
         disabled && "opacity-60 cursor-not-allowed",
         className,
       )}

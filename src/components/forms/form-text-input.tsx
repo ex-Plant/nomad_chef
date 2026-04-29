@@ -3,7 +3,7 @@ import { FieldShell } from "./field-shell";
 import { cn } from "@/helpers/cn";
 
 const inputClasses =
-  "w-full rounded-md border border-coral bg-white px-4 py-1.5 font-sans text-sm text-off-black transition-colors duration-300 ease-brand placeholder:text-coral focus:outline-none focus:ring-2 focus:ring-coral disabled:opacity-60";
+  "w-full rounded-md border border-yellow bg-white px-4 py-1.5 font-sans text-sm text-off-black transition-colors duration-300 ease-brand placeholder:text-coral focus:outline-none focus:ring-2 focus:ring-yellow disabled:opacity-60";
 const invalidClasses = "border-error ring-2 ring-error focus:ring-error";
 
 type FormTextInputPropsT = {
@@ -33,14 +33,16 @@ export function FormTextInput({
   const errorId = `${field.name}-error`;
   const value =
     type === "number"
-      ? Number.isFinite(field.state.value) ? String(field.state.value) : ""
-      : (field.state.value as string) ?? "";
+      ? Number.isFinite(field.state.value)
+        ? String(field.state.value)
+        : ""
+      : ((field.state.value as string) ?? "");
   return (
     <FieldShell field={field}>
       {label && (
         <label
           htmlFor={field.name}
-          className="mb-1 block font-sans text-xs font-medium text-off-black"
+          className="mb-1 block font-sans text-xs font-medium text-white"
         >
           {label}
         </label>
@@ -62,7 +64,9 @@ export function FormTextInput({
           if (type === "number") {
             const raw = e.target.value;
             const parsed = raw === "" ? "" : Number(raw);
-            field.handleChange(parsed === "" || Number.isNaN(parsed) ? 0 : parsed);
+            field.handleChange(
+              parsed === "" || Number.isNaN(parsed) ? 0 : parsed
+            );
             return;
           }
           field.handleChange(e.target.value);
