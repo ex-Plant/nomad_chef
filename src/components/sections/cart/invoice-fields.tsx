@@ -21,9 +21,6 @@ export function InvoiceFields({ form, disabled }: InvoiceFieldsPropsT) {
     format === "digital" || !useShippingAsInvoice;
   return (
     <div className="flex flex-col gap-3">
-      <p className="font-sans text-sm font-medium uppercase tracking-wide text-electric-blue">
-        Dane do faktury
-      </p>
       <form.Field name="companyName">
         {(field: AnyFieldApi) => (
           <FormTextInput
@@ -47,15 +44,17 @@ export function InvoiceFields({ form, disabled }: InvoiceFieldsPropsT) {
         )}
       </form.Field>
       {format === "physical" && (
-        <form.Field name="useShippingAsInvoice">
-          {(field: AnyFieldApi) => (
-            <FormCheckbox
-              field={field}
-              label="Adres faktury jest taki sam jak dostawy"
-              disabled={disabled}
-            />
-          )}
-        </form.Field>
+        <div className="pt-2">
+          <form.Field name="useShippingAsInvoice">
+            {(field: AnyFieldApi) => (
+              <FormCheckbox
+                field={field}
+                label="Adres faktury jest taki sam jak dostawy"
+                disabled={disabled}
+              />
+            )}
+          </form.Field>
+        </div>
       )}
       {showInvoiceAddress && (
         <AddressFields form={form} prefix="invoice" disabled={disabled} />
