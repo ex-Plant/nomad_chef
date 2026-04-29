@@ -33,7 +33,7 @@ export function CartDialog({ product, isOpen, onClose }: CartDialogPropsT) {
       isOpen={isOpen}
       onClose={handleClose}
       ariaLabel="Zamówienie"
-      className="bg-coral/40 p-4"
+      variant="modal"
     >
       <div className="hide-scrollbar w-[min(100%,28rem)] max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-lg bg-white px-6 pb-8 pt-4">
         <button

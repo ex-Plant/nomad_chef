@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
-import { m, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import { cn } from "@/helpers/cn";
 
@@ -46,12 +46,19 @@ const CONTENT_VARIANTS = {
   },
 } as const;
 
+type DialogVariantT = "curtain" | "modal";
+
 type DialogPropsT = {
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
   className?: string;
   ariaLabel?: string;
+  /**
+   * "curtain" (default): full-viewport coloured panel slides in from the top.
+   * "modal": dim backdrop fades in, centered card scales/fades up.
+   */
+  variant?: DialogVariantT;
 };
 
 export function Dialog({
@@ -60,6 +67,7 @@ export function Dialog({
   children,
   className,
   ariaLabel,
+  variant = "curtain",
 }: DialogPropsT) {
   useScrollLock(isOpen);
 
@@ -71,6 +79,19 @@ export function Dialog({
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [isOpen, onClose]);
+
+  if (variant === "modal") {
+    return (
+      <ModalDialog
+        isOpen={isOpen}
+        onClose={onClose}
+        ariaLabel={ariaLabel}
+        className={className}
+      >
+        {children}
+      </ModalDialog>
+    );
+  }
 
   return (
     <AnimatePresence>
@@ -109,6 +130,57 @@ export function Dialog({
             >
               {children}
             </m.div>
+          </m.div>
+        </m.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function ModalDialog({
+  isOpen,
+  onClose,
+  children,
+  className,
+  ariaLabel,
+}: Omit<DialogPropsT, "variant">) {
+  const reduced = useReducedMotion();
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <m.div
+          key="modal-backdrop"
+          role="dialog"
+          aria-modal="true"
+          aria-label={ariaLabel}
+          className={cn(
+            "fixed inset-0 z-[500] flex items-center justify-center bg-off-black/40 p-4",
+            className,
+          )}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={reduced ? { duration: 0 } : { duration: 0.25 }}
+          onClick={onClose}
+        >
+          <m.div
+            initial={
+              reduced ? { opacity: 0 } : { opacity: 0, y: 16, scale: 0.98 }
+            }
+            animate={
+              reduced ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }
+            }
+            exit={
+              reduced ? { opacity: 0 } : { opacity: 0, y: 8, scale: 0.98 }
+            }
+            transition={
+              reduced
+                ? { duration: 0 }
+                : { type: "spring", damping: 25, stiffness: 300 }
+            }
+            onClick={(e) => e.stopPropagation()}
+          >
+            {children}
           </m.div>
         </m.div>
       )}
