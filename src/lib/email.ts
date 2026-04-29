@@ -4,6 +4,35 @@ import nodemailer from "nodemailer";
 import { ENV } from "@/config/env";
 import { contactFormSchema } from "@/lib/contact-schema";
 
+type SendEmailArgsT = {
+  to: string;
+  subject: string;
+  text: string;
+  html?: string;
+};
+
+export async function sendEmail(args: SendEmailArgsT): Promise<void> {
+  if (!ENV.EMAIL_HOST || !ENV.EMAIL_USER || !ENV.EMAIL_PASS) {
+    console.log("[email:stub]", JSON.stringify(args, null, 2));
+    return;
+  }
+
+  const transport = nodemailer.createTransport({
+    host: ENV.EMAIL_HOST,
+    port: 465,
+    secure: true,
+    auth: { user: ENV.EMAIL_USER, pass: ENV.EMAIL_PASS },
+  });
+
+  await transport.sendMail({
+    from: ENV.EMAIL_USER,
+    to: args.to,
+    subject: args.subject,
+    text: args.text,
+    html: args.html,
+  });
+}
+
 type SendContactEmailResultT =
   | { success: true }
   | { success: false; error: string };
