@@ -4,19 +4,16 @@ import { useState } from "react";
 import { useForm, type AnyFieldApi } from "@tanstack/react-form";
 import { sendContactEmail } from "@/lib/email";
 import { contactFormSchema } from "@/lib/contact-schema";
+import { FormTextInput, FormTextarea } from "@/components/forms";
 import { Button } from "@/components/shared/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Starburst } from "@/components/shared/starburst";
 import { ScatterText } from "@/components/shared/scatter-text";
-import { cn } from "@/helpers/cn";
 
 type ContactFormPropsT = {
   messagePlaceholder: string;
   submitLabel: string;
 };
-
-const inputClasses =
-  "w-full rounded-md border border-coral bg-yellow px-4 py-2.5 font-sans text-sm text-off-black transition-colors duration-300 ease-brand placeholder:text-coral focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral";
 
 export function ContactForm({
   messagePlaceholder,
@@ -28,9 +25,8 @@ export function ContactForm({
     defaultValues: { email: "", message: "" },
     validators: { onSubmit: contactFormSchema },
     onSubmit: async ({ value }) => {
-      await sendContactEmail(value);
-
       try {
+        await sendContactEmail(value);
         setStatus("success");
         form.reset();
       } catch {
@@ -51,42 +47,22 @@ export function ContactForm({
         className="flex flex-col gap-3"
       >
         <form.Field name="email">
-          {(field) => (
-            <FieldShell field={field}>
-              <input
-                type="email"
-                placeholder="Twój e-mail..."
-                aria-label="Twój e-mail"
-                autoComplete="email"
-                className={inputClasses}
-                {...inputBindings(field)}
-              />
-            </FieldShell>
+          {(field: AnyFieldApi) => (
+            <FormTextInput
+              field={field}
+              type="email"
+              placeholder="Twój e-mail..."
+              autoComplete="email"
+            />
           )}
         </form.Field>
-
         <form.Field name="message">
-          {(field) => (
-            <FieldShell field={field}>
-              <textarea
-                placeholder={messagePlaceholder}
-                aria-label={messagePlaceholder}
-                rows={4}
-                className={cn(
-                  inputClasses,
-                  "min-h-24 resize-none field-sizing-content"
-                )}
-                {...inputBindings(field)}
-              />
-            </FieldShell>
+          {(field: AnyFieldApi) => (
+            <FormTextarea field={field} placeholder={messagePlaceholder} rows={4} />
           )}
         </form.Field>
-
         <form.Subscribe
-          selector={(s) => ({
-            canSubmit: s.canSubmit,
-            isSubmitting: s.isSubmitting,
-          })}
+          selector={(s) => ({ canSubmit: s.canSubmit, isSubmitting: s.isSubmitting })}
         >
           {({ canSubmit, isSubmitting }) => (
             <div className="mt-1 flex flex-col gap-2">
@@ -142,42 +118,4 @@ export function ContactForm({
       </Dialog>
     </>
   );
-}
-
-function FieldShell({
-  field,
-  children,
-}: {
-  field: AnyFieldApi;
-  children: React.ReactNode;
-}) {
-  const errors = field.state.meta.errors;
-  const hasErrors = errors.length > 0;
-  const errorId = `${field.name}-error`;
-  return (
-    <div className="relative">
-      {children}
-      {hasErrors && (
-        <p id={errorId} role="alert" className="mt-1 px-1 text-sm text-coral">
-          {errors
-            .map((e) => (typeof e === "string" ? e : (e?.message ?? "")))
-            .filter(Boolean)
-            .join(", ")}
-        </p>
-      )}
-    </div>
-  );
-}
-
-function inputBindings(field: AnyFieldApi) {
-  const hasErrors = field.state.meta.errors.length > 0;
-  return {
-    name: field.name,
-    value: field.state.value as string,
-    onBlur: field.handleBlur,
-    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-      field.handleChange(e.target.value),
-    "aria-invalid": hasErrors,
-    "aria-describedby": hasErrors ? `${field.name}-error` : undefined,
-  } as const;
 }
