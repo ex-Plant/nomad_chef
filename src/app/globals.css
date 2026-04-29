@@ -196,3 +196,18 @@ html {
   display: none;
 }
 
+/* Override Chrome's pale-yellow autofill bg on form inputs. Without this the
+   "saved address/email" autofill paints fields yellow regardless of bg-white. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+  -webkit-text-fill-color: var(--off-black) !important;
+  caret-color: var(--off-black);
+  transition: background-color 99999s ease-in-out 0s;
+}
+

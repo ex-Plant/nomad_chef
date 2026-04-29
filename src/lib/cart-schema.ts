@@ -10,7 +10,7 @@ export const cartFormSchema = z
   .object({
     format: z.enum(["digital", "physical"]),
     productSlug: z.string().min(1),
-    email: z.email().trim().toLowerCase(),
+    email: z.email("Nieprawidłowy adres e-mail").trim().toLowerCase(),
     firstName: z.string().trim().min(1, "Wymagane"),
     lastName: z.string().trim().min(1, "Wymagane"),
     wantsInvoice: z.boolean(),

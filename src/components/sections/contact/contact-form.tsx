@@ -53,12 +53,18 @@ export function ContactForm({
               type="email"
               placeholder="Twój e-mail..."
               autoComplete="email"
+              className="bg-yellow focus:bg-white"
             />
           )}
         </form.Field>
         <form.Field name="message">
           {(field: AnyFieldApi) => (
-            <FormTextarea field={field} placeholder={messagePlaceholder} rows={4} />
+            <FormTextarea
+              field={field}
+              placeholder={messagePlaceholder}
+              rows={4}
+              className="bg-yellow focus:bg-white"
+            />
           )}
         </form.Field>
         <form.Subscribe

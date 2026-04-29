@@ -35,12 +35,12 @@ export function CartDialog({ product, isOpen, onClose }: CartDialogPropsT) {
       ariaLabel="Zamówienie"
       variant="modal"
     >
-      <div className="hide-scrollbar w-[min(100%,28rem)] max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-lg bg-white px-6 pb-8 pt-4">
+      <div className="hide-scrollbar w-[min(100%,28rem)] max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-lg bg-white px-6 pb-8 ">
         <button
           type="button"
           onClick={handleClose}
           aria-label="Zamknij"
-          className="sticky top-0 z-10 -mr-2 ml-auto mb-3 flex h-10 w-10 cursor-pointer items-center justify-end bg-white text-coral transition-transform duration-300 ease-brand hover:scale-110 active:scale-95"
+          className="sticky top-2 z-10 -mr-2 ml-auto mb-3 flex h-10 w-10 cursor-pointer items-center justify-end bg-white text-coral transition-transform duration-300 ease-brand hover:scale-110 active:scale-95"
         >
           <X size={24} strokeWidth={2.75} aria-hidden="true" />
         </button>

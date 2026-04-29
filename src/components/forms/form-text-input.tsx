@@ -4,6 +4,7 @@ import { cn } from "@/helpers/cn";
 
 const inputClasses =
   "w-full rounded-md border border-coral bg-white px-4 py-1.5 font-sans text-sm text-off-black transition-colors duration-300 ease-brand placeholder:text-coral focus:outline-none focus:ring-2 focus:ring-coral disabled:opacity-60";
+const invalidClasses = "border-red-600 focus:ring-red-600";
 
 type FormTextInputPropsT = {
   field: AnyFieldApi;
@@ -66,7 +67,7 @@ export function FormTextInput({
           }
           field.handleChange(e.target.value);
         }}
-        className={cn(inputClasses, className)}
+        className={cn(inputClasses, hasErrors && invalidClasses, className)}
       />
     </FieldShell>
   );
