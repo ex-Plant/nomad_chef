@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { X } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
 import type { Product } from "@/payload-types";
 import { CartForm } from "./cart-form";
@@ -34,7 +35,15 @@ export function CartDialog({ product, isOpen, onClose }: CartDialogPropsT) {
       ariaLabel="Zamówienie"
       className="bg-yellow"
     >
-      <div className="hide-scrollbar w-[min(90vw,32rem)] max-h-dvh overflow-y-auto rounded-lg bg-yellow px-6 py-10 md:px-8 md:py-12">
+      <div className="hide-scrollbar relative w-[min(90vw,32rem)] max-h-dvh overflow-y-auto rounded-lg bg-yellow fest-container py-10 ">
+        <button
+          type="button"
+          onClick={handleClose}
+          aria-label="Zamknij"
+          className="sticky top-0 ml-auto -mt-6 mb-2 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-coral text-white transition-transform duration-300 ease-brand hover:scale-105 active:scale-95"
+        >
+          <X size={18} strokeWidth={2.5} aria-hidden="true" />
+        </button>
         {status.kind === "form" && (
           <CartForm
             product={product}

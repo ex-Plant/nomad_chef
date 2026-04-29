@@ -28,7 +28,7 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
   const initialValues = useMemo<CartFormValuesT>(() => {
     const defaults = defaultCartValues(
       product.format as "digital" | "physical",
-      product.slug,
+      product.slug
     );
     if (!storedValues) return defaults;
     return {
@@ -76,7 +76,7 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
     >
       <header className="flex flex-col gap-1 text-off-black">
         <p className="font-sans text-xs uppercase tracking-wide text-coral">
-          {isPhysical ? "Książka" : "Książka cyfrowa"}
+          {isPhysical ? "Książka" : "Książka "}
         </p>
         <h3 className="font-display text-2xl">{product.title}</h3>
         <p className="font-sans text-sm">{product.priceGross} PLN</p>
