@@ -15,7 +15,7 @@ type ContactPropsT = { data: SiteT["contact"] };
 
 export function Contact({ data }: ContactPropsT) {
   return (
-    <Section id={SECTION_IDS.contact} className="bg-yellow ">
+    <Section id={SECTION_IDS.contact} className="bg-yellow min-h-none ">
       {/* <Starburst
         color="pink"
         rotate

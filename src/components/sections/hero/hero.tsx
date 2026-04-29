@@ -18,11 +18,10 @@ import { scrollToSection } from "@/helpers/scroll-to-section";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
-const POSTER_DESKTOP_SRC = "/videos/hero-poster.jpg";
-const POSTER_MOBILE_SRC = "/videos/hero-poster-mobile.jpg";
-const VIDEO_MOBILE_SRC = "/videos/marta-464x832-crf22.mp4";
-const VIDEO_1280_SRC = "/videos/hero-1280w-crf37.webm";
-const VIDEO_1440_SRC = "/videos/hero-1440w-crf37.webm";
+const POSTER_DESKTOP_SRC = "/videos/hero_poster_desktop.jpeg";
+const POSTER_MOBILE_SRC = "/videos/hero_poster_mobile.jpeg";
+const VIDEO_MOBILE_SRC = "/videos/hero_vid_mobile_crf20.mp4";
+const VIDEO_DESKTOP_SRC = "/videos/hero_vid_desktop_crf20.mp4";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -46,12 +45,8 @@ export function Hero({ data, videoRef, isReady }: HeroPropsT) {
   const isPortraitMobile = useMediaQuery(
     "(orientation: portrait) and (max-width: 767px)"
   );
-  const isMidViewport = useMediaQuery("(max-width: 1366px)");
-  const videoSrc = isPortraitMobile
-    ? VIDEO_MOBILE_SRC
-    : isMidViewport
-      ? VIDEO_1280_SRC
-      : VIDEO_1440_SRC;
+
+  const videoSrc = isPortraitMobile ? VIDEO_MOBILE_SRC : VIDEO_DESKTOP_SRC;
 
   useEffect(() => {
     const video = videoRef.current;

@@ -13,10 +13,13 @@ export function Loader({ className, color = "blue" }: LoaderPropsT) {
     <div
       role="status"
       aria-label="Loading"
-      className={cn("flex items-center justify-center", className)}
+      className={cn(
+        "flex items-center justify-center bg-coral",
+        className
+      )}
     >
       <div className="animate-bounce w-12 md:w-16 animate-rotate">
-        <Starburst className={`animate-rotate`} color={color} variant="v1-b" />
+        <Starburst className="animate-rotate" color={color} variant="v1-b" />
       </div>
     </div>
   );

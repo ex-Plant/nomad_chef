@@ -26,8 +26,6 @@ export type SiteT = {
     headingLines: HeadingLineT[];
     lead: string;
     ctas: CtaT[];
-    mediaDesktop?: MediaT;
-    mediaMobile?: MediaT;
   };
   about: {
     eyebrow: string;
@@ -149,8 +147,6 @@ const fetchSite = (locale: LocaleT) =>
           })),
           lead: raw.hero_lead ?? "",
           ctas: (raw.hero_ctas ?? []).map((c) => toCta(c)),
-          mediaDesktop: toMedia(raw.hero_media_desktop),
-          mediaMobile: toMedia(raw.hero_media_mobile),
         },
         about: {
           eyebrow: raw.about_eyebrow ?? "",

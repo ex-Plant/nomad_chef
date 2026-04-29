@@ -340,8 +340,6 @@ export interface Site {
         id?: string | null;
       }[]
     | null;
-  hero_media_desktop?: (number | null) | Media;
-  hero_media_mobile?: (number | null) | Media;
   about_eyebrow?: string | null;
   about_heading_lines?:
     | {
@@ -460,8 +458,6 @@ export interface SiteSelect<T extends boolean = true> {
         href?: T;
         id?: T;
       };
-  hero_media_desktop?: T;
-  hero_media_mobile?: T;
   about_eyebrow?: T;
   about_heading_lines?:
     | T

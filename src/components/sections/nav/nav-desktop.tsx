@@ -9,6 +9,7 @@ import type { SiteT } from "@/lib/get-site";
 import { cn } from "@/helpers/cn";
 import { scrollToSection } from "@/helpers/scroll-to-section";
 import { useBreakpoint } from "@/hooks/use-media-query";
+import { Logo } from "@/components/shared/logo";
 
 type NavDesktopPropsT = {
   items: SiteT["nav"];
@@ -32,7 +33,7 @@ export function NavDesktop({
             <button
               onClick={() => scrollTo(item.id)}
               className={cn(
-                "relative rounded-lg px-4 py-1 font-geist text-xs uppercase tracking-wide transition-colors duration-300 ease-brand",
+                "relative rounded-lg px-3 py-1 font-geist text-xs uppercase tracking-wide transition-colors duration-300 ease-brand",
                 isActive && isOnYellow && "text-black",
                 isActive && !isOnYellow && "text-white",
                 !isActive && isOnYellow && "text-white hover:text-white/80",
@@ -143,31 +144,37 @@ export function NavDesktopShell({ items }: { items: SiteT["nav"] }) {
   const scrollTo = useCallback((id: string) => {
     scrollToSection(id);
   }, []);
-
+  3;
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <m.nav
-          ref={navRef}
-          initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -100, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className={cn(
-            "fixed top-0 md:top-6 right-6 z-250 rounded-lg bg-transparent py-1 transition-colors duration-1000 hidden md:block",
-            "md:right-auto md:left-1/2 md:-translate-x-1/2 md:px-2 md:shadow-2xl",
-            isOnYellow ? "md:bg-coral" : "md:bg-yellow"
-          )}
-          aria-label={CONTENT.nav.ariaLabel}
-        >
-          <NavDesktop
-            items={items}
-            activeSection={activeSection}
-            isOnYellow={isOnYellow}
-            scrollTo={scrollTo}
-          />
-        </m.nav>
-      )}
-    </AnimatePresence>
+    <nav
+      ref={navRef}
+      className="hidden lg:flex fixed -top-2 left-2  right-0 z-250 items-center justify-between  "
+      aria-label={CONTENT.nav.ariaLabel}
+    >
+      <Logo priority className="mr-auto opacity-0 pointer-events-none" />
+
+      <AnimatePresence>
+        {isVisible && (
+          <m.div
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -100, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className={cn(
+              "rounded-lg bg-transparent py-1 px-2 shadow-2xl transition-colors duration-1000",
+              isOnYellow ? "bg-coral" : "bg-yellow"
+            )}
+          >
+            <NavDesktop
+              items={items}
+              activeSection={activeSection}
+              isOnYellow={isOnYellow}
+              scrollTo={scrollTo}
+            />
+          </m.div>
+        )}
+      </AnimatePresence>
+      <Logo priority className="ml-auto mr-4" />
+    </nav>
   );
 }
