@@ -376,6 +376,15 @@ text: |
 - A buyer can place duplicate orders (no idempotency key). The chef can resolve
   manually if needed.
 
+## Implementation process
+
+After every step of the implementation plan, run the `simplify` skill against
+the diff for that step. Address any reuse, quality, or efficiency issues it
+flags before moving on to the next step. This applies to every step, including
+boilerplate (form kit primitives, Zustand factory port, schema file). The plan
+phase will capture this as a checklist item per step rather than a single
+end-of-feature pass.
+
 ## Verification
 
 - Manual test: buy each format (digital, physical), with and without invoice,
