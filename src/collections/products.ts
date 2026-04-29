@@ -1,4 +1,10 @@
-import type { CollectionConfig } from "payload";
+import type { Access, CollectionConfig } from "payload";
+
+const requireAuth: Access = ({ req: { user } }) => Boolean(user);
+const whenDigital = (_: unknown, siblingData?: { format?: string }) =>
+  siblingData?.format === "digital";
+const whenPhysical = (_: unknown, siblingData?: { format?: string }) =>
+  siblingData?.format === "physical";
 
 export const Products: CollectionConfig = {
   slug: "products",
@@ -12,9 +18,9 @@ export const Products: CollectionConfig = {
   },
   access: {
     read: () => true,
-    create: ({ req: { user } }) => Boolean(user),
-    update: ({ req: { user } }) => Boolean(user),
-    delete: ({ req: { user } }) => Boolean(user),
+    create: requireAuth,
+    update: requireAuth,
+    delete: requireAuth,
   },
   fields: [
     {
@@ -91,7 +97,7 @@ export const Products: CollectionConfig = {
       relationTo: "media",
       label: { pl: "Plik (cyfrowy)", en: "File (digital)" },
       admin: {
-        condition: (_, siblingData) => siblingData?.format === "digital",
+        condition: whenDigital,
       },
     },
     {
@@ -99,7 +105,7 @@ export const Products: CollectionConfig = {
       type: "number",
       label: { pl: "Waga (g)", en: "Weight (g)" },
       admin: {
-        condition: (_, siblingData) => siblingData?.format === "physical",
+        condition: whenPhysical,
       },
     },
     {
@@ -107,7 +113,7 @@ export const Products: CollectionConfig = {
       type: "group",
       label: { pl: "Wymiary (mm)", en: "Dimensions (mm)" },
       admin: {
-        condition: (_, siblingData) => siblingData?.format === "physical",
+        condition: whenPhysical,
       },
       fields: [
         { name: "length", type: "number" },
@@ -118,6 +124,7 @@ export const Products: CollectionConfig = {
     {
       name: "active",
       type: "checkbox",
+      index: true,
       defaultValue: true,
       label: { pl: "Aktywny", en: "Active" },
     },
