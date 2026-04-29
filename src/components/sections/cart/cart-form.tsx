@@ -10,11 +10,12 @@ import {
 } from "@/lib/cart-schema";
 import { createOrder } from "@/lib/orders";
 import { Button } from "@/components/shared/button";
-import { FormCheckbox } from "@/components/forms";
+import { FormCheckbox, FormTextarea } from "@/components/forms";
 import type { Product } from "@/payload-types";
 import { BuyerFields } from "./buyer-fields";
 import { ShippingFields } from "./shipping-fields";
 import { InvoiceFields } from "./invoice-fields";
+import { Starburst } from "../../shared/starburst";
 
 type CartFormPropsT = {
   product: Product;
@@ -87,6 +88,16 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
         )}
       </form.Field>
       {wantsInvoice && <InvoiceFields form={form} />}
+
+      <form.Field name="notes">
+        {(field: AnyFieldApi) => (
+          <FormTextarea
+            field={field}
+            label="Wiadomość (opcjonalnie)"
+            rows={3}
+          />
+        )}
+      </form.Field>
 
       <form.Subscribe
         selector={(s) => ({

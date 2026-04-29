@@ -37,13 +37,14 @@ export function CartDialog({ product, isOpen, onClose }: CartDialogPropsT) {
         ariaLabel="Zamówienie"
         variant="modal"
       >
-        <div className="hide-scrollbar w-[min(100%,28rem)] max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-lg bg-coral px-6 pb-8 ">
+        <div className="hide-scrollbar w-[min(100%,28rem)] max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-lg bg-coral px-6 pb-8 relative ">
           <div
             aria-hidden
-            className="pointer-events-none fixed inset-0 z-[501] flex items-center justify-center"
+            className="pointer-events-none absolute top-0 right-4 z-[0] flex items-center justify-center"
           >
-            <Starburst color="pink" variant="organic" size="lg" />
+            <Starburst color="pink" variant="organic" size="md" />
           </div>
+
           <button
             type="button"
             onClick={handleClose}

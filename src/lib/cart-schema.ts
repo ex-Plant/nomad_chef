@@ -28,6 +28,7 @@ export const cartFormSchema = z
     invoiceCity: z.string().trim(),
     invoicePostalCode: z.string().trim(),
     invoiceCountry: z.string().trim(),
+    notes: z.string().trim().max(2000),
   })
   .superRefine((data, ctx) => {
     if (data.format === "physical") {
@@ -87,5 +88,6 @@ export function defaultCartValues(
     invoiceCity: "",
     invoicePostalCode: "",
     invoiceCountry: "PL",
+    notes: "",
   };
 }

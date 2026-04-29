@@ -23,6 +23,7 @@ const valid = {
   invoiceCity: "",
   invoicePostalCode: "",
   invoiceCountry: "PL",
+  notes: "",
 };
 
 describe("defaultCartValues", () => {

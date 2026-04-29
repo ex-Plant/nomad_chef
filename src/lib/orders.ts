@@ -159,6 +159,7 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
       quantity: values.format === "physical" ? values.quantity : 1,
       wantsInvoice: values.wantsInvoice,
       shippingAddress,
+      notes: values.notes || undefined,
     } as never,
   });
 
