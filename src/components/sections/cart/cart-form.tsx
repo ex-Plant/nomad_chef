@@ -10,7 +10,7 @@ import {
 } from "@/lib/cart-schema";
 import { createOrder } from "@/lib/orders";
 import { Button } from "@/components/shared/button";
-import { FormCheckbox, FormTextarea } from "@/components/forms";
+import { FormCheckbox, FormTextarea, FormTextInput } from "@/components/forms";
 import type { Product } from "@/payload-types";
 import { BuyerFields } from "./buyer-fields";
 import { ShippingFields } from "./shipping-fields";
@@ -64,7 +64,11 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
   });
 
   const wantsInvoice = useStore(form.store, (s) => s.values.wantsInvoice);
+  const quantity = useStore(form.store, (s) => s.values.quantity);
   const isPhysical = product.format === "physical";
+  const totalGross = isPhysical
+    ? product.priceGross * Math.max(1, quantity || 1)
+    : product.priceGross;
 
   return (
     <form
@@ -118,12 +122,25 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
       >
         {({ canSubmit, isSubmitting, hasFieldErrors, attempted }) => (
           <div className="flex flex-col gap-3">
+            {isPhysical && (
+              <form.Field name="quantity">
+                {(field: AnyFieldApi) => (
+                  <FormTextInput
+                    field={field}
+                    label="Ilość"
+                    type="number"
+                    inputMode="numeric"
+                    className="max-w-[8rem]"
+                  />
+                )}
+              </form.Field>
+            )}
             <div className="flex items-baseline justify-between">
               <span className="font-sans text-sm font-medium uppercase tracking-wide text-off-black">
                 Do zapłaty
               </span>
               <span className="font-display text-2xl text-off-black">
-                {product.priceGross} PLN
+                {totalGross} PLN
               </span>
             </div>
             {attempted && hasFieldErrors && (
