@@ -10,12 +10,12 @@ export const physicalShipped: CollectionAfterChangeHook = async ({ doc, previous
 
   const product = typeof doc.product === "object"
     ? doc.product
-    : await req.payload.findByID({ collection: "products", id: doc.product, depth: 0 });
+    : await req.payload.findByID({ collection: "products", id: doc.product, depth: 0, req });
   if (product.format !== "physical") return doc;
 
   const customer = typeof doc.customer === "object"
     ? doc.customer
-    : await req.payload.findByID({ collection: "customers", id: doc.customer, depth: 0 });
+    : await req.payload.findByID({ collection: "customers", id: doc.customer, depth: 0, req });
 
   await req.payload.update({
     collection: "orders",
@@ -24,6 +24,7 @@ export const physicalShipped: CollectionAfterChangeHook = async ({ doc, previous
       shippedAt: doc.shippedAt ?? new Date().toISOString(),
     },
     context: { skipFulfillment: true },
+    req,
   });
 
   const tracking = doc.tracking ?? "(brak numeru)";

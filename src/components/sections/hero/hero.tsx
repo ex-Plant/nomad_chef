@@ -149,7 +149,7 @@ export function Hero({ data, videoRef, isReady }: HeroPropsT) {
             <ScatterText
               as="h1"
               triggerOnMount
-              className="font-display text-7xl sm:text-8xl uppercase leading-[0.85] tracking-[-0.05em] md:text-9xl lg:text-[10rem]"
+              className="font-display text-6xl sm:text-8xl uppercase leading-[0.85] tracking-[-0.05em] md:text-9xl lg:text-[10rem]"
               lines={data.headingLines}
             />
 

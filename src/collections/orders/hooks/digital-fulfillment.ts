@@ -14,12 +14,12 @@ export const digitalFulfillment: CollectionAfterChangeHook = async ({ doc, previ
 
   const product = typeof doc.product === "object"
     ? doc.product
-    : await req.payload.findByID({ collection: "products", id: doc.product, depth: 0 });
+    : await req.payload.findByID({ collection: "products", id: doc.product, depth: 0, req });
   if (product.format !== "digital") return doc;
 
   const customer = typeof doc.customer === "object"
     ? doc.customer
-    : await req.payload.findByID({ collection: "customers", id: doc.customer, depth: 0 });
+    : await req.payload.findByID({ collection: "customers", id: doc.customer, depth: 0, req });
 
   const token = generateDownloadToken();
   const expiresAt = new Date(Date.now() + DOWNLOAD_TTL_DAYS * 24 * 60 * 60 * 1000);
@@ -35,6 +35,7 @@ export const digitalFulfillment: CollectionAfterChangeHook = async ({ doc, previ
       fulfilledAt: new Date().toISOString(),
     },
     context: { skipFulfillment: true },
+    req,
   });
 
   const downloadUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/download/${token}`;

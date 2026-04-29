@@ -24,6 +24,7 @@ export const upsertCustomer: CollectionBeforeChangeHook = async ({ data, req, op
     where: { email: { equals: email } },
     limit: 1,
     depth: 0,
+    req,
   });
 
   let customerId: string | number;
@@ -41,6 +42,7 @@ export const upsertCustomer: CollectionBeforeChangeHook = async ({ data, req, op
           data: {
             addresses: [...(current.addresses ?? []), buyer._buyerAddress],
           },
+          req,
         });
       }
     }
@@ -53,6 +55,7 @@ export const upsertCustomer: CollectionBeforeChangeHook = async ({ data, req, op
         lastName: buyer._buyerLastName,
         addresses: buyer._buyerAddress ? [buyer._buyerAddress] : undefined,
       },
+      req,
     });
     customerId = created.id;
   }
