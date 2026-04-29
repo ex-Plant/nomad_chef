@@ -221,22 +221,21 @@ export interface Product {
   } | null;
   format: 'digital' | 'physical';
   /**
-   * Value in cents. 49.99 PLN = 4999.
+   * e.g. 49.99
    */
   priceGross: number;
-  currency: 'PLN';
+  vatRate: '0' | '5' | '8' | '23';
   /**
-   * 0.05 = 5%, 0.23 = 23%, 0 = none.
+   * Auto-calculated from gross + VAT on save.
    */
-  vatRate: number;
-  coverImage: number | Media;
+  priceNet?: number | null;
+  currency: 'PLN';
+  coverImage?: (number | null) | Media;
   file?: (number | null) | Media;
-  weightGrams?: number | null;
-  dimensions?: {
-    length?: number | null;
-    width?: number | null;
-    height?: number | null;
-  };
+  /**
+   * Units available to sell. Decreases on order create, restores on payment failure or refund.
+   */
+  stockQty?: number | null;
   active?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -446,18 +445,12 @@ export interface ProductsSelect<T extends boolean = true> {
   description?: T;
   format?: T;
   priceGross?: T;
-  currency?: T;
   vatRate?: T;
+  priceNet?: T;
+  currency?: T;
   coverImage?: T;
   file?: T;
-  weightGrams?: T;
-  dimensions?:
-    | T
-    | {
-        length?: T;
-        width?: T;
-        height?: T;
-      };
+  stockQty?: T;
   active?: T;
   updatedAt?: T;
   createdAt?: T;

@@ -1,29 +1,39 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { calcVat, generateDownloadToken, formatOrderNumber } from "./billing";
+import { calcVat, generateDownloadToken, formatOrderNumber, roundMoney } from "./billing";
 
 describe("calcVat", () => {
-  it("splits gross 4999 at rate 0.23 into net 4064 + vat 935", () => {
-    const result = calcVat(4999, 0.23);
-    assert.equal(result.priceNet, 4064);
-    assert.equal(result.vatAmount, 935);
+  it("splits 49.99 PLN at 23% into net 40.64 + vat 9.35", () => {
+    const result = calcVat(49.99, 23);
+    assert.equal(result.priceNet, 40.64);
+    assert.equal(result.vatAmount, 9.35);
   });
 
   it("returns priceNet equal to gross and vatAmount 0 when rate is 0", () => {
-    const result = calcVat(9999, 0);
-    assert.equal(result.priceNet, 9999);
+    const result = calcVat(99.99, 0);
+    assert.equal(result.priceNet, 99.99);
     assert.equal(result.vatAmount, 0);
   });
 
-  it("rounds half up (4999 at 0.05 → net 4761, vat 238)", () => {
-    const result = calcVat(4999, 0.05);
-    assert.equal(result.priceNet + result.vatAmount, 4999);
+  it("splits 49.99 PLN at 5% so net + vat sums back to gross", () => {
+    const result = calcVat(49.99, 5);
+    assert.equal(result.priceNet, 47.61);
+    assert.equal(result.vatAmount, 2.38);
+    assert.equal(roundMoney(result.priceNet + result.vatAmount), 49.99);
   });
 
-  it("never returns negative for zero gross", () => {
-    const result = calcVat(0, 0.23);
+  it("returns zeros for zero gross", () => {
+    const result = calcVat(0, 23);
     assert.equal(result.priceNet, 0);
     assert.equal(result.vatAmount, 0);
+  });
+});
+
+describe("roundMoney", () => {
+  it("rounds to 2 decimal places", () => {
+    assert.equal(roundMoney(40.6422), 40.64);
+    assert.equal(roundMoney(40.645), 40.65);
+    assert.equal(roundMoney(0.1 + 0.2), 0.3);
   });
 });
 

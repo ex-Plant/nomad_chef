@@ -2,9 +2,14 @@ import { randomBytes } from "node:crypto";
 
 export type VatBreakdownT = { priceNet: number; vatAmount: number };
 
-export function calcVat(priceGross: number, vatRate: number): VatBreakdownT {
-  const priceNet = Math.round(priceGross / (1 + vatRate));
-  const vatAmount = priceGross - priceNet;
+export function roundMoney(amount: number): number {
+  return Math.round(amount * 100) / 100;
+}
+
+export function calcVat(priceGross: number, vatRatePercent: number): VatBreakdownT {
+  if (priceGross === 0) return { priceNet: 0, vatAmount: 0 };
+  const priceNet = roundMoney(priceGross / (1 + vatRatePercent / 100));
+  const vatAmount = roundMoney(priceGross - priceNet);
   return { priceNet, vatAmount };
 }
 

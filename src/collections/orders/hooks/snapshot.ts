@@ -1,5 +1,5 @@
 import type { CollectionBeforeChangeHook } from "payload";
-import { calcVat } from "@/lib/billing";
+import { calcVat, roundMoney } from "@/lib/billing";
 
 export const snapshotOrder: CollectionBeforeChangeHook = async ({ data, req, operation }) => {
   if (operation !== "create") return data;
@@ -13,8 +13,8 @@ export const snapshotOrder: CollectionBeforeChangeHook = async ({ data, req, ope
 
   const quantity = data.quantity ?? 1;
   const unitPriceGross = product.priceGross;
-  const totalGross = unitPriceGross * quantity;
-  const vatRate = product.vatRate ?? 0;
+  const totalGross = roundMoney(unitPriceGross * quantity);
+  const vatRate = product.vatRate ? Number(product.vatRate) : 0;
   const { priceNet, vatAmount } = calcVat(totalGross, vatRate);
 
   data.unitPriceGross = unitPriceGross;

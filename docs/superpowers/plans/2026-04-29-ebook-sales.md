@@ -15,12 +15,13 @@
 ## File Structure
 
 **New files:**
+
 ```
 src/collections/customers.ts
 src/collections/products.ts
 src/collections/orders/
   ├── index.ts                          — collection config
-  └── hooks/
+  └── hooks/We st
       ├── generate-order-number.ts
       ├── upsert-customer.ts
       ├── snapshot.ts
@@ -34,6 +35,7 @@ src/app/download/[token]/route.test.ts  — route tests (optional, deferred — 
 ```
 
 **Modified files:**
+
 ```
 src/payload.config.ts                   — register Customers, Products, Orders
 src/config/env.ts                       — (unchanged for now; email env stays commented)
@@ -41,6 +43,7 @@ package.json                            — add test script
 ```
 
 **Auto-generated:**
+
 ```
 src/migrations/<timestamp>_customers.ts
 src/migrations/<timestamp>_products.ts
@@ -53,6 +56,7 @@ src/payload-types.ts                    — regenerated after each collection ad
 ## Task 1: Set up Node test runner
 
 **Files:**
+
 - Modify: `package.json`
 
 - [ ] **Step 1: Add test script**
@@ -82,6 +86,7 @@ git commit -m "chore: add test script using node:test + tsx"
 ## Task 2: Customers collection
 
 **Files:**
+
 - Create: `src/collections/customers.ts`
 - Modify: `src/payload.config.ts`
 
@@ -132,11 +137,36 @@ export const Customers: CollectionConfig = {
       type: "array",
       label: { pl: "Adresy", en: "Addresses" },
       fields: [
-        { name: "line1", type: "text", required: true, label: { pl: "Ulica i numer", en: "Street and number" } },
-        { name: "line2", type: "text", label: { pl: "Lokal / dodatkowo", en: "Apartment / extra" } },
-        { name: "city", type: "text", required: true, label: { pl: "Miasto", en: "City" } },
-        { name: "postalCode", type: "text", required: true, label: { pl: "Kod pocztowy", en: "Postal code" } },
-        { name: "country", type: "text", required: true, defaultValue: "PL", label: { pl: "Kraj", en: "Country" } },
+        {
+          name: "line1",
+          type: "text",
+          required: true,
+          label: { pl: "Ulica i numer", en: "Street and number" },
+        },
+        {
+          name: "line2",
+          type: "text",
+          label: { pl: "Lokal / dodatkowo", en: "Apartment / extra" },
+        },
+        {
+          name: "city",
+          type: "text",
+          required: true,
+          label: { pl: "Miasto", en: "City" },
+        },
+        {
+          name: "postalCode",
+          type: "text",
+          required: true,
+          label: { pl: "Kod pocztowy", en: "Postal code" },
+        },
+        {
+          name: "country",
+          type: "text",
+          required: true,
+          defaultValue: "PL",
+          label: { pl: "Kraj", en: "Country" },
+        },
       ],
     },
     {
@@ -159,12 +189,14 @@ export const Customers: CollectionConfig = {
 Edit `src/payload.config.ts`:
 
 Find:
+
 ```ts
 import { Users } from "@/collections/users";
 import { Media } from "@/collections/media";
 ```
 
 Replace with:
+
 ```ts
 import { Users } from "@/collections/users";
 import { Media } from "@/collections/media";
@@ -172,11 +204,13 @@ import { Customers } from "@/collections/customers";
 ```
 
 Find:
+
 ```ts
 collections: [Users, Media],
 ```
 
 Replace with:
+
 ```ts
 collections: [Users, Media, Customers],
 ```
@@ -212,6 +246,7 @@ git commit -m "feat: add Customers collection"
 ## Task 3: Products collection
 
 **Files:**
+
 - Create: `src/collections/products.ts`
 - Modify: `src/payload.config.ts`
 
@@ -277,7 +312,10 @@ export const Products: CollectionConfig = {
       min: 0,
       label: { pl: "Cena brutto (grosze)", en: "Price gross (cents)" },
       admin: {
-        description: { pl: "Wartość w groszach. 49,99 PLN = 4999.", en: "Value in cents. 49.99 PLN = 4999." },
+        description: {
+          pl: "Wartość w groszach. 49,99 PLN = 4999.",
+          en: "Value in cents. 49.99 PLN = 4999.",
+        },
       },
     },
     {
@@ -297,7 +335,10 @@ export const Products: CollectionConfig = {
       max: 1,
       label: { pl: "Stawka VAT (ułamek dziesiętny)", en: "VAT rate (decimal)" },
       admin: {
-        description: { pl: "0.05 = 5%, 0.23 = 23%, 0 = brak.", en: "0.05 = 5%, 0.23 = 23%, 0 = none." },
+        description: {
+          pl: "0.05 = 5%, 0.23 = 23%, 0 = brak.",
+          en: "0.05 = 5%, 0.23 = 23%, 0 = none.",
+        },
       },
     },
     {
@@ -352,22 +393,26 @@ export const Products: CollectionConfig = {
 Edit `src/payload.config.ts`:
 
 Find:
+
 ```ts
 import { Customers } from "@/collections/customers";
 ```
 
 Replace with:
+
 ```ts
 import { Customers } from "@/collections/customers";
 import { Products } from "@/collections/products";
 ```
 
 Find:
+
 ```ts
 collections: [Users, Media, Customers],
 ```
 
 Replace with:
+
 ```ts
 collections: [Users, Media, Customers, Products],
 ```
@@ -405,6 +450,7 @@ git commit -m "feat: add Products collection with digital/physical conditional f
 ## Task 4: Pure billing helpers + tests
 
 **Files:**
+
 - Create: `src/lib/billing.ts`
 - Create: `src/lib/billing.test.ts`
 
@@ -513,6 +559,7 @@ git commit -m "feat: add billing helpers (vat split, order number, download toke
 ## Task 5: Email stub helper
 
 **Files:**
+
 - Create: `src/lib/email.ts`
 
 - [ ] **Step 1: Implement the stub**
@@ -544,6 +591,7 @@ git commit -m "feat: add stubbed email sender (logs only, transport TBD)"
 ## Task 6: Orders collection skeleton (all fields, no hooks)
 
 **Files:**
+
 - Create: `src/collections/orders/index.ts`
 - Modify: `src/payload.config.ts`
 
@@ -562,7 +610,15 @@ export const Orders: CollectionConfig = {
   },
   admin: {
     useAsTitle: "orderNumber",
-    defaultColumns: ["orderNumber", "customer", "product", "totalGross", "paymentStatus", "fulfillmentStatus", "createdAt"],
+    defaultColumns: [
+      "orderNumber",
+      "customer",
+      "product",
+      "totalGross",
+      "paymentStatus",
+      "fulfillmentStatus",
+      "createdAt",
+    ],
   },
   access: {
     read: ({ req: { user } }) => Boolean(user),
@@ -605,8 +661,17 @@ export const Orders: CollectionConfig = {
       name: "unitPriceGross",
       type: "number",
       required: true,
-      admin: { readOnly: true, description: { pl: "Snapshot z chwili sprzedaży", en: "Snapshot at sale time" } },
-      label: { pl: "Cena jedn. brutto (grosze)", en: "Unit price gross (cents)" },
+      admin: {
+        readOnly: true,
+        description: {
+          pl: "Snapshot z chwili sprzedaży",
+          en: "Snapshot at sale time",
+        },
+      },
+      label: {
+        pl: "Cena jedn. brutto (grosze)",
+        en: "Unit price gross (cents)",
+      },
     },
     {
       name: "totalGross",
@@ -673,7 +738,10 @@ export const Orders: CollectionConfig = {
       defaultValue: "pending",
       options: [
         { label: { pl: "Oczekuje", en: "Pending" }, value: "pending" },
-        { label: { pl: "Wysłane / dostarczone", en: "Fulfilled" }, value: "fulfilled" },
+        {
+          label: { pl: "Wysłane / dostarczone", en: "Fulfilled" },
+          value: "fulfilled",
+        },
         { label: { pl: "Wysłane (kurier)", en: "Shipped" }, value: "shipped" },
         { label: { pl: "Dostarczone", en: "Delivered" }, value: "delivered" },
       ],
@@ -685,7 +753,8 @@ export const Orders: CollectionConfig = {
       index: true,
       admin: {
         readOnly: true,
-        condition: (data) => data?.product && getProductFormat(data) === "digital",
+        condition: (data) =>
+          data?.product && getProductFormat(data) === "digital",
       },
       label: { pl: "Token pobrania", en: "Download token" },
     },
@@ -784,22 +853,26 @@ function getProductFormat(data: unknown): "digital" | "physical" | undefined {
 Edit `src/payload.config.ts`:
 
 Find:
+
 ```ts
 import { Products } from "@/collections/products";
 ```
 
 Replace with:
+
 ```ts
 import { Products } from "@/collections/products";
 import { Orders } from "@/collections/orders";
 ```
 
 Find:
+
 ```ts
 collections: [Users, Media, Customers, Products],
 ```
 
 Replace with:
+
 ```ts
 collections: [Users, Media, Customers, Products, Orders],
 ```
@@ -832,6 +905,7 @@ git commit -m "feat: add Orders collection schema (no hooks yet)"
 ## Task 7: Order number hook
 
 **Files:**
+
 - Create: `src/collections/orders/hooks/generate-order-number.ts`
 - Modify: `src/collections/orders/index.ts`
 
@@ -843,7 +917,11 @@ Create `src/collections/orders/hooks/generate-order-number.ts`:
 import type { CollectionBeforeChangeHook } from "payload";
 import { formatOrderNumber } from "@/lib/billing";
 
-export const generateOrderNumber: CollectionBeforeChangeHook = async ({ data, req, operation }) => {
+export const generateOrderNumber: CollectionBeforeChangeHook = async ({
+  data,
+  req,
+  operation,
+}) => {
   if (operation !== "create") return data;
   if (data.orderNumber) return data;
 
@@ -868,6 +946,7 @@ export const generateOrderNumber: CollectionBeforeChangeHook = async ({ data, re
 Edit `src/collections/orders/index.ts`:
 
 Find:
+
 ```ts
 import type { CollectionConfig } from "payload";
 
@@ -876,6 +955,7 @@ export const Orders: CollectionConfig = {
 ```
 
 Replace with:
+
 ```ts
 import type { CollectionConfig } from "payload";
 import { generateOrderNumber } from "./hooks/generate-order-number";
@@ -905,6 +985,7 @@ git commit -m "feat: auto-generate order numbers on create"
 ## Task 8: Snapshot hook (price, vat, shipping address)
 
 **Files:**
+
 - Create: `src/collections/orders/hooks/snapshot.ts`
 - Modify: `src/collections/orders/index.ts`
 
@@ -916,13 +997,20 @@ Create `src/collections/orders/hooks/snapshot.ts`:
 import type { CollectionBeforeChangeHook } from "payload";
 import { calcVat } from "@/lib/billing";
 
-export const snapshotOrder: CollectionBeforeChangeHook = async ({ data, req, operation }) => {
+export const snapshotOrder: CollectionBeforeChangeHook = async ({
+  data,
+  req,
+  operation,
+}) => {
   if (operation !== "create") return data;
 
   if (!data.product) throw new Error("Order requires a product");
   const product = await req.payload.findByID({
     collection: "products",
-    id: typeof data.product === "string" || typeof data.product === "number" ? data.product : data.product.id,
+    id:
+      typeof data.product === "string" || typeof data.product === "number"
+        ? data.product
+        : data.product.id,
     depth: 0,
   });
 
@@ -939,10 +1027,17 @@ export const snapshotOrder: CollectionBeforeChangeHook = async ({ data, req, ope
   data.vatAmount = vatAmount;
   data.currency = product.currency ?? "PLN";
 
-  if (product.format === "physical" && data.customer && !data.shippingAddress?.line1) {
+  if (
+    product.format === "physical" &&
+    data.customer &&
+    !data.shippingAddress?.line1
+  ) {
     const customer = await req.payload.findByID({
       collection: "customers",
-      id: typeof data.customer === "string" || typeof data.customer === "number" ? data.customer : data.customer.id,
+      id:
+        typeof data.customer === "string" || typeof data.customer === "number"
+          ? data.customer
+          : data.customer.id,
       depth: 0,
     });
     const firstAddress = customer.addresses?.[0];
@@ -968,6 +1063,7 @@ export const snapshotOrder: CollectionBeforeChangeHook = async ({ data, req, ope
 Edit `src/collections/orders/index.ts`:
 
 Find:
+
 ```ts
 import { generateOrderNumber } from "./hooks/generate-order-number";
 
@@ -979,6 +1075,7 @@ export const Orders: CollectionConfig = {
 ```
 
 Replace with:
+
 ```ts
 import { generateOrderNumber } from "./hooks/generate-order-number";
 import { snapshotOrder } from "./hooks/snapshot";
@@ -1012,6 +1109,7 @@ git commit -m "feat: snapshot product price/vat and customer shipping address on
 ## Task 9: Customer upsert hook
 
 **Files:**
+
 - Create: `src/collections/orders/hooks/upsert-customer.ts`
 
 > NOTE: This hook is for FUTURE webhook flow where the buyer doesn't exist as a Customer yet. For admin-created orders (current state) the customer is picked from the relationship dropdown. The hook is invoked when an Order is created with `_buyerEmail` / `_buyerFirstName` / `_buyerLastName` fields in the request payload (set by webhook adapter, not via admin UI).
@@ -1038,7 +1136,11 @@ type BuyerInputT = {
   };
 };
 
-export const upsertCustomer: CollectionBeforeChangeHook = async ({ data, req, operation }) => {
+export const upsertCustomer: CollectionBeforeChangeHook = async ({
+  data,
+  req,
+  operation,
+}) => {
   if (operation !== "create") return data;
   const buyer = data as BuyerInputT;
   const email = buyer._buyerEmail;
@@ -1057,7 +1159,9 @@ export const upsertCustomer: CollectionBeforeChangeHook = async ({ data, req, op
     if (buyer._buyerAddress) {
       const current = existing.docs[0];
       const hasAddress = current.addresses?.some(
-        (a) => a.line1 === buyer._buyerAddress!.line1 && a.postalCode === buyer._buyerAddress!.postalCode,
+        (a) =>
+          a.line1 === buyer._buyerAddress!.line1 &&
+          a.postalCode === buyer._buyerAddress!.postalCode
       );
       if (!hasAddress) {
         await req.payload.update({
@@ -1097,6 +1201,7 @@ export const upsertCustomer: CollectionBeforeChangeHook = async ({ data, req, op
 Edit `src/collections/orders/index.ts`:
 
 Find:
+
 ```ts
 import { generateOrderNumber } from "./hooks/generate-order-number";
 import { snapshotOrder } from "./hooks/snapshot";
@@ -1109,6 +1214,7 @@ export const Orders: CollectionConfig = {
 ```
 
 Replace with:
+
 ```ts
 import { generateOrderNumber } from "./hooks/generate-order-number";
 import { snapshotOrder } from "./hooks/snapshot";
@@ -1139,6 +1245,7 @@ git commit -m "feat: customer upsert hook for webhook-created orders"
 ## Task 10: Digital fulfillment hook
 
 **Files:**
+
 - Create: `src/collections/orders/hooks/digital-fulfillment.ts`
 - Modify: `src/collections/orders/index.ts`
 
@@ -1153,23 +1260,40 @@ import { sendEmail } from "@/lib/email";
 
 const DOWNLOAD_TTL_DAYS = 30;
 
-export const digitalFulfillment: CollectionAfterChangeHook = async ({ doc, previousDoc, req, operation }) => {
+export const digitalFulfillment: CollectionAfterChangeHook = async ({
+  doc,
+  previousDoc,
+  req,
+  operation,
+}) => {
   if (operation !== "update" && operation !== "create") return doc;
   const wasNotPaid = !previousDoc || previousDoc.paymentStatus !== "paid";
   const isNowPaid = doc.paymentStatus === "paid";
   if (!(wasNotPaid && isNowPaid)) return doc;
 
-  const product = typeof doc.product === "object"
-    ? doc.product
-    : await req.payload.findByID({ collection: "products", id: doc.product, depth: 0 });
+  const product =
+    typeof doc.product === "object"
+      ? doc.product
+      : await req.payload.findByID({
+          collection: "products",
+          id: doc.product,
+          depth: 0,
+        });
   if (product.format !== "digital") return doc;
 
-  const customer = typeof doc.customer === "object"
-    ? doc.customer
-    : await req.payload.findByID({ collection: "customers", id: doc.customer, depth: 0 });
+  const customer =
+    typeof doc.customer === "object"
+      ? doc.customer
+      : await req.payload.findByID({
+          collection: "customers",
+          id: doc.customer,
+          depth: 0,
+        });
 
   const token = generateDownloadToken();
-  const expiresAt = new Date(Date.now() + DOWNLOAD_TTL_DAYS * 24 * 60 * 60 * 1000);
+  const expiresAt = new Date(
+    Date.now() + DOWNLOAD_TTL_DAYS * 24 * 60 * 60 * 1000
+  );
 
   await req.payload.update({
     collection: "orders",
@@ -1200,6 +1324,7 @@ export const digitalFulfillment: CollectionAfterChangeHook = async ({ doc, previ
 Edit `src/collections/orders/index.ts`:
 
 Find:
+
 ```ts
 import { upsertCustomer } from "./hooks/upsert-customer";
 
@@ -1211,6 +1336,7 @@ export const Orders: CollectionConfig = {
 ```
 
 Replace with:
+
 ```ts
 import { upsertCustomer } from "./hooks/upsert-customer";
 import { digitalFulfillment } from "./hooks/digital-fulfillment";
@@ -1228,12 +1354,14 @@ export const Orders: CollectionConfig = {
 Edit `src/collections/orders/hooks/digital-fulfillment.ts`:
 
 Find:
+
 ```ts
 export const digitalFulfillment: CollectionAfterChangeHook = async ({ doc, previousDoc, req, operation }) => {
   if (operation !== "update" && operation !== "create") return doc;
 ```
 
 Replace with:
+
 ```ts
 export const digitalFulfillment: CollectionAfterChangeHook = async ({ doc, previousDoc, req, operation, context }) => {
   if (context?.skipFulfillment) return doc;
@@ -1243,6 +1371,7 @@ export const digitalFulfillment: CollectionAfterChangeHook = async ({ doc, previ
 - [ ] **Step 3: Smoke check**
 
 Run `npm run dev`. Create an Order with the digital product. Save. Edit it, set `paymentStatus = paid`, save. Confirm:
+
 - Server log shows `[email:stub] { "to": "...", "subject": "Twoja książka...", ... }`.
 - `downloadToken`, `downloadExpiresAt`, `paidAt`, `fulfillmentStatus = fulfilled`, `fulfilledAt` are set.
 
@@ -1260,6 +1389,7 @@ git commit -m "feat: auto-fulfill digital orders on payment with token + email"
 ## Task 11: Physical shipped hook
 
 **Files:**
+
 - Create: `src/collections/orders/hooks/physical-shipped.ts`
 - Modify: `src/collections/orders/index.ts`
 
@@ -1271,21 +1401,37 @@ Create `src/collections/orders/hooks/physical-shipped.ts`:
 import type { CollectionAfterChangeHook } from "payload";
 import { sendEmail } from "@/lib/email";
 
-export const physicalShipped: CollectionAfterChangeHook = async ({ doc, previousDoc, req, operation, context }) => {
+export const physicalShipped: CollectionAfterChangeHook = async ({
+  doc,
+  previousDoc,
+  req,
+  operation,
+  context,
+}) => {
   if (context?.skipFulfillment) return doc;
   if (operation !== "update") return doc;
   const wasNotShipped = previousDoc.fulfillmentStatus !== "shipped";
   const isNowShipped = doc.fulfillmentStatus === "shipped";
   if (!(wasNotShipped && isNowShipped)) return doc;
 
-  const product = typeof doc.product === "object"
-    ? doc.product
-    : await req.payload.findByID({ collection: "products", id: doc.product, depth: 0 });
+  const product =
+    typeof doc.product === "object"
+      ? doc.product
+      : await req.payload.findByID({
+          collection: "products",
+          id: doc.product,
+          depth: 0,
+        });
   if (product.format !== "physical") return doc;
 
-  const customer = typeof doc.customer === "object"
-    ? doc.customer
-    : await req.payload.findByID({ collection: "customers", id: doc.customer, depth: 0 });
+  const customer =
+    typeof doc.customer === "object"
+      ? doc.customer
+      : await req.payload.findByID({
+          collection: "customers",
+          id: doc.customer,
+          depth: 0,
+        });
 
   await req.payload.update({
     collection: "orders",
@@ -1313,6 +1459,7 @@ export const physicalShipped: CollectionAfterChangeHook = async ({ doc, previous
 Edit `src/collections/orders/index.ts`:
 
 Find:
+
 ```ts
 import { digitalFulfillment } from "./hooks/digital-fulfillment";
 
@@ -1325,6 +1472,7 @@ export const Orders: CollectionConfig = {
 ```
 
 Replace with:
+
 ```ts
 import { digitalFulfillment } from "./hooks/digital-fulfillment";
 import { physicalShipped } from "./hooks/physical-shipped";
@@ -1353,6 +1501,7 @@ git commit -m "feat: send tracking email when physical order ships"
 ## Task 12: Download route handler
 
 **Files:**
+
 - Create: `src/app/download/[token]/route.ts`
 
 - [ ] **Step 1: Implement the route**
@@ -1366,7 +1515,10 @@ import config from "@/payload.config";
 
 type RouteContextT = { params: Promise<{ token: string }> };
 
-export async function GET(_req: Request, ctx: RouteContextT): Promise<Response> {
+export async function GET(
+  _req: Request,
+  ctx: RouteContextT
+): Promise<Response> {
   const { token } = await ctx.params;
   if (!token || token.length < 32) {
     return errorResponse("Nieprawidłowy link.", 400);
@@ -1383,17 +1535,26 @@ export async function GET(_req: Request, ctx: RouteContextT): Promise<Response> 
   const order = result.docs[0];
 
   if (!order) return errorResponse("Link nieaktywny.", 404);
-  if (order.paymentStatus !== "paid") return errorResponse("Zamówienie nieopłacone.", 403);
+  if (order.paymentStatus !== "paid")
+    return errorResponse("Zamówienie nieopłacone.", 403);
 
-  const expiresAt = order.downloadExpiresAt ? new Date(order.downloadExpiresAt) : null;
+  const expiresAt = order.downloadExpiresAt
+    ? new Date(order.downloadExpiresAt)
+    : null;
   if (!expiresAt || expiresAt < new Date()) {
-    return errorResponse("Link wygasł. Skontaktuj się z nami, aby otrzymać nowy.", 410);
+    return errorResponse(
+      "Link wygasł. Skontaktuj się z nami, aby otrzymać nowy.",
+      410
+    );
   }
 
   const limit = order.downloadLimit ?? 5;
   const count = order.downloadCount ?? 0;
   if (count >= limit) {
-    return errorResponse("Wykorzystano limit pobrań. Skontaktuj się z nami, aby otrzymać nowy link.", 429);
+    return errorResponse(
+      "Wykorzystano limit pobrań. Skontaktuj się z nami, aby otrzymać nowy link.",
+      429
+    );
   }
 
   const product = typeof order.product === "object" ? order.product : null;
@@ -1439,6 +1600,7 @@ Run `npm run dev`. Create a digital order, set `paymentStatus = paid`. From the 
 - [ ] **Step 3: Smoke check error paths**
 
 Re-run dev. Test:
+
 - `/download/invalid` → 400 "Nieprawidłowy link"
 - `/download/<32 chars but unknown>` → 404 "Link nieaktywny"
 - Edit a paid order in admin, set `downloadExpiresAt` to a past date, retry → 410 "Link wygasł"
@@ -1462,6 +1624,7 @@ git commit -m "feat: add token-gated download route with expiry + count limit"
 - [ ] **Step 1: Full digital flow**
 
 Run `npm run dev`. In admin:
+
 1. Create a Customer (Anna, anna@test.local).
 2. Create an Order: customer = Anna, product = digital cookbook. Save. Confirm `orderNumber = NC-2026-XXXX`, snapshot fields populated, `paymentStatus = pending`.
 3. Edit the order: set `paymentStatus = paid`. Save. Confirm token + expiry + fulfillment status set, server log shows email stub.
@@ -1470,6 +1633,7 @@ Run `npm run dev`. In admin:
 - [ ] **Step 2: Full physical flow**
 
 In admin:
+
 1. Edit Anna, add an address.
 2. Create another Order: customer = Anna, product = physical cookbook. Save. Confirm `shippingAddress` auto-snapshotted from Anna's first address.
 3. Set `paymentStatus = paid`. Save. (No download token, no email yet — that's fine; physical-paid email is future work.)

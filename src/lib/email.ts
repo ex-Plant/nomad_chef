@@ -24,36 +24,21 @@ export async function sendEmail(args: SendEmailArgsT): Promise<void> {
   });
 }
 
-type SendContactEmailResultT =
-  | { success: true }
-  | { success: false; error: string };
-
-export async function sendContactEmail(
-  input: unknown
-): Promise<SendContactEmailResultT> {
+export async function sendContactEmail(input: unknown): Promise<void> {
   const parsed = contactFormSchema.safeParse(input);
-  if (!parsed.success) {
-    return { success: false, error: "Nieprawidłowe dane formularza" };
-  }
+  if (!parsed.success) throw new Error("Nieprawidłowe dane formularza");
 
   const { email, message } = parsed.data;
 
-  try {
-    await sendEmail({
-      to: ENV.EMAIL_TO,
-      replyTo: email,
-      subject: `Wiadomość z formularza kontaktowego chaoskitchen`,
-      text: [
-        "",
-        `Wiadomość:`,
-        message.trim() ? message : "(brak wiadomości)",
-        `E-mail nadawcy: ${email}`,
-      ].join("\n"),
-    });
-    return { success: true };
-  } catch (err) {
-    const detail = err instanceof Error ? err.message : "Unknown error";
-    console.error("[email] Send failed:", detail);
-    return { success: false, error: "Nie udało się wysłać wiadomości" };
-  }
+  await sendEmail({
+    to: ENV.EMAIL_TO,
+    replyTo: email,
+    subject: `Wiadomość z formularza kontaktowego chaoskitchen`,
+    text: [
+      "",
+      `Wiadomość:`,
+      message.trim() ? message : "(brak wiadomości)",
+      `E-mail nadawcy: ${email}`,
+    ].join("\n"),
+  });
 }

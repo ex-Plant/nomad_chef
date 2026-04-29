@@ -4,6 +4,12 @@ import { snapshotOrder } from "./hooks/snapshot";
 import { upsertCustomer } from "./hooks/upsert-customer";
 import { digitalFulfillment } from "./hooks/digital-fulfillment";
 import { physicalShipped } from "./hooks/physical-shipped";
+import {
+  blockOrderMutations,
+  releaseStockOnDelete,
+  stockTransitions,
+  validateStockOnCreate,
+} from "./hooks/stock";
 
 const requireAuth: Access = ({ req: { user } }) => Boolean(user);
 
@@ -22,8 +28,15 @@ const whenPhysicalOrder = (data: unknown) => getProductFormat(data) === "physica
 export const Orders: CollectionConfig = {
   slug: "orders",
   hooks: {
-    beforeChange: [upsertCustomer, snapshotOrder, generateOrderNumber],
-    afterChange: [digitalFulfillment, physicalShipped],
+    beforeChange: [
+      blockOrderMutations,
+      validateStockOnCreate,
+      upsertCustomer,
+      snapshotOrder,
+      generateOrderNumber,
+    ],
+    afterChange: [stockTransitions, digitalFulfillment, physicalShipped],
+    beforeDelete: [releaseStockOnDelete],
   },
   labels: {
     singular: { pl: "Zamówienie", en: "Order" },
@@ -75,35 +88,35 @@ export const Orders: CollectionConfig = {
       type: "number",
       required: true,
       admin: { readOnly: true, description: { pl: "Snapshot z chwili sprzedaży", en: "Snapshot at sale time" } },
-      label: { pl: "Cena jedn. brutto (grosze)", en: "Unit price gross (cents)" },
+      label: { pl: "Cena jedn. brutto (PLN)", en: "Unit price gross (PLN)" },
     },
     {
       name: "totalGross",
       type: "number",
       required: true,
       admin: { readOnly: true },
-      label: { pl: "Suma brutto (grosze)", en: "Total gross (cents)" },
+      label: { pl: "Suma brutto (PLN)", en: "Total gross (PLN)" },
     },
     {
       name: "priceNet",
       type: "number",
       required: true,
       admin: { readOnly: true },
-      label: { pl: "Suma netto (grosze)", en: "Total net (cents)" },
+      label: { pl: "Suma netto (PLN)", en: "Total net (PLN)" },
     },
     {
       name: "vatRate",
       type: "number",
       required: true,
       admin: { readOnly: true },
-      label: { pl: "Stawka VAT", en: "VAT rate" },
+      label: { pl: "Stawka VAT (%)", en: "VAT rate (%)" },
     },
     {
       name: "vatAmount",
       type: "number",
       required: true,
       admin: { readOnly: true },
-      label: { pl: "Kwota VAT (grosze)", en: "VAT amount (cents)" },
+      label: { pl: "Kwota VAT (PLN)", en: "VAT amount (PLN)" },
     },
     {
       name: "currency",

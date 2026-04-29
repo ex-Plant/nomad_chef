@@ -1,4 +1,5 @@
-import type { Access, CollectionConfig } from "payload";
+import type { Access, CollectionBeforeChangeHook, CollectionConfig } from "payload";
+import { calcVat } from "@/lib/billing";
 
 const requireAuth: Access = ({ req: { user } }) => Boolean(user);
 const whenDigital = (_: unknown, siblingData?: { format?: string }) =>
@@ -6,15 +7,26 @@ const whenDigital = (_: unknown, siblingData?: { format?: string }) =>
 const whenPhysical = (_: unknown, siblingData?: { format?: string }) =>
   siblingData?.format === "physical";
 
+const calculateNetPrice: CollectionBeforeChangeHook = ({ data }) => {
+  if (typeof data.priceGross !== "number") return data;
+  const vatRate = data.vatRate ? Number(data.vatRate) : 0;
+  const { priceNet } = calcVat(data.priceGross, vatRate);
+  data.priceNet = priceNet;
+  return data;
+};
+
 export const Products: CollectionConfig = {
   slug: "products",
+  hooks: {
+    beforeChange: [calculateNetPrice],
+  },
   labels: {
     singular: { pl: "Produkt", en: "Product" },
     plural: { pl: "Produkty", en: "Products" },
   },
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["title", "format", "priceGross", "active"],
+    defaultColumns: ["title", "format", "priceGross", "stockQty", "active"],
   },
   access: {
     read: () => true,
@@ -59,10 +71,35 @@ export const Products: CollectionConfig = {
       type: "number",
       required: true,
       min: 0,
-      label: { pl: "Cena brutto (grosze)", en: "Price gross (cents)" },
+      label: { pl: "Cena brutto (PLN)", en: "Price gross (PLN)" },
       admin: {
-        description: { pl: "Wartość w groszach. 49,99 PLN = 4999.", en: "Value in cents. 49.99 PLN = 4999." },
+        description: { pl: "np. 49.99", en: "e.g. 49.99" },
       },
+    },
+    {
+      name: "vatRate",
+      type: "select",
+      required: true,
+      defaultValue: "5",
+      options: [
+        { label: "0%", value: "0" },
+        { label: "5%", value: "5" },
+        { label: "8%", value: "8" },
+        { label: "23%", value: "23" },
+      ],
+      label: { pl: "Stawka VAT", en: "VAT rate" },
+    },
+    {
+      name: "priceNet",
+      type: "number",
+      admin: {
+        readOnly: true,
+        description: {
+          pl: "Wyliczana automatycznie z brutto i stawki VAT przy zapisie.",
+          en: "Auto-calculated from gross + VAT on save.",
+        },
+      },
+      label: { pl: "Cena netto (PLN)", en: "Price net (PLN)" },
     },
     {
       name: "currency",
@@ -73,22 +110,9 @@ export const Products: CollectionConfig = {
       label: { pl: "Waluta", en: "Currency" },
     },
     {
-      name: "vatRate",
-      type: "number",
-      required: true,
-      defaultValue: 0,
-      min: 0,
-      max: 1,
-      label: { pl: "Stawka VAT (ułamek dziesiętny)", en: "VAT rate (decimal)" },
-      admin: {
-        description: { pl: "0.05 = 5%, 0.23 = 23%, 0 = brak.", en: "0.05 = 5%, 0.23 = 23%, 0 = none." },
-      },
-    },
-    {
       name: "coverImage",
       type: "upload",
       relationTo: "media",
-      required: true,
       label: { pl: "Okładka", en: "Cover image" },
     },
     {
@@ -101,25 +125,18 @@ export const Products: CollectionConfig = {
       },
     },
     {
-      name: "weightGrams",
+      name: "stockQty",
       type: "number",
-      label: { pl: "Waga (g)", en: "Weight (g)" },
+      defaultValue: 0,
+      min: 0,
+      label: { pl: "Stan magazynowy", en: "Stock on hand" },
       admin: {
         condition: whenPhysical,
+        description: {
+          pl: "Liczba sztuk dostępnych do sprzedaży. Spada przy złożeniu zamówienia, wraca przy nieudanej płatności lub zwrocie.",
+          en: "Units available to sell. Decreases on order create, restores on payment failure or refund.",
+        },
       },
-    },
-    {
-      name: "dimensions",
-      type: "group",
-      label: { pl: "Wymiary (mm)", en: "Dimensions (mm)" },
-      admin: {
-        condition: whenPhysical,
-      },
-      fields: [
-        { name: "length", type: "number" },
-        { name: "width", type: "number" },
-        { name: "height", type: "number" },
-      ],
     },
     {
       name: "active",
