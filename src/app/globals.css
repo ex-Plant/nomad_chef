@@ -187,3 +187,12 @@ html {
   border-radius: 9999px;
 }
 
+/* Utility — opt-in hide for scrollbars (e.g. modal content where the
+   browser gutter steals horizontal space and disrupts the layout). */
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
