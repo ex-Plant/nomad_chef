@@ -40,6 +40,18 @@ export const Customers: CollectionConfig = {
       type: "array",
       label: { pl: "Adresy", en: "Addresses" },
       fields: [
+        {
+          name: "companyName",
+          type: "text",
+          label: { pl: "Nazwa firmy", en: "Company name" },
+          admin: { description: { pl: "Wymagane do faktury VAT.", en: "Required for VAT invoice." } },
+        },
+        {
+          name: "nip",
+          type: "text",
+          label: { pl: "NIP", en: "Tax ID (NIP)" },
+          admin: { description: { pl: "10 cyfr, bez separatorów.", en: "10 digits, no separators." } },
+        },
         { name: "line1", type: "text", required: true, label: { pl: "Ulica i numer", en: "Street and number" } },
         { name: "line2", type: "text", label: { pl: "Lokal / dodatkowo", en: "Apartment / extra" } },
         { name: "city", type: "text", required: true, label: { pl: "Miasto", en: "City" } },

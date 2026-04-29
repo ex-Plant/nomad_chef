@@ -183,6 +183,14 @@ export interface Customer {
   lastName?: string | null;
   addresses?:
     | {
+        /**
+         * Required for VAT invoice.
+         */
+        companyName?: string | null;
+        /**
+         * 10 digits, no separators.
+         */
+        nip?: string | null;
         line1: string;
         line2?: string | null;
         city: string;
@@ -279,6 +287,10 @@ export interface Order {
   tracking?: string | null;
   courier?: ('inpost' | 'dpd' | 'dhl' | 'poczta-polska' | 'other') | null;
   shippedAt?: string | null;
+  /**
+   * Check if the customer requested an invoice. Verify company name + NIP in the customer's address.
+   */
+  wantsInvoice?: boolean | null;
   notes?: string | null;
   paidAt?: string | null;
   fulfilledAt?: string | null;
@@ -423,6 +435,8 @@ export interface CustomersSelect<T extends boolean = true> {
   addresses?:
     | T
     | {
+        companyName?: T;
+        nip?: T;
         line1?: T;
         line2?: T;
         city?: T;
@@ -492,6 +506,7 @@ export interface OrdersSelect<T extends boolean = true> {
   tracking?: T;
   courier?: T;
   shippedAt?: T;
+  wantsInvoice?: T;
   notes?: T;
   paidAt?: T;
   fulfilledAt?: T;

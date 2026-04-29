@@ -224,6 +224,19 @@ export const Orders: CollectionConfig = {
       admin: { condition: whenPhysicalOrder },
     },
     {
+      name: "wantsInvoice",
+      type: "checkbox",
+      defaultValue: false,
+      index: true,
+      label: { pl: "Chcę fakturę", en: "Wants VAT invoice" },
+      admin: {
+        description: {
+          pl: "Zaznacz, jeśli klient prosi o fakturę. Sprawdź dane firmy i NIP w adresie klienta.",
+          en: "Check if the customer requested an invoice. Verify company name + NIP in the customer's address.",
+        },
+      },
+    },
+    {
       name: "notes",
       type: "textarea",
       label: { pl: "Notatki wewnętrzne", en: "Internal notes" },
