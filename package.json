@@ -8,7 +8,7 @@
     "build": "payload generate:importmap && payload generate:types && payload migrate && next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --import tsx --test src/lib/billing.test.ts",
+    "test": "node --import tsx --test src/lib/*.test.ts",
     "payload": "payload",
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",
