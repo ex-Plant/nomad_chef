@@ -82,12 +82,14 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
 
       <BuyerFields form={form} />
       {isPhysical && <ShippingFields form={form} />}
-      <form.Field name="wantsInvoice">
-        {(field: AnyFieldApi) => (
-          <FormCheckbox field={field} label="Chcę fakturę VAT" />
-        )}
-      </form.Field>
-      {wantsInvoice && <InvoiceFields form={form} />}
+      <div className="flex flex-col gap-3">
+        <form.Field name="wantsInvoice">
+          {(field: AnyFieldApi) => (
+            <FormCheckbox field={field} label="Chcę fakturę VAT" />
+          )}
+        </form.Field>
+        {wantsInvoice && <InvoiceFields form={form} />}
+      </div>
 
       <form.Field name="notes">
         {(field: AnyFieldApi) => (
