@@ -2,8 +2,8 @@
 
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 import { ScatterText } from "@/components/shared/scatter-text";
-import { Button } from "@/components/shared/button";
 import { ContactLink } from "@/components/sections/contact/contact-link";
+import { ContactForm } from "@/components/sections/contact/contact-form";
 import { SECTION_IDS } from "@/config/section-ids";
 import type { SiteT } from "@/lib/get-site";
 import { Section } from "@/components/shared/section";
@@ -78,23 +78,10 @@ export function Contact({ data }: ContactPropsT) {
 
             {/* Message form */}
             <FadeUp delay={0.4} className="mt-8">
-              <form className="">
-                <textarea
-                  placeholder={data.formPlaceholder}
-                  rows={4}
-                  className="w-full resize-none  rounded-lg border border-coral bg-yellow px-5 py-4 font-sans text-base text-off-black field-sizing-content transition-colors duration-300 ease-brand placeholder:text-coral focus:bg-white focus:outline-none focus:ring-2 focus:ring-coral min-h-32"
-                />
-                <Button
-                  onClick={() => alert("🏄")}
-                  type="button"
-                  className={`mt-4`}
-                  size="compact"
-                  asChild
-                  variant="coral-solid"
-                >
-                  <a href={data.submit.href}>{data.submit.label}</a>
-                </Button>
-              </form>
+              <ContactForm
+                messagePlaceholder={data.formPlaceholder}
+                submitLabel={data.submit.label}
+              />
             </FadeUp>
           </div>
         </div>

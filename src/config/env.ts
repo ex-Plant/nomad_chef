@@ -11,7 +11,8 @@ type EnvKeyT =
   | "BLOB_READ_WRITE_TOKEN"
   | "EMAIL_HOST"
   | "EMAIL_USER"
-  | "EMAIL_PASS";
+  | "EMAIL_PASS"
+  | "EMAIL_TO";
 
 function required(key: EnvKeyT): string {
   const value = process.env[key];
@@ -32,4 +33,5 @@ export const ENV = {
   EMAIL_HOST: optional("EMAIL_HOST"),
   EMAIL_USER: optional("EMAIL_USER"),
   EMAIL_PASS: optional("EMAIL_PASS"),
+  EMAIL_TO: optional("EMAIL_TO"),
 } as const;
