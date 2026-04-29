@@ -4,7 +4,7 @@ import { cn } from "@/helpers/cn";
 
 const inputClasses =
   "w-full rounded-md border border-coral bg-white px-4 py-1.5 font-sans text-sm text-off-black transition-colors duration-300 ease-brand placeholder:text-coral focus:outline-none focus:ring-2 focus:ring-coral disabled:opacity-60";
-const invalidClasses = "border-error focus:ring-error";
+const invalidClasses = "border-error ring-2 ring-error focus:ring-error";
 
 type FormTextInputPropsT = {
   field: AnyFieldApi;
