@@ -29,7 +29,6 @@ export function InvoiceFields({ form, disabled }: InvoiceFieldsPropsT) {
           <FormTextInput
             field={field}
             label="Nazwa firmy"
-            placeholder="Smaki Sp. z o.o."
             autoComplete="organization"
             disabled={disabled}
           />
@@ -40,7 +39,6 @@ export function InvoiceFields({ form, disabled }: InvoiceFieldsPropsT) {
           <FormTextInput
             field={field}
             label="NIP"
-            placeholder="10 cyfr"
             inputMode="numeric"
             disabled={disabled}
             className="max-w-[12rem]"
