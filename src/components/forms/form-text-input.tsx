@@ -7,6 +7,7 @@ const inputClasses =
 
 type FormTextInputPropsT = {
   field: AnyFieldApi;
+  label?: string;
   type?: "text" | "email" | "tel" | "number";
   placeholder?: string;
   autoComplete?: string;
@@ -18,6 +19,7 @@ type FormTextInputPropsT = {
 
 export function FormTextInput({
   field,
+  label,
   type = "text",
   placeholder,
   autoComplete,
@@ -34,6 +36,14 @@ export function FormTextInput({
       : (field.state.value as string) ?? "";
   return (
     <FieldShell field={field}>
+      {label && (
+        <label
+          htmlFor={field.name}
+          className="mb-1 block font-sans text-xs font-medium text-off-black"
+        >
+          {label}
+        </label>
+      )}
       <input
         type={type}
         name={field.name}

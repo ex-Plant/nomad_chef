@@ -33,16 +33,16 @@ export function CartDialog({ product, isOpen, onClose }: CartDialogPropsT) {
       isOpen={isOpen}
       onClose={handleClose}
       ariaLabel="Zamówienie"
-      className="bg-yellow"
+      className="bg-off-black/40 px-4 py-4 md:py-8"
     >
-      <div className="hide-scrollbar relative w-[min(90vw,32rem)] max-h-dvh overflow-y-auto rounded-lg bg-yellow fest-container py-10 ">
+      <div className="hide-scrollbar w-[min(100%,28rem)] max-h-full overflow-y-auto rounded-lg bg-white px-6 pb-8 pt-4">
         <button
           type="button"
           onClick={handleClose}
           aria-label="Zamknij"
-          className="sticky top-0 ml-auto -mt-8 mb-2 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-coral transition-transform duration-300 ease-brand hover:scale-110 active:scale-95"
+          className="sticky top-0 z-10 -mr-2 ml-auto mb-3 flex h-10 w-10 cursor-pointer items-center justify-end bg-white text-coral transition-transform duration-300 ease-brand hover:scale-110 active:scale-95"
         >
-          <X size={18} strokeWidth={2.5} aria-hidden="true" />
+          <X size={24} strokeWidth={2.75} aria-hidden="true" />
         </button>
         {status.kind === "form" && (
           <CartForm

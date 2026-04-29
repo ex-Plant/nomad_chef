@@ -23,7 +23,8 @@ export function AddressFields({ form, prefix, disabled }: AddressFieldsPropsT) {
         {(field: AnyFieldApi) => (
           <FormTextInput
             field={field}
-            placeholder="Ulica i numer"
+            label="Ulica i numer"
+            placeholder="ul. Klonowa 5"
             autoComplete={prefix === "shipping" ? "shipping address-line1" : "billing address-line1"}
             disabled={disabled}
           />
@@ -33,7 +34,8 @@ export function AddressFields({ form, prefix, disabled }: AddressFieldsPropsT) {
         {(field: AnyFieldApi) => (
           <FormTextInput
             field={field}
-            placeholder="Lokal / dodatkowo (opcjonalne)"
+            label="Lokal / dodatkowo"
+            placeholder="opcjonalne"
             autoComplete={prefix === "shipping" ? "shipping address-line2" : "billing address-line2"}
             disabled={disabled}
           />
@@ -44,7 +46,8 @@ export function AddressFields({ form, prefix, disabled }: AddressFieldsPropsT) {
           {(field: AnyFieldApi) => (
             <FormTextInput
               field={field}
-              placeholder="Miasto"
+              label="Miasto"
+              placeholder="Warszawa"
               autoComplete={prefix === "shipping" ? "shipping address-level2" : "billing address-level2"}
               disabled={disabled}
             />
@@ -54,6 +57,7 @@ export function AddressFields({ form, prefix, disabled }: AddressFieldsPropsT) {
           {(field: AnyFieldApi) => (
             <FormTextInput
               field={field}
+              label="Kod pocztowy"
               placeholder="00-000"
               autoComplete={prefix === "shipping" ? "shipping postal-code" : "billing postal-code"}
               disabled={disabled}

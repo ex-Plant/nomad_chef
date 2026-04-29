@@ -10,79 +10,143 @@ import {
   mergeAddresses,
   type AddressT,
 } from "@/lib/cart-merge";
+import type { CartFormValuesT } from "@/lib/cart-schema";
 
 type CreateOrderResultT =
   | { ok: true; orderNumber: string; totalGross: number }
   | { ok: false; error: string };
 
-export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
-  const parsed = cartFormSchema.safeParse(input);
-  if (!parsed.success) return { ok: false, error: "Nieprawidłowe dane" };
-  const v = parsed.data;
+const DEFAULT_COUNTRY = "PL";
 
-  const payload = await getPayload({ config });
+type PayloadT = Awaited<ReturnType<typeof getPayload>>;
 
+function invalidOrder(error: string): CreateOrderResultT {
+  return { ok: false, error };
+}
+
+async function findActiveProduct(
+  payload: PayloadT,
+  values: CartFormValuesT,
+) {
   const products = await payload.find({
     collection: "products",
     where: {
-      slug: { equals: v.productSlug },
+      slug: { equals: values.productSlug },
       active: { equals: true },
     },
     limit: 1,
     depth: 0,
   });
+
   const product = products.docs[0];
-  if (!product) return { ok: false, error: "Produkt niedostępny" };
-  if (product.format !== v.format) return { ok: false, error: "Nieprawidłowy format" };
 
-  const addressesToAdd = buildAddressesToAdd(v);
+  if (!product) {
+    return invalidOrder("Produkt niedostępny");
+  }
 
+  if (product.format !== values.format) {
+    return invalidOrder("Nieprawidłowy format");
+  }
+
+  return product;
+}
+
+async function findOrCreateCustomer(
+  payload: PayloadT,
+  values: CartFormValuesT,
+  addressesToAdd: AddressT[],
+): Promise<string | number> {
   const existingCustomers = await payload.find({
     collection: "customers",
-    where: { email: { equals: v.email } },
+    where: { email: { equals: values.email } },
     limit: 1,
     depth: 0,
   });
-  let customerId: string | number;
-  if (!existingCustomers.docs[0]) {
-    const created = await payload.create({
+
+  const existingCustomer = existingCustomers.docs[0];
+
+  if (!existingCustomer) {
+    const createdCustomer = await payload.create({
       collection: "customers",
       data: {
-        email: v.email,
-        firstName: v.firstName,
-        lastName: v.lastName,
+        email: values.email,
+        firstName: values.firstName,
+        lastName: values.lastName,
         addresses: addressesToAdd,
       },
     });
-    customerId = created.id;
-  } else {
-    const existing = existingCustomers.docs[0];
-    const { merged, changed } = mergeAddresses(
-      (existing.addresses ?? []) as AddressT[],
-      addressesToAdd,
-    );
-    if (changed) {
-      await payload.update({
-        collection: "customers",
-        id: existing.id,
-        data: { addresses: merged },
-      });
-    }
-    customerId = existing.id;
+
+    return createdCustomer.id;
   }
 
-  const shippingAddressForOrder =
-    v.format === "physical"
-      ? {
-          firstName: v.firstName,
-          lastName: v.lastName,
-          line1: v.shippingLine1,
-          line2: v.shippingLine2 || undefined,
-          city: v.shippingCity,
-          postalCode: v.shippingPostalCode,
-          country: v.shippingCountry || "PL",
-        }
-      : undefined;
+  const { merged, changed } = mergeAddresses(
+    (existingCustomer.addresses ?? []) as AddressT[],
+    addressesToAdd,
+  );
+
+  if (changed) {
+    await payload.update({
+      collection: "customers",
+      id: existingCustomer.id,
+      data: { addresses: merged },
+    });
+  }
+
+  return existingCustomer.id;
+}
+
+function buildShippingAddressForOrder(values: CartFormValuesT) {
+  if (values.format !== "physical") {
+    return undefined;
+  }
+
+  return {
+    firstName: values.firstName,
+    lastName: values.lastName,
+    line1: values.shippingLine1,
+    line2: values.shippingLine2 || undefined,
+    city: values.shippingCity,
+    postalCode: values.shippingPostalCode,
+    country: values.shippingCountry || DEFAULT_COUNTRY,
+  };
+}
+
+function buildOrderEmailText(values: CartFormValuesT, order: {
+  orderNumber: string;
+  quantity: number;
+  totalGross: number;
+}, product: { title: string; format: string }) {
+  return [
+    `Zamówienie: ${order.orderNumber}`,
+    `Produkt: ${product.title} (${product.format})`,
+    `Ilość: ${order.quantity}`,
+    `Kwota: ${order.totalGross} PLN`,
+    `Klient: ${values.firstName} ${values.lastName} <${values.email}>`,
+    values.wantsInvoice ? `Faktura: ${values.companyName} (NIP ${values.nip})` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
+  const parsed = cartFormSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return invalidOrder("Nieprawidłowe dane");
+  }
+
+  const values = parsed.data;
+
+  const payload = await getPayload({ config });
+  const product = await findActiveProduct(payload, values);
+
+  if ("ok" in product) {
+    return product;
+  }
+
+  const addressesToAdd = buildAddressesToAdd(values);
+  const customerId = await findOrCreateCustomer(payload, values, addressesToAdd);
+  const shippingAddress = buildShippingAddressForOrder(values);
 
   // Payload's generated create type demands hook-populated fields (orderNumber,
   // totalGross, etc.) which are set by beforeChange hooks. The cast is the documented
@@ -92,25 +156,16 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
     data: {
       product: product.id,
       customer: customerId,
-      quantity: v.format === "physical" ? v.quantity : 1,
-      wantsInvoice: v.wantsInvoice,
-      shippingAddress: shippingAddressForOrder,
+      quantity: values.format === "physical" ? values.quantity : 1,
+      wantsInvoice: values.wantsInvoice,
+      shippingAddress,
     } as never,
   });
 
   await sendEmail({
     to: ENV.EMAIL_TO,
     subject: `Nowe zamówienie ${order.orderNumber}`,
-    text: [
-      `Zamówienie: ${order.orderNumber}`,
-      `Produkt: ${product.title} (${product.format})`,
-      `Ilość: ${order.quantity}`,
-      `Kwota: ${order.totalGross} PLN`,
-      `Klient: ${v.firstName} ${v.lastName} <${v.email}>`,
-      v.wantsInvoice ? `Faktura: ${v.companyName} (NIP ${v.nip})` : "",
-    ]
-      .filter(Boolean)
-      .join("\n"),
+    text: buildOrderEmailText(values, order, product),
   });
 
   return {

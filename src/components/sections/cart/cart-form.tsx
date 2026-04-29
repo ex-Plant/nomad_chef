@@ -73,14 +73,10 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
         form.handleSubmit();
       }}
       noValidate
-      className="flex flex-col gap-5"
+      className="flex flex-col gap-5 "
     >
       <header className="flex flex-col gap-1 text-off-black">
-        <p className="font-sans text-xs uppercase tracking-wide text-coral">
-          {isPhysical ? "Książka" : "Książka "}
-        </p>
         <h3 className="font-display text-2xl">{product.title}</h3>
-        <p className="font-sans text-sm">{product.priceGross} PLN</p>
       </header>
 
       <BuyerFields form={form} />
@@ -99,7 +95,15 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
         })}
       >
         {({ canSubmit, isSubmitting }) => (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3 pt-4">
+            <div className="flex items-baseline justify-between border-t border-coral/20 pt-3">
+              <span className="font-sans text-xs uppercase tracking-wide text-coral">
+                Do zapłaty
+              </span>
+              <span className="font-display text-2xl text-off-black">
+                {product.priceGross} PLN
+              </span>
+            </div>
             <Button
               type="submit"
               size="compact"

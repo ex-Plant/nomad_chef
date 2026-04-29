@@ -16,8 +16,9 @@ export function BuyerFields({ form, disabled }: BuyerFieldsPropsT) {
         {(field: AnyFieldApi) => (
           <FormTextInput
             field={field}
+            label="E-mail"
             type="email"
-            placeholder="E-mail"
+            placeholder="np. anna@example.pl"
             autoComplete="email"
             disabled={disabled}
           />
@@ -28,7 +29,8 @@ export function BuyerFields({ form, disabled }: BuyerFieldsPropsT) {
           {(field: AnyFieldApi) => (
             <FormTextInput
               field={field}
-              placeholder="Imię"
+              label="Imię"
+              placeholder="Anna"
               autoComplete="given-name"
               disabled={disabled}
             />
@@ -38,7 +40,8 @@ export function BuyerFields({ form, disabled }: BuyerFieldsPropsT) {
           {(field: AnyFieldApi) => (
             <FormTextInput
               field={field}
-              placeholder="Nazwisko"
+              label="Nazwisko"
+              placeholder="Kowalska"
               autoComplete="family-name"
               disabled={disabled}
             />

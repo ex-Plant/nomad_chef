@@ -7,6 +7,7 @@ const textareaClasses =
 
 type FormTextareaPropsT = {
   field: AnyFieldApi;
+  label?: string;
   placeholder?: string;
   rows?: number;
   ariaLabel?: string;
@@ -16,6 +17,7 @@ type FormTextareaPropsT = {
 
 export function FormTextarea({
   field,
+  label,
   placeholder,
   rows = 4,
   ariaLabel,
@@ -26,6 +28,14 @@ export function FormTextarea({
   const errorId = `${field.name}-error`;
   return (
     <FieldShell field={field}>
+      {label && (
+        <label
+          htmlFor={field.name}
+          className="mb-1 block font-sans text-xs font-medium text-off-black"
+        >
+          {label}
+        </label>
+      )}
       <textarea
         name={field.name}
         id={field.name}

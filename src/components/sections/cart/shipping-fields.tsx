@@ -20,8 +20,8 @@ export function ShippingFields({ form, disabled }: ShippingFieldsPropsT) {
         {(field: AnyFieldApi) => (
           <FormTextInput
             field={field}
+            label="Ilość"
             type="number"
-            placeholder="Ilość"
             inputMode="numeric"
             disabled={disabled}
             className="max-w-[8rem]"
