@@ -49,7 +49,7 @@ export function CartDialog({ product, isOpen, onClose }: CartDialogPropsT) {
             type="button"
             onClick={handleClose}
             aria-label="Zamknij"
-            className="sticky top-2 z-10 -mr-2 ml-auto mb-3 flex h-10 w-10 cursor-pointer items-center justify-end  text-yellow transition-transform duration-300 ease-brand hover:scale-110 active:scale-95"
+            className="sticky top-2 mt-2 z-10 -mr-2 ml-auto flex h-10 w-10 cursor-pointer items-center justify-end  text-yellow transition-transform duration-300 ease-brand hover:scale-110 active:scale-95"
           >
             <X size={32} strokeWidth={2.75} aria-hidden="true" />
           </button>

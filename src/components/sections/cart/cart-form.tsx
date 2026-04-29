@@ -96,7 +96,7 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
         </>
       )}
 
-      <FormSeparator />
+      {wantsInvoice && <FormSeparator />}
       <div className="flex flex-col gap-3">
         <form.Field name="wantsInvoice">
           {(field: AnyFieldApi) => (
@@ -106,7 +106,6 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
         {wantsInvoice && <InvoiceFields form={form} />}
       </div>
 
-      <FormSeparator />
       <form.Subscribe
         selector={(s) => ({
           canSubmit: s.canSubmit,
