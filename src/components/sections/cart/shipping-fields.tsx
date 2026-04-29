@@ -13,7 +13,8 @@ type ShippingFieldsPropsT = {
 export function ShippingFields({ form, disabled }: ShippingFieldsPropsT) {
   return (
     <div className="flex flex-col gap-3">
-      <p className="font-sans text-xs uppercase tracking-wide text-off-black">
+      <hr className="border-0 border-t-2 border-yellow" />
+      <p className="font-sans text-xs uppercase tracking-wide text-electric-blue">
         Adres dostawy
       </p>
       <form.Field name="quantity">

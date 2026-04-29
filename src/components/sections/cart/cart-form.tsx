@@ -91,11 +91,12 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
         {wantsInvoice && <InvoiceFields form={form} />}
       </div>
 
+      <hr className="border-0 border-t-2 border-yellow" />
       <form.Field name="notes">
         {(field: AnyFieldApi) => (
           <FormTextarea
             field={field}
-            label="Wiadomość (opcjonalnie)"
+            label="Wiadomość"
             rows={3}
           />
         )}
@@ -113,7 +114,7 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
       >
         {({ canSubmit, isSubmitting, hasFieldErrors, attempted }) => (
           <div className="flex flex-col gap-3 pt-4">
-            <div className="flex items-baseline justify-between border-t border-coral/20 pt-3">
+            <div className="flex items-baseline justify-between border-t-2 border-yellow pt-3">
               <span className="font-sans text-xs uppercase tracking-wide text-off-black">
                 Do zapłaty
               </span>
