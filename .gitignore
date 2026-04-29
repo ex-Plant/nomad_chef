@@ -60,6 +60,8 @@ next-env.d.ts
 !/public/videos/hero-1280w-crf37.webm
 !/public/videos/hero-1440w-crf37.webm
 !/public/videos/marta-464x832-crf22.mp4
+!/public/videos/hero_vid_desktop_crf20.mp4
+!/public/videos/hero_vid_mobile_crf20.mp4
 
 # Git worktrees (local only)
 .worktrees/
