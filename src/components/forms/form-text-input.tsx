@@ -1,5 +1,6 @@
 import type { AnyFieldApi } from "@tanstack/react-form";
 import { FieldShell } from "./field-shell";
+import { FormLabel } from "./form-label";
 import { cn } from "@/helpers/cn";
 
 const inputClasses =
@@ -39,14 +40,7 @@ export function FormTextInput({
       : ((field.state.value as string) ?? "");
   return (
     <FieldShell field={field}>
-      {label && (
-        <label
-          htmlFor={field.name}
-          className="mb-1 block font-sans text-xs font-medium text-white"
-        >
-          {label}
-        </label>
-      )}
+      {label && <FormLabel htmlFor={field.name}>{label}</FormLabel>}
       <input
         type={type}
         name={field.name}

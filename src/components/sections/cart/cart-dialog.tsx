@@ -31,46 +31,44 @@ export function CartDialog({ product, isOpen, onClose }: CartDialogPropsT) {
 
   return (
     <>
-      {isOpen && (
-        <div
-          aria-hidden
-          className="pointer-events-none fixed inset-0 z-[505] flex items-center justify-center"
-        >
-          <Starburst color="pink" variant="organic" size="lg" />
-        </div>
-      )}
       <Dialog
-      isOpen={isOpen}
-      onClose={handleClose}
-      ariaLabel="Zamówienie"
-      variant="modal"
-    >
-      <div className="hide-scrollbar w-[min(100%,28rem)] max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-lg bg-coral px-6 pb-8 ">
-        <button
-          type="button"
-          onClick={handleClose}
-          aria-label="Zamknij"
-          className="sticky top-2 z-10 -mr-2 ml-auto mb-3 flex h-10 w-10 cursor-pointer items-center justify-end bg-coral text-yellow transition-transform duration-300 ease-brand hover:scale-110 active:scale-95"
-        >
-          <X size={24} strokeWidth={2.75} aria-hidden="true" />
-        </button>
-        {status.kind === "form" && (
-          <CartForm
-            product={product}
-            onSuccess={(orderNumber, email) =>
-              setStatus({ kind: "success", orderNumber, email })
-            }
-          />
-        )}
-        {status.kind === "success" && (
-          <CartSuccessView
-            orderNumber={status.orderNumber}
-            email={status.email}
-            onClose={handleClose}
-          />
-        )}
-      </div>
-    </Dialog>
+        isOpen={isOpen}
+        onClose={handleClose}
+        ariaLabel="Zamówienie"
+        variant="modal"
+      >
+        <div className="hide-scrollbar w-[min(100%,28rem)] max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-lg bg-coral px-6 pb-8 ">
+          <div
+            aria-hidden
+            className="pointer-events-none fixed inset-0 z-[501] flex items-center justify-center"
+          >
+            <Starburst color="pink" variant="organic" size="lg" />
+          </div>
+          <button
+            type="button"
+            onClick={handleClose}
+            aria-label="Zamknij"
+            className="sticky top-2 z-10 -mr-2 ml-auto mb-3 flex h-10 w-10 cursor-pointer items-center justify-end bg-coral text-yellow transition-transform duration-300 ease-brand hover:scale-110 active:scale-95"
+          >
+            <X size={24} strokeWidth={2.75} aria-hidden="true" />
+          </button>
+          {status.kind === "form" && (
+            <CartForm
+              product={product}
+              onSuccess={(orderNumber, email) =>
+                setStatus({ kind: "success", orderNumber, email })
+              }
+            />
+          )}
+          {status.kind === "success" && (
+            <CartSuccessView
+              orderNumber={status.orderNumber}
+              email={status.email}
+              onClose={handleClose}
+            />
+          )}
+        </div>
+      </Dialog>
     </>
   );
 }
