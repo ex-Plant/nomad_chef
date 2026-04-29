@@ -106,6 +106,7 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
         {wantsInvoice && <InvoiceFields form={form} />}
       </div>
 
+      <FormSeparator />
       <form.Subscribe
         selector={(s) => ({
           canSubmit: s.canSubmit,
