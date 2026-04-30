@@ -37,7 +37,10 @@ export function CartDialog({ product, isOpen, onClose }: CartDialogPropsT) {
         ariaLabel="Zamówienie"
         variant="modal"
       >
-        <div className="w-full max-w-[28rem] md:max-w-[42rem] rounded-lg bg-coral px-6 md:px-8 pt-6 pb-8 relative overflow-clip ring-[1px] ring-yellow">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="w-full max-w-[28rem] md:max-w-[42rem] rounded-lg bg-coral p-4 md:p-8 relative overflow-clip ring-[1px] ring-yellow"
+        >
           <div
             aria-hidden
             className="pointer-events-none absolute -top-8 -right-12 z-[0] flex items-center justify-center"

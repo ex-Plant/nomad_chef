@@ -155,7 +155,7 @@ function ModalDialog({
           aria-label={ariaLabel}
           className={cn(
             "fixed inset-0 z-[500] overflow-y-auto overscroll-contain bg-off-black/40 p-4",
-            className,
+            className
           )}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -180,7 +180,6 @@ function ModalDialog({
                   ? { duration: 0 }
                   : { type: "spring", damping: 25, stiffness: 300 }
               }
-              onClick={(e) => e.stopPropagation()}
             >
               {children}
             </m.div>

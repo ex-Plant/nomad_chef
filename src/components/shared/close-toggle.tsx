@@ -1,18 +1,12 @@
 import { cn } from "@/helpers/cn";
 
-// Same artwork as the nav's mobile toggle. We always render in the "open" pose
-// (rotated 45° with the tail hidden) so it reads as an X close affordance.
-const PATH =
-  "m 20 40 h 60 a 1 1 0 0 1 0 20 h -60 a 1 1 0 0 1 0 -40 h 30 v 70";
-const OPEN_DASH = "59.75 105.25 60 300";
-
 type CloseTogglePropsT = {
   onClick: () => void;
   ariaLabel?: string;
   className?: string;
   /** Tailwind text-* class controlling stroke colour. Default: text-coral. */
   iconClassName?: string;
-  /** Pixel width of the SVG. Default: 48. */
+  /** Pixel width of the SVG. Default: 40. */
   size?: number;
 };
 
@@ -21,7 +15,7 @@ export function CloseToggle({
   ariaLabel = "Zamknij",
   className,
   iconClassName = "text-coral",
-  size = 48,
+  size = 40,
 }: CloseTogglePropsT) {
   return (
     <button
@@ -36,18 +30,17 @@ export function CloseToggle({
       <svg
         aria-hidden="true"
         focusable="false"
-        stroke="currentColor"
-        fill="none"
-        viewBox="-10 -10 105 120"
+        viewBox="0 0 24 24"
         width={size}
-        className={cn("translate-[-2px_-2px] rotate-45", iconClassName)}
+        height={size}
+        fill="none"
+        stroke="currentColor"
+        className={iconClassName}
       >
         <path
-          strokeWidth="8"
+          d="M6 6 L18 18 M18 6 L6 18"
+          strokeWidth="3"
           strokeLinecap="round"
-          strokeLinejoin="round"
-          d={PATH}
-          style={{ strokeDasharray: OPEN_DASH }}
         />
       </svg>
     </button>

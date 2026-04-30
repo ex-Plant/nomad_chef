@@ -77,7 +77,7 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
         form.handleSubmit();
       }}
       noValidate
-      className="flex flex-col gap-8 relative "
+      className="flex flex-col  relative "
     >
       <BuyerFields form={form} />
       {isPhysical && (
@@ -87,8 +87,8 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
         </>
       )}
 
-      {wantsInvoice && <FormSeparator />}
-      <div className="flex flex-col gap-3">
+      {wantsInvoice && <FormSeparator className={`mb-4`} />}
+      <div className="flex flex-col gap-3 mt-2">
         <form.Field name="wantsInvoice">
           {(field: AnyFieldApi) => (
             <FormCheckbox field={field} label="Chcę fakturę VAT" />
