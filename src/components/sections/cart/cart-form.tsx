@@ -10,16 +10,11 @@ import {
 } from "@/lib/cart-schema";
 import { createOrder } from "@/lib/orders";
 import { Button } from "@/components/shared/button";
-import {
-  FormCheckbox,
-  FormSeparator,
-  FormTextInput,
-} from "@/components/forms";
+import { FormCheckbox, FormSeparator, FormTextInput } from "@/components/forms";
 import type { Product } from "@/payload-types";
 import { BuyerFields } from "./buyer-fields";
 import { ShippingFields } from "./shipping-fields";
 import { InvoiceFields } from "./invoice-fields";
-import { Starburst } from "../../shared/starburst";
 
 type CartFormPropsT = {
   product: Product;
@@ -84,10 +79,6 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
       noValidate
       className="flex flex-col gap-8 relative "
     >
-      <header className="flex flex-col gap-1 text-electric-blue">
-        <h3 className="font-display text-2xl uppercase">{product.title}</h3>
-      </header>
-
       <BuyerFields form={form} />
       {isPhysical && (
         <>

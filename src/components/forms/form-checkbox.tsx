@@ -28,7 +28,7 @@ export function FormCheckbox({
       className={cn(
         "flex cursor-pointer items-start gap-3 select-none font-sans text-sm text-white",
         disabled && "opacity-60 cursor-not-allowed",
-        className,
+        className
       )}
     >
       <span className="relative mt-0.5 inline-flex size-4 shrink-0">
@@ -41,16 +41,16 @@ export function FormCheckbox({
           onBlur={field.handleBlur}
           onChange={(e) => field.handleChange(e.target.checked)}
           className={cn(
-            "peer size-full cursor-pointer appearance-none rounded-sm bg-white outline outline-1 transition-colors",
-            boxClassName,
+            "peer size-full cursor-pointer appearance-none rounded-sm bg-white outline-1  transition-colors",
+            boxClassName
           )}
         />
         <Check
           aria-hidden="true"
           strokeWidth={3.5}
           className={cn(
-            "pointer-events-none absolute inset-0 m-auto size-3 opacity-0 transition-opacity peer-checked:opacity-100",
-            iconClassName,
+            "pointer-events-none absolute inset-0 m-auto size-3 opacity-0 transition-opacity peer-checked:opacity-100 stroke-electric-blue",
+            iconClassName
           )}
         />
       </span>

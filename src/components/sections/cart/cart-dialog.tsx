@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { X } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
 import { Starburst } from "@/components/shared/starburst";
+import { CloseToggle } from "@/components/shared/close-toggle";
 import type { Product } from "@/payload-types";
 import { CartForm } from "./cart-form";
 import { CartSuccessView } from "./cart-success-view";
@@ -37,7 +37,7 @@ export function CartDialog({ product, isOpen, onClose }: CartDialogPropsT) {
         ariaLabel="Zamówienie"
         variant="modal"
       >
-        <div className="w-full max-w-[28rem] md:max-w-[42rem] rounded-lg bg-coral px-6 md:px-8 pb-8 relative overflow-clip">
+        <div className="w-full max-w-[28rem] md:max-w-[42rem] rounded-lg bg-coral px-6 md:px-8 pt-6 pb-8 relative overflow-clip ring-[1px] ring-yellow">
           <div
             aria-hidden
             className="pointer-events-none absolute -top-8 -right-12 z-[0] flex items-center justify-center"
@@ -45,14 +45,20 @@ export function CartDialog({ product, isOpen, onClose }: CartDialogPropsT) {
             <Starburst color="pink" variant="organic" size="md" />
           </div>
 
-          <button
-            type="button"
-            onClick={handleClose}
-            aria-label="Zamknij"
-            className="sticky top-2 mt-2 z-10 -mr-2 ml-auto flex h-10 w-10 cursor-pointer items-center justify-end  text-yellow transition-transform duration-300 ease-brand hover:scale-110 active:scale-95"
-          >
-            <X size={32} strokeWidth={2.75} aria-hidden="true" />
-          </button>
+          {status.kind === "form" && (
+            <div className="relative z-10 flex items-start justify-between gap-4">
+              <h3 className="font-display text-2xl uppercase text-electric-blue">
+                {product.title}
+              </h3>
+              <CloseToggle
+                onClick={handleClose}
+                iconClassName="text-yellow"
+                size={40}
+                className="-mt-1 -mr-2"
+              />
+            </div>
+          )}
+
           {status.kind === "form" && (
             <CartForm
               product={product}

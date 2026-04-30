@@ -3,9 +3,9 @@ import { FieldShell } from "./field-shell";
 import { FormLabel } from "./form-label";
 import { cn } from "@/helpers/cn";
 
-const inputClasses =
-  "w-full rounded-md ring-[3px] ring-yellow bg-white px-4 py-1.5 font-sans text-sm text-off-black transition-colors duration-300 ease-brand placeholder:text-coral focus:outline-none focus:ring-yellow disabled:opacity-60";
-const invalidClasses = "ring-error focus:ring-error";
+export const inputClasses =
+  "w-full rounded-md ring-[2px] ring-yellow bg-white px-4 py-1.5 font-sans text-sm text-off-black transition-colors duration-300 ease-brand placeholder:text-coral focus:outline-none focus:ring-yellow focus:ring-[3px] disabled:opacity-60";
+export const invalidClasses = "ring-error focus:ring-error";
 
 type FormTextInputPropsT = {
   field: AnyFieldApi;
