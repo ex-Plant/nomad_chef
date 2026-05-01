@@ -9,6 +9,7 @@ import { Gallery } from "@/components/sections/gallery/gallery";
 import { Contact } from "@/components/sections/contact/contact";
 import { GrainOverlay } from "@/components/ui/grain-overlay";
 import type { SiteT } from "@/lib/get-site";
+import type { Product } from "@/payload-types";
 import { useVideoReady } from "../hooks/use-video-ready";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
@@ -16,9 +17,10 @@ import { AnimationHint } from "@/components/ui/animation-hint";
 
 type HomepageShellPropsT = {
   site: SiteT;
+  digitalProduct: Product | null;
 };
 
-export function HomepageShell({ site }: HomepageShellPropsT) {
+export function HomepageShell({ site, digitalProduct }: HomepageShellPropsT) {
   const reducedMotion = useReducedMotion();
   // Skip the play() attempt when the user has opted out — no reason to
   // round-trip through NotAllowedError if we're not going to animate.
@@ -39,7 +41,7 @@ export function HomepageShell({ site }: HomepageShellPropsT) {
         <div className={isReady ? `opacity-100` : `opacity-0`}>
           <About data={site.about} />
           <Services data={site.services} />
-          <CampFoodSwiper data={site.campFood} />
+          <CampFoodSwiper data={site.campFood} digitalProduct={digitalProduct} />
           <Gallery data={site.gallery} />
           <Contact data={site.contact} />
         </div>

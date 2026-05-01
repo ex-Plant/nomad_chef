@@ -12,8 +12,9 @@ import type {
 } from "@/lib/get-site";
 import { Section } from "@/components/shared/section";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
-import { Button } from "@/components/shared/button";
+import { CartBuyButton } from "@/components/sections/cart/cart-buy-button";
 import { Starburst } from "@/components/shared/starburst";
+import type { Product } from "@/payload-types";
 import { SwiperControls } from "@/components/shared/swiper-controls";
 import { SectionContent } from "@/components/shared/section-content";
 import { BodyText } from "@/components/shared/body-text";
@@ -77,9 +78,12 @@ const SLIDE_TRANSITION = TRANSITION.slow;
 
 /* ─── Main component ─── */
 
-type CampFoodPropsT = { data: SiteT["campFood"] };
+type CampFoodPropsT = {
+  data: SiteT["campFood"];
+  digitalProduct: Product | null;
+};
 
-export function CampFoodSwiper({ data }: CampFoodPropsT) {
+export function CampFoodSwiper({ data, digitalProduct }: CampFoodPropsT) {
   const slideCount = data.slides.length;
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -190,14 +194,12 @@ export function CampFoodSwiper({ data }: CampFoodPropsT) {
             </div>
 
             <div className="mt-8">
-              <Button
-                asChild
+              <CartBuyButton
+                product={digitalProduct}
+                label={data.cta.label}
                 variant={slide.buttonVariant}
-                // withArrow
                 size="compact"
-              >
-                <a href={data.cta.href}>{data.cta.label}</a>
-              </Button>
+              />
             </div>
           </div>
 
