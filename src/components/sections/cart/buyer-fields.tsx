@@ -19,7 +19,9 @@ export function BuyerFields({ form, disabled }: BuyerFieldsPropsT) {
             label="E-mail"
             type="email"
             autoComplete="email"
+            placeholder="Twój e-mail"
             disabled={disabled}
+            required
           />
         )}
       </form.Field>
@@ -30,6 +32,7 @@ export function BuyerFields({ form, disabled }: BuyerFieldsPropsT) {
               field={field}
               label="Imię"
               autoComplete="given-name"
+              placeholder="Twoje imię"
               disabled={disabled}
             />
           )}
@@ -40,6 +43,7 @@ export function BuyerFields({ form, disabled }: BuyerFieldsPropsT) {
               field={field}
               label="Nazwisko"
               autoComplete="family-name"
+              placeholder="Twoje nazwisko"
               disabled={disabled}
             />
           )}
@@ -51,6 +55,7 @@ export function BuyerFields({ form, disabled }: BuyerFieldsPropsT) {
             field={field}
             label="Wiadomość"
             rows={3}
+            placeholder="Uwagi do zamówienia"
             disabled={disabled}
           />
         )}

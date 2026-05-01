@@ -15,18 +15,22 @@ export function AddressFields({ form, prefix, disabled }: AddressFieldsPropsT) {
   const line2Name = `${prefix}Line2` as const;
   const cityName = `${prefix}City` as const;
   const postalName = `${prefix}PostalCode` as const;
+  const isInvoice = prefix === "invoice";
   // Country is locked to "PL" via defaultCartValues + schema postal regex.
   // Not rendered in the UI — see cart-schema.ts.
   return (
     <div className="flex flex-col gap-3">
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-[3fr_1fr]">
         <form.Field name={line1Name}>
           {(field: AnyFieldApi) => (
             <FormTextInput
               field={field}
               label="Ulica i numer"
-              autoComplete={prefix === "shipping" ? "shipping address-line1" : "billing address-line1"}
+              autoComplete={
+                isInvoice ? "billing address-line1" : "shipping address-line1"
+              }
               disabled={disabled}
+              required
             />
           )}
         </form.Field>
@@ -34,21 +38,27 @@ export function AddressFields({ form, prefix, disabled }: AddressFieldsPropsT) {
           {(field: AnyFieldApi) => (
             <FormTextInput
               field={field}
-              label="Lokal / dodatkowo"
-              autoComplete={prefix === "shipping" ? "shipping address-line2" : "billing address-line2"}
+              label="Lokal"
+              placeholder="opcjonalnie"
+              autoComplete={
+                isInvoice ? "billing address-line2" : "shipping address-line2"
+              }
               disabled={disabled}
             />
           )}
         </form.Field>
       </div>
-      <div className="grid grid-cols-[1fr_8rem] gap-3">
+      <div className="grid grid-cols-[3fr_1fr] gap-3">
         <form.Field name={cityName}>
           {(field: AnyFieldApi) => (
             <FormTextInput
               field={field}
               label="Miasto"
-              autoComplete={prefix === "shipping" ? "shipping address-level2" : "billing address-level2"}
+              autoComplete={
+                isInvoice ? "billing address-level2" : "shipping address-level2"
+              }
               disabled={disabled}
+              required
             />
           )}
         </form.Field>
@@ -58,8 +68,11 @@ export function AddressFields({ form, prefix, disabled }: AddressFieldsPropsT) {
               field={field}
               label="Kod pocztowy"
               placeholder="00-000"
-              autoComplete={prefix === "shipping" ? "shipping postal-code" : "billing postal-code"}
+              autoComplete={
+                isInvoice ? "billing postal-code" : "shipping postal-code"
+              }
               disabled={disabled}
+              required
             />
           )}
         </form.Field>

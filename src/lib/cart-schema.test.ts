@@ -50,9 +50,9 @@ describe("cartFormSchema — digital, no invoice", () => {
     assert.equal(r.success, false);
   });
 
-  it("rejects empty firstName", () => {
+  it("accepts empty firstName (optional)", () => {
     const r = cartFormSchema.safeParse({ ...valid, firstName: "" });
-    assert.equal(r.success, false);
+    assert.equal(r.success, true);
   });
 
   it("does NOT require shipping for digital", () => {

@@ -163,9 +163,9 @@ function ModalDialog({
           transition={reduced ? { duration: 0 } : { duration: 0.25 }}
           onClick={onClose}
         >
-          <div className="flex min-h-full items-center justify-center">
+          <div className="flex min-h-full justify-center">
             <m.div
-              className="w-full flex justify-center"
+              className="m-auto w-full flex justify-center"
               initial={
                 reduced ? { opacity: 0 } : { opacity: 0, y: 16, scale: 0.98 }
               }

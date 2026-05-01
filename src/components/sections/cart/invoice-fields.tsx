@@ -15,13 +15,12 @@ export function InvoiceFields({ form, disabled }: InvoiceFieldsPropsT) {
   const format = useStore(form.store, (s) => s.values.format);
   const useShippingAsInvoice = useStore(
     form.store,
-    (s) => s.values.useShippingAsInvoice,
+    (s) => s.values.useShippingAsInvoice
   );
-  const showInvoiceAddress =
-    format === "digital" || !useShippingAsInvoice;
+  const showInvoiceAddress = format === "digital" || !useShippingAsInvoice;
   return (
     <div className="flex flex-col gap-3">
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-[3fr_1fr]">
         <form.Field name="companyName">
           {(field: AnyFieldApi) => (
             <FormTextInput
@@ -29,6 +28,7 @@ export function InvoiceFields({ form, disabled }: InvoiceFieldsPropsT) {
               label="Nazwa firmy"
               autoComplete="organization"
               disabled={disabled}
+              required
             />
           )}
         </form.Field>
@@ -40,6 +40,7 @@ export function InvoiceFields({ form, disabled }: InvoiceFieldsPropsT) {
               placeholder="10 cyfr"
               inputMode="numeric"
               disabled={disabled}
+              required
             />
           )}
         </form.Field>

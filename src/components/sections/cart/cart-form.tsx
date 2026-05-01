@@ -15,6 +15,7 @@ import type { Product } from "@/payload-types";
 import { BuyerFields } from "./buyer-fields";
 import { ShippingFields } from "./shipping-fields";
 import { InvoiceFields } from "./invoice-fields";
+import { cn } from "@/helpers/cn";
 
 type CartFormPropsT = {
   product: Product;
@@ -87,8 +88,10 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
         </>
       )}
 
-      {wantsInvoice && <FormSeparator className={`mb-4`} />}
-      <div className="flex flex-col gap-3 mt-2">
+      {wantsInvoice && <FormSeparator className={``} />}
+      <div
+        className={cn("flex flex-col gap-3", wantsInvoice ? "mt-0" : "mt-2")}
+      >
         <form.Field name="wantsInvoice">
           {(field: AnyFieldApi) => (
             <FormCheckbox field={field} label="Chcę fakturę VAT" />
@@ -118,7 +121,7 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
                     label="Ilość"
                     type="number"
                     inputMode="numeric"
-                    className="max-w-[8rem]"
+                    className="max-w-20"
                   />
                 )}
               </form.Field>

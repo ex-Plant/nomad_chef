@@ -3,10 +3,16 @@ import { cn } from "@/helpers/cn";
 type FormLabelPropsT = {
   htmlFor: string;
   children: React.ReactNode;
+  required?: boolean;
   className?: string;
 };
 
-export function FormLabel({ htmlFor, children, className }: FormLabelPropsT) {
+export function FormLabel({
+  htmlFor,
+  children,
+  required,
+  className,
+}: FormLabelPropsT) {
   return (
     <label
       htmlFor={htmlFor}
@@ -16,6 +22,11 @@ export function FormLabel({ htmlFor, children, className }: FormLabelPropsT) {
       )}
     >
       {children}
+      {required && (
+        <span aria-hidden="true" className="ml-0.5 text-yellow">
+          *
+        </span>
+      )}
     </label>
   );
 }
