@@ -294,6 +294,9 @@ export interface Order {
   notes?: string | null;
   paidAt?: string | null;
   fulfilledAt?: string | null;
+  confirmationEmailStatus: 'pending' | 'sent' | 'failed';
+  confirmationEmailSentAt?: string | null;
+  confirmationEmailError?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -510,6 +513,9 @@ export interface OrdersSelect<T extends boolean = true> {
   notes?: T;
   paidAt?: T;
   fulfilledAt?: T;
+  confirmationEmailStatus?: T;
+  confirmationEmailSentAt?: T;
+  confirmationEmailError?: T;
   updatedAt?: T;
   createdAt?: T;
 }

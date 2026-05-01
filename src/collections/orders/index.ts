@@ -252,5 +252,31 @@ export const Orders: CollectionConfig = {
       type: "date",
       admin: { readOnly: true },
     },
+    {
+      name: "confirmationEmailStatus",
+      type: "select",
+      required: true,
+      defaultValue: "pending",
+      index: true,
+      admin: { readOnly: true },
+      label: { pl: "Status e-maila potwierdzającego", en: "Confirmation email status" },
+      options: [
+        { label: { pl: "Oczekuje", en: "Pending" }, value: "pending" },
+        { label: { pl: "Wysłany", en: "Sent" }, value: "sent" },
+        { label: { pl: "Nie wysłano", en: "Failed" }, value: "failed" },
+      ],
+    },
+    {
+      name: "confirmationEmailSentAt",
+      type: "date",
+      admin: { readOnly: true },
+      label: { pl: "E-mail wysłany o", en: "Email sent at" },
+    },
+    {
+      name: "confirmationEmailError",
+      type: "text",
+      admin: { readOnly: true },
+      label: { pl: "Błąd wysyłki e-maila", en: "Email send error" },
+    },
   ],
 };
