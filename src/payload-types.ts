@@ -199,7 +199,6 @@ export interface Customer {
         id?: string | null;
       }[]
     | null;
-  marketingConsent?: boolean | null;
   notes?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -268,7 +267,6 @@ export interface Order {
   vatAmount: number;
   currency: 'PLN';
   paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
-  paymentProvider?: string | null;
   paymentRef?: string | null;
   fulfillmentStatus: 'pending' | 'fulfilled' | 'shipped' | 'delivered';
   downloadToken?: string | null;
@@ -447,7 +445,6 @@ export interface CustomersSelect<T extends boolean = true> {
         country?: T;
         id?: T;
       };
-  marketingConsent?: T;
   notes?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -488,7 +485,6 @@ export interface OrdersSelect<T extends boolean = true> {
   vatAmount?: T;
   currency?: T;
   paymentStatus?: T;
-  paymentProvider?: T;
   paymentRef?: T;
   fulfillmentStatus?: T;
   downloadToken?: T;

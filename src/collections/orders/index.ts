@@ -124,6 +124,7 @@ export const Orders: CollectionConfig = {
       type: "select",
       required: true,
       defaultValue: "PLN",
+      label: { pl: "Waluta", en: "Currency" },
       options: [{ label: "PLN", value: "PLN" }],
     },
     {
@@ -132,17 +133,13 @@ export const Orders: CollectionConfig = {
       required: true,
       defaultValue: "pending",
       index: true,
+      label: { pl: "Status płatności", en: "Payment status" },
       options: [
         { label: { pl: "Oczekuje", en: "Pending" }, value: "pending" },
         { label: { pl: "Opłacone", en: "Paid" }, value: "paid" },
         { label: { pl: "Nieudane", en: "Failed" }, value: "failed" },
         { label: { pl: "Zwrot", en: "Refunded" }, value: "refunded" },
       ],
-    },
-    {
-      name: "paymentProvider",
-      type: "text",
-      label: { pl: "Operator płatności", en: "Payment provider" },
     },
     {
       name: "paymentRef",
@@ -155,6 +152,7 @@ export const Orders: CollectionConfig = {
       type: "select",
       required: true,
       defaultValue: "pending",
+      label: { pl: "Status realizacji", en: "Fulfillment status" },
       options: [
         { label: { pl: "Oczekuje", en: "Pending" }, value: "pending" },
         { label: { pl: "Wysłane / dostarczone", en: "Fulfilled" }, value: "fulfilled" },
@@ -175,6 +173,7 @@ export const Orders: CollectionConfig = {
       type: "number",
       defaultValue: 0,
       admin: { readOnly: true, condition: whenDigitalOrder },
+      label: { pl: "Liczba pobrań", en: "Download count" },
     },
     {
       name: "downloadLimit",
@@ -182,34 +181,68 @@ export const Orders: CollectionConfig = {
       defaultValue: 5,
       min: 1,
       admin: { condition: whenDigitalOrder },
+      label: { pl: "Limit pobrań", en: "Download limit" },
     },
     {
       name: "downloadExpiresAt",
       type: "date",
       admin: { readOnly: true, condition: whenDigitalOrder },
+      label: { pl: "Pobranie wygasa", en: "Download expires at" },
     },
     {
       name: "shippingAddress",
       type: "group",
       admin: { condition: whenPhysicalOrder },
+      label: { pl: "Adres dostawy", en: "Shipping address" },
       fields: [
-        { name: "firstName", type: "text" },
-        { name: "lastName", type: "text" },
-        { name: "line1", type: "text" },
-        { name: "line2", type: "text" },
-        { name: "city", type: "text" },
-        { name: "postalCode", type: "text" },
-        { name: "country", type: "text", defaultValue: "PL" },
+        {
+          name: "firstName",
+          type: "text",
+          label: { pl: "Imię", en: "First name" },
+        },
+        {
+          name: "lastName",
+          type: "text",
+          label: { pl: "Nazwisko", en: "Last name" },
+        },
+        {
+          name: "line1",
+          type: "text",
+          label: { pl: "Ulica i numer", en: "Street and number" },
+        },
+        {
+          name: "line2",
+          type: "text",
+          label: { pl: "Lokal", en: "Apt / suite" },
+        },
+        {
+          name: "city",
+          type: "text",
+          label: { pl: "Miasto", en: "City" },
+        },
+        {
+          name: "postalCode",
+          type: "text",
+          label: { pl: "Kod pocztowy", en: "Postal code" },
+        },
+        {
+          name: "country",
+          type: "text",
+          defaultValue: "PL",
+          label: { pl: "Kraj", en: "Country" },
+        },
       ],
     },
     {
       name: "tracking",
       type: "text",
       admin: { condition: whenPhysicalOrder },
+      label: { pl: "Numer przesyłki", en: "Tracking number" },
     },
     {
       name: "courier",
       type: "select",
+      label: { pl: "Kurier", en: "Courier" },
       options: [
         { label: "InPost", value: "inpost" },
         { label: "DPD", value: "dpd" },
@@ -223,6 +256,7 @@ export const Orders: CollectionConfig = {
       name: "shippedAt",
       type: "date",
       admin: { condition: whenPhysicalOrder },
+      label: { pl: "Data wysyłki", en: "Shipped at" },
     },
     {
       name: "wantsInvoice",
@@ -246,11 +280,13 @@ export const Orders: CollectionConfig = {
       name: "paidAt",
       type: "date",
       admin: { readOnly: true },
+      label: { pl: "Data opłacenia", en: "Paid at" },
     },
     {
       name: "fulfilledAt",
       type: "date",
       admin: { readOnly: true },
+      label: { pl: "Data realizacji", en: "Fulfilled at" },
     },
     {
       name: "confirmationEmailStatus",
@@ -269,7 +305,13 @@ export const Orders: CollectionConfig = {
     {
       name: "confirmationEmailSentAt",
       type: "date",
-      admin: { readOnly: true },
+      admin: {
+        readOnly: true,
+        date: {
+          pickerAppearance: "dayAndTime",
+          displayFormat: "yyyy-MM-dd HH:mm",
+        },
+      },
       label: { pl: "E-mail wysłany o", en: "Email sent at" },
     },
     {

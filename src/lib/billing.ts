@@ -18,5 +18,5 @@ export function generateDownloadToken(): string {
 }
 
 export function formatOrderNumber(year: number, sequence: number): string {
-  return `NC-${year}-${String(sequence).padStart(4, "0")}`;
+  return `${String(sequence).padStart(4, "0")}-${year}`;
 }

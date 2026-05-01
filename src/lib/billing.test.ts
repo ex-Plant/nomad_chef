@@ -49,13 +49,13 @@ describe("generateDownloadToken", () => {
 });
 
 describe("formatOrderNumber", () => {
-  it("formats year + zero-padded sequence", () => {
-    assert.equal(formatOrderNumber(2026, 1), "NC-2026-0001");
-    assert.equal(formatOrderNumber(2026, 42), "NC-2026-0042");
-    assert.equal(formatOrderNumber(2026, 9999), "NC-2026-9999");
+  it("formats zero-padded sequence + year", () => {
+    assert.equal(formatOrderNumber(2026, 1), "0001-2026");
+    assert.equal(formatOrderNumber(2026, 42), "0042-2026");
+    assert.equal(formatOrderNumber(2026, 9999), "9999-2026");
   });
 
   it("expands beyond 4 digits when needed", () => {
-    assert.equal(formatOrderNumber(2030, 12345), "NC-2030-12345");
+    assert.equal(formatOrderNumber(2030, 12345), "12345-2030");
   });
 });

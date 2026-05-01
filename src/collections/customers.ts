@@ -60,12 +60,6 @@ export const Customers: CollectionConfig = {
       ],
     },
     {
-      name: "marketingConsent",
-      type: "checkbox",
-      defaultValue: false,
-      label: { pl: "Zgoda na marketing", en: "Marketing consent" },
-    },
-    {
       name: "notes",
       type: "textarea",
       label: { pl: "Notatki", en: "Notes" },
