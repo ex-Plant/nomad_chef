@@ -154,7 +154,7 @@ function ModalDialog({
           aria-modal="true"
           aria-label={ariaLabel}
           className={cn(
-            "fixed inset-0 z-[500] overflow-y-auto overscroll-contain bg-off-black/40 p-4",
+            "fixed inset-0 z-[500] overflow-y-auto overscroll-contain bg-coral/40 p-4",
             className
           )}
           initial={{ opacity: 0 }}
