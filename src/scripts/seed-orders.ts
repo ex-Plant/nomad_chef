@@ -1,10 +1,14 @@
 import { getPayload } from "payload";
+import type { RequiredDataFromCollectionSlug } from "payload";
 import config from "@payload-config";
 import type { Customer, Product } from "@/payload-types";
 
 type FindOrCreateProductArgsT = {
   slug: string;
-  data: Omit<Parameters<Awaited<ReturnType<typeof getPayload>>["create"]>[0]["data"], "slug">;
+  data: Omit<
+    Parameters<Awaited<ReturnType<typeof getPayload>>["create"]>[0]["data"],
+    "slug"
+  >;
 };
 
 async function main() {
@@ -31,7 +35,9 @@ async function main() {
   })) as Product;
 
   console.log(`  digital  #${digital.id}  ${digital.priceGross} PLN`);
-  console.log(`  physical #${physical.id}  ${physical.priceGross} PLN  stock=${physical.stockQty}`);
+  console.log(
+    `  physical #${physical.id}  ${physical.priceGross} PLN  stock=${physical.stockQty}`
+  );
 
   console.log("→ customers");
   const consumer = (await findOrCreateCustomer(payload, "anna@test.local", {
@@ -65,7 +71,11 @@ async function main() {
   console.log(`  consumer #${consumer.id}  ${consumer.email}`);
   console.log(`  business #${business.id}  ${business.email}`);
 
-  const existingOrders = await payload.find({ collection: "orders", limit: 1000, depth: 0 });
+  const existingOrders = await payload.find({
+    collection: "orders",
+    limit: 1000,
+    depth: 0,
+  });
   if (existingOrders.docs.length > 0) {
     console.log(`→ wiping ${existingOrders.docs.length} existing orders`);
     for (const o of existingOrders.docs) {
@@ -82,11 +92,36 @@ async function main() {
 
   console.log("→ orders");
   const blueprints = [
-    { customer: consumer.id, product: digital.id, quantity: 1, paymentStatus: "pending" as const },
-    { customer: consumer.id, product: digital.id, quantity: 1, paymentStatus: "paid" as const },
-    { customer: consumer.id, product: digital.id, quantity: 1, paymentStatus: "failed" as const },
-    { customer: consumer.id, product: physical.id, quantity: 1, paymentStatus: "pending" as const },
-    { customer: consumer.id, product: physical.id, quantity: 2, paymentStatus: "paid" as const },
+    {
+      customer: consumer.id,
+      product: digital.id,
+      quantity: 1,
+      paymentStatus: "pending" as const,
+    },
+    {
+      customer: consumer.id,
+      product: digital.id,
+      quantity: 1,
+      paymentStatus: "paid" as const,
+    },
+    {
+      customer: consumer.id,
+      product: digital.id,
+      quantity: 1,
+      paymentStatus: "failed" as const,
+    },
+    {
+      customer: consumer.id,
+      product: physical.id,
+      quantity: 1,
+      paymentStatus: "pending" as const,
+    },
+    {
+      customer: consumer.id,
+      product: physical.id,
+      quantity: 2,
+      paymentStatus: "paid" as const,
+    },
     {
       customer: business.id,
       product: physical.id,
@@ -97,7 +132,10 @@ async function main() {
   ];
 
   for (const data of blueprints) {
-    const order = await payload.create({ collection: "orders", data });
+    const order = await payload.create({
+      collection: "orders",
+      data: data as RequiredDataFromCollectionSlug<"orders">,
+    });
     console.log(
       `  ${order.orderNumber}  ${order.paymentStatus.padEnd(7)}  ${data.quantity}x  ${order.totalGross} PLN${
         data.wantsInvoice ? "  [invoice]" : ""
@@ -105,7 +143,10 @@ async function main() {
     );
   }
 
-  const finalStock = await payload.findByID({ collection: "products", id: physical.id });
+  const finalStock = await payload.findByID({
+    collection: "products",
+    id: physical.id,
+  });
   console.log(`\nphysical stockQty: 50 → ${finalStock.stockQty}`);
   console.log("Done.");
   process.exit(0);
@@ -114,7 +155,10 @@ async function main() {
 async function findOrCreateProduct(
   payload: Awaited<ReturnType<typeof getPayload>>,
   slug: string,
-  data: Omit<Product, "id" | "slug" | "createdAt" | "updatedAt" | "sizes" | "priceNet">
+  data: Omit<
+    Product,
+    "id" | "slug" | "createdAt" | "updatedAt" | "sizes" | "priceNet"
+  >
 ) {
   const existing = await payload.find({
     collection: "products",
