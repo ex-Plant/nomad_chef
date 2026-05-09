@@ -204,9 +204,11 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
 
   // Best-effort confirmation email. The order is already committed; email failure
   // only affects the email status field, which can be retried manually from admin.
+  // TODO: send a separate confirmation email to the customer (values.email)
+  // once payment is received — not on order creation.
   try {
     await sendEmail({
-      to: ENV.EMAIL_TO,
+      to: ENV.EMAIL_USER,
       subject: `Nowe zamówienie ${order.orderNumber}`,
       text: buildOrderEmailText(values, order, product),
     });
