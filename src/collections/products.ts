@@ -1,4 +1,5 @@
 import type { Access, CollectionBeforeChangeHook, CollectionConfig } from "payload";
+import { revalidateTag } from "next/cache";
 import { calcVat } from "@/lib/billing";
 
 const requireAuth: Access = ({ req: { user } }) => Boolean(user);
@@ -19,6 +20,20 @@ export const Products: CollectionConfig = {
   slug: "products",
   hooks: {
     beforeChange: [calculateNetPrice],
+    afterChange: [
+      ({ doc }) => {
+        try {
+          revalidateTag(`product:${doc.slug}`, "max");
+        } catch {}
+      },
+    ],
+    afterDelete: [
+      ({ doc }) => {
+        try {
+          revalidateTag(`product:${doc.slug}`, "max");
+        } catch {}
+      },
+    ],
   },
   labels: {
     singular: { pl: "Produkt", en: "Product" },
