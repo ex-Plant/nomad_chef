@@ -9,7 +9,7 @@ export function FormSeparator({ className }: FormSeparatorPropsT) {
     <div
       role="separator"
       aria-hidden
-      className={cn("h-[1px] rounded-full bg-yellow my-8", className)}
+      className={cn("bg-yellow my-6 h-[1px] rounded-full", className)}
     />
   );
 }

@@ -1,4 +1,8 @@
-import type { Access, CollectionBeforeChangeHook, CollectionConfig } from "payload";
+import type {
+  Access,
+  CollectionBeforeChangeHook,
+  CollectionConfig,
+} from "payload";
 import { revalidateTag } from "next/cache";
 import { calcVat } from "@/lib/billing";
 
