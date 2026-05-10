@@ -144,7 +144,7 @@ export function CampFoodSwiper({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={SLIDE_TRANSITION}
-          className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 z-100"
+          className="absolute top-0 left-0 z-100 -translate-x-1/2 -translate-y-1/2"
           style={{ willChange: "opacity" }}
         >
           <Starburst color={slide.starburstColor} size="md" variant="v1-b" />
@@ -172,20 +172,20 @@ export function CampFoodSwiper({
           {data.eyebrow}
         </EyebrowTag>
 
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8 ">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           {/* Text — left side */}
           <div className="flex flex-col justify-center md:col-span-5 md:col-start-1">
             <BodyText className="text-white/90">{data.kicker}</BodyText>
 
             <ScatterText
-              className={`mt-4 text-heading-lg tracking-tight `}
+              className={`text-heading-lg mt-4 tracking-tight`}
               lines={data.headingLines.map((line) => ({
                 ...line,
                 className: slide.headlineColor,
               }))}
             />
 
-            <div className="relative mt-6 min-h-12 sm:min-h-14 ">
+            <div className="relative mt-6 min-h-12 sm:min-h-14">
               <AnimatePresence>
                 <m.p
                   key={activeIndex}
@@ -193,8 +193,7 @@ export function CampFoodSwiper({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={SLIDE_TRANSITION}
-                  className={`absolute inset-0 max-w-[240px] sm:max-w-[36ch]  text-body-lg
-                    font-sans text-sm sm:text-base whitespace-pre-line ${slide.subtitleColor}`}
+                  className={`text-body-lg absolute inset-0 max-w-[240px] font-sans text-sm whitespace-pre-line sm:max-w-[36ch] sm:text-base ${slide.subtitleColor}`}
                 >
                   {slide.description}
                 </m.p>
@@ -214,7 +213,7 @@ export function CampFoodSwiper({
           </div>
 
           {/* Ebook cover — single large image, right side */}
-          <div className="relative h-[40vh] md:h-[min(65lvh,800px)] md:col-span-7 md:col-start-6 ">
+          <div className="relative h-[40vh] md:col-span-7 md:col-start-6 md:h-[min(65lvh,800px)]">
             <AnimatePresence>
               <m.div
                 key={activeIndex}
@@ -222,7 +221,7 @@ export function CampFoodSwiper({
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 exit={{ opacity: 0, scale: 0.95, rotate: 2 }}
                 transition={SLIDE_TRANSITION}
-                className="absolute inset-0 flex h-full items-center justify-center z-4"
+                className="absolute inset-0 z-4 flex h-full items-center justify-center"
                 style={{ willChange: "transform, opacity" }}
               >
                 {slide.image && (

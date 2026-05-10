@@ -122,11 +122,7 @@ export const Site: GlobalConfig = {
               maxRows: 2,
               fields: [
                 text("label", { pl: "Etykieta", en: "Label" }),
-                text(
-                  "href",
-                  { pl: "Link", en: "Link" },
-                  { localized: false },
-                ),
+                text("href", { pl: "Link", en: "Link" }, { localized: false }),
               ],
             },
           ],

@@ -139,7 +139,10 @@ describe("cartFormSchema — physical, no invoice", () => {
   });
 
   it("rejects malformed shipping postal", () => {
-    const r = cartFormSchema.safeParse({ ...base, shippingPostalCode: "00001" });
+    const r = cartFormSchema.safeParse({
+      ...base,
+      shippingPostalCode: "00001",
+    });
     assert.equal(r.success, false);
   });
 });

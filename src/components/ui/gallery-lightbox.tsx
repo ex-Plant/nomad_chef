@@ -70,7 +70,7 @@ export function GalleryLightbox({
   return (
     <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-300 bg-black data-[state=open]:animate-in data-[state=open]:fade-in data-[state=closed]:animate-out data-[state=closed]:fade-out" />
+        <Dialog.Overlay className="data-[state=open]:animate-in data-[state=open]:fade-in data-[state=closed]:animate-out data-[state=closed]:fade-out fixed inset-0 z-300 bg-black" />
         <Dialog.Content
           aria-describedby={undefined}
           className="fixed inset-0 z-300 outline-none"
@@ -83,7 +83,7 @@ export function GalleryLightbox({
                 /* Preload neighbors of the current slide so swipes feel instant. */
                 const distance = Math.min(
                   Math.abs(i - selectedIndex),
-                  images.length - Math.abs(i - selectedIndex)
+                  images.length - Math.abs(i - selectedIndex),
                 );
                 const isNearby = distance <= 1;
                 return (
@@ -117,13 +117,13 @@ export function GalleryLightbox({
               variant="yellow"
               size="icon-sm"
               aria-label="Zamknij"
-              className="absolute right-6 top-6 z-10"
+              className="absolute top-6 right-6 z-10"
             >
               <X size={20} strokeWidth={2.5} aria-hidden="true" />
             </Button>
           </Dialog.Close>
 
-          <div className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 font-geist text-sm text-yellow">
+          <div className="font-geist text-yellow absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-sm">
             {selectedIndex + 1} / {images.length}
           </div>
 
@@ -132,7 +132,7 @@ export function GalleryLightbox({
             size="icon-sm"
             onClick={scrollPrev}
             aria-label="Poprzednie zdjęcie"
-            className="absolute left-6 top-1/2 z-10 hidden -translate-y-1/2 md:inline-flex"
+            className="absolute top-1/2 left-6 z-10 hidden -translate-y-1/2 md:inline-flex"
           >
             <ArrowLeft size={20} strokeWidth={2.5} aria-hidden="true" />
           </Button>
@@ -141,7 +141,7 @@ export function GalleryLightbox({
             size="icon-sm"
             onClick={scrollNext}
             aria-label="Następne zdjęcie"
-            className="absolute right-6 top-1/2 z-10 hidden -translate-y-1/2 md:inline-flex"
+            className="absolute top-1/2 right-6 z-10 hidden -translate-y-1/2 md:inline-flex"
           >
             <ArrowRight size={20} strokeWidth={2.5} aria-hidden="true" />
           </Button>

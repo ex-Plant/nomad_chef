@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { AnyFieldApi } from "@tanstack/react-form";
+import { FormError } from "./form-error";
 
 type FieldShellPropsT = {
   field: AnyFieldApi;
@@ -14,12 +15,12 @@ export function FieldShell({ field, children }: FieldShellPropsT) {
     <div className="relative h-fit">
       {children}
       {hasErrors && (
-        <p id={errorId} role="alert" className="mt-1 px-1 text-sm text-error">
+        <FormError id={errorId}>
           {errors
             .map((e) => (typeof e === "string" ? e : (e?.message ?? "")))
             .filter(Boolean)
             .join(", ")}
-        </p>
+        </FormError>
       )}
     </div>
   );

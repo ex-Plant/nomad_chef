@@ -39,15 +39,31 @@ export const cartFormSchema = z
   .superRefine((data, ctx) => {
     if (data.format === "physical") {
       if (!data.shippingLine1)
-        ctx.addIssue({ path: ["shippingLine1"], code: "custom", message: "Wymagane" });
+        ctx.addIssue({
+          path: ["shippingLine1"],
+          code: "custom",
+          message: "Wymagane",
+        });
       if (!data.shippingCity)
-        ctx.addIssue({ path: ["shippingCity"], code: "custom", message: "Wymagane" });
+        ctx.addIssue({
+          path: ["shippingCity"],
+          code: "custom",
+          message: "Wymagane",
+        });
       if (!POSTAL_CODE_RE.test(data.shippingPostalCode))
-        ctx.addIssue({ path: ["shippingPostalCode"], code: "custom", message: "Format: 00-000" });
+        ctx.addIssue({
+          path: ["shippingPostalCode"],
+          code: "custom",
+          message: "Format: 00-000",
+        });
     }
     if (data.wantsInvoice) {
       if (!data.companyName)
-        ctx.addIssue({ path: ["companyName"], code: "custom", message: "Wymagane" });
+        ctx.addIssue({
+          path: ["companyName"],
+          code: "custom",
+          message: "Wymagane",
+        });
       if (!NIP_RE.test(data.nip))
         ctx.addIssue({
           path: ["nip"],
@@ -58,11 +74,23 @@ export const cartFormSchema = z
         data.format === "digital" || !data.useShippingAsInvoice;
       if (needsInvoiceAddress) {
         if (!data.invoiceLine1)
-          ctx.addIssue({ path: ["invoiceLine1"], code: "custom", message: "Wymagane" });
+          ctx.addIssue({
+            path: ["invoiceLine1"],
+            code: "custom",
+            message: "Wymagane",
+          });
         if (!data.invoiceCity)
-          ctx.addIssue({ path: ["invoiceCity"], code: "custom", message: "Wymagane" });
+          ctx.addIssue({
+            path: ["invoiceCity"],
+            code: "custom",
+            message: "Wymagane",
+          });
         if (!POSTAL_CODE_RE.test(data.invoicePostalCode))
-          ctx.addIssue({ path: ["invoicePostalCode"], code: "custom", message: "Format: 00-000" });
+          ctx.addIssue({
+            path: ["invoicePostalCode"],
+            code: "custom",
+            message: "Format: 00-000",
+          });
       }
     }
   });

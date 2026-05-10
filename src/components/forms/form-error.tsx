@@ -12,7 +12,7 @@ export function FormError({ id, className, children }: FormErrorPropsT) {
     <p
       id={id}
       role="alert"
-      className={cn("mt-1 px-1 text-sm font-bold text-error", className)}
+      className={cn("text-error mt-1 px-1 text-sm font-bold", className)}
     >
       {children}
     </p>

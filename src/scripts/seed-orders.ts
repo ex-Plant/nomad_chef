@@ -36,7 +36,7 @@ async function main() {
 
   console.log(`  digital  #${digital.id}  ${digital.priceGross} PLN`);
   console.log(
-    `  physical #${physical.id}  ${physical.priceGross} PLN  stock=${physical.stockQty}`
+    `  physical #${physical.id}  ${physical.priceGross} PLN  stock=${physical.stockQty}`,
   );
 
   console.log("→ customers");
@@ -139,7 +139,7 @@ async function main() {
     console.log(
       `  ${order.orderNumber}  ${order.paymentStatus.padEnd(7)}  ${data.quantity}x  ${order.totalGross} PLN${
         data.wantsInvoice ? "  [invoice]" : ""
-      }`
+      }`,
     );
   }
 
@@ -158,7 +158,7 @@ async function findOrCreateProduct(
   data: Omit<
     Product,
     "id" | "slug" | "createdAt" | "updatedAt" | "sizes" | "priceNet"
-  >
+  >,
 ) {
   const existing = await payload.find({
     collection: "products",
@@ -172,7 +172,7 @@ async function findOrCreateProduct(
 async function findOrCreateCustomer(
   payload: Awaited<ReturnType<typeof getPayload>>,
   email: string,
-  data: Omit<Customer, "id" | "email" | "createdAt" | "updatedAt">
+  data: Omit<Customer, "id" | "email" | "createdAt" | "updatedAt">,
 ) {
   const existing = await payload.find({
     collection: "customers",

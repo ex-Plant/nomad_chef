@@ -34,7 +34,7 @@ export function CartDialog({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-[28rem] md:max-w-[42rem] max-h-[calc(100dvh-2rem)] flex flex-col rounded-lg bg-coral relative overflow-clip ring-[2px] ring-yellow"
+        className="bg-coral ring-yellow relative flex max-h-[calc(100dvh-2rem)] w-full max-w-[28rem] flex-col overflow-clip rounded-lg ring-[2px] md:max-w-[42rem]"
       >
         <div
           aria-hidden
@@ -44,8 +44,8 @@ export function CartDialog({
         </div>
 
         <div className="relative z-10 overflow-y-auto overscroll-contain p-6 md:p-8">
-          <div className="flex items-start justify-between gap-8 mb-4">
-            <h3 className="font-display text-2xl uppercase text-electric-blue">
+          <div className="mb-4 flex items-start justify-between gap-8">
+            <h3 className="font-display text-electric-blue text-2xl uppercase">
               {product.title}
             </h3>
             <CloseToggle

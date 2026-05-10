@@ -15,7 +15,7 @@ type ContactPropsT = { data: SiteT["contact"] };
 
 export function Contact({ data }: ContactPropsT) {
   return (
-    <Section id={SECTION_IDS.contact} className="bg-yellow min-h-none ">
+    <Section id={SECTION_IDS.contact} className="bg-yellow min-h-none">
       {/* <Starburst
         color="pink"
         rotate
@@ -23,7 +23,7 @@ export function Contact({ data }: ContactPropsT) {
         className="absolute -right-8 bottom-12 z-0 w-36 md:-right-6 md:bottom-2 md:w-44 lg:w-52"
       /> */}
 
-      <SectionContent className="relative z-1 ">
+      <SectionContent className="relative z-1">
         {/* Eyebrow */}
         <EyebrowTag color="coral" withLine>
           {data.eyebrow}
@@ -32,7 +32,7 @@ export function Contact({ data }: ContactPropsT) {
         {/* Asymmetric split: massive heading left, form/links right */}
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           {/* Left — large heading block */}
-          <div className="md:col-span-7 flex flex-col justify-center leading-loose ">
+          <div className="flex flex-col justify-center leading-loose md:col-span-7">
             <ScatterText
               className="text-heading-lg leading-[95%]"
               lines={data.headingLines}
@@ -41,7 +41,7 @@ export function Contact({ data }: ContactPropsT) {
             <FadeUp
               as="p"
               delay={0.2}
-              className=" max-w-md text-subtitle-lg text-coral whitespace-pre-line"
+              className="text-subtitle-lg text-coral max-w-md whitespace-pre-line"
             >
               {data.lead}
             </FadeUp>
@@ -49,7 +49,7 @@ export function Contact({ data }: ContactPropsT) {
             {data.description && (
               <BodyText
                 delay={0.6}
-                className="mt-4 md:pl-2 whitespace-pre-line text-coral  "
+                className="text-coral mt-4 whitespace-pre-line md:pl-2"
               >
                 {data.description}
               </BodyText>
@@ -87,13 +87,9 @@ export function Contact({ data }: ContactPropsT) {
         </div>
 
         {/* Footer accent */}
-        <FadeUp
-          delay={0.2}
-          amount={0.5}
-          className="mt-16 text-coral"
-        >
+        <FadeUp delay={0.2} amount={0.5} className="text-coral mt-16">
           {/* Brand mark line — divider above (matches original full-strength line) */}
-          <div className="flex items-center justify-between text-heading text-sm tracking-tight border-t border-coral mt-8 pt-8">
+          <div className="text-heading border-coral mt-8 flex items-center justify-between border-t pt-8 text-sm tracking-tight">
             <span>{data.footer}</span>
             <span>{2026}</span>
           </div>

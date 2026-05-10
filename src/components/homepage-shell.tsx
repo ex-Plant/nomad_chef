@@ -35,7 +35,7 @@ export function HomepageShell({ site, digitalProduct }: HomepageShellPropsT) {
   return (
     <>
       <Nav items={site.nav} />
-      <main className="relative bg-warm-white">
+      <main className="bg-warm-white relative">
         <GrainOverlay position="fixed" zIndex="z-[600]" />
         <Hero data={site.hero} videoRef={videoRef} isReady={isReady} />
         <div className={isReady ? `opacity-100` : `opacity-0`}>

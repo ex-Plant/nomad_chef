@@ -122,10 +122,13 @@ type RawMedia = {
 };
 // Append ?v=<updatedAt-ms> so replacing a file in Payload (which keeps the same
 // URL) produces a fresh key for Next's image optimizer and browser caches.
-const toMedia = (m: number | RawMedia | null | undefined): MediaT | undefined => {
+const toMedia = (
+  m: number | RawMedia | null | undefined,
+): MediaT | undefined => {
   if (!m || typeof m === "number" || !m.url) return undefined;
   const version = m.updatedAt ? Date.parse(m.updatedAt) : undefined;
-  const url = version && !Number.isNaN(version) ? `${m.url}?v=${version}` : m.url;
+  const url =
+    version && !Number.isNaN(version) ? `${m.url}?v=${version}` : m.url;
   return {
     url,
     mimeType: m.mimeType ?? "",
