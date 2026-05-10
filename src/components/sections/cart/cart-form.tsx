@@ -106,21 +106,7 @@ export function CartForm({
           <ShippingFields form={form} />
         </>
       )}
-
-      {wantsInvoice && <FormSeparator className={``} />}
-      <div
-        className={cn("flex flex-col gap-3", wantsInvoice ? "mt-0" : "mt-2")}
-      >
-        <form.Field name="wantsInvoice">
-          {(field: AnyFieldApi) => (
-            <FormCheckbox field={field} label="Chcę fakturę VAT" />
-          )}
-        </form.Field>
-        {wantsInvoice && <InvoiceFields form={form} />}
-      </div>
-
-      <FormSeparator />
-      <div className="flex flex-col gap-2">
+      <div className="mt-2 flex flex-col gap-2">
         <form.Field name="acceptsTerms">
           {(field: AnyFieldApi) => (
             <FormCheckbox
@@ -160,7 +146,20 @@ export function CartForm({
         </form.Field>
       </div>
 
+      {wantsInvoice && <FormSeparator className={``} />}
+      <div
+        className={cn("flex flex-col gap-3", wantsInvoice ? "mt-0" : "mt-2")}
+      >
+        <form.Field name="wantsInvoice">
+          {(field: AnyFieldApi) => (
+            <FormCheckbox field={field} label="Chcę fakturę VAT" />
+          )}
+        </form.Field>
+        {wantsInvoice && <InvoiceFields form={form} />}
+      </div>
+
       <FormSeparator />
+
       <form.Subscribe
         selector={(s) => ({
           canSubmit: s.canSubmit,

@@ -109,7 +109,8 @@ export function ServicesParallax({ data }: ServicesPropsT) {
         const trackTy = -progress * maxTrackTranslate;
         stage.style.transform = `translate3d(0, ${ty}px, 0)`;
         track.style.transform = `translate3d(0, ${trackTy}px, 0)`;
-        if (eyebrow) eyebrow.style.transform = `translate3d(0, ${trackTy}px, 0)`;
+        if (eyebrow)
+          eyebrow.style.transform = `translate3d(0, ${trackTy}px, 0)`;
         imageWrap.style.transform = `translateY(${-progress * IMAGE_TRAVEL_PCT}%)`;
 
         const offset = progress * travelUnits;
@@ -152,14 +153,14 @@ export function ServicesParallax({ data }: ServicesPropsT) {
         ScrollTrigger.normalizeScroll(false);
       };
     },
-    { scope: sectionRef, dependencies: [slideCount, reducedMotion] }
+    { scope: sectionRef, dependencies: [slideCount, reducedMotion] },
   );
 
   return (
     <div
       ref={sectionRef}
       id={SECTION_IDS.services}
-      className="relative z-1 overflow-clip bg-off-black"
+      className="bg-off-black relative z-1 overflow-clip"
       style={{
         height: `calc(${(slideCount - 1 + EXIT_BUFFER) * SLIDE_HEIGHT_LVH + STAGE_COVERAGE_LVH}lvh)`,
       }}
@@ -192,7 +193,7 @@ export function ServicesParallax({ data }: ServicesPropsT) {
 
         <div
           ref={trackRef}
-          className="absolute left-0 flex w-screen flex-col items-stretch will-change-transform z-10"
+          className="absolute left-0 z-10 flex w-screen flex-col items-stretch will-change-transform"
           style={{
             top: `${STAGE_OFFSET_LVH}lvh`,
             height: `${slideCount * SLIDE_HEIGHT_LVH}lvh`,

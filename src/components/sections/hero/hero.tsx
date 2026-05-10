@@ -43,7 +43,7 @@ export function Hero({ data, videoRef, isReady }: HeroPropsT) {
   // server HTML never embeds a src — avoids the browser preloading the wrong
   // variant before hydration can correct it.
   const isPortraitMobile = useMediaQuery(
-    "(orientation: portrait) and (max-width: 767px)"
+    "(orientation: portrait) and (max-width: 767px)",
   );
 
   const videoSrc = isPortraitMobile ? VIDEO_MOBILE_SRC : VIDEO_DESKTOP_SRC;
@@ -75,11 +75,11 @@ export function Hero({ data, videoRef, isReady }: HeroPropsT) {
         },
       });
     },
-    { scope: sectionRef, dependencies: [isReady, reducedMotion] }
+    { scope: sectionRef, dependencies: [isReady, reducedMotion] },
   );
 
   return (
-    <Section ref={sectionRef} id={SECTION_IDS.hero} className=" min-h-lvh">
+    <Section ref={sectionRef} id={SECTION_IDS.hero} className="min-h-lvh">
       {/* Primary background media with parallax */}
       <div
         ref={imageRef}
@@ -115,13 +115,13 @@ export function Hero({ data, videoRef, isReady }: HeroPropsT) {
           preload="auto"
           className="relative min-h-full min-w-full object-cover"
         />
-        <div className="absolute inset-0 bg-coral/20" />
+        <div className="bg-coral/20 absolute inset-0" />
         <div className="absolute inset-0 bg-black/30" />
       </div>
 
       {/* Coral loader overlay — blocks content until video actually plays (or 3s fallback) */}
       <div
-        className={`absolute top-0 right-0 left-0 h-[110lvh] z-20 bg-coral transition-opacity duration-2000 ${
+        className={`bg-coral absolute top-0 right-0 left-0 z-20 h-[110lvh] transition-opacity duration-2000 ${
           isReady ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
       >
@@ -130,33 +130,31 @@ export function Hero({ data, videoRef, isReady }: HeroPropsT) {
 
       {/* Asymmetric layout: text left, floating image right */}
       {isReady && (
-        <SectionContent className="relative z-10 flex flex-1 flex-col justify-end md:flex-row md:items-end md:justify-between pb-12 ">
+        <SectionContent className="relative z-10 flex flex-1 flex-col justify-end pb-12 md:flex-row md:items-end md:justify-between">
           {/* Left text block — pushed to bottom-left */}
-          <div ref={textRef} className="relative text-white ">
+          <div ref={textRef} className="relative text-white">
             <div
               aria-hidden
-              className="pointer-events-none absolute -inset-16 -z-10 
-              "
+              className="pointer-events-none absolute -inset-16 -z-10"
             />
             <BodyText
               trigger="mount"
               delay={1.4}
-              className="mb-2 md:pl-2 whitespace-pre-line
-              "
+              className="mb-2 whitespace-pre-line md:pl-2"
             >
               {data.tagline}
             </BodyText>
             <ScatterText
               as="h1"
               triggerOnMount
-              className="font-display text-6xl sm:text-8xl uppercase leading-[0.85] tracking-[-0.05em] md:text-9xl lg:text-[10rem]"
+              className="font-display text-6xl leading-[0.85] tracking-[-0.05em] uppercase sm:text-8xl md:text-9xl lg:text-[10rem]"
               lines={data.headingLines}
             />
 
             <BodyText
               trigger="mount"
               delay={1.8}
-              className="mt-6 md:pl-2 whitespace-pre-line"
+              className="mt-6 whitespace-pre-line md:pl-2"
             >
               {data.lead}
             </BodyText>

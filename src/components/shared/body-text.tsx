@@ -9,8 +9,8 @@ export function BodyText({ className, ...props }: BodyTextPropsT) {
     <FadeUp
       as="p"
       className={cn(
-        "font-sans text-sm max-w-[320px] sm:text-base sm:max-w-sm md:max-w-lg",
-        className
+        "max-w-[325px] font-sans text-sm sm:max-w-sm sm:text-base md:max-w-lg",
+        className,
       )}
       {...props}
     />
