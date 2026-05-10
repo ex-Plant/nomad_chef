@@ -57,6 +57,7 @@ export function ServicesParallax({ data }: ServicesPropsT) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const eyebrowRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
   const reducedMotion = useReducedMotion();
@@ -71,6 +72,7 @@ export function ServicesParallax({ data }: ServicesPropsT) {
       const section = sectionRef.current;
       const stage = stageRef.current;
       const track = trackRef.current;
+      const eyebrow = eyebrowRef.current;
       const imageWrap = imageRef.current;
       if (!section || !stage || !track || !imageWrap) return;
 
@@ -107,6 +109,7 @@ export function ServicesParallax({ data }: ServicesPropsT) {
         const trackTy = -progress * maxTrackTranslate;
         stage.style.transform = `translate3d(0, ${ty}px, 0)`;
         track.style.transform = `translate3d(0, ${trackTy}px, 0)`;
+        if (eyebrow) eyebrow.style.transform = `translate3d(0, ${trackTy}px, 0)`;
         imageWrap.style.transform = `translateY(${-progress * IMAGE_TRAVEL_PCT}%)`;
 
         const offset = progress * travelUnits;
@@ -172,9 +175,12 @@ export function ServicesParallax({ data }: ServicesPropsT) {
         <ServicesBackground data={data} imageRef={imageRef} />
 
         {/* Eyebrow and track are offset by STAGE_OFFSET_LVH so they visually
-            sit at section-top, compensating the stage's upward extension. */}
+            sit at section-top, compensating the stage's upward extension.
+            Eyebrow gets the same trackTy translation so it slides up with
+            the slides instead of staying pinned. */}
         <div
-          className="absolute inset-x-0 z-20 pt-12"
+          ref={eyebrowRef}
+          className="absolute inset-x-0 z-20 pt-12 will-change-transform"
           style={{ top: `${STAGE_OFFSET_LVH}lvh` }}
         >
           <SectionContent>
