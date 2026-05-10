@@ -89,7 +89,7 @@ export function GalleryLightbox({
                 return (
                   <div
                     key={i}
-                    className="relative flex h-full min-w-0 flex-[0_0_100%] items-center justify-center px-6 pb-32 pt-12 md:px-24 md:py-16"
+                    className="relative flex h-full min-w-0 flex-[0_0_100%] items-center justify-center px-6 py-12 md:px-24 md:py-16"
                   >
                     <div className="relative h-full w-full">
                       {/* Always rendered underneath — the image paints over it once decoded. */}
@@ -123,27 +123,8 @@ export function GalleryLightbox({
             </Button>
           </Dialog.Close>
 
-          <div className="absolute bottom-24 left-1/2 z-10 -translate-x-1/2 font-geist text-sm text-yellow md:bottom-8">
+          <div className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 font-geist text-sm text-yellow">
             {selectedIndex + 1} / {images.length}
-          </div>
-
-          <div className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 gap-3 md:hidden">
-            <Button
-              variant="yellow"
-              size="icon-sm"
-              onClick={scrollPrev}
-              aria-label="Poprzednie zdjęcie"
-            >
-              <ArrowLeft size={20} strokeWidth={2.5} aria-hidden="true" />
-            </Button>
-            <Button
-              variant="yellow"
-              size="icon-sm"
-              onClick={scrollNext}
-              aria-label="Następne zdjęcie"
-            >
-              <ArrowRight size={20} strokeWidth={2.5} aria-hidden="true" />
-            </Button>
           </div>
 
           <Button
