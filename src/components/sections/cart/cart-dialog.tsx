@@ -4,10 +4,14 @@ import { Dialog } from "@/components/ui/dialog";
 import { Starburst } from "@/components/shared/starburst";
 import { CloseToggle } from "@/components/shared/close-toggle";
 import type { Product } from "@/payload-types";
+import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
+import type { SiteT } from "@/lib/get-site";
 import { CartForm } from "./cart-form";
 
 type CartDialogPropsT = {
   product: Product;
+  legal?: SerializedEditorState | null;
+  legalLinks?: SiteT["legalLinks"];
   isOpen: boolean;
   onClose: () => void;
   onOrderPlaced: (orderNumber: string, email: string) => void;
@@ -15,6 +19,8 @@ type CartDialogPropsT = {
 
 export function CartDialog({
   product,
+  legal = null,
+  legalLinks,
   isOpen,
   onClose,
   onOrderPlaced,
@@ -50,7 +56,12 @@ export function CartDialog({
             />
           </div>
 
-          <CartForm product={product} onSuccess={onOrderPlaced} />
+          <CartForm
+            product={product}
+            legal={legal}
+            legalLinks={legalLinks}
+            onSuccess={onOrderPlaced}
+          />
         </div>
       </div>
     </Dialog>

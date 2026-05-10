@@ -29,6 +29,12 @@ export const cartFormSchema = z
     invoicePostalCode: z.string().trim(),
     invoiceCountry: z.string().trim(),
     notes: z.string().trim().max(2000),
+    acceptsTerms: z.boolean().refine((v) => v === true, {
+      error: "Wymagana akceptacja regulaminu sprzedaży",
+    }),
+    acceptsPrivacy: z.boolean().refine((v) => v === true, {
+      error: "Wymagana akceptacja polityki prywatności",
+    }),
   })
   .superRefine((data, ctx) => {
     if (data.format === "physical") {
@@ -89,5 +95,7 @@ export function defaultCartValues(
     invoicePostalCode: "",
     invoiceCountry: "PL",
     notes: "",
+    acceptsTerms: false,
+    acceptsPrivacy: false,
   };
 }

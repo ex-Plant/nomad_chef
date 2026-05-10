@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Button } from "@/components/shared/button";
 import type { Product } from "@/payload-types";
+import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
+import type { SiteT } from "@/lib/get-site";
 import { CartDialog } from "./cart-dialog";
 import { CartSuccessDialog } from "./cart-success-dialog";
 
@@ -12,6 +14,8 @@ type CartBuyButtonPropsT = {
   variant?: React.ComponentProps<typeof Button>["variant"];
   size?: React.ComponentProps<typeof Button>["size"];
   className?: string;
+  legal?: SerializedEditorState | null;
+  legalLinks?: SiteT["legalLinks"];
 };
 
 type SuccessStateT = { orderNumber: string; email: string } | null;
@@ -22,6 +26,8 @@ export function CartBuyButton({
   variant = "coral-solid",
   size = "default",
   className,
+  legal = null,
+  legalLinks,
 }: CartBuyButtonPropsT) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [success, setSuccess] = useState<SuccessStateT>(null);
@@ -39,6 +45,8 @@ export function CartBuyButton({
       </Button>
       <CartDialog
         product={product}
+        legal={legal}
+        legalLinks={legalLinks}
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         onOrderPlaced={(orderNumber, email) => {

@@ -15,6 +15,7 @@ import { Media } from "@/collections/media";
 import { Customers } from "@/collections/customers";
 import { Products } from "@/collections/products";
 import { Orders } from "@/collections/orders";
+import { LegalPages } from "@/collections/legal-pages";
 import { Site } from "@/globals/site";
 import { ENV } from "@/config/env";
 
@@ -54,7 +55,7 @@ export default buildConfig({
       },
     }),
   }),
-  collections: [Users, Media, Customers, Products, Orders],
+  collections: [Users, Media, Customers, Products, Orders, LegalPages],
   globals: [Site],
   plugins: [
     vercelBlobStorage({

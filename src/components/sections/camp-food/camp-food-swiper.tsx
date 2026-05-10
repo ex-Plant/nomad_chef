@@ -10,6 +10,7 @@ import type {
   CampFoodThemeT,
   CampFoodOrientationT,
 } from "@/lib/get-site";
+import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import { Section } from "@/components/shared/section";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 import { CartBuyButton } from "@/components/sections/cart/cart-buy-button";
@@ -81,9 +82,16 @@ const SLIDE_TRANSITION = TRANSITION.slow;
 type CampFoodPropsT = {
   data: SiteT["campFood"];
   digitalProduct: Product | null;
+  legal: SerializedEditorState | null;
+  legalLinks: SiteT["legalLinks"];
 };
 
-export function CampFoodSwiper({ data, digitalProduct }: CampFoodPropsT) {
+export function CampFoodSwiper({
+  data,
+  digitalProduct,
+  legal,
+  legalLinks,
+}: CampFoodPropsT) {
   const slideCount = data.slides.length;
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -199,6 +207,8 @@ export function CampFoodSwiper({ data, digitalProduct }: CampFoodPropsT) {
                 label={data.cta.label}
                 variant={slide.buttonVariant}
                 size="compact"
+                legal={legal}
+                legalLinks={legalLinks}
               />
             </div>
           </div>

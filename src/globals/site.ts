@@ -353,6 +353,15 @@ export const Site: GlobalConfig = {
               pl: "Stopka",
               en: "Footer",
             }),
+            {
+              name: "contact_legal",
+              type: "richText",
+              label: {
+                pl: "Dane prawne (stopka)",
+                en: "Legal info (footer)",
+              },
+              localized: true,
+            },
           ],
         },
         {

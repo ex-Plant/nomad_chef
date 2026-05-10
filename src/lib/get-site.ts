@@ -2,7 +2,9 @@ import "server-only";
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { getPayload, type TypedLocale } from "payload";
+import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import config from "@/payload.config";
+import { LEGAL_SLUGS } from "@/config/legal";
 
 export type LocaleT = "pl" | "en";
 
@@ -19,6 +21,8 @@ export type MediaT = {
 
 export type CampFoodThemeT = "orange" | "blue";
 export type CampFoodOrientationT = "vertical" | "horizontal";
+
+export type LegalLinkT = { href: string; label: string };
 
 export type SiteT = {
   hero: {
@@ -71,10 +75,12 @@ export type SiteT = {
     formPlaceholder: string;
     submit: CtaT;
     footer: string;
+    legal: SerializedEditorState | null;
   };
   nav: { id: string; label: string }[];
   siteTitle: string;
   siteDescription: string;
+  legalLinks: { terms: LegalLinkT | null; privacy: LegalLinkT | null };
 };
 
 const colorToClass = (color: string | null | undefined): string | undefined => {
@@ -129,6 +135,23 @@ const toMedia = (m: number | RawMedia | null | undefined): MediaT | undefined =>
   };
 };
 
+const fetchLegalLink = async (
+  payload: Awaited<ReturnType<typeof getPayload>>,
+  slug: string,
+  locale: LocaleT,
+): Promise<LegalLinkT | null> => {
+  const result = await payload.find({
+    collection: "legal-pages",
+    where: { slug: { equals: slug } },
+    locale: locale as TypedLocale,
+    limit: 1,
+    depth: 0,
+  });
+  const doc = result.docs[0];
+  if (!doc?.link_label) return null;
+  return { href: `/${doc.slug}`, label: doc.link_label };
+};
+
 const fetchSite = (locale: LocaleT) =>
   unstable_cache(
     async (): Promise<SiteT> => {
@@ -138,6 +161,10 @@ const fetchSite = (locale: LocaleT) =>
         locale: locale as TypedLocale,
         depth: 1,
       });
+      const [terms, privacy] = await Promise.all([
+        fetchLegalLink(payload, LEGAL_SLUGS.terms, locale),
+        fetchLegalLink(payload, LEGAL_SLUGS.privacy, locale),
+      ]);
 
       return {
         hero: {
@@ -203,6 +230,7 @@ const fetchSite = (locale: LocaleT) =>
           formPlaceholder: raw.contact_form_placeholder ?? "",
           submit: toCta(raw.contact_submit),
           footer: raw.contact_footer ?? "",
+          legal: (raw.contact_legal as SerializedEditorState | null) ?? null,
         },
         nav: (raw.nav_items ?? []).map((n) => ({
           id: n.section_id ?? "",
@@ -210,10 +238,17 @@ const fetchSite = (locale: LocaleT) =>
         })),
         siteTitle: raw.site_title ?? "",
         siteDescription: raw.site_description ?? "",
+        legalLinks: { terms, privacy },
       };
     },
     ["site", locale],
-    { tags: ["site"] },
+    {
+      tags: [
+        "site",
+        `legal-page:${LEGAL_SLUGS.terms}`,
+        `legal-page:${LEGAL_SLUGS.privacy}`,
+      ],
+    },
   );
 
 export const getSite = cache(

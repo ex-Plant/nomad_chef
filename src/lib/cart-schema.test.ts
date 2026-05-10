@@ -24,6 +24,8 @@ const valid = {
   invoicePostalCode: "",
   invoiceCountry: "PL",
   notes: "",
+  acceptsTerms: true,
+  acceptsPrivacy: true,
 };
 
 describe("defaultCartValues", () => {
@@ -36,6 +38,18 @@ describe("defaultCartValues", () => {
     assert.equal(v.useShippingAsInvoice, true);
     assert.equal(v.shippingCountry, "PL");
     assert.equal(v.invoiceCountry, "PL");
+  });
+});
+
+describe("cartFormSchema — terms & privacy acceptance", () => {
+  it("rejects when acceptsTerms is false", () => {
+    const r = cartFormSchema.safeParse({ ...valid, acceptsTerms: false });
+    assert.equal(r.success, false);
+  });
+
+  it("rejects when acceptsPrivacy is false", () => {
+    const r = cartFormSchema.safeParse({ ...valid, acceptsPrivacy: false });
+    assert.equal(r.success, false);
   });
 });
 

@@ -16,6 +16,9 @@ import * as migration_20260429_170049 from './20260429_170049';
 import * as migration_20260501_133613 from './20260501_133613';
 import * as migration_20260501_140643 from './20260501_140643';
 import * as migration_20260501_142806 from './20260501_142806';
+import * as migration_20260510_171623_add_legal_pages from './20260510_171623_add_legal_pages';
+import * as migration_20260510_172312_add_contact_legal from './20260510_172312_add_contact_legal';
+import * as migration_20260510_174507_add_legal_link_label from './20260510_174507_add_legal_link_label';
 
 export const migrations = [
   {
@@ -106,6 +109,21 @@ export const migrations = [
   {
     up: migration_20260501_142806.up,
     down: migration_20260501_142806.down,
-    name: '20260501_142806'
+    name: '20260501_142806',
+  },
+  {
+    up: migration_20260510_171623_add_legal_pages.up,
+    down: migration_20260510_171623_add_legal_pages.down,
+    name: '20260510_171623_add_legal_pages',
+  },
+  {
+    up: migration_20260510_172312_add_contact_legal.up,
+    down: migration_20260510_172312_add_contact_legal.down,
+    name: '20260510_172312_add_contact_legal',
+  },
+  {
+    up: migration_20260510_174507_add_legal_link_label.up,
+    down: migration_20260510_174507_add_legal_link_label.down,
+    name: '20260510_174507_add_legal_link_label'
   },
 ];

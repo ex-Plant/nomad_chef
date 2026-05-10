@@ -90,10 +90,13 @@ export function Contact({ data }: ContactPropsT) {
         <FadeUp
           delay={0.2}
           amount={0.5}
-          className=" flex items-center justify-between border-t border-coral pt-8  mt-16 text-heading text-sm tracking-tight text-coral"
+          className="mt-16 text-coral"
         >
-          <span>{data.footer}</span>
-          <span>{2026}</span>
+          {/* Brand mark line — divider above (matches original full-strength line) */}
+          <div className="flex items-center justify-between text-heading text-sm tracking-tight border-t border-coral mt-8 pt-8">
+            <span>{data.footer}</span>
+            <span>{2026}</span>
+          </div>
         </FadeUp>
       </SectionContent>
     </Section>

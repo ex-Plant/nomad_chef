@@ -1,6 +1,11 @@
 "use client";
 
 import { useMemo } from "react";
+import Link from "next/link";
+import NextImage from "next/image";
+import p24Logo from "@/assets/przelewy24-logo.png";
+import { RichText } from "@payloadcms/richtext-lexical/react";
+import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import { useForm, useStore, type AnyFieldApi } from "@tanstack/react-form";
 import { useCartFormStore } from "@/stores/form-stores";
 import {
@@ -10,8 +15,15 @@ import {
 } from "@/lib/cart-schema";
 import { createOrder } from "@/lib/orders";
 import { Button } from "@/components/shared/button";
-import { FormCheckbox, FormSeparator, FormTextInput } from "@/components/forms";
+import {
+  FormCheckbox,
+  FormError,
+  FormSeparator,
+  FormTextInput,
+} from "@/components/forms";
 import type { Product } from "@/payload-types";
+import type { SiteT } from "@/lib/get-site";
+import { LEGAL_SLUGS } from "@/config/legal";
 import { BuyerFields } from "./buyer-fields";
 import { ShippingFields } from "./shipping-fields";
 import { InvoiceFields } from "./invoice-fields";
@@ -19,10 +31,17 @@ import { cn } from "@/helpers/cn";
 
 type CartFormPropsT = {
   product: Product;
+  legal?: SerializedEditorState | null;
+  legalLinks?: SiteT["legalLinks"];
   onSuccess: (orderNumber: string, email: string) => void;
 };
 
-export function CartForm({ product, onSuccess }: CartFormPropsT) {
+export function CartForm({
+  product,
+  legal = null,
+  legalLinks,
+  onSuccess,
+}: CartFormPropsT) {
   const storedValues = useCartFormStore((s) => s.formData);
   const updateFormData = useCartFormStore((s) => s.updateFormData);
   const resetFormData = useCartFormStore((s) => s.resetFormData);
@@ -30,7 +49,7 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
   const initialValues = useMemo<CartFormValuesT>(() => {
     const defaults = defaultCartValues(
       product.format as "digital" | "physical",
-      product.slug
+      product.slug,
     );
     if (!storedValues) return defaults;
     return {
@@ -78,7 +97,7 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
         form.handleSubmit();
       }}
       noValidate
-      className="flex flex-col  relative "
+      className="relative flex flex-col"
     >
       <BuyerFields form={form} />
       {isPhysical && (
@@ -101,12 +120,53 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
       </div>
 
       <FormSeparator />
+      <div className="flex flex-col gap-2">
+        <form.Field name="acceptsTerms">
+          {(field: AnyFieldApi) => (
+            <FormCheckbox
+              className={``}
+              field={field}
+              label="Akceptuję"
+              trailing={
+                <Link
+                  href={legalLinks?.terms?.href ?? `/${LEGAL_SLUGS.terms}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-yellow underline underline-offset-3"
+                >
+                  {legalLinks?.terms?.label ?? "regulamin sprzedaży"}
+                </Link>
+              }
+            />
+          )}
+        </form.Field>
+        <form.Field name="acceptsPrivacy">
+          {(field: AnyFieldApi) => (
+            <FormCheckbox
+              field={field}
+              label="Akceptuję"
+              trailing={
+                <Link
+                  href={legalLinks?.privacy?.href ?? `/${LEGAL_SLUGS.privacy}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-yellow underline underline-offset-3"
+                >
+                  {legalLinks?.privacy?.label ?? "politykę prywatności"}
+                </Link>
+              }
+            />
+          )}
+        </form.Field>
+      </div>
+
+      <FormSeparator />
       <form.Subscribe
         selector={(s) => ({
           canSubmit: s.canSubmit,
           isSubmitting: s.isSubmitting,
           hasFieldErrors: Object.values(s.fieldMeta).some(
-            (meta) => meta.errors.length > 0
+            (meta) => meta.errors.length > 0,
           ),
           attempted: s.submissionAttempts > 0,
         })}
@@ -127,17 +187,16 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
               </form.Field>
             )}
             <div className="flex items-baseline justify-between">
-              <span className="font-sans text-sm font-medium uppercase tracking-wide text-off-black">
+              <span className="text-off-black font-sans text-sm font-medium tracking-wide uppercase">
                 Do zapłaty
               </span>
-              <span className="font-display text-2xl text-off-black">
+              <span className="font-display text-off-black text-2xl">
                 {totalGross} PLN
               </span>
             </div>
+
             {attempted && hasFieldErrors && (
-              <p role="alert" className="rounded-md py-2 text-sm text-error">
-                Koszyk zawiera błędy
-              </p>
+              <FormError>Koszyk zawiera błędy</FormError>
             )}
             <Button
               type="submit"
@@ -148,6 +207,22 @@ export function CartForm({ product, onSuccess }: CartFormPropsT) {
             >
               {isSubmitting ? "Wysyłanie…" : "Złóż zamówienie"}
             </Button>
+            <div className="flex items-center justify-between gap-4 pt-4">
+              {legal ? (
+                <address className="[&_a]:hover:text-yellow font-sans text-xs leading-snug text-white/85 not-italic [&_a]:underline [&_a]:underline-offset-2 [&_p]:m-0">
+                  <RichText data={legal} />
+                </address>
+              ) : (
+                <span />
+              )}
+              <NextImage
+                src={p24Logo}
+                alt="Przelewy24"
+                sizes="120px"
+                className="h-8 w-auto shrink-0"
+                placeholder="blur"
+              />
+            </div>
           </div>
         )}
       </form.Subscribe>

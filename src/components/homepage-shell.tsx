@@ -41,7 +41,12 @@ export function HomepageShell({ site, digitalProduct }: HomepageShellPropsT) {
         <div className={isReady ? `opacity-100` : `opacity-0`}>
           <About data={site.about} />
           <Services data={site.services} />
-          <CampFoodSwiper data={site.campFood} digitalProduct={digitalProduct} />
+          <CampFoodSwiper
+            data={site.campFood}
+            digitalProduct={digitalProduct}
+            legal={site.contact.legal}
+            legalLinks={site.legalLinks}
+          />
           <Gallery data={site.gallery} />
           <Contact data={site.contact} />
         </div>
