@@ -13,8 +13,6 @@ import { AnimationTogglePot as AnimationToggle } from "@/components/shared/anima
 export function AnimationHint() {
   return (
     <div
-      role="status"
-      aria-live="polite"
       className="fixed bottom-0 right-0  fest-container max-w-[1440px] mx-auto z-60  rounded-xl items-center w-fit  scroll p-2 hidden lg:flex animate-in fade-in duration-300"
     >
       <AnimationToggle />

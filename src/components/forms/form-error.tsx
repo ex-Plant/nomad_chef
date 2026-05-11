@@ -11,7 +11,8 @@ export function FormError({ id, className, children }: FormErrorPropsT) {
   return (
     <p
       id={id}
-      role="alert"
+      role="status"
+      aria-live="polite"
       className={cn("text-error mt-1 px-1 text-sm font-bold", className)}
     >
       {children}

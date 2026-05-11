@@ -185,7 +185,11 @@ export function CampFoodSwiper({
               }))}
             />
 
-            <div className="relative mt-6 min-h-12 sm:min-h-14">
+            <div
+              className="relative mt-6 min-h-12 sm:min-h-14"
+              aria-live="polite"
+              aria-atomic="true"
+            >
               <AnimatePresence>
                 <m.p
                   key={activeIndex}

@@ -22,6 +22,8 @@ export function InstagramIcon({
       strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
       {...props}
     >
       <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />

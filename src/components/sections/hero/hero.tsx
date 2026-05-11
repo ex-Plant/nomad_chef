@@ -113,6 +113,8 @@ export function Hero({ data, videoRef, isReady }: HeroPropsT) {
           muted
           playsInline
           preload="auto"
+          aria-hidden="true"
+          tabIndex={-1}
           className="relative min-h-full min-w-full object-cover"
         />
         <div className="bg-coral/20 absolute inset-0" />

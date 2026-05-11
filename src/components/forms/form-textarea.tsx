@@ -40,7 +40,7 @@ export function FormTextarea({
         rows={rows}
         value={(field.state.value as string) ?? ""}
         placeholder={placeholder}
-        aria-label={ariaLabel ?? placeholder}
+        aria-label={ariaLabel}
         aria-invalid={hasErrors}
         aria-required={required}
         aria-describedby={hasErrors ? errorId : undefined}

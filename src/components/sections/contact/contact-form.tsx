@@ -44,6 +44,7 @@ export function ContactForm({
           form.handleSubmit();
         }}
         noValidate
+        aria-label="Wyślij wiadomość"
         className="flex flex-col gap-3"
       >
         <form.Field name="email">

@@ -12,7 +12,7 @@ export function Loader({ className, color = "blue" }: LoaderPropsT) {
   return (
     <div
       role="status"
-      aria-label="Loading"
+      aria-label="Ładowanie"
       className={cn(
         "flex items-center justify-center bg-coral",
         className

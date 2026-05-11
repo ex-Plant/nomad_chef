@@ -55,7 +55,7 @@ export function FormTextInput({
         placeholder={placeholder}
         autoComplete={autoComplete}
         inputMode={inputMode}
-        aria-label={ariaLabel ?? placeholder}
+        aria-label={ariaLabel}
         aria-invalid={hasErrors}
         aria-required={required}
         aria-describedby={hasErrors ? errorId : undefined}

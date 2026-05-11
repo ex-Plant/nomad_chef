@@ -39,7 +39,7 @@ function NavDesktop({
                 !isActive && isOnYellow && "text-white hover:text-white/80",
                 !isActive && !isOnYellow && "text-black hover:text-off-black"
               )}
-              aria-label={`${CONTENT.nav.ariaItemPrefix} ${item.label}`}
+              aria-current={isActive ? "location" : undefined}
             >
               {isActive && (
                 <motion.span
@@ -149,7 +149,7 @@ export function NavDesktopShell({ items }: { items: SiteT["nav"] }) {
     <nav
       ref={navRef}
       className="hidden lg:flex fixed -top-2 left-2  right-0 z-250 items-center justify-between  "
-      aria-label={CONTENT.nav.ariaLabel}
+      aria-label={`${CONTENT.nav.ariaLabel} (desktop)`}
     >
       <Logo priority className="mr-auto opacity-0 pointer-events-none" />
 

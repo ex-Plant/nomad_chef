@@ -289,7 +289,7 @@ export function NavMobileShell({ items }: { items: SiteT["nav"] }) {
     <>
       <nav
         className="lg:hidden fixed -top-2 fest-container z-250 flex items-center justify-between"
-        aria-label={CONTENT.nav.ariaLabel}
+        aria-label={`${CONTENT.nav.ariaLabel} (mobile)`}
       >
         <NavMobileToggle
           isOpen={isOpen}

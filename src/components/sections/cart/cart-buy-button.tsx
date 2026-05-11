@@ -39,6 +39,8 @@ export function CartBuyButton({
         variant={variant}
         size={size}
         className={className}
+        aria-haspopup="dialog"
+        aria-expanded={isCartOpen}
         onClick={() => setIsCartOpen(true)}
       >
         {label}

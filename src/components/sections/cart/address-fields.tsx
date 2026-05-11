@@ -20,6 +20,12 @@ export function AddressFields({ form, prefix, disabled }: AddressFieldsPropsT) {
   // Not rendered in the UI — see cart-schema.ts.
   return (
     <div className="flex flex-col gap-3">
+      <input
+        type="hidden"
+        name={`${prefix}Country`}
+        value="PL"
+        autoComplete={isInvoice ? "billing country" : "shipping country"}
+      />
       <div className="grid grid-cols-1 gap-3 md:grid-cols-[3fr_1fr]">
         <form.Field name={line1Name}>
           {(field: AnyFieldApi) => (

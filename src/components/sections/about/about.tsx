@@ -71,6 +71,9 @@ export function About({ data }: AboutPropsT) {
 
           {/* Text column — 6 of 12 cols, offset start */}
           <div className="flex flex-col justify-center md:col-span-6 md:col-start-7">
+            <h2 className="sr-only">
+              {data.headingLines.map((line) => line.text).join(" ")}
+            </h2>
             <ScatterText
               className="text-heading-lg"
               triggerRef={sectionRef}

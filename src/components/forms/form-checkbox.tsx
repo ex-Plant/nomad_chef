@@ -28,6 +28,7 @@ export function FormCheckbox({
 }: FormCheckboxPropsT) {
   const checked = Boolean(field.state.value);
   const hasErrors = field.state.meta.errors.length > 0;
+  const errorId = `${field.name}-error`;
   return (
     <FieldShell field={field}>
       <div
@@ -45,6 +46,7 @@ export function FormCheckbox({
             checked={checked}
             disabled={disabled}
             aria-invalid={hasErrors}
+            aria-describedby={hasErrors ? errorId : undefined}
             onBlur={field.handleBlur}
             onChange={(e) => field.handleChange(e.target.checked)}
             className={cn(
