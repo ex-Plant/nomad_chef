@@ -2,11 +2,8 @@ import type { Metadata, Viewport } from "next";
 import {
   Instrument_Serif,
   Playfair_Display,
-  Outfit,
   Archivo_Black,
-  Archivo,
   Geist,
-  Bebas_Neue,
 } from "next/font/google";
 import { DebugWrapper } from "@/components/debug-tools/debug-wrapper";
 import { MotionProvider } from "@/components/ui/motion-provider";
@@ -18,28 +15,16 @@ const DEFAULT_TITLE =
 const DEFAULT_DESCRIPTION =
   "Prywatne kolacje, garden party i kulinarne retreaty w Polsce i za granicą. Marta Leśniewska gotuje tam, gdzie jej potrzebujesz — od kameralnej kuchni po wyjazdy.";
 
-const getSiteUrl = (): string => {
-  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
-  if (process.env.VERCEL_PROJECT_PRODUCTION_URL)
-    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return "http://localhost:3000";
-};
+const SITE_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : "http://localhost:3000";
 
-/* Design 1 fonts */
 const archivoBlack = Archivo_Black({
   variable: "--font-archivo-black",
   subsets: ["latin"],
   weight: "400",
 });
 
-const archivo = Archivo({
-  variable: "--font-archivo",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-/* Shared across multiple designs */
 const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument",
   subsets: ["latin"],
@@ -47,13 +32,11 @@ const instrumentSerif = Instrument_Serif({
   style: ["normal", "italic"],
 });
 
-/* Design 2, 3, 5 */
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
-/* Design 3, 4 */
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
@@ -61,26 +44,12 @@ const playfair = Playfair_Display({
   style: ["normal", "italic"],
 });
 
-/* Ebook headline match - compressed heavy sans */
-const bebasNeue = Bebas_Neue({
-  variable: "--font-bebas-neue",
-  subsets: ["latin"],
-  weight: "400",
-});
-
-/* Design 4 */
-const outfit = Outfit({
-  variable: "--font-outfit",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-});
-
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSite();
   const title = site.siteTitle || DEFAULT_TITLE;
   const description = site.siteDescription || DEFAULT_DESCRIPTION;
   return {
-    metadataBase: new URL(getSiteUrl()),
+    metadataBase: new URL(SITE_URL),
     title,
     description,
     openGraph: {
@@ -113,7 +82,7 @@ export default function RootLayout({
   return (
     <html
       lang="pl"
-      className={`${archivoBlack.variable} ${archivo.variable} ${instrumentSerif.variable} ${geistSans.variable} ${playfair.variable} ${outfit.variable} ${bebasNeue.variable} overscroll-none scroll-smooth antialiased`}
+      className={`${archivoBlack.variable} ${instrumentSerif.variable} ${geistSans.variable} ${playfair.variable} overscroll-none scroll-smooth antialiased`}
     >
       <body className="relative flex min-h-lvh flex-col overflow-x-clip bg-black">
         <MotionProvider>
