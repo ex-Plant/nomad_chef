@@ -1,7 +1,6 @@
 "use client";
 
 import { Dialog } from "@/components/ui/dialog";
-import { RichText } from "@payloadcms/richtext-lexical/react";
 import { Starburst } from "@/components/shared/starburst";
 import { CloseToggle } from "@/components/shared/close-toggle";
 import type { Product } from "@/payload-types";
@@ -35,11 +34,11 @@ export function CartDialog({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-coral ring-yellow relative flex max-h-[calc(100dvh-2rem)] w-full max-w-[28rem] flex-col overflow-clip rounded-lg ring-[2px] md:max-w-[42rem]"
+        className="bg-coral ring-yellow relative flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col overflow-clip rounded-lg ring-2 md:max-w-2xl"
       >
         <div
           aria-hidden
-          className="pointer-events-none absolute -top-8 -right-12 z-[0] flex items-center justify-center"
+          className="pointer-events-none absolute -top-8 -right-12 z-0 flex items-center justify-center"
         >
           <Starburst color="pink" variant="organic" size="md" />
         </div>
@@ -58,11 +57,9 @@ export function CartDialog({
           </div>
 
           {product.description && (
-            <div className="mb-6 font-sans text-sm leading-relaxed text-white/90 [&_a]:underline [&_a]:underline-offset-2 [&_a]:hover:text-yellow [&_p]:mb-2 [&_strong]:font-semibold [&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:my-2 [&_ol]:list-decimal [&_ol]:pl-5">
-              <RichText
-                data={product.description as unknown as SerializedEditorState}
-              />
-            </div>
+            <p className="mb-6 font-sans text-sm leading-relaxed whitespace-pre-line text-white/90">
+              {product.description}
+            </p>
           )}
 
           <CartForm

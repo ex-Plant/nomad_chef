@@ -213,21 +213,7 @@ export interface Product {
   id: number;
   slug: string;
   title: string;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  description?: string | null;
   format: 'digital' | 'physical';
   /**
    * e.g. 49.99

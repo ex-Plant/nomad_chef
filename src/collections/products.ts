@@ -59,7 +59,7 @@ export const Products: CollectionConfig = {
     },
     {
       name: "description",
-      type: "richText",
+      type: "textarea",
       localized: true,
       label: { pl: "Opis", en: "Description" },
     },
