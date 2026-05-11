@@ -18,8 +18,4 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-export const fontVariables = [
-  archivoBlack.variable,
-  instrumentSerif.variable,
-  geistSans.variable,
-].join(" ");
+export const fontVariables = `${archivoBlack.variable} ${instrumentSerif.variable} ${geistSans.variable}`;
