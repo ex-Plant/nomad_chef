@@ -45,7 +45,7 @@
   --font-sans: var(--font-geist-sans);
   --font-serif: var(--font-instrument);
   --font-geist: var(--font-geist-sans);
-  --font-quote: var(--font-playfair);
+  --font-quote: var(--font-instrument);
 
   /* Tracking overrides for text-label */
   --tracking-link: 0.15em;

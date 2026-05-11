@@ -1,10 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import {
-  Instrument_Serif,
-  Playfair_Display,
-  Archivo_Black,
-  Geist,
-} from "next/font/google";
+import { Instrument_Serif, Archivo_Black, Geist } from "next/font/google";
 import { DebugWrapper } from "@/components/debug-tools/debug-wrapper";
 import { MotionProvider } from "@/components/ui/motion-provider";
 import { getSite } from "@/lib/get-site";
@@ -35,13 +30,6 @@ const instrumentSerif = Instrument_Serif({
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-});
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-  weight: "400",
-  style: "italic",
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -82,7 +70,7 @@ export default function RootLayout({
   return (
     <html
       lang="pl"
-      className={`${archivoBlack.variable} ${instrumentSerif.variable} ${geistSans.variable} ${playfair.variable} overscroll-none scroll-smooth antialiased`}
+      className={`${archivoBlack.variable} ${instrumentSerif.variable} ${geistSans.variable} overscroll-none scroll-smooth antialiased`}
     >
       <body className="relative flex min-h-lvh flex-col overflow-x-clip bg-black">
         <MotionProvider>
