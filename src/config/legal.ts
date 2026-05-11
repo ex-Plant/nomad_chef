@@ -5,5 +5,3 @@ export const LEGAL_SLUGS = {
   terms: "regulamin",
   privacy: "polityka-prywatnosci",
 } as const;
-
-export type LegalKeyT = keyof typeof LEGAL_SLUGS;

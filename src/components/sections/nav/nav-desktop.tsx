@@ -18,7 +18,7 @@ type NavDesktopPropsT = {
   scrollTo: (id: string) => void;
 };
 
-export function NavDesktop({
+function NavDesktop({
   items,
   activeSection,
   isOnYellow,

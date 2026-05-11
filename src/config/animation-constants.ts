@@ -2,7 +2,7 @@
 
 export const EASE = [0.32, 0.72, 0, 1] as const;
 
-export const DURATION = {
+const DURATION = {
   fast: 0.5,
   default: 0.8,
   slow: 1.2,

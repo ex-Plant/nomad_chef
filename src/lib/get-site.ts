@@ -8,9 +8,9 @@ import { LEGAL_SLUGS } from "@/config/legal";
 
 export type LocaleT = "pl" | "en";
 
-export type HeadingLineT = { text: string; className?: string };
-export type CtaT = { label: string; href: string };
-export type ContactChannelT = { label: string; value: string; href: string };
+type HeadingLineT = { text: string; className?: string };
+type CtaT = { label: string; href: string };
+type ContactChannelT = { label: string; value: string; href: string };
 export type MediaT = {
   url: string;
   mimeType: string;
@@ -22,7 +22,7 @@ export type MediaT = {
 export type CampFoodThemeT = "orange" | "blue";
 export type CampFoodOrientationT = "vertical" | "horizontal";
 
-export type LegalLinkT = { href: string; label: string };
+type LegalLinkT = { href: string; label: string };
 
 export type SiteT = {
   hero: {

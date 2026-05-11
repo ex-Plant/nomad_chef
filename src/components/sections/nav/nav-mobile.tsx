@@ -42,7 +42,7 @@ const MOBILE_TOGGLE_DASH = {
   open: "59.75 105.25 60 300",
 } as const;
 
-export function NavMobileToggle({
+function NavMobileToggle({
   isOpen,
   activeSection,
   onToggle,
@@ -125,7 +125,7 @@ const YELLOW_VARIANTS = {
   },
 } as const;
 
-export function NavMobileOverlay({
+function NavMobileOverlay({
   items,
   isOpen,
   scrollTo,
