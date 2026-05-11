@@ -81,6 +81,7 @@ export type SiteT = {
   siteTitle: string;
   siteDescription: string;
   legalLinks: { terms: LegalLinkT | null; privacy: LegalLinkT | null };
+  updatedAt: string;
 };
 
 const colorToClass = (color: string | null | undefined): string | undefined => {
@@ -242,6 +243,7 @@ const fetchSite = (locale: LocaleT) =>
         siteTitle: raw.site_title ?? "",
         siteDescription: raw.site_description ?? "",
         legalLinks: { terms, privacy },
+        updatedAt: raw.updatedAt ?? new Date().toISOString(),
       };
     },
     ["site", locale],

@@ -1,3 +1,5 @@
+import { ENV } from "@/config/env";
+
 // Locked palette from CLAUDE.md. Email-safe subset: warm-white body + matching
 // inner card (uniform warm canvas, matches the site), off-black text, coral CTA
 // — no full color-blocked sections (renders unpredictably in Outlook + older
@@ -17,16 +19,8 @@ export const EMAIL_COLORS = {
   muted: "#5A4E47",
 } as const;
 
-const PROD_FALLBACK_SITE_URL = "https://nomadchef.pl";
-const DEV_FALLBACK_SITE_URL = "http://localhost:3000";
-
 export function getLogoUrl(): string {
-  const base =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    (process.env.NODE_ENV === "development"
-      ? DEV_FALLBACK_SITE_URL
-      : PROD_FALLBACK_SITE_URL);
-  return `${base}/email/logo.png`;
+  return `${ENV.SITE_URL}/email/logo.png`;
 }
 
 export type EmailItemT =

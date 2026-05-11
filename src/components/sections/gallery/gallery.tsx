@@ -23,7 +23,7 @@ const COLUMN_OFFSETS = ["mt-0", "mt-16", "mt-4", "mt-12"] as const;
 
 function distributeIntoColumns<TItem>(
   items: TItem[],
-  numCols: number
+  numCols: number,
 ): TItem[][] {
   const columns: TItem[][] = Array.from({ length: numCols }, () => []);
   items.forEach((item, i) => columns[i % numCols].push(item));
@@ -68,9 +68,9 @@ export function Gallery({ data }: GalleryPropsT) {
           amount={0.5}
           delay={0.2}
         >
-          <div className="h-px flex-1 bg-coral" />
+          <div className="bg-coral h-px flex-1" />
           <span className="text-label-sm text-coral">{data.handle}</span>
-          <div className="h-px flex-1 bg-coral" />
+          <div className="bg-coral h-px flex-1" />
         </FadeUp>
       </SectionContent>
     </Section>
@@ -189,7 +189,7 @@ function GalleryTile({
       viewport={{ once: true, amount: 0.1 }}
       transition={{
         duration: 0.5,
-        delay: (index % 8) * 0.02,
+        delay: (index % 8) * 0.1,
         ease: "easeOut",
       }}
     >
@@ -199,7 +199,7 @@ function GalleryTile({
         onPointerMove={handlePointerMove}
         onPointerCancel={handlePointerCancel}
         onClick={handleClick}
-        className="block w-full touch-pan-y cursor-zoom-in overflow-hidden rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-coral"
+        className="focus-visible:ring-coral block w-full cursor-zoom-in touch-pan-y overflow-hidden rounded-lg focus:outline-none focus-visible:ring-2"
         aria-label={`Otwórz zdjęcie: ${image.alt}`}
       >
         <Image
@@ -207,7 +207,7 @@ function GalleryTile({
           alt={image.alt}
           width={image.width ?? 1200}
           height={image.height ?? 1200}
-          className="transition-all duration-700 ease-brand group-hover:scale-105 group-hover:brightness-110"
+          className="ease-brand transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
           sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
       </button>

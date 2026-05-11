@@ -1,6 +1,7 @@
 import type { CollectionAfterChangeHook } from "payload";
 import { generateDownloadToken } from "@/lib/billing";
 import { sendEmail } from "@/lib/email";
+import { ENV } from "@/config/env";
 
 const DOWNLOAD_TTL_DAYS = 30;
 
@@ -38,7 +39,7 @@ export const digitalFulfillment: CollectionAfterChangeHook = async ({ doc, previ
     req,
   });
 
-  const downloadUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/download/${token}`;
+  const downloadUrl = `${ENV.SITE_URL}/download/${token}`;
   await sendEmail({
     to: customer.email,
     subject: "Twoja książka jest gotowa do pobrania",
