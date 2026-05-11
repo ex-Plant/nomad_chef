@@ -12,7 +12,8 @@ type EnvKeyT =
   | "EMAIL_HOST"
   | "EMAIL_USER"
   | "EMAIL_PASS"
-  | "EMAIL_TO";
+  | "EMAIL_TO"
+  | "SITE_URL";
 
 function required(key: EnvKeyT): string {
   const value = process.env[key];
@@ -29,4 +30,6 @@ export const ENV = {
   EMAIL_USER: required("EMAIL_USER"),
   EMAIL_PASS: required("EMAIL_PASS"),
   EMAIL_TO: required("EMAIL_TO"),
+
+  SITE_URL: required("SITE_URL"),
 } as const;
