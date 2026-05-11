@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
+import * as RDialog from "@radix-ui/react-dialog";
 import { m, AnimatePresence, useReducedMotion } from "framer-motion";
-import { useScrollLock } from "@/hooks/use-scroll-lock";
 import { cn } from "@/helpers/cn";
 
 const CURTAIN_EASE = [0.95, 0, 1, 0.25] as const;
@@ -53,7 +53,12 @@ type DialogPropsT = {
   onClose: () => void;
   children: ReactNode;
   className?: string;
+  /** Used as the dialog's accessible name when no visible heading id is supplied. Rendered into a visually-hidden Title element. */
   ariaLabel?: string;
+  /** id of a visible heading inside `children` — preferred over `ariaLabel` when a heading exists. */
+  ariaLabelledBy?: string;
+  /** id of descriptive text inside `children`. */
+  ariaDescribedBy?: string;
   /**
    * "curtain" (default): full-viewport coloured panel slides in from the top.
    * "modal": dim backdrop fades in, centered card scales/fades up.
@@ -67,105 +72,126 @@ export function Dialog({
   children,
   className,
   ariaLabel,
+  ariaLabelledBy,
+  ariaDescribedBy,
   variant = "curtain",
 }: DialogPropsT) {
-  useScrollLock(isOpen);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [isOpen, onClose]);
-
-  if (variant === "modal") {
-    return (
-      <ModalDialog
-        isOpen={isOpen}
-        onClose={onClose}
-        ariaLabel={ariaLabel}
-        className={className}
-      >
-        {children}
-      </ModalDialog>
-    );
-  }
-
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <m.div
-          key="dialog-overlay"
-          className="fixed inset-0 z-[500] pointer-events-none"
-          initial={{ opacity: 1 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 1 }}
-          transition={{
-            duration: CURTAIN_EXIT_DELAY + CURTAIN_EXIT_DURATION,
-          }}
-          role="dialog"
-          aria-modal="true"
-          aria-label={ariaLabel}
-        >
-          <m.div
-            className={cn(
-              "absolute inset-0 pointer-events-auto flex items-center justify-center overflow-hidden bg-yellow",
-              className
+    <RDialog.Root
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
+      <AnimatePresence>
+        {isOpen && (
+          <RDialog.Portal forceMount>
+            {variant === "modal" ? (
+              <ModalContent
+                className={className}
+                ariaLabel={ariaLabel}
+                ariaLabelledBy={ariaLabelledBy}
+                ariaDescribedBy={ariaDescribedBy}
+              >
+                {children}
+              </ModalContent>
+            ) : (
+              <CurtainContent
+                className={className}
+                ariaLabel={ariaLabel}
+                ariaLabelledBy={ariaLabelledBy}
+                ariaDescribedBy={ariaDescribedBy}
+              >
+                {children}
+              </CurtainContent>
             )}
-            variants={CURTAIN_VARIANTS}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            onClick={onClose}
-          >
-            <m.div
-              className="relative z-10"
-              variants={CONTENT_VARIANTS}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {children}
-            </m.div>
-          </m.div>
-        </m.div>
-      )}
-    </AnimatePresence>
+          </RDialog.Portal>
+        )}
+      </AnimatePresence>
+    </RDialog.Root>
   );
 }
 
-function ModalDialog({
-  isOpen,
-  onClose,
+type ContentPropsT = {
+  children: ReactNode;
+  className?: string;
+  ariaLabel?: string;
+  ariaLabelledBy?: string;
+  ariaDescribedBy?: string;
+};
+
+function CurtainContent({
   children,
   className,
   ariaLabel,
-}: Omit<DialogPropsT, "variant">) {
+  ariaLabelledBy,
+  ariaDescribedBy,
+}: ContentPropsT) {
+  return (
+    <RDialog.Overlay asChild forceMount>
+      <m.div
+        className={cn(
+          "fixed inset-0 z-[500] flex items-center justify-center overflow-hidden bg-yellow",
+          className
+        )}
+        variants={CURTAIN_VARIANTS}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+      >
+        <RDialog.Content
+          asChild
+          forceMount
+          aria-labelledby={ariaLabelledBy}
+          aria-describedby={ariaDescribedBy}
+        >
+          <m.div
+            className="relative z-10"
+            variants={CONTENT_VARIANTS}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            {ariaLabel && !ariaLabelledBy && (
+              <RDialog.Title className="sr-only">{ariaLabel}</RDialog.Title>
+            )}
+            {children}
+          </m.div>
+        </RDialog.Content>
+      </m.div>
+    </RDialog.Overlay>
+  );
+}
+
+function ModalContent({
+  children,
+  className,
+  ariaLabel,
+  ariaLabelledBy,
+  ariaDescribedBy,
+}: ContentPropsT) {
   const reduced = useReducedMotion();
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <m.div
-          key="modal-backdrop"
-          role="dialog"
-          aria-modal="true"
-          aria-label={ariaLabel}
-          className={cn(
-            "fixed inset-0 z-[500] overflow-y-auto overscroll-contain bg-coral/40 p-4",
-            className
-          )}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={reduced ? { duration: 0 } : { duration: 0.25 }}
-          onClick={onClose}
-        >
-          <div className="flex min-h-full justify-center">
+    <RDialog.Overlay asChild forceMount>
+      <m.div
+        className={cn(
+          "fixed inset-0 z-[500] overflow-y-auto overscroll-contain bg-coral/40 p-4",
+          className
+        )}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={reduced ? { duration: 0 } : { duration: 0.25 }}
+      >
+        <div className="flex min-h-full justify-center">
+          <RDialog.Content
+            asChild
+            forceMount
+            aria-labelledby={ariaLabelledBy}
+            aria-describedby={ariaDescribedBy}
+          >
             <m.div
-              className="m-auto w-full flex justify-center"
+              className="m-auto flex w-full justify-center"
               initial={
                 reduced ? { opacity: 0 } : { opacity: 0, y: 16, scale: 0.98 }
               }
@@ -181,11 +207,14 @@ function ModalDialog({
                   : { type: "spring", damping: 25, stiffness: 300 }
               }
             >
+              {ariaLabel && !ariaLabelledBy && (
+                <RDialog.Title className="sr-only">{ariaLabel}</RDialog.Title>
+              )}
               {children}
             </m.div>
-          </div>
-        </m.div>
-      )}
-    </AnimatePresence>
+          </RDialog.Content>
+        </div>
+      </m.div>
+    </RDialog.Overlay>
   );
 }
