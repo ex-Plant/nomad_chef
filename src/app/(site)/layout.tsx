@@ -13,9 +13,10 @@ import { MotionProvider } from "@/components/ui/motion-provider";
 import { getSite } from "@/lib/get-site";
 import "../globals.css";
 
-const DEFAULT_TITLE = "Chaos Kitchen  — Marta Lesniewska";
+const DEFAULT_TITLE =
+  "Chaos Kitchen — kucharka na prywatne kolacje i retreaty | Marta Leśniewska";
 const DEFAULT_DESCRIPTION =
-  "Gotuję tam, gdzie mnie potrzebujesz — od prywatnych kolacji, przez garden party, po retreaty i wyjazdy.";
+  "Prywatne kolacje, garden party i kulinarne retreaty w Polsce i za granicą. Marta Leśniewska gotuje tam, gdzie jej potrzebujesz — od kameralnej kuchni po wyjazdy.";
 
 const getSiteUrl = (): string => {
   if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
