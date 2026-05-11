@@ -26,10 +26,10 @@ export function renderEmailShell({
   </head>
   <body style="background-color: ${EMAIL_COLORS.warmWhite}; font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 32px 24px;">
     <div style="max-width: 600px; margin: 0 auto; background-color: ${EMAIL_COLORS.card}; padding: 40px 32px;">
-      ${logoHtml}
       ${titleHtml}
       ${itemsHtml}
       ${footerHtml}
+      ${logoHtml}
     </div>
   </body>
 </html>`;
@@ -38,7 +38,7 @@ export function renderEmailShell({
 function renderLogo(): string {
   // alt="" so if the image ever fails, no broken-text label leaks into the
   // recipient's client; the surrounding div collapses cleanly.
-  return `<div style="text-align: center; margin-bottom: 28px;">
+  return `<div style="text-align: left; margin-top: 32px;">
   <img src="${getLogoUrl()}" alt="" width="140" height="140" style="display: inline-block; width: 140px; height: 140px;">
 </div>`;
 }
@@ -47,7 +47,10 @@ function renderItem(item: EmailItemT): string {
   if (item.type === "text") {
     const margin = item.marginBottom ?? "16px";
     const weight = item.bold ? "font-weight: bold;" : "";
-    return `<p style="color: ${EMAIL_COLORS.text}; font-size: 16px; line-height: 1.6; margin: 0 0 ${margin} 0; ${weight}">${item.content}</p>`;
+    // Authoring convention: `\n` in text content renders as an in-paragraph
+    // line break. Templates pass natural newlines; the renderer maps them.
+    const content = item.content.replace(/\n/g, "<br>");
+    return `<p style="color: ${EMAIL_COLORS.text}; font-size: 16px; line-height: 1.6; margin: 0 0 ${margin} 0; ${weight}">${content}</p>`;
   }
 
   if (item.type === "button") {

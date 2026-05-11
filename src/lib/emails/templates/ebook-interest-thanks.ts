@@ -9,13 +9,16 @@ export function generateEbookInterestThanksHtml(
   args: EbookInterestThanksArgsT = {},
 ): string {
   const items: EmailItemT[] = [
-    { type: "text", content: "Dzięki za zainteresowanie e-bookiem." },
-    { type: "text", content: "Odezwę się jak tylko ruszy sprzedaż." },
+    { type: "text", content: "Cześć," },
+    {
+      type: "text",
+      content:
+        "Dzięki za zainteresowanie moim e-bookiem.\nOdezwę się jak tylko ruszy sprzedaż.",
+    },
   ];
 
   return renderEmailShell({
     items,
-    footer: "Marta",
     omitLogo: args.omitLogo,
   });
 }

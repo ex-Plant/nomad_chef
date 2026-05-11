@@ -13,7 +13,7 @@ import {
   defaultCartValues,
   type CartFormValuesT,
 } from "@/lib/cart-schema";
-import { createOrder } from "@/lib/orders";
+import { createOrder } from "@/lib/orders/create-order";
 import { Button } from "@/components/shared/button";
 import {
   FormCheckbox,

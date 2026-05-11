@@ -25,14 +25,28 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
   }
   const { product } = productResult;
 
-  const persistResult = await persistCustomerAndOrder({ payload, values, product });
+  const persistResult = await persistCustomerAndOrder({
+    payload,
+    values,
+    product,
+  });
   if (!persistResult.ok) {
     return persistResult;
   }
   const { order } = persistResult;
 
-  // Pre-launch: customer gets a generic thank-you, not order details. Swap
-  // back to sendOrderConfirmation when sales go live.
+  // TODO: When ebook sales launch, revert to sendOrderConfirmation below
+  // (re-add `import { ENV } from "@/config/env";` and the
+  // `sendOrderConfirmation` import). For now the customer gets a generic
+  // pre-launch thank-you and no order-details email is sent to the operator.
+  //
+  // await sendOrderConfirmation({
+  //   payload,
+  //   order,
+  //   values,
+  //   product,
+  //   emailTo: ENV.EMAIL_TO,
+  // });
   await sendInterestThanks({ customerEmail: values.email });
 
   return {

@@ -16,7 +16,7 @@ export function generateContactMessageHtml(args: ContactMessageArgsT): string {
 
   const items: EmailItemT[] = [
     { type: "text", content: "<strong>Wiadomość:</strong>" },
-    { type: "text", content: body.replace(/\n/g, "<br>") },
+    { type: "text", content: body },
     {
       type: "text",
       content: `<strong>E-mail nadawcy:</strong> ${escapeHtml(args.senderEmail)}`,
