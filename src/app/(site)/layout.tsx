@@ -68,9 +68,27 @@ const outfit = Outfit({
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSite();
+  const title = site.siteTitle || DEFAULT_TITLE;
+  const description = site.siteDescription || DEFAULT_DESCRIPTION;
   return {
-    title: site.siteTitle || DEFAULT_TITLE,
-    description: site.siteDescription || DEFAULT_DESCRIPTION,
+    metadataBase: new URL(
+      process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+    ),
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      locale: "pl_PL",
+      images: [{ url: "/og.jpg", width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/og.jpg"],
+    },
   };
 }
 
