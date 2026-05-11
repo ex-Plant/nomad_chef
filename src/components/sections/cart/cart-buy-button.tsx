@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { Button } from "@/components/shared/button";
+import { SuccessDialog } from "@/components/shared/success-dialog";
 import type { Product } from "@/payload-types";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import type { SiteT } from "@/lib/get-site";
 import { CartDialog } from "./cart-dialog";
-import { CartSuccessDialog } from "./cart-success-dialog";
 
 type CartBuyButtonPropsT = {
   product: Product | null;
@@ -56,11 +56,12 @@ export function CartBuyButton({
           setSuccess({ orderNumber, email });
         }}
       />
-      <CartSuccessDialog
+      <SuccessDialog
         isOpen={success !== null}
         onClose={() => setSuccess(null)}
-        orderNumber={success?.orderNumber ?? ""}
-        email={success?.email ?? ""}
+        ariaLabel="Zamówienie przyjęte"
+        title="Dziękuję!"
+        body="Zamówienie przyjęte. Odezwę się z danymi do przelewu."
       />
     </>
   );
