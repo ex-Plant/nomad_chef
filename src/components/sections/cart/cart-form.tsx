@@ -7,7 +7,7 @@ import p24Logo from "@/assets/przelewy24-logo.png";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import { useForm, useStore, type AnyFieldApi } from "@tanstack/react-form";
-import { useCartFormStore } from "@/stores/form-stores";
+import { useCartFormStore } from "@/stores/cart-form-store";
 import {
   cartFormSchema,
   defaultCartValues,

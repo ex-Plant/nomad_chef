@@ -3,8 +3,8 @@ import type {
   CollectionBeforeChangeHook,
   CollectionConfig,
 } from "payload";
-import { revalidateTag } from "next/cache";
 import { calcVat } from "@/lib/billing";
+import { revalidateProduct } from "@/helpers/revalidate-product";
 
 const requireAuth: Access = ({ req: { user } }) => Boolean(user);
 const whenDigital = (_: unknown, siblingData?: { format?: string }) =>
@@ -24,20 +24,8 @@ export const Products: CollectionConfig = {
   slug: "products",
   hooks: {
     beforeChange: [calculateNetPrice],
-    afterChange: [
-      ({ doc }) => {
-        try {
-          revalidateTag(`product:${doc.slug}`, "max");
-        } catch {}
-      },
-    ],
-    afterDelete: [
-      ({ doc }) => {
-        try {
-          revalidateTag(`product:${doc.slug}`, "max");
-        } catch {}
-      },
-    ],
+    afterChange: [revalidateProduct],
+    afterDelete: [revalidateProduct],
   },
   labels: {
     singular: { pl: "Produkt", en: "Product" },

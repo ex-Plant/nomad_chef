@@ -41,7 +41,11 @@ export async function sendOrderConfirmation({
           : undefined,
       }),
     });
-    await updateEmailStatus({ payload, orderId: order.id, status: EMAIL_STATUS.sent });
+    await updateEmailStatus({
+      payload,
+      orderId: order.id,
+      status: EMAIL_STATUS.sent,
+    });
   } catch (err) {
     console.error("[createOrder] confirmation email failed", err);
     const message = err instanceof Error ? err.message : String(err);

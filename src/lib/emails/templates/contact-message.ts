@@ -11,7 +11,8 @@ const EMPTY_MESSAGE_FALLBACK = "(brak wiadomości)";
 
 export function generateContactMessageHtml(args: ContactMessageArgsT): string {
   const trimmed = args.message.trim();
-  const body = trimmed.length > 0 ? escapeHtml(trimmed) : EMPTY_MESSAGE_FALLBACK;
+  const body =
+    trimmed.length > 0 ? escapeHtml(trimmed) : EMPTY_MESSAGE_FALLBACK;
 
   const items: EmailItemT[] = [
     { type: "text", content: "<strong>Wiadomość:</strong>" },

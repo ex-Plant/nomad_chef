@@ -10,7 +10,12 @@ import {
 } from "next/font/google";
 import { DebugWrapper } from "@/components/debug-tools/debug-wrapper";
 import { MotionProvider } from "@/components/ui/motion-provider";
+import { getSite } from "@/lib/get-site";
 import "../globals.css";
+
+const DEFAULT_TITLE = "Chaos Kitchen  — Marta Lesniewska";
+const DEFAULT_DESCRIPTION =
+  "Gotuję tam, gdzie mnie potrzebujesz — od prywatnych kolacji, przez garden party, po retreaty i wyjazdy.";
 
 /* Design 1 fonts */
 const archivoBlack = Archivo_Black({
@@ -61,11 +66,13 @@ const outfit = Outfit({
   weight: ["300", "400", "500", "600", "700"],
 });
 
-export const metadata: Metadata = {
-  title: "Nomad Chef — Marta Lesniewska",
-  description:
-    "Gotuję tam, gdzie mnie potrzebujesz — od prywatnych kolacji, przez garden party, po retreaty i wyjazdy.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const site = await getSite();
+  return {
+    title: site.siteTitle || DEFAULT_TITLE,
+    description: site.siteDescription || DEFAULT_DESCRIPTION,
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -81,9 +88,9 @@ export default function RootLayout({
   return (
     <html
       lang="pl"
-      className={`${archivoBlack.variable} ${archivo.variable} ${instrumentSerif.variable} ${geistSans.variable} ${playfair.variable} ${outfit.variable} ${bebasNeue.variable} antialiased scroll-smooth overscroll-none `}
+      className={`${archivoBlack.variable} ${archivo.variable} ${instrumentSerif.variable} ${geistSans.variable} ${playfair.variable} ${outfit.variable} ${bebasNeue.variable} overscroll-none scroll-smooth antialiased`}
     >
-      <body className="min-h-lvh flex flex-col bg-black overflow-x-clip relative">
+      <body className="relative flex min-h-lvh flex-col overflow-x-clip bg-black">
         <MotionProvider>
           <DebugWrapper>{children}</DebugWrapper>
         </MotionProvider>

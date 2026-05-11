@@ -2,11 +2,10 @@
 
 import { getPayload } from "payload";
 import config from "@payload-config";
-import { ENV } from "@/config/env";
 import { cartFormSchema } from "@/lib/cart-schema";
 import { findActiveProduct } from "./find-active-product";
 import { persistCustomerAndOrder } from "./persist-customer-and-order";
-import { sendOrderConfirmation } from "./send-order-confirmation";
+import { sendInterestThanks } from "./send-interest-thanks";
 
 type CreateOrderResultT =
   | { ok: true; orderNumber: string; totalGross: number }
@@ -32,13 +31,9 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
   }
   const { order } = persistResult;
 
-  await sendOrderConfirmation({
-    payload,
-    order,
-    values,
-    product,
-    emailTo: ENV.EMAIL_TO,
-  });
+  // Pre-launch: customer gets a generic thank-you, not order details. Swap
+  // back to sendOrderConfirmation when sales go live.
+  await sendInterestThanks({ customerEmail: values.email });
 
   return {
     ok: true,

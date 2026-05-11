@@ -1,0 +1,30 @@
+import { sendEmail } from "@/lib/email";
+import { generateEbookInterestThanksHtml } from "@/lib/emails/templates/ebook-interest-thanks";
+
+const SUBJECT = "Dziękuję za zainteresowanie e-bookiem";
+
+const TEXT_BODY = [
+  "Dzięki za zainteresowanie e-bookiem.",
+  "Odezwę się jak tylko ruszy sprzedaż.",
+  "",
+  "Marta",
+].join("\n");
+
+type SendArgsT = {
+  customerEmail: string;
+};
+
+export async function sendInterestThanks({
+  customerEmail,
+}: SendArgsT): Promise<void> {
+  try {
+    await sendEmail({
+      to: customerEmail,
+      subject: SUBJECT,
+      text: TEXT_BODY,
+      html: generateEbookInterestThanksHtml(),
+    });
+  } catch (err) {
+    console.error("[createOrder] interest-thanks email failed", err);
+  }
+}

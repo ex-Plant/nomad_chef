@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { getLogoUrl } from "@/lib/emails/constants";
 import { generateOrderConfirmationHtml } from "@/lib/emails/templates/order-confirmation";
 import { generateContactMessageHtml } from "@/lib/emails/templates/contact-message";
+import { generateEbookInterestThanksHtml } from "@/lib/emails/templates/ebook-interest-thanks";
 
 const ORDER_FIXTURE = {
   orderNumber: "CK-2026-0042",
@@ -35,8 +36,13 @@ type TemplateT = {
 
 const TEMPLATES: readonly TemplateT[] = [
   {
+    id: "ebook-interest-thanks",
+    name: "Ebook Interest — Thanks (pre-launch)",
+    generate: ({ omitLogo }) => generateEbookInterestThanksHtml({ omitLogo }),
+  },
+  {
     id: "order-confirmation",
-    name: "Order Confirmation",
+    name: "Order Confirmation (post-launch)",
     generate: ({ omitLogo }) =>
       generateOrderConfirmationHtml({ ...ORDER_FIXTURE, omitLogo }),
   },

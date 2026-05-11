@@ -24,10 +24,7 @@ export function generateOrderConfirmationHtml(
     { type: "text", content: row("Numer zamówienia", args.orderNumber) },
     {
       type: "text",
-      content: row(
-        "Produkt",
-        `${args.productTitle} (${args.productFormat})`,
-      ),
+      content: row("Produkt", `${args.productTitle} (${args.productFormat})`),
     },
     { type: "text", content: row("Ilość", String(args.quantity)) },
     {

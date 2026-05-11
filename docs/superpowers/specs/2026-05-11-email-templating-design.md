@@ -139,6 +139,7 @@ The send path and the preview path call the **same** generator function. There i
 ## Files touched
 
 **New:**
+
 - `src/lib/emails/constants.ts`
 - `src/lib/emails/render-shell.ts`
 - `src/lib/emails/templates/order-confirmation.ts`
@@ -147,6 +148,7 @@ The send path and the preview path call the **same** generator function. There i
 - `src/app/email-previews/page.tsx`
 
 **Modified:**
+
 - `src/lib/email.ts` — `sendContactEmail` adds `html` argument
 - `src/lib/orders/send-order-confirmation.ts` — adds `html` argument to `sendEmail` call
 

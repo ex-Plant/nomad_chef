@@ -52,7 +52,7 @@ async function findOrCreateCustomer(
   payload: PayloadT,
   values: CartFormValuesT,
   addressesToAdd: AddressT[],
-  req?: Partial<PayloadRequest>
+  req?: Partial<PayloadRequest>,
 ): Promise<string | number> {
   const existingCustomers = await payload.find({
     collection: "customers",
@@ -81,7 +81,7 @@ async function findOrCreateCustomer(
 
   const { merged, changed } = mergeAddresses(
     (existingCustomer.addresses ?? []) as AddressT[],
-    addressesToAdd
+    addressesToAdd,
   );
 
   if (changed) {
@@ -119,7 +119,7 @@ function buildOrderEmailText(
     quantity: number;
     totalGross: number;
   },
-  product: { title: string; format: string }
+  product: { title: string; format: string },
 ) {
   return [
     `Zamówienie: ${order.orderNumber}`,
@@ -176,7 +176,7 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
       payload,
       values,
       addressesToAdd,
-      req
+      req,
     );
 
     // Payload's generated create type demands hook-populated fields (orderNumber,
@@ -208,6 +208,7 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
   // once payment is received — not on order creation.
   try {
     await sendEmail({
+      // admin
       to: ENV.EMAIL_USER,
       subject: `Nowe zamówienie ${order.orderNumber}`,
       text: buildOrderEmailText(values, order, product),
