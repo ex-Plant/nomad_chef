@@ -4,6 +4,10 @@
 
 Operating under cover — do NOT add `Co-Authored-By: Claude` or any other AI co-author trailer to commit messages. Commit messages must look fully human-authored.
 
+## Diagnostics
+
+For read-only checks against the local database, run `psql` directly via the Docker container instead of writing one-off tsx scripts. The Postgres container is `chef-cms`, user `chef`, db `chef`. Example: `docker exec chef-cms psql -U chef -d chef -c "SELECT ..."`. Only write a tsx script when the check truly needs the Payload runtime (e.g. to call hooks or test cache layers).
+
 # Project: Chef Personal Brand Website
 
 ## Overview
