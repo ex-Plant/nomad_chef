@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { DebugWrapper } from "@/components/debug-tools/debug-wrapper";
 import { MotionProvider } from "@/components/ui/motion-provider";
 import { ENV } from "@/config/env";
@@ -7,9 +8,9 @@ import { fontVariables } from "./fonts";
 import "../globals.css";
 
 const DEFAULT_TITLE =
-  "Chaos Kitchen — kucharka na prywatne kolacje i retreaty | Marta Leśniewska";
+  "Chaos Kitchen — Marta Leśniewska Twój osobisty chef kuchni";
 const DEFAULT_DESCRIPTION =
-  "Prywatne kolacje, garden party i kulinarne retreaty w Polsce i za granicą. Marta Leśniewska gotuje tam, gdzie jej potrzebujesz — od kameralnej kuchni po wyjazdy.";
+  "Prywatne kolacje, garden party i kulinarne retreaty w Polsce i za granicą. Gotuję tam, gdzie jej potrzebujesz — od kameralnej kuchni po wyjazdy.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSite();
@@ -55,6 +56,7 @@ export default function RootLayout({
         <MotionProvider>
           <DebugWrapper>{children}</DebugWrapper>
         </MotionProvider>
+        <Analytics />
       </body>
     </html>
   );
