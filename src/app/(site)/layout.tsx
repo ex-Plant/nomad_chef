@@ -17,6 +17,14 @@ const DEFAULT_TITLE = "Chaos Kitchen  — Marta Lesniewska";
 const DEFAULT_DESCRIPTION =
   "Gotuję tam, gdzie mnie potrzebujesz — od prywatnych kolacji, przez garden party, po retreaty i wyjazdy.";
 
+const getSiteUrl = (): string => {
+  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL)
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return "http://localhost:3000";
+};
+
 /* Design 1 fonts */
 const archivoBlack = Archivo_Black({
   variable: "--font-archivo-black",
@@ -71,9 +79,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const title = site.siteTitle || DEFAULT_TITLE;
   const description = site.siteDescription || DEFAULT_DESCRIPTION;
   return {
-    metadataBase: new URL(
-      process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-    ),
+    metadataBase: new URL(getSiteUrl()),
     title,
     description,
     openGraph: {
