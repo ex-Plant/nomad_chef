@@ -131,8 +131,8 @@ function CurtainContent({
     <RDialog.Overlay asChild forceMount>
       <m.div
         className={cn(
-          "fixed inset-0 z-[500] flex items-center justify-center overflow-hidden bg-yellow",
-          className
+          "bg-yellow fixed inset-0 z-[500] flex items-center justify-center overflow-hidden",
+          className,
         )}
         variants={CURTAIN_VARIANTS}
         initial="hidden"
@@ -175,8 +175,8 @@ function ModalContent({
     <RDialog.Overlay asChild forceMount>
       <m.div
         className={cn(
-          "fixed inset-0 z-[500] overflow-y-auto overscroll-contain bg-coral/40 p-4",
-          className
+          "bg-coral/40 fixed inset-0 z-[500] overflow-y-auto overscroll-contain p-4",
+          className,
         )}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
