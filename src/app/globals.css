@@ -149,7 +149,7 @@
   }
 
   .text-label-sm {
-    @apply text-xs tracking-link;
+    @apply tracking-link text-xs;
     font-family: var(--font-sans);
     text-transform: uppercase;
     letter-spacing: 0.2em;
@@ -216,4 +216,3 @@ select:-webkit-autofill {
   caret-color: var(--off-black);
   transition: background-color 99999s ease-in-out 0s;
 }
-
