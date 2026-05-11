@@ -2,6 +2,7 @@ import type { Payload } from "payload";
 import type { Product } from "@/payload-types";
 import { sendEmail } from "@/lib/email";
 import type { CartFormValuesT } from "@/lib/cart-schema";
+import { generateOrderConfirmationHtml } from "@/lib/emails/templates/order-confirmation";
 import { buildOrderEmailText } from "./build-order-email-text";
 import { EMAIL_STATUS, type EmailStatusT } from "./email-status";
 import type { PersistedOrderT } from "./persist-customer-and-order";
@@ -26,6 +27,19 @@ export async function sendOrderConfirmation({
       to: emailTo,
       subject: `Nowe zamówienie ${order.orderNumber}`,
       text: buildOrderEmailText(values, order, product),
+      html: generateOrderConfirmationHtml({
+        orderNumber: order.orderNumber,
+        productTitle: product.title,
+        productFormat: product.format,
+        quantity: order.quantity,
+        totalGross: order.totalGross,
+        customerFirstName: values.firstName,
+        customerLastName: values.lastName,
+        customerEmail: values.email,
+        invoice: values.wantsInvoice
+          ? { companyName: values.companyName, nip: values.nip }
+          : undefined,
+      }),
     });
     await updateEmailStatus({ payload, orderId: order.id, status: EMAIL_STATUS.sent });
   } catch (err) {

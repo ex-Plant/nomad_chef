@@ -4,6 +4,7 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 import { ENV } from "@/config/env";
 import { contactFormSchema } from "@/lib/contact-schema";
+import { generateContactMessageHtml } from "@/lib/emails/templates/contact-message";
 
 type SendEmailArgsT = {
   to: string;
@@ -40,5 +41,6 @@ export async function sendContactEmail(input: unknown): Promise<void> {
       message.trim() ? message : "(brak wiadomości)",
       `E-mail nadawcy: ${email}`,
     ].join("\n"),
+    html: generateContactMessageHtml({ senderEmail: email, message }),
   });
 }
