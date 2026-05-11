@@ -12,9 +12,7 @@ import { AnimationTogglePot as AnimationToggle } from "@/components/shared/anima
    at the layer's bounding box despite no CSS overflow rules. */
 export function AnimationHint() {
   return (
-    <div
-      className="fixed bottom-0 right-0  fest-container max-w-[1440px] mx-auto z-60  rounded-xl items-center w-fit  scroll p-2 hidden lg:flex animate-in fade-in duration-300"
-    >
+    <div className="fest-container scroll animate-in fade-in fixed right-0 bottom-0 z-60 mx-auto hidden w-fit max-w-[1440px] items-center rounded-xl p-2 duration-300 lg:flex">
       <AnimationToggle />
     </div>
   );

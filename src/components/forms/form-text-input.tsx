@@ -66,7 +66,7 @@ export function FormTextInput({
             const raw = e.target.value;
             const parsed = raw === "" ? "" : Number(raw);
             field.handleChange(
-              parsed === "" || Number.isNaN(parsed) ? 0 : parsed
+              parsed === "" || Number.isNaN(parsed) ? 0 : parsed,
             );
             return;
           }

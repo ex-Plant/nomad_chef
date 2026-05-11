@@ -33,11 +33,11 @@ function NavDesktop({
             <button
               onClick={() => scrollTo(item.id)}
               className={cn(
-                "relative rounded-lg px-3 py-1 font-geist text-xs uppercase tracking-wide transition-colors duration-300 ease-brand",
+                "font-geist ease-brand relative rounded-lg px-3 py-1 text-xs tracking-wide uppercase transition-colors duration-300",
                 isActive && isOnYellow && "text-black",
                 isActive && !isOnYellow && "text-white",
                 !isActive && isOnYellow && "text-white hover:text-white/80",
-                !isActive && !isOnYellow && "text-black hover:text-off-black"
+                !isActive && !isOnYellow && "hover:text-off-black text-black",
               )}
               aria-current={isActive ? "location" : undefined}
             >
@@ -46,7 +46,7 @@ function NavDesktop({
                   layoutId="d8-nav-pill"
                   className={cn(
                     "absolute inset-0 rounded-lg",
-                    isOnYellow ? "bg-yellow" : "bg-coral"
+                    isOnYellow ? "bg-yellow" : "bg-coral",
                   )}
                   transition={{
                     type: "spring",
@@ -71,7 +71,7 @@ function NavDesktop({
    mobile; the scroll effect also self-gates so it does zero work there. */
 export function NavDesktopShell({ items }: { items: SiteT["nav"] }) {
   const [activeSection, setActiveSection] = useState<SectionIdT>(
-    SECTION_IDS.hero
+    SECTION_IDS.hero,
   );
   const [isVisible, setIsVisible] = useState(false);
   const [isOnYellow, setIsOnYellow] = useState(false);
@@ -87,7 +87,7 @@ export function NavDesktopShell({ items }: { items: SiteT["nav"] }) {
 
       const shouldBeVisible = window.scrollY > 100;
       setIsVisible((prev) =>
-        prev === shouldBeVisible ? prev : shouldBeVisible
+        prev === shouldBeVisible ? prev : shouldBeVisible,
       );
 
       const nav = navRef.current;
@@ -98,7 +98,7 @@ export function NavDesktopShell({ items }: { items: SiteT["nav"] }) {
         const shouldBeOnYellow = kontaktRect.top < navRect.bottom;
 
         setIsOnYellow((prev) =>
-          prev === shouldBeOnYellow ? prev : shouldBeOnYellow
+          prev === shouldBeOnYellow ? prev : shouldBeOnYellow,
         );
       }
 
@@ -148,10 +148,10 @@ export function NavDesktopShell({ items }: { items: SiteT["nav"] }) {
   return (
     <nav
       ref={navRef}
-      className="hidden lg:flex fixed -top-2 left-2  right-0 z-250 items-center justify-between  "
+      className="fixed -top-2 right-0 left-2 z-250 hidden items-center justify-between lg:flex"
       aria-label={`${CONTENT.nav.ariaLabel} (desktop)`}
     >
-      <Logo priority className="mr-auto opacity-0 pointer-events-none" />
+      <Logo priority className="pointer-events-none mr-auto opacity-0" />
 
       <AnimatePresence>
         {isVisible && (
@@ -161,8 +161,8 @@ export function NavDesktopShell({ items }: { items: SiteT["nav"] }) {
             exit={{ y: -100, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className={cn(
-              "rounded-lg bg-transparent py-1 px-2 shadow-2xl transition-colors duration-1000",
-              isOnYellow ? "bg-coral" : "bg-yellow"
+              "rounded-lg bg-transparent px-2 py-1 shadow-2xl transition-colors duration-1000",
+              isOnYellow ? "bg-coral" : "bg-yellow",
             )}
           >
             <NavDesktop
@@ -174,7 +174,7 @@ export function NavDesktopShell({ items }: { items: SiteT["nav"] }) {
           </m.div>
         )}
       </AnimatePresence>
-      <Logo priority className="ml-auto mr-4" />
+      <Logo priority className="mr-4 ml-auto" />
     </nav>
   );
 }

@@ -48,10 +48,10 @@ export function FormTextarea({
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(e.target.value)}
         className={cn(
-          "min-h-24 resize-none ",
+          "min-h-24 resize-none",
           inputClasses,
           hasErrors && invalidClasses,
-          className
+          className,
         )}
       />
     </FieldShell>

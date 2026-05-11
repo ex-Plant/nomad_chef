@@ -32,4 +32,3 @@ export function InstagramIcon({
     </svg>
   );
 }
-

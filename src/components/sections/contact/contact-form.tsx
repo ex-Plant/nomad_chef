@@ -54,7 +54,7 @@ export function ContactForm({
               type="email"
               placeholder="Twój e-mail..."
               autoComplete="email"
-              className="bg-yellow focus:bg-white ring-0 border border-coral focus:ring-2 focus:ring-coral"
+              className="bg-yellow border-coral focus:ring-coral border ring-0 focus:bg-white focus:ring-2"
             />
           )}
         </form.Field>
@@ -64,12 +64,15 @@ export function ContactForm({
               field={field}
               placeholder={messagePlaceholder}
               rows={4}
-              className="bg-yellow focus:bg-white ring-0 border border-coral focus:ring-2 focus:ring-coral"
+              className="bg-yellow border-coral focus:ring-coral border ring-0 focus:bg-white focus:ring-2"
             />
           )}
         </form.Field>
         <form.Subscribe
-          selector={(s) => ({ canSubmit: s.canSubmit, isSubmitting: s.isSubmitting })}
+          selector={(s) => ({
+            canSubmit: s.canSubmit,
+            isSubmitting: s.isSubmitting,
+          })}
         >
           {({ canSubmit, isSubmitting }) => (
             <div className="mt-1 flex flex-col gap-2">
@@ -83,7 +86,7 @@ export function ContactForm({
                 {isSubmitting ? "Wysyłanie…" : submitLabel}
               </Button>
               {status === "error" && (
-                <p role="alert" className="text-sm text-coral">
+                <p role="alert" className="text-coral text-sm">
                   Coś poszło nie tak. Spróbuj ponownie.
                 </p>
               )}

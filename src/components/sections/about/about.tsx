@@ -39,13 +39,13 @@ export function About({ data }: AboutPropsT) {
   return (
     <Section ref={sectionRef} id={SECTION_IDS.about} className="bg-warm-white">
       <SectionContent>
-        <EyebrowTag color="coral" className={`z-1 relative`} withLine>
+        <EyebrowTag color="coral" className={`relative z-1`} withLine>
           {data.eyebrow}
         </EyebrowTag>
 
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           {/* Images column — 5 of 12 cols, staggered */}
-          <div className="relative  md:col-span-5">
+          <div className="relative md:col-span-5">
             {data.image && (
               <FadeUp className="relative z-1" amount={0.2} delay={0.1}>
                 <Image
@@ -53,7 +53,7 @@ export function About({ data }: AboutPropsT) {
                   alt={data.imageAlt || data.image.alt}
                   width={data.image.width ?? 1200}
                   height={data.image.height ?? 1500}
-                  className="aspect-4/5 "
+                  className="aspect-4/5"
                   sizes="(max-width: 768px) 100vw, 40vw"
                 />
               </FadeUp>
@@ -61,7 +61,7 @@ export function About({ data }: AboutPropsT) {
 
             {/* Yellow starburst accent — behind image */}
             <FadeUp
-              className="absolute -left-16 -top-20 md:-top-36 md:-left-32 "
+              className="absolute -top-20 -left-16 md:-top-36 md:-left-32"
               amount={0.2}
               delay={0}
             >
@@ -89,16 +89,16 @@ export function About({ data }: AboutPropsT) {
             >
               <m.p
                 variants={itemVariants}
-                className="max-w-[55ch] text-sans text-muted whitespace-pre-line"
+                className="text-sans text-muted max-w-[55ch] whitespace-pre-line"
               >
                 {data.intro}
               </m.p>
 
               <m.blockquote
                 variants={itemVariants}
-                className="border-l-4 border-coral py-2 pl-6"
+                className="border-coral border-l-4 py-2 pl-6"
               >
-                <p className="text-xl md:text-2xl font-quote italic leading-snug text-off-black/90 max-w-[35ch] whitespace-pre-line">
+                <p className="font-quote text-off-black/90 max-w-[35ch] text-xl leading-snug whitespace-pre-line italic md:text-2xl">
                   {data.quote}
                 </p>
               </m.blockquote>
@@ -107,7 +107,7 @@ export function About({ data }: AboutPropsT) {
                 <m.p
                   key={p}
                   variants={itemVariants}
-                  className="max-w-[55ch] text-sans text-muted whitespace-pre-line"
+                  className="text-sans text-muted max-w-[55ch] whitespace-pre-line"
                 >
                   {p}
                 </m.p>

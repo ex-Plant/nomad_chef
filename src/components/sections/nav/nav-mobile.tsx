@@ -59,7 +59,7 @@ function NavMobileToggle({
       onClick={onToggle}
       // variant="white"
       // size="icon-sm"
-      className="lg:hidden relative z-50 -ml-3"
+      className="relative z-50 -ml-3 lg:hidden"
       aria-label={
         isOpen ? CONTENT.nav.toggleCloseLabel : CONTENT.nav.toggleOpenLabel
       }
@@ -73,9 +73,9 @@ function NavMobileToggle({
         viewBox="-10 -10 105 120"
         width="48"
         className={cn(
-          "transition-[translate,rotate]  -mr-1",
+          "-mr-1 transition-[translate,rotate]",
           STROKE_CLASS[color],
-          isOpen && "translate-[-2px_-2px] rotate-45"
+          isOpen && "translate-[-2px_-2px] rotate-45",
         )}
         style={{ transitionDuration: `${lineDurationMs}ms` }}
       >
@@ -137,7 +137,7 @@ function NavMobileOverlay({
       {isOpen && (
         <m.div
           key="mobile-overlay"
-          className="fixed inset-0 z-40 lg:hidden pointer-events-none"
+          className="pointer-events-none fixed inset-0 z-40 lg:hidden"
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 1 }}
@@ -147,21 +147,21 @@ function NavMobileOverlay({
         >
           {/* Yellow curtain — drops from top, holds the menu. */}
           <m.div
-            className="absolute inset-0 bg-yellow pointer-events-auto flex items-center justify-center overflow-hidden"
+            className="bg-yellow pointer-events-auto absolute inset-0 flex items-center justify-center overflow-hidden"
             variants={YELLOW_VARIANTS}
             initial="hidden"
             animate="visible"
             exit="exit"
           >
             <div
-              className={`absolute bottom-0 fest-container right-0 left-0 flex justify-between  items-end`}
+              className={`fest-container absolute right-0 bottom-0 left-0 flex items-end justify-between`}
             >
               <Starburst
                 color="coral"
                 size="sm"
                 className={cn(
-                  " duration-500",
-                  isOpen ? "opacity-100" : "opacity-0"
+                  "duration-500",
+                  isOpen ? "opacity-100" : "opacity-0",
                 )}
                 variant="v1-a"
               />
@@ -210,7 +210,7 @@ function NavMobileOverlay({
                   style={{
                     rotate: `${NAV_ITEM_TILTS[i % NAV_ITEM_TILTS.length]}deg`,
                   }}
-                  className="text-4xl uppercase bg-coral text-white pl-1 pr-4"
+                  className="bg-coral pr-4 pl-1 text-4xl text-white uppercase"
                 >
                   {item.label}
                 </m.button>
@@ -228,7 +228,7 @@ function NavMobileOverlay({
 export function NavMobileShell({ items }: { items: SiteT["nav"] }) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<SectionIdT>(
-    SECTION_IDS.hero
+    SECTION_IDS.hero,
   );
   const isDesktop = useBreakpoint("lg");
   useScrollLock(isOpen);
@@ -246,7 +246,7 @@ export function NavMobileShell({ items }: { items: SiteT["nav"] }) {
 
       if (isAtBottom) {
         setActiveSection((prev) =>
-          prev === SECTION_IDS.contact ? prev : SECTION_IDS.contact
+          prev === SECTION_IDS.contact ? prev : SECTION_IDS.contact,
         );
         return;
       }
@@ -288,7 +288,7 @@ export function NavMobileShell({ items }: { items: SiteT["nav"] }) {
   return (
     <>
       <nav
-        className="lg:hidden fixed -top-2 fest-container z-250 flex items-center justify-between"
+        className="fest-container fixed -top-2 z-250 flex items-center justify-between lg:hidden"
         aria-label={`${CONTENT.nav.ariaLabel} (mobile)`}
       >
         <NavMobileToggle
