@@ -144,7 +144,6 @@ export function NavDesktopShell({ items }: { items: SiteT["nav"] }) {
   const scrollTo = useCallback((id: string) => {
     scrollToSection(id);
   }, []);
-  3;
   return (
     <nav
       ref={navRef}

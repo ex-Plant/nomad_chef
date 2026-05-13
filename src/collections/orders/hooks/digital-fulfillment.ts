@@ -5,7 +5,13 @@ import { ENV } from "@/config/env";
 
 const DOWNLOAD_TTL_DAYS = 30;
 
-export const digitalFulfillment: CollectionAfterChangeHook = async ({ doc, previousDoc, req, operation, context }) => {
+export const digitalFulfillment: CollectionAfterChangeHook = async ({
+  doc,
+  previousDoc,
+  req,
+  operation,
+  context,
+}) => {
   if (context?.skipFulfillment) return doc;
   if (operation !== "update" && operation !== "create") return doc;
 
@@ -13,17 +19,31 @@ export const digitalFulfillment: CollectionAfterChangeHook = async ({ doc, previ
   const isNowPaid = doc.paymentStatus === "paid";
   if (!(wasNotPaid && isNowPaid)) return doc;
 
-  const product = typeof doc.product === "object"
-    ? doc.product
-    : await req.payload.findByID({ collection: "products", id: doc.product, depth: 0, req });
+  const product =
+    typeof doc.product === "object"
+      ? doc.product
+      : await req.payload.findByID({
+          collection: "products",
+          id: doc.product,
+          depth: 0,
+          req,
+        });
   if (product.format !== "digital") return doc;
 
-  const customer = typeof doc.customer === "object"
-    ? doc.customer
-    : await req.payload.findByID({ collection: "customers", id: doc.customer, depth: 0, req });
+  const customer =
+    typeof doc.customer === "object"
+      ? doc.customer
+      : await req.payload.findByID({
+          collection: "customers",
+          id: doc.customer,
+          depth: 0,
+          req,
+        });
 
   const token = generateDownloadToken();
-  const expiresAt = new Date(Date.now() + DOWNLOAD_TTL_DAYS * 24 * 60 * 60 * 1000);
+  const expiresAt = new Date(
+    Date.now() + DOWNLOAD_TTL_DAYS * 24 * 60 * 60 * 1000,
+  );
 
   await req.payload.update({
     collection: "orders",

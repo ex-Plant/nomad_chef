@@ -34,7 +34,7 @@ export function CartDialog({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-coral ring-yellow relative flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col overflow-clip rounded-lg ring-2 md:max-w-2xl"
+        className="bg-coral ring-yellow relative w-full max-w-md overflow-clip rounded-lg ring-2 md:max-w-2xl"
       >
         <div
           aria-hidden
@@ -43,7 +43,7 @@ export function CartDialog({
           <Starburst color="pink" variant="organic" size="md" />
         </div>
 
-        <div className="relative z-10 overflow-y-auto overscroll-contain p-6 md:p-8">
+        <div className="relative z-10 p-6 md:p-8">
           <div className="mb-4 flex items-start justify-between gap-8">
             <h3 className="font-display text-electric-blue text-2xl uppercase">
               {product.title}
