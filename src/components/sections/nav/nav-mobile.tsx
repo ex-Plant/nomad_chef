@@ -59,7 +59,7 @@ function NavMobileToggle({
       onClick={onToggle}
       // variant="white"
       // size="icon-sm"
-      className="relative z-50 -ml-3 lg:hidden"
+      className="pointer-events-auto relative z-50 -ml-3 lg:hidden"
       aria-label={
         isOpen ? CONTENT.nav.toggleCloseLabel : CONTENT.nav.toggleOpenLabel
       }
@@ -130,8 +130,6 @@ function NavMobileOverlay({
   isOpen,
   scrollTo,
 }: Pick<NavMobilePropsT, "items" | "isOpen" | "scrollTo">) {
-  // Scroll lock lives in <Nav> (owner of isMobileOpen) — see useScrollLock.
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -145,78 +143,81 @@ function NavMobileOverlay({
             duration: EXIT_CURTAIN_DELAY + CURTAIN_EXIT_DURATION,
           }}
         >
-          {/* Yellow curtain — drops from top, holds the menu. */}
+          {/* Yellow curtain — drops from top, scrolls if menu overflows. */}
           <m.div
-            className="bg-yellow pointer-events-auto absolute inset-0 flex items-center justify-center overflow-hidden"
+            className="bg-yellow pointer-events-auto absolute inset-0 overflow-y-auto overscroll-contain"
             variants={YELLOW_VARIANTS}
             initial="hidden"
             animate="visible"
             exit="exit"
           >
-            <div
-              className={`fest-container absolute right-0 bottom-0 left-0 flex items-end justify-between`}
-            >
-              <Starburst
-                color="coral"
-                size="sm"
-                className={cn(
-                  "duration-500",
-                  isOpen ? "opacity-100" : "opacity-0",
-                )}
-                variant="v1-a"
-              />
-              <m.div
-                className="z-52"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{
-                  opacity: 0,
-                  y: -12,
-                  transition: {
-                    duration: EXIT_ITEM_DURATION,
-                    ease: CURTAIN_EASE,
-                  },
-                }}
-                transition={{
-                  duration: 0.35,
-                  ease: EASE,
-                  delay: MENU_ITEM_DELAY_BASE + items.length * 0.05,
-                }}
-              >
-                <AnimationToggle />
-              </m.div>
-            </div>
-            <div className="relative z-51 flex flex-col items-center gap-8">
-              {items.map((item, i) => (
-                <m.button
-                  key={item.id}
-                  onClick={() => scrollTo(item.id)}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{
-                    opacity: 0,
-                    y: -12,
-                    transition: {
-                      duration: EXIT_ITEM_DURATION,
-                      ease: CURTAIN_EASE,
-                      delay: (items.length - 1 - i) * EXIT_ITEM_STAGGER,
-                    },
-                  }}
-                  transition={{
-                    duration: 0.35,
-                    ease: EASE,
-                    delay: MENU_ITEM_DELAY_BASE + i * 0.05,
-                  }}
-                  style={{
-                    rotate: `${NAV_ITEM_TILTS[i % NAV_ITEM_TILTS.length]}deg`,
-                  }}
-                  className="bg-coral pr-4 pl-1 text-4xl text-white uppercase"
-                >
-                  {item.label}
-                </m.button>
-              ))}
+            <div className="flex min-h-full flex-col items-center justify-center px-6 py-24">
+              <div className="relative z-51 flex flex-col items-center gap-8">
+                {items.map((item, i) => (
+                  <m.button
+                    key={item.id}
+                    onClick={() => scrollTo(item.id)}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{
+                      opacity: 0,
+                      y: -12,
+                      transition: {
+                        duration: EXIT_ITEM_DURATION,
+                        ease: CURTAIN_EASE,
+                        delay: (items.length - 1 - i) * EXIT_ITEM_STAGGER,
+                      },
+                    }}
+                    transition={{
+                      duration: 0.35,
+                      ease: EASE,
+                      delay: MENU_ITEM_DELAY_BASE + i * 0.05,
+                    }}
+                    style={{
+                      rotate: `${NAV_ITEM_TILTS[i % NAV_ITEM_TILTS.length]}deg`,
+                    }}
+                    className="bg-coral cursor-pointer pr-4 pl-1 text-4xl text-white uppercase"
+                  >
+                    {item.label}
+                  </m.button>
+                ))}
+              </div>
             </div>
           </m.div>
+          {/* Starburst — under menu items so it doesn't visually overlap. */}
+          <div className="fest-container pointer-events-auto absolute bottom-0 left-0 z-[50]">
+            <Starburst
+              color="coral"
+              size="sm"
+              className={cn(
+                "duration-500",
+                isOpen ? "opacity-100" : "opacity-0",
+              )}
+              variant="v1-a"
+            />
+          </div>
+          {/* AnimationToggle — above menu items, always tappable. */}
+          <div className="fest-container pointer-events-auto absolute right-0 bottom-0 z-[52] flex justify-end">
+            <m.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{
+                opacity: 0,
+                y: -12,
+                transition: {
+                  duration: EXIT_ITEM_DURATION,
+                  ease: CURTAIN_EASE,
+                },
+              }}
+              transition={{
+                duration: 0.35,
+                ease: EASE,
+                delay: MENU_ITEM_DELAY_BASE + items.length * 0.05,
+              }}
+            >
+              <AnimationToggle />
+            </m.div>
+          </div>
         </m.div>
       )}
     </AnimatePresence>
@@ -281,14 +282,20 @@ export function NavMobileShell({ items }: { items: SiteT["nav"] }) {
   }, [items, isDesktop]);
 
   const scrollTo = useCallback((id: string) => {
+    // useScrollLock pins body { position: fixed } while open and restores
+    // window.scrollY on release. Defer the section scroll until after release
+    // so scrollIntoView runs against an unlocked body and isn't undone.
+    const onReleased = () => {
+      requestAnimationFrame(() => scrollToSection(id));
+    };
+    window.addEventListener("scroll-lock-released", onReleased, { once: true });
     setIsOpen(false);
-    scrollToSection(id);
   }, []);
 
   return (
     <>
       <nav
-        className="fest-container fixed -top-2 z-250 flex items-center justify-between lg:hidden"
+        className="fest-container pointer-events-none fixed -top-2 z-250 flex items-center justify-between lg:hidden"
         aria-label={`${CONTENT.nav.ariaLabel} (mobile)`}
       >
         <NavMobileToggle
