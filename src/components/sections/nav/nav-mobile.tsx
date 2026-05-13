@@ -151,8 +151,13 @@ function NavMobileOverlay({
             animate="visible"
             exit="exit"
           >
-            <div className="flex min-h-full flex-col items-center justify-center px-6 py-24">
-              <div className="relative z-51 flex flex-col items-center gap-8">
+            {/* Starburst — inside curtain so it slides up with it on exit.
+                Lower z than menu items so they paint on top when overlapping. */}
+            <div className="fest-container pointer-events-none absolute bottom-0 left-0 z-0">
+              <Starburst color="coral" size="sm" variant="v1-a" />
+            </div>
+            <div className="relative flex min-h-full flex-col items-center justify-center px-6 py-24">
+              <div className="z-1 flex flex-col items-center gap-8">
                 {items.map((item, i) => (
                   <m.button
                     key={item.id}
@@ -184,19 +189,8 @@ function NavMobileOverlay({
               </div>
             </div>
           </m.div>
-          {/* Starburst — under menu items so it doesn't visually overlap. */}
-          <div className="fest-container pointer-events-auto absolute bottom-0 left-0 z-[50]">
-            <Starburst
-              color="coral"
-              size="sm"
-              className={cn(
-                "duration-500",
-                isOpen ? "opacity-100" : "opacity-0",
-              )}
-              variant="v1-a"
-            />
-          </div>
-          {/* AnimationToggle — above menu items, always tappable. */}
+          {/* AnimationToggle — outside curtain so it stays pinned at viewport
+              bottom even when the curtain scrolls. */}
           <div className="fest-container pointer-events-auto absolute right-0 bottom-0 z-[52] flex justify-end">
             <m.div
               initial={{ opacity: 0, y: 20 }}
@@ -286,7 +280,7 @@ export function NavMobileShell({ items }: { items: SiteT["nav"] }) {
     // window.scrollY on release. Defer the section scroll until after release
     // so scrollIntoView runs against an unlocked body and isn't undone.
     const onReleased = () => {
-      requestAnimationFrame(() => scrollToSection(id));
+      requestAnimationFrame(() => scrollToSection(id, "instant"));
     };
     window.addEventListener("scroll-lock-released", onReleased, { once: true });
     setIsOpen(false);
