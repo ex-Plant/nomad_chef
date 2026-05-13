@@ -65,3 +65,7 @@ next-env.d.ts
 
 # Git worktrees (local only)
 .worktrees/
+
+# agent scratch
+.agents/
+.claude/
