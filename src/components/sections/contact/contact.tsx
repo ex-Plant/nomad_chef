@@ -94,6 +94,13 @@ export function Contact({ data }: ContactPropsT) {
             <span>{2026}</span>
           </div>
         </FadeUp>
+        <div className={`text-coral mt-8`}>
+          <p>YOLO Bartosz Antonik</p>
+          <p>ul. Terespolska 2/41</p>
+          <p>03-813 Warszawa</p>
+          <p>NIP: 9372492352</p>
+          <p>REGON: 360096277</p>
+        </div>
       </SectionContent>
     </Section>
   );
