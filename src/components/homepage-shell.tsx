@@ -48,7 +48,7 @@ export function HomepageShell({ site, digitalProduct }: HomepageShellPropsT) {
             legalLinks={site.legalLinks}
           />
           <Gallery data={site.gallery} />
-          <Contact data={site.contact} />
+          <Contact data={site.contact} legalLinks={site.legalLinks} />
         </div>
       </main>
       {isReady && <AnimationHint />}

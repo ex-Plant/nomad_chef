@@ -1,19 +1,24 @@
 "use client";
 
+import Link from "next/link";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 import { ScatterText } from "@/components/shared/scatter-text";
 import { ContactLink } from "@/components/sections/contact/contact-link";
 import { ContactForm } from "@/components/sections/contact/contact-form";
 import { SECTION_IDS } from "@/config/section-ids";
+import { LEGAL_SLUGS } from "@/config/legal";
 import type { SiteT } from "@/lib/get-site";
 import { Section } from "@/components/shared/section";
 import { FadeUp } from "@/components/shared/fade-up";
 import { SectionContent } from "@/components/shared/section-content";
 import { BodyText } from "@/components/shared/body-text";
 
-type ContactPropsT = { data: SiteT["contact"] };
+type ContactPropsT = {
+  data: SiteT["contact"];
+  legalLinks?: SiteT["legalLinks"];
+};
 
-export function Contact({ data }: ContactPropsT) {
+export function Contact({ data, legalLinks }: ContactPropsT) {
   return (
     <Section id={SECTION_IDS.contact} className="bg-yellow min-h-none">
       {/* <Starburst
@@ -98,8 +103,25 @@ export function Contact({ data }: ContactPropsT) {
           <p>YOLO Bartosz Antonik</p>
           <p>ul. Terespolska 2/41</p>
           <p>03-813 Warszawa</p>
+          <p>505 805 425</p>
           <p>NIP: 9372492352</p>
           <p>REGON: 360096277</p>
+          <p className="mt-4">
+            <Link
+              href={legalLinks?.terms?.href ?? `/${LEGAL_SLUGS.terms}`}
+              className="hover:text-off-black underline underline-offset-3"
+            >
+              {legalLinks?.terms?.label ?? "regulamin sprzedaży"}
+            </Link>
+          </p>
+          <p className="mt-1">
+            <Link
+              href={legalLinks?.privacy?.href ?? `/${LEGAL_SLUGS.privacy}`}
+              className="hover:text-off-black underline underline-offset-3"
+            >
+              {legalLinks?.privacy?.label ?? "polityka prywatności"}
+            </Link>
+          </p>
         </div>
       </SectionContent>
     </Section>
