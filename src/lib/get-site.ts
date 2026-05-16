@@ -76,6 +76,10 @@ export type SiteT = {
     submit: CtaT;
     footer: string;
     legal: SerializedEditorState | null;
+    newsletter: {
+      title: string;
+      description: string;
+    };
   };
   nav: { id: string; label: string }[];
   siteTitle: string;
@@ -235,6 +239,10 @@ const fetchSite = (locale: LocaleT) =>
           submit: toCta(raw.contact_submit),
           footer: raw.contact_footer ?? "",
           legal: (raw.contact_legal as SerializedEditorState | null) ?? null,
+          newsletter: {
+            title: raw.contact_newsletter_title ?? "",
+            description: raw.contact_newsletter_description ?? "",
+          },
         },
         nav: (raw.nav_items ?? []).map((n) => ({
           id: n.section_id ?? "",

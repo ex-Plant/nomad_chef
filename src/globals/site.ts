@@ -349,6 +349,14 @@ export const Site: GlobalConfig = {
               pl: "Stopka",
               en: "Footer",
             }),
+            text("contact_newsletter_title", {
+              pl: "Newsletter — tytuł",
+              en: "Newsletter — title",
+            }),
+            textarea("contact_newsletter_description", {
+              pl: "Newsletter — opis",
+              en: "Newsletter — description",
+            }),
             {
               name: "contact_legal",
               type: "richText",
