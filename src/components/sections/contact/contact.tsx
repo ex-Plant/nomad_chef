@@ -86,6 +86,8 @@ export function Contact({ data, legalLinks }: ContactPropsT) {
               <ContactForm
                 messagePlaceholder={data.formPlaceholder}
                 submitLabel={data.submit.label}
+                legalLinks={legalLinks}
+                newsletter={data.newsletter}
               />
             </FadeUp>
           </div>

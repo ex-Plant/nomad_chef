@@ -12,6 +12,8 @@ const CONTENT_EXIT_DURATION = 0.24;
 /** Content fades/exits first, then the curtain retracts. */
 const CURTAIN_EXIT_DELAY = CONTENT_EXIT_DURATION + 0.06;
 
+const MODAL_EASE = [0.22, 1, 0.36, 1] as const;
+
 const CURTAIN_VARIANTS = {
   hidden: { y: "-100%" },
   visible: {
@@ -192,19 +194,11 @@ function ModalContent({
           >
             <m.div
               className="m-auto flex w-full justify-center"
-              initial={
-                reduced ? { opacity: 0 } : { opacity: 0, y: 16, scale: 0.98 }
-              }
-              animate={
-                reduced ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }
-              }
-              exit={
-                reduced ? { opacity: 0 } : { opacity: 0, y: 8, scale: 0.98 }
-              }
+              initial={reduced ? { opacity: 0 } : { opacity: 0, y: 16 }}
+              animate={reduced ? { opacity: 1 } : { opacity: 1, y: 0 }}
+              exit={reduced ? { opacity: 0 } : { opacity: 0, y: 8 }}
               transition={
-                reduced
-                  ? { duration: 0 }
-                  : { type: "spring", damping: 25, stiffness: 300 }
+                reduced ? { duration: 0 } : { duration: 0.25, ease: MODAL_EASE }
               }
             >
               {ariaLabel && !ariaLabelledBy && (
