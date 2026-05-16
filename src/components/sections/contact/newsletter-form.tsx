@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useForm, type AnyFieldApi } from "@tanstack/react-form";
 import {
   newsletterFormSchema,
@@ -9,9 +8,9 @@ import {
 } from "@/lib/newsletter-schema";
 import { subscribeToNewsletter } from "@/lib/newsletter";
 import { Button } from "@/components/shared/button";
-import { FormCheckbox, FormTextInput } from "@/components/forms";
+import { LegalLink } from "@/components/shared/legal-link";
+import { FormCheckbox, FormError, FormTextInput } from "@/components/forms";
 import type { SiteT } from "@/lib/get-site";
-import { LEGAL_SLUGS } from "@/config/legal";
 
 type NewsletterFormPropsT = {
   legalLinks?: SiteT["legalLinks"];
@@ -66,14 +65,7 @@ export function NewsletterForm({
             field={field}
             label="Akceptuję"
             trailing={
-              <Link
-                href={legalLinks?.privacy?.href ?? `/${LEGAL_SLUGS.privacy}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-yellow underline underline-offset-3"
-              >
-                {legalLinks?.privacy?.label ?? "politykę prywatności"}
-              </Link>
+              <LegalLink kind="privacy" links={legalLinks} />
             }
           />
         )}
@@ -96,11 +88,7 @@ export function NewsletterForm({
             >
               {isSubmitting ? "Zapisywanie…" : "Zapisz się"}
             </Button>
-            {errorMessage && (
-              <p role="alert" className="text-yellow text-sm">
-                {errorMessage}
-              </p>
-            )}
+            {errorMessage && <FormError>{errorMessage}</FormError>}
           </div>
         )}
       </form.Subscribe>

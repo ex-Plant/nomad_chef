@@ -54,7 +54,7 @@ export function FormNumberInput({
         aria-describedby={hasErrors ? errorId : undefined}
         disabled={disabled}
         onBlur={field.handleBlur}
-        onChange={(e) => field.handleChange(e.target.value)}
+        onChange={(e) => field.handleChange(parseFloat(e.target.value))}
         className={cn(inputClasses, hasErrors && invalidClasses, className)}
       />
     </FieldShell>

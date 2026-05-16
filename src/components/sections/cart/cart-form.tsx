@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo } from "react";
-import Link from "next/link";
 import NextImage from "next/image";
 import p24Logo from "@/assets/przelewy24-logo.png";
 import { RichText } from "@payloadcms/richtext-lexical/react";
@@ -15,15 +14,15 @@ import {
 } from "@/lib/cart-schema";
 import { createOrder } from "@/lib/orders/create-order";
 import { Button } from "@/components/shared/button";
+import { LegalLink } from "@/components/shared/legal-link";
 import {
   FormCheckbox,
   FormError,
+  FormNumberInput,
   FormSeparator,
-  FormTextInput,
 } from "@/components/forms";
 import type { Product } from "@/payload-types";
 import type { SiteT } from "@/lib/get-site";
-import { LEGAL_SLUGS } from "@/config/legal";
 import { BuyerFields } from "./buyer-fields";
 import { ShippingFields } from "./shipping-fields";
 import { InvoiceFields } from "./invoice-fields";
@@ -67,8 +66,7 @@ export function CartForm({
     defaultValues: initialValues,
     validators: { onSubmit: cartFormSchema },
     listeners: {
-      onChange: ({ formApi }) =>
-        updateFormData(formApi.state.values as CartFormValuesT),
+      onChange: ({ formApi }) => updateFormData(formApi.state.values),
       onChangeDebounceMs: 500,
     },
     onSubmit: async ({ value }) => {
@@ -114,14 +112,7 @@ export function CartForm({
               field={field}
               label="Akceptuję"
               trailing={
-                <Link
-                  href={legalLinks?.terms?.href ?? `/${LEGAL_SLUGS.terms}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-yellow underline underline-offset-3"
-                >
-                  {legalLinks?.terms?.label ?? "regulamin sprzedaży"}
-                </Link>
+                <LegalLink kind="terms" links={legalLinks} />
               }
             />
           )}
@@ -132,14 +123,7 @@ export function CartForm({
               field={field}
               label="Akceptuję"
               trailing={
-                <Link
-                  href={legalLinks?.privacy?.href ?? `/${LEGAL_SLUGS.privacy}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-yellow underline underline-offset-3"
-                >
-                  {legalLinks?.privacy?.label ?? "politykę prywatności"}
-                </Link>
+                <LegalLink kind="privacy" links={legalLinks} />
               }
             />
           )}
@@ -156,7 +140,7 @@ export function CartForm({
         )}
       </div>
 
-      {wantsInvoice && <FormSeparator className={``} />}
+      {wantsInvoice && <FormSeparator />}
       <div
         className={cn("flex flex-col gap-3", wantsInvoice ? "mt-0" : "mt-2")}
       >
@@ -185,11 +169,11 @@ export function CartForm({
             {isPhysical && (
               <form.Field name="quantity">
                 {(field: AnyFieldApi) => (
-                  <FormTextInput
+                  <FormNumberInput
                     field={field}
                     label="Ilość"
-                    type="number"
-                    inputMode="numeric"
+                    min={1}
+                    max={99}
                     className="max-w-20"
                   />
                 )}
