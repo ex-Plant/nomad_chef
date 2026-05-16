@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/shared/button";
-import { SuccessDialog } from "@/components/shared/success-dialog";
 import type { Product } from "@/payload-types";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import type { SiteT } from "@/lib/get-site";
@@ -18,8 +18,6 @@ type CartBuyButtonPropsT = {
   legalLinks?: SiteT["legalLinks"];
 };
 
-type SuccessStateT = { orderNumber: string; email: string } | null;
-
 export function CartBuyButton({
   product,
   label,
@@ -29,8 +27,8 @@ export function CartBuyButton({
   legal = null,
   legalLinks,
 }: CartBuyButtonPropsT) {
+  const router = useRouter();
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [success, setSuccess] = useState<SuccessStateT>(null);
   if (!product) return null;
   return (
     <>
@@ -51,17 +49,10 @@ export function CartBuyButton({
         legalLinks={legalLinks}
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
-        onOrderPlaced={(orderNumber, email) => {
+        onOrderPlaced={() => {
           setIsCartOpen(false);
-          setSuccess({ orderNumber, email });
+          router.push("/checkout/processing");
         }}
-      />
-      <SuccessDialog
-        isOpen={success !== null}
-        onClose={() => setSuccess(null)}
-        ariaLabel="Zamówienie przyjęte"
-        title="Dziękuję!"
-        body="Zamówienie przyjęte. Odezwę się z danymi do przelewu."
       />
     </>
   );

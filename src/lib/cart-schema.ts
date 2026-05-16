@@ -14,7 +14,10 @@ export const cartFormSchema = z
     firstName: z.string().trim(),
     lastName: z.string().trim(),
     wantsInvoice: z.boolean(),
-    quantity: z.number().int().min(1).max(99),
+    quantity: z
+      .union([z.string(), z.number()])
+      .transform((v) => Number(v))
+      .pipe(z.number().int().min(1).max(99)),
     shippingLine1: z.string().trim(),
     shippingLine2: z.string().trim(),
     shippingCity: z.string().trim(),
@@ -102,12 +105,13 @@ export const cartFormSchema = z
     }
   });
 
+export type CartFormInputT = z.input<typeof cartFormSchema>;
 export type CartFormValuesT = z.infer<typeof cartFormSchema>;
 
 export function defaultCartValues(
   format: "digital" | "physical",
   productSlug: string,
-): CartFormValuesT {
+): CartFormInputT {
   return {
     format,
     productSlug,

@@ -11,11 +11,11 @@
 
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import type { CartFormValuesT } from "@/lib/cart-schema";
+import type { CartFormInputT } from "@/lib/cart-schema";
 
 type CartFormStoreT = {
-  formData: CartFormValuesT | null;
-  updateFormData: (data: CartFormValuesT) => void;
+  formData: CartFormInputT | null;
+  updateFormData: (data: CartFormInputT) => void;
   resetFormData: () => void;
 };
 

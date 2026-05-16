@@ -1,37 +1,34 @@
 import type { AnyFieldApi } from "@tanstack/react-form";
 import { FieldShell } from "./field-shell";
 import { FormLabel } from "./form-label";
+import { inputClasses, invalidClasses } from "./form-text-input";
 import { cn } from "@/helpers/cn";
 
-export const inputClasses =
-  "w-full rounded-md ring-[2px] ring-yellow bg-white px-4 py-1.5 font-sans text-sm text-off-black transition-colors duration-300 ease-brand placeholder:text-coral focus:outline-none focus:ring-yellow focus:ring-[3px] disabled:opacity-60";
-export const invalidClasses = "ring-error focus:ring-error";
-
-type FormTextInputPropsT = {
+type FormNumberInputPropsT = {
   field: AnyFieldApi;
   label?: string;
-  type?: "text" | "email" | "tel";
   placeholder?: string;
-  autoComplete?: string;
-  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
   ariaLabel?: string;
   className?: string;
   disabled?: boolean;
   required?: boolean;
+  min?: number;
+  max?: number;
+  step?: number;
 };
 
-export function FormTextInput({
+export function FormNumberInput({
   field,
   label,
-  type = "text",
   placeholder,
-  autoComplete,
-  inputMode,
   ariaLabel,
   className,
   disabled,
   required,
-}: FormTextInputPropsT) {
+  min,
+  max,
+  step,
+}: FormNumberInputPropsT) {
   const hasErrors = field.state.meta.errors.length > 0;
   const errorId = `${field.name}-error`;
   return (
@@ -42,13 +39,15 @@ export function FormTextInput({
         </FormLabel>
       )}
       <input
-        type={type}
+        type="number"
+        inputMode="numeric"
         name={field.name}
         id={field.name}
-        value={(field.state.value as string) ?? ""}
+        value={(field.state.value as string | number) ?? ""}
         placeholder={placeholder}
-        autoComplete={autoComplete}
-        inputMode={inputMode}
+        min={min}
+        max={max}
+        step={step}
         aria-label={ariaLabel}
         aria-invalid={hasErrors}
         aria-required={required}

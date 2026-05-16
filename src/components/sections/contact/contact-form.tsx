@@ -7,17 +7,24 @@ import { contactFormSchema } from "@/lib/contact-schema";
 import { FormTextInput, FormTextarea } from "@/components/forms";
 import { Button } from "@/components/shared/button";
 import { SuccessDialog } from "@/components/shared/success-dialog";
+import { NewsletterDialog } from "./newsletter-dialog";
+import type { SiteT } from "@/lib/get-site";
 
 type ContactFormPropsT = {
   messagePlaceholder: string;
   submitLabel: string;
+  legalLinks?: SiteT["legalLinks"];
+  newsletter: SiteT["contact"]["newsletter"];
 };
 
 export function ContactForm({
   messagePlaceholder,
   submitLabel,
+  legalLinks,
+  newsletter,
 }: ContactFormPropsT) {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [isNewsletterOpen, setIsNewsletterOpen] = useState(false);
 
   const form = useForm({
     defaultValues: { email: "", message: "" },
@@ -83,6 +90,14 @@ export function ContactForm({
               >
                 {isSubmitting ? "Wysyłanie…" : submitLabel}
               </Button>
+              <Button
+                type="button"
+                size="compact"
+                variant="coral"
+                onClick={() => setIsNewsletterOpen(true)}
+              >
+                Zapisz się do newslettera
+              </Button>
               {status === "error" && (
                 <p role="alert" className="text-coral text-sm">
                   Coś poszło nie tak. Spróbuj ponownie.
@@ -92,6 +107,14 @@ export function ContactForm({
           )}
         </form.Subscribe>
       </form>
+
+      <NewsletterDialog
+        isOpen={isNewsletterOpen}
+        onClose={() => setIsNewsletterOpen(false)}
+        legalLinks={legalLinks}
+        title={newsletter.title}
+        description={newsletter.description}
+      />
 
       <SuccessDialog
         isOpen={status === "success"}
