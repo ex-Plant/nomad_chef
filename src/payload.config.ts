@@ -56,7 +56,15 @@ export default buildConfig({
       },
     }),
   }),
-  collections: [Users, Media, Customers, Products, Orders, LegalPages, NewsletterSubscribers],
+  collections: [
+    Users,
+    Media,
+    Customers,
+    Products,
+    Orders,
+    LegalPages,
+    NewsletterSubscribers,
+  ],
   globals: [Site],
   plugins: [
     vercelBlobStorage({
