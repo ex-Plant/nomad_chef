@@ -1,4 +1,8 @@
-import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-vercel-postgres'
+import {
+  MigrateUpArgs,
+  MigrateDownArgs,
+  sql,
+} from "@payloadcms/db-vercel-postgres";
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
@@ -16,10 +20,14 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "newsletter_subscribers_updated_at_idx" ON "newsletter_subscribers" USING btree ("updated_at");
   CREATE INDEX "newsletter_subscribers_created_at_idx" ON "newsletter_subscribers" USING btree ("created_at");
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_newsletter_subscribers_fk" FOREIGN KEY ("newsletter_subscribers_id") REFERENCES "public"."newsletter_subscribers"("id") ON DELETE cascade ON UPDATE no action;
-  CREATE INDEX "payload_locked_documents_rels_newsletter_subscribers_id_idx" ON "payload_locked_documents_rels" USING btree ("newsletter_subscribers_id");`)
+  CREATE INDEX "payload_locked_documents_rels_newsletter_subscribers_id_idx" ON "payload_locked_documents_rels" USING btree ("newsletter_subscribers_id");`);
 }
 
-export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
+export async function down({
+  db,
+  payload,
+  req,
+}: MigrateDownArgs): Promise<void> {
   await db.execute(sql`
    ALTER TABLE "newsletter_subscribers" DISABLE ROW LEVEL SECURITY;
   DROP TABLE "newsletter_subscribers" CASCADE;
@@ -28,5 +36,5 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP INDEX "payload_locked_documents_rels_newsletter_subscribers_id_idx";
   ALTER TABLE "orders" DROP COLUMN "last_download_at";
   ALTER TABLE "orders" DROP COLUMN "resend_count";
-  ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "newsletter_subscribers_id";`)
+  ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "newsletter_subscribers_id";`);
 }
