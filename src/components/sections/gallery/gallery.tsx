@@ -140,6 +140,8 @@ function GalleryTile({
   index: number;
   onTap: (index: number) => void;
 }) {
+  const [inView, setInView] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const tapRef = useRef<{
     x: number;
     y: number;
@@ -181,15 +183,18 @@ function GalleryTile({
     }
   }
 
+  const shouldShow = inView && loaded;
+
   return (
     <m.div
       className="group"
       initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
+      animate={{ opacity: shouldShow ? 1 : 0 }}
+      onViewportEnter={() => setInView(true)}
       viewport={{ once: true, amount: 0.1 }}
       transition={{
         duration: 0.5,
-        delay: (index % 8) * 0.1,
+        delay: shouldShow ? (index % 8) * 0.1 : 0,
         ease: "easeOut",
       }}
     >
@@ -207,6 +212,8 @@ function GalleryTile({
           alt={image.alt}
           width={image.width ?? 1200}
           height={image.height ?? 1200}
+          priority={index < 4}
+          onLoad={() => setLoaded(true)}
           className="ease-brand transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
           sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
