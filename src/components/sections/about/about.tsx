@@ -16,8 +16,8 @@ const containerVariants: Variants = {
   hidden: {},
   visible: {
     transition: {
-      delayChildren: 0.3,
-      staggerChildren: 0.2,
+      delayChildren: 0.1,
+      staggerChildren: 0.1,
     },
   },
 };
@@ -85,7 +85,7 @@ export function About({ data }: AboutPropsT) {
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, amount: 0.1 }}
+              viewport={{ once: true, amount: 0.01 }}
             >
               <m.p
                 variants={itemVariants}
