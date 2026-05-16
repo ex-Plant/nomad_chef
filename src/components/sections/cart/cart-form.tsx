@@ -144,6 +144,16 @@ export function CartForm({
             />
           )}
         </form.Field>
+        {!isPhysical && (
+          <form.Field name="acceptsDigitalDelivery">
+            {(field: AnyFieldApi) => (
+              <FormCheckbox
+                field={field}
+                label="Wyrażam zgodę na dostarczenie treści cyfrowej przed upływem 14 dni od zawarcia umowy i przyjmuję do wiadomości utratę prawa odstąpienia od umowy."
+              />
+            )}
+          </form.Field>
+        )}
       </div>
 
       {wantsInvoice && <FormSeparator className={``} />}

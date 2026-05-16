@@ -35,8 +35,15 @@ export const cartFormSchema = z
     acceptsPrivacy: z.boolean().refine((v) => v === true, {
       error: "Wymagana akceptacja polityki prywatności",
     }),
+    acceptsDigitalDelivery: z.boolean(),
   })
   .superRefine((data, ctx) => {
+    if (data.format === "digital" && !data.acceptsDigitalDelivery)
+      ctx.addIssue({
+        path: ["acceptsDigitalDelivery"],
+        code: "custom",
+        message: "Wymagana zgoda na dostarczenie treści cyfrowej",
+      });
     if (data.format === "physical") {
       if (!data.shippingLine1)
         ctx.addIssue({
@@ -125,5 +132,6 @@ export function defaultCartValues(
     notes: "",
     acceptsTerms: false,
     acceptsPrivacy: false,
+    acceptsDigitalDelivery: false,
   };
 }

@@ -26,6 +26,7 @@ const valid = {
   notes: "",
   acceptsTerms: true,
   acceptsPrivacy: true,
+  acceptsDigitalDelivery: true,
 };
 
 describe("defaultCartValues", () => {
@@ -50,6 +51,27 @@ describe("cartFormSchema — terms & privacy acceptance", () => {
   it("rejects when acceptsPrivacy is false", () => {
     const r = cartFormSchema.safeParse({ ...valid, acceptsPrivacy: false });
     assert.equal(r.success, false);
+  });
+
+  it("rejects digital order when acceptsDigitalDelivery is false", () => {
+    const r = cartFormSchema.safeParse({
+      ...valid,
+      acceptsDigitalDelivery: false,
+    });
+    assert.equal(r.success, false);
+  });
+
+  it("accepts physical order when acceptsDigitalDelivery is false", () => {
+    const r = cartFormSchema.safeParse({
+      ...valid,
+      format: "physical",
+      productSlug: "cookbook-physical",
+      shippingLine1: "ul. Klonowa 5",
+      shippingCity: "Warszawa",
+      shippingPostalCode: "00-001",
+      acceptsDigitalDelivery: false,
+    });
+    assert.equal(r.success, true);
   });
 });
 
