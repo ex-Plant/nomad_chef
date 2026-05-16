@@ -73,6 +73,7 @@ export interface Config {
     products: Product;
     orders: Order;
     'legal-pages': LegalPage;
+    'newsletter-subscribers': NewsletterSubscriber;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -86,6 +87,7 @@ export interface Config {
     products: ProductsSelect<false> | ProductsSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
     'legal-pages': LegalPagesSelect<false> | LegalPagesSelect<true>;
+    'newsletter-subscribers': NewsletterSubscribersSelect<false> | NewsletterSubscribersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -261,6 +263,8 @@ export interface Order {
   downloadCount?: number | null;
   downloadLimit?: number | null;
   downloadExpiresAt?: string | null;
+  lastDownloadAt?: string | null;
+  resendCount?: number | null;
   shippingAddress?: {
     firstName?: string | null;
     lastName?: string | null;
@@ -337,6 +341,16 @@ export interface LegalPage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletter-subscribers".
+ */
+export interface NewsletterSubscriber {
+  id: number;
+  email: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -382,6 +396,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'legal-pages';
         value: number | LegalPage;
+      } | null)
+    | ({
+        relationTo: 'newsletter-subscribers';
+        value: number | NewsletterSubscriber;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -532,6 +550,8 @@ export interface OrdersSelect<T extends boolean = true> {
   downloadCount?: T;
   downloadLimit?: T;
   downloadExpiresAt?: T;
+  lastDownloadAt?: T;
+  resendCount?: T;
   shippingAddress?:
     | T
     | {
@@ -565,6 +585,15 @@ export interface LegalPagesSelect<T extends boolean = true> {
   link_label?: T;
   title?: T;
   body?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletter-subscribers_select".
+ */
+export interface NewsletterSubscribersSelect<T extends boolean = true> {
+  email?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -715,6 +744,8 @@ export interface Site {
     href?: string | null;
   };
   contact_footer?: string | null;
+  contact_newsletter_title?: string | null;
+  contact_newsletter_description?: string | null;
   contact_legal?: {
     root: {
       type: string;
@@ -856,6 +887,8 @@ export interface SiteSelect<T extends boolean = true> {
         href?: T;
       };
   contact_footer?: T;
+  contact_newsletter_title?: T;
+  contact_newsletter_description?: T;
   contact_legal?: T;
   site_title?: T;
   site_description?: T;
