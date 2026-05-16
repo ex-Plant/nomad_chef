@@ -22,7 +22,7 @@ export type MediaT = {
 export type CampFoodThemeT = "orange" | "blue";
 export type CampFoodOrientationT = "vertical" | "horizontal";
 
-type LegalLinkT = { href: string; label: string };
+export type LegalLinkT = { href: string; label: string };
 
 export type SiteT = {
   hero: {

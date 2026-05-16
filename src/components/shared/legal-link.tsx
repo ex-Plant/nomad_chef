@@ -1,16 +1,13 @@
 import Link from "next/link";
-import type { SiteT } from "@/lib/get-site";
+import type { LegalLinkT } from "@/lib/get-site";
 import { cn } from "@/helpers/cn";
 
 type LegalLinkPropsT = {
-  kind: "terms" | "privacy";
-  links?: SiteT["legalLinks"];
+  link: LegalLinkT;
   className?: string;
 };
 
-export function LegalLink({ kind, links, className }: LegalLinkPropsT) {
-  const link = links?.[kind];
-  if (!link) return null;
+export function LegalLink({ link, className }: LegalLinkPropsT) {
   return (
     <Link
       href={link.href}

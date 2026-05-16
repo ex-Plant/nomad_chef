@@ -14,10 +14,7 @@ export const cartFormSchema = z
     firstName: z.string().trim(),
     lastName: z.string().trim(),
     wantsInvoice: z.boolean(),
-    quantity: z
-      .union([z.string(), z.number()])
-      .transform((v) => Number(v))
-      .pipe(z.number().int().min(1).max(99)),
+    quantity: z.number().int().min(1).max(99),
     shippingLine1: z.string().trim(),
     shippingLine2: z.string().trim(),
     shippingCity: z.string().trim(),
@@ -32,11 +29,8 @@ export const cartFormSchema = z
     invoicePostalCode: z.string().trim(),
     invoiceCountry: z.string().trim(),
     notes: z.string().trim().max(2000),
-    acceptsTerms: z.boolean().refine((v) => v === true, {
-      error: "Wymagana akceptacja regulaminu sprzedaży",
-    }),
-    acceptsPrivacy: z.boolean().refine((v) => v === true, {
-      error: "Wymagana akceptacja polityki prywatności",
+    acceptsLegal: z.boolean().refine((v) => v === true, {
+      error: "Wymagana akceptacja regulaminu i polityki prywatności",
     }),
     acceptsDigitalDelivery: z.boolean(),
   })
@@ -105,13 +99,12 @@ export const cartFormSchema = z
     }
   });
 
-export type CartFormInputT = z.input<typeof cartFormSchema>;
 export type CartFormValuesT = z.infer<typeof cartFormSchema>;
 
 export function defaultCartValues(
   format: "digital" | "physical",
   productSlug: string,
-): CartFormInputT {
+): CartFormValuesT {
   return {
     format,
     productSlug,
@@ -134,8 +127,7 @@ export function defaultCartValues(
     invoicePostalCode: "",
     invoiceCountry: "PL",
     notes: "",
-    acceptsTerms: false,
-    acceptsPrivacy: false,
+    acceptsLegal: false,
     acceptsDigitalDelivery: false,
   };
 }

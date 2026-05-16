@@ -65,7 +65,7 @@ export function NewsletterForm({
             field={field}
             label="Akceptuję"
             trailing={
-              <LegalLink kind="privacy" links={legalLinks} />
+              legalLinks?.privacy && <LegalLink link={legalLinks.privacy} />
             }
           />
         )}

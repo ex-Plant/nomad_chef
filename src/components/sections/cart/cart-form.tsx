@@ -105,25 +105,19 @@ export function CartForm({
         </>
       )}
       <div className="mt-2 flex flex-col gap-2">
-        <form.Field name="acceptsTerms">
-          {(field: AnyFieldApi) => (
-            <FormCheckbox
-              className={``}
-              field={field}
-              label="Akceptuję"
-              trailing={
-                <LegalLink kind="terms" links={legalLinks} />
-              }
-            />
-          )}
-        </form.Field>
-        <form.Field name="acceptsPrivacy">
+        <form.Field name="acceptsLegal">
           {(field: AnyFieldApi) => (
             <FormCheckbox
               field={field}
               label="Akceptuję"
               trailing={
-                <LegalLink kind="privacy" links={legalLinks} />
+                <>
+                  {legalLinks?.terms && <LegalLink link={legalLinks.terms} />}
+                  {legalLinks?.terms && legalLinks?.privacy && " oraz "}
+                  {legalLinks?.privacy && (
+                    <LegalLink link={legalLinks.privacy} />
+                  )}
+                </>
               }
             />
           )}
@@ -146,7 +140,7 @@ export function CartForm({
       >
         <form.Field name="wantsInvoice">
           {(field: AnyFieldApi) => (
-            <FormCheckbox field={field} label="Chcę fakturę VAT" />
+            <FormCheckbox field={field} label="Faktura" />
           )}
         </form.Field>
         {wantsInvoice && <InvoiceFields form={form} />}
