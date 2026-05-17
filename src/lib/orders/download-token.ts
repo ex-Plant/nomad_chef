@@ -1,6 +1,12 @@
 import type { Payload } from "payload";
 import { generateDownloadToken } from "@/lib/billing";
-import type { Order } from "@/payload-types";
+import type {
+  Customer,
+  DigitalAsset,
+  Media,
+  Order,
+  Product,
+} from "@/payload-types";
 
 export { generateDownloadToken };
 
@@ -14,11 +20,23 @@ export function nextDownloadExpiry(): Date {
   return new Date(Date.now() + DOWNLOAD_TTL_MS);
 }
 
+// Wraps an Order with its already-narrowed relations. Payload returns
+// relationships as `T | number` depending on `depth`; doing the narrowing
+// here once means callers can read `product` / `customer` / `file`
+// directly without re-checking `typeof === "object"` at every site.
+// Whichever fields aren't populated at the requested depth are `null`.
+export type DownloadOrderT = {
+  order: Order;
+  product: Product | null;
+  customer: Customer | null;
+  file: DigitalAsset | Media | null;
+};
+
 export async function findOrderByDownloadToken(
   payload: Payload,
   token: string,
   depth = 1,
-): Promise<Order | null> {
+): Promise<DownloadOrderT | null> {
   if (!TOKEN_REGEX.test(token)) return null;
   const result = await payload.find({
     collection: "orders",
@@ -26,7 +44,17 @@ export async function findOrderByDownloadToken(
     limit: 1,
     depth,
   });
-  return result.docs[0] ?? null;
+  const order = result.docs[0];
+  if (!order) return null;
+
+  const product = typeof order.product === "object" ? order.product : null;
+  const customer = typeof order.customer === "object" ? order.customer : null;
+  const file =
+    product && typeof product.file === "object"
+      ? (product.file as DigitalAsset | Media)
+      : null;
+
+  return { order, product, customer, file };
 }
 
 export type DownloadStateT = {

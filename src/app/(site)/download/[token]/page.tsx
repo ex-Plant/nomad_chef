@@ -14,11 +14,8 @@ type PagePropsT = { params: Promise<{ token: string }> };
 export default async function DownloadPage({ params }: PagePropsT) {
   const { token } = await params;
   const payload = await getPayload({ config });
-  const order = await findOrderByDownloadToken(payload, token, 1);
-  const state = resolveDownloadState(order);
-
-  const customer =
-    order && typeof order.customer === "object" ? order.customer : null;
+  const found = await findOrderByDownloadToken(payload, token, 1);
+  const state = resolveDownloadState(found?.order ?? null);
 
   return (
     <main className="bg-warm-white text-off-black relative flex min-h-svh flex-col items-center justify-center px-6 py-24">
@@ -31,8 +28,8 @@ export default async function DownloadPage({ params }: PagePropsT) {
           token={token}
           status={state.status}
           expiresAt={state.expiresAt?.toISOString() ?? null}
-          orderNumber={order?.orderNumber ?? null}
-          customerEmail={customer?.email ?? null}
+          orderNumber={found?.order.orderNumber ?? null}
+          customerEmail={found?.customer?.email ?? null}
         />
       </div>
     </main>

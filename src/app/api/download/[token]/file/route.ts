@@ -40,23 +40,16 @@ export async function GET(
   const { token } = await ctx.params;
   const payload = await getPayload({ config });
 
-  const order = await findOrderByDownloadToken(payload, token, 2);
-  const state = resolveDownloadState(order);
+  const found = await findOrderByDownloadToken(payload, token, 2);
+  const state = resolveDownloadState(found?.order ?? null);
 
   if (state.status !== "ready") {
     const err = STATUS_TO_HTTP[state.status] ?? STATUS_TO_HTTP.not_found;
     return errorResponse(err.message, err.status);
   }
-  if (!order) return errorResponse("Link nieaktywny.", 404);
+  if (!found) return errorResponse("Link nieaktywny.", 404);
 
-  // Payload relationship fields are typed as `T | number` — at depth=0 they're
-  // just the foreign-key id; at depth>=1 they're populated objects. The TS
-  // union forces us to narrow before reading properties. We use depth=2 above
-  // so both `order.product` and `product.file` are populated; the typeof
-  // checks satisfy the type-checker without changing runtime behavior.
-  const product = typeof order.product === "object" ? order.product : null;
-  const file =
-    product && typeof product.file === "object" ? product.file : null;
+  const { order, product, file } = found;
   if (!product || product.format !== "digital" || !file?.url) {
     return errorResponse("Brak pliku do pobrania.", 500);
   }

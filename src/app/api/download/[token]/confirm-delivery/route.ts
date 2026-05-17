@@ -29,9 +29,10 @@ export async function POST(
   if (!TOKEN_REGEX.test(token)) return ok();
 
   const payload = await getPayload({ config });
-  const order = await findOrderByDownloadToken(payload, token, 0);
-  if (!order || order.paymentStatus !== "paid") return ok();
+  const found = await findOrderByDownloadToken(payload, token, 0);
+  if (!found || found.order.paymentStatus !== "paid") return ok();
 
+  const { order } = found;
   if (order.fulfillmentStatus !== "delivered") {
     await payload.update({
       collection: "orders",
