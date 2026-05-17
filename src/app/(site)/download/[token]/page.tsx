@@ -18,6 +18,8 @@ export default async function DownloadPage({ params }: PagePropsT) {
 
   const product =
     order && typeof order.product === "object" ? order.product : null;
+  const customer =
+    order && typeof order.customer === "object" ? order.customer : null;
 
   return (
     <main className="bg-warm-white text-off-black min-h-screen px-6 py-24">
@@ -25,9 +27,10 @@ export default async function DownloadPage({ params }: PagePropsT) {
         <DownloadCard
           token={token}
           status={state.status}
-          attemptsRemaining={state.attemptsRemaining}
-          downloadLimit={state.limit}
+          expiresAt={state.expiresAt?.toISOString() ?? null}
           productTitle={product?.title ?? null}
+          orderNumber={order?.orderNumber ?? null}
+          customerEmail={customer?.email ?? null}
         />
       </div>
     </main>

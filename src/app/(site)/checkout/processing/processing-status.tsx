@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/shared/button";
 import { Loader } from "@/components/shared/loader";
+import { HelpDialog } from "@/components/sections/contact/help-dialog";
 
 type StatusResponseT = {
   orderNumber: string;
@@ -12,6 +13,7 @@ type StatusResponseT = {
 
 type ProcessingStatusPropsT = {
   orderNumber: string;
+  customerEmail: string | null;
   isDev: boolean;
 };
 
@@ -21,12 +23,14 @@ const POLL_INTERVAL_MS = 2000;
 
 export function ProcessingStatus({
   orderNumber,
+  customerEmail,
   isDev,
 }: ProcessingStatusPropsT) {
   const [paymentStatus, setPaymentStatus] =
     useState<StatusResponseT["paymentStatus"]>("pending");
   const [simulateState, setSimulateState] = useState<SimulateStateT>("idle");
   const [simulateError, setSimulateError] = useState<string | null>(null);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -77,6 +81,15 @@ export function ProcessingStatus({
     }
   }
 
+  const isPaymentProblem =
+    paymentStatus === "failed" || paymentStatus === "refunded";
+
+  const helpContext = {
+    surface: "checkout" as const,
+    status: paymentStatus,
+    orderNumber,
+  };
+
   return (
     <div className="flex w-full max-w-md flex-col items-center gap-8 text-center">
       <Loader color="yellow" className="bg-transparent" />
@@ -102,6 +115,17 @@ export function ProcessingStatus({
         </p>
       </div>
 
+      {isPaymentProblem && (
+        <Button
+          type="button"
+          variant="blue-solid"
+          size="compact"
+          onClick={() => setIsHelpOpen(true)}
+        >
+          Mam problem z płatnością
+        </Button>
+      )}
+
       {isDev && paymentStatus === "pending" && (
         <div className="flex w-full flex-col items-center gap-3 border-t border-white/25 pt-6">
           <span className="font-sans text-xs tracking-wide text-white/70 uppercase">
@@ -122,6 +146,13 @@ export function ProcessingStatus({
           )}
         </div>
       )}
+
+      <HelpDialog
+        isOpen={isHelpOpen}
+        onClose={() => setIsHelpOpen(false)}
+        context={helpContext}
+        prefillEmail={customerEmail ?? undefined}
+      />
     </div>
   );
 }

@@ -1,129 +1,131 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { Button } from "@/components/shared/button";
+import { HelpDialog } from "@/components/sections/contact/help-dialog";
 import type { DownloadStatusT } from "@/lib/orders/download-token";
-
-type ResendStateT = "idle" | "loading" | "sent" | "error";
 
 type DownloadCardPropsT = {
   token: string;
   status: DownloadStatusT;
-  attemptsRemaining: number;
-  downloadLimit: number;
+  expiresAt: string | null;
   productTitle: string | null;
+  orderNumber: string | null;
+  customerEmail: string | null;
+};
+
+const STATUS_COPY: Record<
+  Exclude<DownloadStatusT, "ready">,
+  { title: string; body: string; buttonLabel: string }
+> = {
+  not_found: {
+    title: "Link nieaktywny",
+    body: "Ten link do pobrania jest nieprawidłowy lub został usunięty.",
+    buttonLabel: "Mam problem z pobraniem",
+  },
+  not_paid: {
+    title: "Zamówienie jeszcze się przetwarza",
+    body: "Płatność nie została jeszcze potwierdzona. Wrócimy do Ciebie e-mailem, gdy będzie gotowe.",
+    buttonLabel: "Mam problem z pobraniem",
+  },
+  expired: {
+    title: "Link wygasł",
+    body: "Linki do pobrania są aktywne przez 24 godziny od zakupu. Napisz do nas, a wyślemy Ci nowy.",
+    buttonLabel: "Mam problem z pobraniem",
+  },
 };
 
 export function DownloadCard({
   token,
   status,
-  attemptsRemaining,
-  downloadLimit,
+  expiresAt,
   productTitle,
+  orderNumber,
+  customerEmail,
 }: DownloadCardPropsT) {
-  const [resendState, setResendState] = useState<ResendStateT>("idle");
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
-  async function resend() {
-    if (resendState === "loading" || resendState === "sent") return;
-    setResendState("loading");
-    try {
-      const res = await fetch(`/api/download/${token}/resend`, {
-        method: "POST",
-      });
-      setResendState(res.ok ? "sent" : "error");
-    } catch {
-      setResendState("error");
-    }
-  }
+  const helpContext = {
+    surface: "download" as const,
+    status,
+    token,
+    ...(orderNumber ? { orderNumber } : {}),
+  };
 
-  if (status === "not_found") {
+  if (status !== "ready") {
+    const copy = STATUS_COPY[status];
     return (
-      <Card>
-        <Heading>Link nieaktywny</Heading>
-        <Paragraph>
-          Ten link do pobrania jest nieprawidłowy lub został usunięty. Jeśli
-          uważasz, że to błąd, napisz do nas.
-        </Paragraph>
-      </Card>
+      <>
+        <Card>
+          <Heading>{copy.title}</Heading>
+          <Paragraph>{copy.body}</Paragraph>
+          <Button
+            type="button"
+            variant="coral-solid"
+            size="compact"
+            onClick={() => setIsHelpOpen(true)}
+          >
+            {copy.buttonLabel}
+          </Button>
+        </Card>
+        <HelpDialog
+          isOpen={isHelpOpen}
+          onClose={() => setIsHelpOpen(false)}
+          context={helpContext}
+          prefillEmail={customerEmail ?? undefined}
+        />
+      </>
     );
   }
 
-  if (status === "not_paid") {
-    return (
-      <Card>
-        <Heading>Zamówienie jeszcze się przetwarza</Heading>
-        <Paragraph>
-          Płatność nie została jeszcze potwierdzona. Wrócimy do Ciebie e-mailem,
-          gdy będzie gotowe.
-        </Paragraph>
-        <Link
-          href="/checkout/processing"
-          className="font-sans text-sm underline underline-offset-4"
-        >
-          Wróć do statusu zamówienia
-        </Link>
-      </Card>
-    );
-  }
-
-  if (status === "expired") {
-    return (
-      <Card>
-        <Heading>Link wygasł</Heading>
-        <Paragraph>
-          Ten link do pobrania już nie działa. Kliknij poniżej, a wyślemy świeży
-          link na Twój e-mail.
-        </Paragraph>
-        <ResendButton state={resendState} onClick={resend} />
-      </Card>
-    );
-  }
-
-  if (status === "exhausted") {
-    return (
-      <Card>
-        <Heading>Limit pobrań wykorzystany</Heading>
-        <Paragraph>
-          Wykorzystałaś/eś wszystkie próby pobrania. Kliknij poniżej, a
-          przygotujemy nowy link.
-        </Paragraph>
-        <ResendButton state={resendState} onClick={resend} />
-      </Card>
-    );
-  }
+  const expiresLabel = expiresAt
+    ? new Date(expiresAt).toLocaleString("pl-PL", {
+        dateStyle: "long",
+        timeStyle: "short",
+      })
+    : null;
 
   return (
-    <Card>
-      <Heading>Twój ebook jest gotowy</Heading>
-      {productTitle && (
-        <p className="font-display text-coral text-xl tracking-tight uppercase">
-          {productTitle}
-        </p>
-      )}
-      <Paragraph>
-        Kliknij przycisk, aby pobrać plik. Pozostało Ci{" "}
-        <strong>
-          {attemptsRemaining} z {downloadLimit}
-        </strong>{" "}
-        prób.
-      </Paragraph>
-      <a
-        href={`/api/download/${token}/file`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="bg-electric-blue hover:bg-electric-blue/90 inline-flex items-center justify-center rounded-lg px-6 py-3 font-sans text-sm font-medium tracking-wide text-white uppercase transition-colors"
-      >
-        Pobierz ebook
-      </a>
-      <div className="border-off-black/15 mt-4 flex flex-col gap-3 border-t pt-6">
-        <Paragraph>
-          Coś poszło nie tak z pobieraniem? Możesz poprosić o ponowne wysłanie
-          linku e-mailem.
-        </Paragraph>
-        <ResendButton state={resendState} onClick={resend} />
-      </div>
-    </Card>
+    <>
+      <Card>
+        <Heading>Twój ebook jest gotowy</Heading>
+        {productTitle && (
+          <p className="font-display text-coral text-xl tracking-tight uppercase">
+            {productTitle}
+          </p>
+        )}
+        {expiresLabel && (
+          <Paragraph>
+            Link aktywny do <strong>{expiresLabel}</strong>.
+          </Paragraph>
+        )}
+        <a
+          href={`/api/download/${token}/file`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-electric-blue hover:bg-electric-blue/90 inline-flex items-center justify-center rounded-lg px-6 py-3 font-sans text-sm font-medium tracking-wide text-white uppercase transition-colors"
+        >
+          Pobierz ebook
+        </a>
+        <div className="border-off-black/15 mt-4 flex flex-col gap-3 border-t pt-6">
+          <Paragraph>Coś poszło nie tak z pobieraniem?</Paragraph>
+          <Button
+            type="button"
+            variant="coral"
+            size="compact"
+            onClick={() => setIsHelpOpen(true)}
+          >
+            Mam problem z pobraniem
+          </Button>
+        </div>
+      </Card>
+      <HelpDialog
+        isOpen={isHelpOpen}
+        onClose={() => setIsHelpOpen(false)}
+        context={helpContext}
+        prefillEmail={customerEmail ?? undefined}
+      />
+    </>
   );
 }
 
@@ -141,38 +143,4 @@ function Heading({ children }: { children: React.ReactNode }) {
 
 function Paragraph({ children }: { children: React.ReactNode }) {
   return <p className="font-sans text-base leading-relaxed">{children}</p>;
-}
-
-type ResendButtonPropsT = {
-  state: ResendStateT;
-  onClick: () => void;
-};
-
-function ResendButton({ state, onClick }: ResendButtonPropsT) {
-  const label =
-    state === "loading"
-      ? "Wysyłam…"
-      : state === "sent"
-        ? "Wysłaliśmy nowy link"
-        : "Wyślij link ponownie";
-
-  return (
-    <div className="flex flex-col gap-2">
-      <Button
-        type="button"
-        variant="coral-solid"
-        size="compact"
-        onClick={onClick}
-        disabled={state === "loading" || state === "sent"}
-        aria-busy={state === "loading"}
-      >
-        {label}
-      </Button>
-      {state === "error" && (
-        <p className="font-sans text-sm text-red-700">
-          Nie udało się wysłać. Spróbuj za chwilę.
-        </p>
-      )}
-    </div>
-  );
 }
