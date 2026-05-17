@@ -1,6 +1,6 @@
 "use client";
 
-import type { SiteT } from "@/lib/get-site";
+import type { SiteT } from "@/types/site";
 import { NavDesktopShell } from "@/components/sections/nav/nav-desktop";
 import { NavMobileShell } from "@/components/sections/nav/nav-mobile";
 

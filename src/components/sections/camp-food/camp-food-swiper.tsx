@@ -9,7 +9,7 @@ import type {
   SiteT,
   CampFoodThemeT,
   CampFoodOrientationT,
-} from "@/lib/get-site";
+} from "@/types/site";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import { Section } from "@/components/shared/section";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";

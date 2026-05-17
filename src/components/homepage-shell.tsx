@@ -8,7 +8,7 @@ import { CampFoodSwiper } from "@/components/sections/camp-food/camp-food-swiper
 import { Gallery } from "@/components/sections/gallery/gallery";
 import { Contact } from "@/components/sections/contact/contact";
 import { GrainOverlay } from "@/components/ui/grain-overlay";
-import type { SiteT } from "@/lib/get-site";
+import type { SiteT } from "@/types/site";
 import type { Product } from "@/payload-types";
 import { useVideoReady } from "../hooks/use-video-ready";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";

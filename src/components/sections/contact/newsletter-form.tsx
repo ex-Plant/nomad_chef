@@ -10,7 +10,7 @@ import { subscribeToNewsletter } from "@/lib/newsletter";
 import { Button } from "@/components/shared/button";
 import { LegalLink } from "@/components/shared/legal-link";
 import { FormCheckbox, FormError, FormTextInput } from "@/components/forms";
-import type { SiteT } from "@/lib/get-site";
+import type { SiteT } from "@/types/site";
 
 type NewsletterFormPropsT = {
   legalLinks?: SiteT["legalLinks"];

@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { SECTION_IDS } from "@/config/section-ids";
-import type { SiteT } from "@/lib/get-site";
+import type { SiteT } from "@/types/site";
 import { SectionContent } from "@/components/shared/section-content";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 import { ServicesBackground } from "./services-background";

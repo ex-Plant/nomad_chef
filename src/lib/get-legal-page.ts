@@ -4,7 +4,7 @@ import { unstable_cache } from "next/cache";
 import { getPayload, type TypedLocale } from "payload";
 import config from "@/payload.config";
 import type { LegalPage } from "@/payload-types";
-import type { LocaleT } from "@/lib/get-site";
+import type { LocaleT } from "@/types/locale";
 
 const fetchLegalPage = (slug: string, locale: LocaleT) =>
   unstable_cache(

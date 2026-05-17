@@ -1,4 +1,4 @@
-import type { SiteT } from "@/lib/get-site";
+import type { SiteT } from "@/types/site";
 
 type SlideT = SiteT["services"]["slides"][number];
 

@@ -22,7 +22,7 @@ import {
   FormSeparator,
 } from "@/components/forms";
 import type { Product } from "@/payload-types";
-import type { SiteT } from "@/lib/get-site";
+import type { SiteT } from "@/types/site";
 import { BuyerFields } from "./buyer-fields";
 import { ShippingFields } from "./shipping-fields";
 import { InvoiceFields } from "./invoice-fields";

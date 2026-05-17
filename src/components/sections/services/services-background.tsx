@@ -1,5 +1,5 @@
 import type { Ref } from "react";
-import type { SiteT } from "@/lib/get-site";
+import type { SiteT } from "@/types/site";
 import { Image } from "@/components/ui/image";
 
 type PropsT = {

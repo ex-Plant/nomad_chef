@@ -1,5 +1,5 @@
 import { SECTION_IDS } from "@/config/section-ids";
-import type { SiteT } from "@/lib/get-site";
+import type { SiteT } from "@/types/site";
 import { Image } from "@/components/ui/image";
 import { SectionContent } from "@/components/shared/section-content";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";

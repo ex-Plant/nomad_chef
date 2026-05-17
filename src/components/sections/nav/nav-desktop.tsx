@@ -5,7 +5,7 @@ import { m, motion, AnimatePresence } from "framer-motion";
 import { CONTENT } from "@/config/content";
 import { SECTION_IDS } from "@/config/section-ids";
 import type { SectionIdT } from "@/config/section-ids";
-import type { SiteT } from "@/lib/get-site";
+import type { SiteT } from "@/types/site";
 import { cn } from "@/helpers/cn";
 import { scrollToSection } from "@/helpers/scroll-to-section";
 import { useBreakpoint } from "@/hooks/use-media-query";

@@ -5,88 +5,17 @@ import { getPayload, type TypedLocale } from "payload";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import config from "@/payload.config";
 import { LEGAL_SLUGS } from "@/config/legal";
-
-export type LocaleT = "pl" | "en";
-
-type HeadingLineT = { text: string; className?: string };
-type CtaT = { label: string; href: string };
-type ContactChannelT = { label: string; value: string; href: string };
-export type MediaT = {
-  url: string;
-  mimeType: string;
-  alt: string;
-  width?: number;
-  height?: number;
-};
-
-export type CampFoodThemeT = "orange" | "blue";
-export type CampFoodOrientationT = "vertical" | "horizontal";
-
-export type LegalLinkT = { href: string; label: string };
-
-export type SiteT = {
-  hero: {
-    tagline: string;
-    headingLines: HeadingLineT[];
-    lead: string;
-    ctas: CtaT[];
-  };
-  about: {
-    eyebrow: string;
-    imageAlt: string;
-    image?: MediaT;
-    headingLines: HeadingLineT[];
-    intro: string;
-    quote: string;
-    paragraphs: string[];
-  };
-  services: {
-    eyebrow: string;
-    backgroundAlt: string;
-    background?: MediaT;
-    slides: { title: string; tagline: string; description: string }[];
-  };
-  campFood: {
-    eyebrow: string;
-    kicker: string;
-    headingLines: HeadingLineT[];
-    cta: CtaT;
-    slides: {
-      alt: string;
-      description: string;
-      image?: MediaT;
-      theme: CampFoodThemeT;
-      imageOrientation: CampFoodOrientationT;
-    }[];
-  };
-  gallery: {
-    eyebrow: string;
-    heading: string;
-    handle: string;
-    images: MediaT[];
-  };
-  contact: {
-    eyebrow: string;
-    headingLines: HeadingLineT[];
-    lead: string;
-    description: string;
-    email: ContactChannelT;
-    instagram: ContactChannelT;
-    formPlaceholder: string;
-    submit: CtaT;
-    footer: string;
-    legal: SerializedEditorState | null;
-    newsletter: {
-      title: string;
-      description: string;
-    };
-  };
-  nav: { id: string; label: string }[];
-  siteTitle: string;
-  siteDescription: string;
-  legalLinks: { terms: LegalLinkT | null; privacy: LegalLinkT | null };
-  updatedAt: string;
-};
+import type { LocaleT } from "@/types/locale";
+import type {
+  SiteT,
+  MediaT,
+  LegalLinkT,
+  CampFoodThemeT,
+  CampFoodOrientationT,
+  HeadingLineT,
+  CtaT,
+  ContactChannelT,
+} from "@/types/site";
 
 const colorToClass = (color: string | null | undefined): string | undefined => {
   if (!color || color === "off-black") return "text-off-black";

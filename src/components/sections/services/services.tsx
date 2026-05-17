@@ -1,6 +1,6 @@
 "use client";
 
-import type { SiteT } from "@/lib/get-site";
+import type { SiteT } from "@/types/site";
 import { useMediaQuery, BREAKPOINTS } from "@/hooks/use-media-query";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { ServicesSticky } from "./services-sticky";

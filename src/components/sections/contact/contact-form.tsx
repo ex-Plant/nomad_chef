@@ -8,7 +8,7 @@ import { FormTextInput, FormTextarea } from "@/components/forms";
 import { Button } from "@/components/shared/button";
 import { SuccessDialog } from "@/components/shared/success-dialog";
 import { NewsletterDialog } from "./newsletter-dialog";
-import type { SiteT } from "@/lib/get-site";
+import type { SiteT } from "@/types/site";
 
 type ContactFormPropsT = {
   messagePlaceholder: string;

@@ -6,7 +6,7 @@ import { EASE } from "@/config/animation-constants";
 import { NAV_TOGGLE_COLORS, SECTION_IDS } from "@/config/section-ids";
 import type { NavToggleColorT, SectionIdT } from "@/config/section-ids";
 import { CONTENT } from "@/config/content";
-import type { SiteT } from "@/lib/get-site";
+import type { SiteT } from "@/types/site";
 import { Starburst } from "@/components/shared/starburst";
 import { cn } from "@/helpers/cn";
 import { AnimationTogglePot as AnimationToggle } from "@/components/shared/animation-toggle-pot/animation-toggle-pot";

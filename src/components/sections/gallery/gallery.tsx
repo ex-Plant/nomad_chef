@@ -9,7 +9,7 @@ import { GalleryLightbox } from "@/components/ui/gallery-lightbox";
 import { FadeUp } from "@/components/shared/fade-up";
 import { ScatterText } from "@/components/shared/scatter-text";
 import { SECTION_IDS } from "@/config/section-ids";
-import type { MediaT, SiteT } from "@/lib/get-site";
+import type { MediaT, SiteT } from "@/types/site";
 import { Section } from "@/components/shared/section";
 import { SectionContent } from "@/components/shared/section-content";
 

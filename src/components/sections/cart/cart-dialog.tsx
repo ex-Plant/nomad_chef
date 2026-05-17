@@ -5,7 +5,7 @@ import { Starburst } from "@/components/shared/starburst";
 import { CloseToggle } from "@/components/shared/close-toggle";
 import type { Product } from "@/payload-types";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
-import type { SiteT } from "@/lib/get-site";
+import type { SiteT } from "@/types/site";
 import { CartForm } from "./cart-form";
 
 type CartDialogPropsT = {

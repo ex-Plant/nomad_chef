@@ -1,7 +1,7 @@
 "use client";
 
 import { FormDialog } from "@/components/shared/form-dialog";
-import type { SiteT } from "@/lib/get-site";
+import type { SiteT } from "@/types/site";
 import { NewsletterForm } from "./newsletter-form";
 
 type NewsletterDialogPropsT = {

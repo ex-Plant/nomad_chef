@@ -7,7 +7,7 @@ import { ContactLink } from "@/components/sections/contact/contact-link";
 import { ContactForm } from "@/components/sections/contact/contact-form";
 import { SECTION_IDS } from "@/config/section-ids";
 import { LEGAL_SLUGS } from "@/config/legal";
-import type { SiteT } from "@/lib/get-site";
+import type { SiteT } from "@/types/site";
 import { Section } from "@/components/shared/section";
 import { FadeUp } from "@/components/shared/fade-up";
 import { SectionContent } from "@/components/shared/section-content";

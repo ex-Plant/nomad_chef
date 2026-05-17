@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/shared/button";
 import type { Product } from "@/payload-types";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
-import type { SiteT } from "@/lib/get-site";
+import type { SiteT } from "@/types/site";
 import { CartDialog } from "./cart-dialog";
 
 type CartBuyButtonPropsT = {

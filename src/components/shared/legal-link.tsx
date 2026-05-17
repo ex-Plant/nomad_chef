@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { LegalLinkT } from "@/lib/get-site";
+import type { LegalLinkT } from "@/types/site";
 import { cn } from "@/helpers/cn";
 
 type LegalLinkPropsT = {

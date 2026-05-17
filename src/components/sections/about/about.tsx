@@ -8,7 +8,7 @@ import { FadeUp } from "@/components/shared/fade-up";
 import { ScatterText } from "@/components/shared/scatter-text";
 import { SectionContent } from "@/components/shared/section-content";
 import { SECTION_IDS } from "@/config/section-ids";
-import type { SiteT } from "@/lib/get-site";
+import type { SiteT } from "@/types/site";
 import { Section } from "@/components/shared/section";
 import { Starburst } from "../../shared/starburst";
 
