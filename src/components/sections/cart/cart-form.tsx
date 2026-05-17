@@ -72,8 +72,9 @@ export function CartForm({
     onSubmit: async ({ value }) => {
       const result = await createOrder(value);
       if (result.ok) {
-        resetFormData();
-        form.reset();
+        //TODO
+        // resetFormData();
+        // form.reset();
         onSuccess(result.orderNumber, value.email);
       }
       return result;
