@@ -190,6 +190,26 @@ export const Orders: CollectionConfig = {
       label: { pl: "Pobranie wygasa", en: "Download expires at" },
     },
     {
+      name: "lastDownloadAt",
+      type: "date",
+      admin: {
+        readOnly: true,
+        condition: whenDigitalOrder,
+        date: {
+          pickerAppearance: "dayAndTime",
+          displayFormat: "yyyy-MM-dd HH:mm",
+        },
+      },
+      label: { pl: "Ostatnie pobranie", en: "Last download at" },
+    },
+    {
+      name: "resendCount",
+      type: "number",
+      defaultValue: 0,
+      admin: { readOnly: true, condition: whenDigitalOrder },
+      label: { pl: "Liczba ponownych wysyłek linku", en: "Resend count" },
+    },
+    {
       name: "shippingAddress",
       type: "group",
       admin: { condition: whenPhysicalOrder },
