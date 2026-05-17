@@ -29,7 +29,7 @@ export function ServicesBackground({ data, imageRef }: PropsT) {
           )}
         </div>
       </div>
-      <div className="absolute inset-0 bg-off-black/20" />
+      <div className="bg-off-black/20 absolute inset-0" />
     </>
   );
 }

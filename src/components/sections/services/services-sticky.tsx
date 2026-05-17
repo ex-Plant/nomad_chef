@@ -50,7 +50,7 @@ export function ServicesSticky({ data }: PropsT) {
             end: "bottom bottom",
             scrub: true,
           },
-        }
+        },
       );
 
       // Fade each panel out as it scrolls past the top of the viewport.
@@ -80,15 +80,11 @@ export function ServicesSticky({ data }: PropsT) {
         window.removeEventListener("scroll-lock-released", onLockReleased);
       };
     },
-    { scope: containerRef, dependencies: [data.slides.length, reducedMotion] }
+    { scope: containerRef, dependencies: [data.slides.length, reducedMotion] },
   );
 
   return (
-    <div
-      ref={containerRef}
-      id={SECTION_IDS.services}
-      className="relative z-1"
-    >
+    <div ref={containerRef} id={SECTION_IDS.services} className="relative z-1">
       {/* Sticky image + eyebrow — pinned for the full section */}
       <div className="sticky top-0 z-1 h-dvh overflow-hidden">
         <ServicesBackground data={data} imageRef={imageRef} />
@@ -107,8 +103,8 @@ export function ServicesSticky({ data }: PropsT) {
           <div
             key={slide.title}
             className={cn(
-              "flex min-h-[80lvh] w-screen shrink-0 flex-col justify-end pb-24 md:pb-32 will-change-[opacity,height]",
-              i === 0 && "h-lvh"
+              "flex min-h-[80lvh] w-screen shrink-0 flex-col justify-end pb-24 will-change-[opacity,height] md:pb-32",
+              i === 0 && "h-lvh",
             )}
           >
             <SectionContent>

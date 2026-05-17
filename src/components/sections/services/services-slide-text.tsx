@@ -8,20 +8,20 @@ export function ServicesSlideText({ slide }: { slide: SlideT }) {
   return (
     <>
       <h3 className="max-w-sm sm:max-w-xl lg:max-w-2xl">
-        <span className="bg-coral text-white box-decoration-clone leading-[0.9] pr-2 max-w-[12ch] text-heading-lg tracking-tight">
+        <span className="bg-coral text-heading-lg max-w-[12ch] box-decoration-clone pr-2 leading-[0.9] tracking-tight text-white">
           {slide.title}
         </span>
       </h3>
       {slide.tagline && (
-        <p className="mt-8 max-w-sm sm:max-w-md leading-tight mb-2">
-          <span className="bg-yellow text-off-black box-decoration-clone leading-[0.9] px-1 pr-2 font-sans text-sm md:text-base whitespace-pre-line">
+        <p className="mt-8 mb-2 max-w-sm leading-tight sm:max-w-md">
+          <span className="bg-yellow text-off-black box-decoration-clone px-1 pr-2 font-sans text-sm leading-[0.9] whitespace-pre-line md:text-base">
             {slide.tagline}
           </span>
         </p>
       )}
       {slide.description && (
-        <p className="max-w-sm lg:max-w-md leading-tight">
-          <span className="bg-pink text-off-black box-decoration-clone leading-[0.8] px-1 pr-2 font-sans text-sm md:text-base whitespace-pre-line">
+        <p className="max-w-sm leading-tight lg:max-w-md">
+          <span className="bg-pink text-off-black box-decoration-clone px-1 pr-2 font-sans text-sm leading-[0.8] whitespace-pre-line md:text-base">
             {slide.description}
           </span>
         </p>

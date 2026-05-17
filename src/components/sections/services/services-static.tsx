@@ -16,7 +16,7 @@ export function ServicesStatic({ data }: PropsT) {
   const bg = data.background;
 
   return (
-    <div id={SECTION_IDS.services} className="relative z-1 bg-off-black">
+    <div id={SECTION_IDS.services} className="bg-off-black relative z-1">
       {/* Shared background — one image, rendered once for the whole section */}
       {bg?.url && (
         <div className="absolute inset-0 z-0 overflow-hidden">
@@ -28,7 +28,7 @@ export function ServicesStatic({ data }: PropsT) {
             className="rounded-none object-cover"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-off-black/20" />
+          <div className="bg-off-black/20 absolute inset-0" />
         </div>
       )}
 

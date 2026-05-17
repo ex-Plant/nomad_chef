@@ -1,4 +1,4 @@
-import type { CartFormInputT } from "@/lib/cart-schema";
+import type { CartFormValuesT } from "@/lib/cart-schema";
 
 export type AddressT = {
   companyName?: string;
@@ -85,7 +85,7 @@ function buildAddress(fields: {
   };
 }
 
-function buildShippingAddress(values: CartFormInputT): AddressT | null {
+function buildShippingAddress(values: CartFormValuesT): AddressT | null {
   if (values.format !== "physical") {
     return null;
   }
@@ -99,7 +99,7 @@ function buildShippingAddress(values: CartFormInputT): AddressT | null {
   });
 }
 
-function buildInvoiceAddress(values: CartFormInputT): AddressT | null {
+function buildInvoiceAddress(values: CartFormValuesT): AddressT | null {
   if (!values.wantsInvoice) {
     return null;
   }
@@ -122,7 +122,7 @@ function buildInvoiceAddress(values: CartFormInputT): AddressT | null {
   });
 }
 
-export function buildAddressesToAdd(v: CartFormInputT): AddressT[] {
+export function buildAddressesToAdd(v: CartFormValuesT): AddressT[] {
   const shipping = buildShippingAddress(v);
   const invoice = buildInvoiceAddress(v);
   const usesShippingAsInvoice =

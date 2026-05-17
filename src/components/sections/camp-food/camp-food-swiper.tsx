@@ -5,11 +5,7 @@ import { m, AnimatePresence } from "framer-motion";
 import { ScatterText } from "@/components/shared/scatter-text";
 import { Image } from "@/components/ui/image";
 import { SECTION_IDS } from "@/config/section-ids";
-import type {
-  SiteT,
-  CampFoodThemeT,
-  CampFoodOrientationT,
-} from "@/types/site";
+import type { SiteT, CampFoodThemeT, CampFoodOrientationT } from "@/types/site";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import { Section } from "@/components/shared/section";
 import { EyebrowTag } from "@/components/shared/eyebrow-tag";
