@@ -3,7 +3,7 @@ import {
   generateDownloadToken,
   nextDownloadExpiry,
 } from "@/lib/orders/download-token";
-import { sendDownloadEmail } from "@/lib/orders/send-download-email";
+import { ENV } from "@/config/env";
 
 export const regenerateDownloadEndpoint: Endpoint = {
   path: "/:id/regenerate-download",
@@ -17,9 +17,6 @@ export const regenerateDownloadEndpoint: Endpoint = {
     if (typeof id !== "string" && typeof id !== "number") {
       return Response.json({ error: "Invalid id" }, { status: 400 });
     }
-
-    const body = req.json ? await req.json() : {};
-    const sendEmail = Boolean((body as { sendEmail?: unknown }).sendEmail);
 
     const order = await req.payload
       .findByID({ collection: "orders", id, depth: 1, req })
@@ -56,33 +53,16 @@ export const regenerateDownloadEndpoint: Endpoint = {
       req,
     });
 
-    if (sendEmail) {
-      const customer =
-        typeof order.customer === "object" ? order.customer : null;
-      if (!customer?.email) {
-        return Response.json(
-          {
-            error:
-              "Token rotated but customer has no email — please send manually.",
-            token,
-            expiresAt: expiresAt.toISOString(),
-          },
-          { status: 207 },
-        );
-      }
-      await sendDownloadEmail({
-        customerEmail: customer.email,
-        customerFirstName: customer.firstName,
-        downloadToken: token,
-        downloadExpiresAt: expiresAt,
-      });
-    }
+    const customer =
+      typeof order.customer === "object" ? order.customer : null;
 
     return Response.json({
       ok: true,
       token,
       expiresAt: expiresAt.toISOString(),
-      emailed: sendEmail,
+      downloadUrl: `${ENV.SITE_URL}/download/${token}`,
+      customerEmail: customer?.email ?? null,
+      customerFirstName: customer?.firstName ?? null,
     });
   },
 };

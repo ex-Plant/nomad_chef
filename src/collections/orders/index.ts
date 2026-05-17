@@ -185,7 +185,7 @@ export const Orders: CollectionConfig = {
       name: "regenerateDownload",
       type: "ui",
       admin: {
-        condition: whenDigitalOrder,
+        condition: (data) => Boolean(data?.downloadToken),
         components: {
           Field:
             "@/collections/orders/components/regenerate-download-buttons#RegenerateDownloadButtons",
