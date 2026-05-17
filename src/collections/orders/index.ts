@@ -188,21 +188,6 @@ export const Orders: CollectionConfig = {
       label: { pl: "Token pobrania", en: "Download token" },
     },
     {
-      name: "downloadCount",
-      type: "number",
-      defaultValue: 0,
-      admin: { readOnly: true, condition: whenDigitalOrder },
-      label: { pl: "Liczba pobrań", en: "Download count" },
-    },
-    {
-      name: "downloadLimit",
-      type: "number",
-      defaultValue: 5,
-      min: 1,
-      admin: { condition: whenDigitalOrder },
-      label: { pl: "Limit pobrań", en: "Download limit" },
-    },
-    {
       name: "downloadExpiresAt",
       type: "date",
       admin: { readOnly: true, condition: whenDigitalOrder },
@@ -220,13 +205,6 @@ export const Orders: CollectionConfig = {
         },
       },
       label: { pl: "Ostatnie pobranie", en: "Last download at" },
-    },
-    {
-      name: "resendCount",
-      type: "number",
-      defaultValue: 0,
-      admin: { readOnly: true, condition: whenDigitalOrder },
-      label: { pl: "Liczba ponownych wysyłek linku", en: "Resend count" },
     },
     {
       name: "shippingAddress",

@@ -6,7 +6,6 @@ type SendArgsT = {
   customerFirstName?: string | null;
   downloadToken: string;
   downloadExpiresAt: Date;
-  downloadLimit: number;
 };
 
 export async function sendDownloadEmail({
@@ -14,11 +13,13 @@ export async function sendDownloadEmail({
   customerFirstName,
   downloadToken,
   downloadExpiresAt,
-  downloadLimit,
 }: SendArgsT): Promise<void> {
   const downloadUrl = `${ENV.SITE_URL}/download/${downloadToken}`;
   const greeting = customerFirstName ? `Cześć ${customerFirstName},` : "Cześć,";
-  const expiresLabel = downloadExpiresAt.toLocaleDateString("pl-PL");
+  const expiresLabel = downloadExpiresAt.toLocaleString("pl-PL", {
+    dateStyle: "long",
+    timeStyle: "short",
+  });
 
   await sendEmail({
     to: customerEmail,
@@ -29,7 +30,9 @@ export async function sendDownloadEmail({
       "Dziękujemy za zakup. Pobierz swoją książkę:",
       downloadUrl,
       "",
-      `Link wygasa ${expiresLabel}, masz ${downloadLimit} prób pobrania.`,
+      `Link aktywny do ${expiresLabel}.`,
+      "",
+      'Jeśli masz problem z pobraniem, kliknij na stronie "Mam problem" i napisz do nas — odezwiemy się indywidualnie.',
       "",
       "Miłej lektury!",
     ].join("\n"),

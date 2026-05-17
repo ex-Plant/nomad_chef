@@ -71,7 +71,6 @@ export const digitalFulfillment: CollectionAfterChangeHook = async ({
     customerFirstName: customer.firstName,
     downloadToken: token,
     downloadExpiresAt: expiresAt,
-    downloadLimit: doc.downloadLimit ?? 5,
   });
 
   return doc;

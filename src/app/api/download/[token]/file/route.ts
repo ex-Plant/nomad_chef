@@ -1,10 +1,6 @@
 /**
  * GET /api/download/<token>/file — streams the gated ebook bytes.
- *
- * We proxy bytes through this route rather than redirecting to the upstream
- * blob URL so the attempts limit can't be bypassed by re-using the direct URL.
- * Increment happens after the upstream `fetch` succeeds but before streaming
- * completes — a client that aborts mid-download still consumes an attempt.
+ * Proxies the upstream blob through this route so the token is enforced.
  */
 
 import { NextResponse } from "next/server";
@@ -25,11 +21,6 @@ const STATUS_TO_HTTP: Record<string, { status: number; message: string }> = {
   expired: {
     status: 410,
     message: "Link wygasł. Skontaktuj się z nami, aby otrzymać nowy.",
-  },
-  exhausted: {
-    status: 429,
-    message:
-      "Wykorzystano limit pobrań. Skontaktuj się z nami, aby otrzymać nowy link.",
   },
 };
 
@@ -56,7 +47,6 @@ export async function GET(
     const err = STATUS_TO_HTTP[state.status] ?? STATUS_TO_HTTP.not_found;
     return errorResponse(err.message, err.status);
   }
-  // `state.status === "ready"` implies `order` is non-null.
   if (!order) return errorResponse("Link nieaktywny.", 404);
 
   const product = typeof order.product === "object" ? order.product : null;
@@ -74,10 +64,7 @@ export async function GET(
   await payload.update({
     collection: "orders",
     id: order.id,
-    data: {
-      downloadCount: state.count + 1,
-      lastDownloadAt: new Date().toISOString(),
-    },
+    data: { lastDownloadAt: new Date().toISOString() },
     context: { skipFulfillment: true },
   });
 

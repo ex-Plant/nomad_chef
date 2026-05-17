@@ -283,11 +283,8 @@ export interface Order {
   paymentRef?: string | null;
   fulfillmentStatus: 'pending' | 'fulfilled' | 'shipped' | 'delivered';
   downloadToken?: string | null;
-  downloadCount?: number | null;
-  downloadLimit?: number | null;
   downloadExpiresAt?: string | null;
   lastDownloadAt?: string | null;
-  resendCount?: number | null;
   shippingAddress?: {
     firstName?: string | null;
     lastName?: string | null;
@@ -592,11 +589,8 @@ export interface OrdersSelect<T extends boolean = true> {
   paymentRef?: T;
   fulfillmentStatus?: T;
   downloadToken?: T;
-  downloadCount?: T;
-  downloadLimit?: T;
   downloadExpiresAt?: T;
   lastDownloadAt?: T;
-  resendCount?: T;
   shippingAddress?:
     | T
     | {
