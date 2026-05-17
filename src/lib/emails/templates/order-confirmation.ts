@@ -53,7 +53,6 @@ export function generateOrderConfirmationHtml(
   return renderEmailShell({
     title: `Nowe zamówienie ${args.orderNumber}`,
     items,
-    footer: "Zespół Chaos Kitchen",
     omitLogo: args.omitLogo,
   });
 }

@@ -15,8 +15,8 @@ export function renderEmailShell({
 }: RenderShellArgsT): string {
   const itemsHtml = items.map(renderItem).join("\n");
   const titleHtml = title ? renderTitle(title) : "";
-  const footerHtml = footer ? renderFooter(footer) : "";
   const logoHtml = omitLogo ? "" : renderLogo();
+  const footerHtml = renderBrandFooter(footer);
 
   return `<!DOCTYPE html>
 <html lang="pl">
@@ -24,12 +24,12 @@ export function renderEmailShell({
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
-  <body style="background-color: ${EMAIL_COLORS.warmWhite}; font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 32px 24px;">
-    <div style="max-width: 600px; margin: 0 auto; background-color: ${EMAIL_COLORS.card}; padding: 40px 32px;">
+  <body style="font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 32px 24px;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 40px 32px;">
       ${titleHtml}
       ${itemsHtml}
-      ${footerHtml}
       ${logoHtml}
+      ${footerHtml}
     </div>
   </body>
 </html>`;
@@ -66,6 +66,11 @@ function renderTitle(title: string): string {
   return `<h1 style="color: ${EMAIL_COLORS.text}; font-size: 26px; line-height: 1.2; margin: 0 0 24px 0; text-align: center; letter-spacing: -0.01em;">${title}</h1>`;
 }
 
-function renderFooter(footer: string): string {
-  return `<p style="color: ${EMAIL_COLORS.muted}; font-size: 14px; text-align: center; margin: 32px 0 0 0;">${footer}</p>`;
+function renderBrandFooter(extra?: string): string {
+  const extraHtml = extra
+    ? `<p style="color: ${EMAIL_COLORS.muted}; font-size: 14px; text-align: center; margin: 32px 0 8px 0;">${extra}</p>`
+    : "";
+  const topMargin = extra ? "0" : "32px";
+  const brandHtml = `<p style="color: ${EMAIL_COLORS.muted}; font-size: 14px; line-height: 1.6; text-align: center; margin: ${topMargin} 0 0 0;">Marta Leśniewska<br>Chaos Kitchen</p>`;
+  return `${extraHtml}${brandHtml}`;
 }

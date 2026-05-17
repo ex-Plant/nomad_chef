@@ -1,17 +1,12 @@
 import { ENV } from "@/config/env";
 
-// Locked palette from CLAUDE.md. Email-safe subset: warm-white body + matching
-// inner card (uniform warm canvas, matches the site), off-black text, coral CTA
-// — no full color-blocked sections (renders unpredictably in Outlook + older
-// Gmail clients).
+// Locked palette from CLAUDE.md. Email-safe subset: off-black text on the
+// recipient client's default bg (we don't set body/card bg — keeps the email
+// neutral across Gmail, Apple Mail, Outlook). Coral for CTAs, warm taupe for
+// footer.
 export const EMAIL_COLORS = {
   coral: "#DE6445",
   blue: "#193EF4",
-  warmWhite: "#F5EEE5",
-  // Inner card matches body so the warm tone reads edge-to-edge in clients
-  // that render body bg (Gmail web, Apple Mail). In Outlook (no body bg), the
-  // inner div still renders a warm rectangle on white — also acceptable.
-  card: "#F5EEE5",
   // Off-black for all primary text. Matches CLAUDE.md locked value.
   text: "#1A1614",
   textOnDark: "#FFFFFF",

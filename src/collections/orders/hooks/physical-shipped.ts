@@ -1,5 +1,6 @@
 import type { CollectionAfterChangeHook } from "payload";
 import { sendEmail } from "@/lib/email";
+import { generateShipmentNotificationHtml } from "@/lib/emails/templates/shipment-notification";
 
 export const physicalShipped: CollectionAfterChangeHook = async ({ doc, previousDoc, req, operation, context }) => {
   if (context?.skipFulfillment) return doc;
@@ -29,10 +30,16 @@ export const physicalShipped: CollectionAfterChangeHook = async ({ doc, previous
 
   const tracking = doc.tracking ?? "(brak numeru)";
   const courier = doc.courier ?? "(kurier nieznany)";
+  const greeting = customer.firstName ? `Cześć ${customer.firstName},` : "Cześć,";
   await sendEmail({
     to: customer.email,
     subject: "Twoja książka jest w drodze",
-    text: `Cześć ${customer.firstName ?? ""},\n\nWysłaliśmy Twoją książkę.\nKurier: ${courier}\nNumer przesyłki: ${tracking}\n\nDziękujemy!`,
+    text: `${greeting}\n\nWysłaliśmy Twoją książkę.\nKurier: ${courier}\nNumer przesyłki: ${tracking}\n\nDziękujemy!`,
+    html: generateShipmentNotificationHtml({
+      customerFirstName: customer.firstName,
+      courier,
+      tracking,
+    }),
   });
 
   return doc;

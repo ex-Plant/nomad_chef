@@ -26,7 +26,6 @@ export function generateContactMessageHtml(args: ContactMessageArgsT): string {
   return renderEmailShell({
     title: "Wiadomość z formularza",
     items,
-    footer: "chaoskitchen",
     omitLogo: args.omitLogo,
   });
 }

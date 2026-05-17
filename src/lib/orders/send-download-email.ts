@@ -1,5 +1,6 @@
 import { sendEmail } from "@/lib/email";
 import { ENV } from "@/config/env";
+import { generateDownloadReadyHtml } from "@/lib/emails/templates/download-ready";
 
 type SendArgsT = {
   customerEmail: string;
@@ -36,5 +37,10 @@ export async function sendDownloadEmail({
       "",
       "Miłej lektury!",
     ].join("\n"),
+    html: generateDownloadReadyHtml({
+      customerFirstName,
+      downloadUrl,
+      expiresLabel,
+    }),
   });
 }
