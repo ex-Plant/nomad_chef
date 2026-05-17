@@ -1,5 +1,6 @@
 import { renderEmailShell } from "../render-shell";
 import type { EmailItemT } from "../constants";
+import { escapeHtml } from "../escape-html";
 
 type OrderConfirmationArgsT = {
   orderNumber: string;
@@ -20,24 +21,26 @@ type OrderConfirmationArgsT = {
 export function generateOrderConfirmationHtml(
   args: OrderConfirmationArgsT,
 ): string {
+  const customerLine = `${escapeHtml(args.customerFirstName)} ${escapeHtml(args.customerLastName)} &lt;${escapeHtml(args.customerEmail)}&gt;`;
+
   const items: EmailItemT[] = [
-    { type: "text", content: row("Numer zamówienia", args.orderNumber) },
     {
       type: "text",
-      content: row("Produkt", `${args.productTitle} (${args.productFormat})`),
+      content: row("Numer zamówienia", escapeHtml(args.orderNumber)),
+    },
+    {
+      type: "text",
+      content: row(
+        "Produkt",
+        `${escapeHtml(args.productTitle)} (${escapeHtml(args.productFormat)})`,
+      ),
     },
     { type: "text", content: row("Ilość", String(args.quantity)) },
     {
       type: "text",
       content: row("Kwota", `${formatAmount(args.totalGross)} PLN`),
     },
-    {
-      type: "text",
-      content: row(
-        "Klient",
-        `${args.customerFirstName} ${args.customerLastName} &lt;${args.customerEmail}&gt;`,
-      ),
-    },
+    { type: "text", content: row("Klient", customerLine) },
   ];
 
   if (args.invoice) {
@@ -45,7 +48,7 @@ export function generateOrderConfirmationHtml(
       type: "text",
       content: row(
         "Faktura",
-        `${args.invoice.companyName} (NIP ${args.invoice.nip})`,
+        `${escapeHtml(args.invoice.companyName)} (NIP ${escapeHtml(args.invoice.nip)})`,
       ),
     });
   }

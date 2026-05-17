@@ -1,5 +1,6 @@
 import { renderEmailShell } from "../render-shell";
 import type { EmailItemT } from "../constants";
+import { escapeHtml, buildGreeting } from "../escape-html";
 
 type ShipmentNotificationArgsT = {
   customerFirstName?: string | null;
@@ -11,12 +12,8 @@ type ShipmentNotificationArgsT = {
 export function generateShipmentNotificationHtml(
   args: ShipmentNotificationArgsT,
 ): string {
-  const greeting = args.customerFirstName
-    ? `Cześć ${escapeHtml(args.customerFirstName)},`
-    : "Cześć,";
-
   const items: EmailItemT[] = [
-    { type: "text", content: greeting },
+    { type: "text", content: buildGreeting(args.customerFirstName) },
     { type: "text", content: "Wysłaliśmy Twoją książkę." },
     {
       type: "text",
@@ -34,13 +31,4 @@ export function generateShipmentNotificationHtml(
     items,
     omitLogo: args.omitLogo,
   });
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
 }

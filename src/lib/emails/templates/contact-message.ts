@@ -1,5 +1,6 @@
 import { renderEmailShell } from "../render-shell";
 import type { EmailItemT } from "../constants";
+import { escapeHtml } from "../escape-html";
 
 type ContactMessageArgsT = {
   senderEmail: string;
@@ -28,13 +29,4 @@ export function generateContactMessageHtml(args: ContactMessageArgsT): string {
     items,
     omitLogo: args.omitLogo,
   });
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
 }

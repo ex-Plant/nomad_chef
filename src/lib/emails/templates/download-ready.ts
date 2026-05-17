@@ -1,5 +1,6 @@
 import { renderEmailShell } from "../render-shell";
 import type { EmailItemT } from "../constants";
+import { escapeHtml, buildGreeting } from "../escape-html";
 
 type DownloadReadyArgsT = {
   customerFirstName?: string | null;
@@ -9,29 +10,21 @@ type DownloadReadyArgsT = {
 };
 
 export function generateDownloadReadyHtml(args: DownloadReadyArgsT): string {
-  const greeting = args.customerFirstName
-    ? `Cześć ${escapeHtml(args.customerFirstName)},`
-    : "Cześć,";
-
   const items: EmailItemT[] = [
-    { type: "text", content: greeting },
+    { type: "text", content: buildGreeting(args.customerFirstName) },
     {
       type: "text",
-      content: "Dziękujemy za zakup. Pobierz swoją książkę:",
+      content:
+        "Dziękujemy za zakup. Ebook możesz pobrać klikając w poniższy link:",
     },
     {
       type: "button",
-      label: "Pobierz książkę",
+      label: "Pobierz tutaj",
       url: args.downloadUrl,
     },
     {
       type: "text",
       content: `Link aktywny do ${escapeHtml(args.expiresLabel)}.`,
-    },
-    {
-      type: "text",
-      content:
-        'Jeśli masz problem z pobraniem, kliknij na stronie „Mam problem" i napisz do nas — odezwiemy się indywidualnie.',
     },
     { type: "text", content: "Miłej lektury!" },
   ];
@@ -41,13 +34,4 @@ export function generateDownloadReadyHtml(args: DownloadReadyArgsT): string {
     items,
     omitLogo: args.omitLogo,
   });
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
 }

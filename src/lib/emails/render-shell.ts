@@ -3,20 +3,18 @@ import { EMAIL_COLORS, getLogoUrl, type EmailItemT } from "./constants";
 type RenderShellArgsT = {
   title?: string;
   items: EmailItemT[];
-  footer?: string;
   omitLogo?: boolean;
 };
 
 export function renderEmailShell({
   title,
   items,
-  footer,
   omitLogo = false,
 }: RenderShellArgsT): string {
   const itemsHtml = items.map(renderItem).join("\n");
   const titleHtml = title ? renderTitle(title) : "";
   const logoHtml = omitLogo ? "" : renderLogo();
-  const footerHtml = renderBrandFooter(footer);
+  const footerHtml = renderBrandFooter();
 
   return `<!DOCTYPE html>
 <html lang="pl">
@@ -66,11 +64,6 @@ function renderTitle(title: string): string {
   return `<h1 style="color: ${EMAIL_COLORS.text}; font-size: 26px; line-height: 1.2; margin: 0 0 24px 0; text-align: center; letter-spacing: -0.01em;">${title}</h1>`;
 }
 
-function renderBrandFooter(extra?: string): string {
-  const extraHtml = extra
-    ? `<p style="color: ${EMAIL_COLORS.muted}; font-size: 14px; text-align: center; margin: 32px 0 8px 0;">${extra}</p>`
-    : "";
-  const topMargin = extra ? "0" : "32px";
-  const brandHtml = `<p style="color: ${EMAIL_COLORS.muted}; font-size: 14px; line-height: 1.6; text-align: center; margin: ${topMargin} 0 0 0;">Marta Leśniewska<br>Chaos Kitchen</p>`;
-  return `${extraHtml}${brandHtml}`;
+function renderBrandFooter(): string {
+  return `<p style="color: ${EMAIL_COLORS.muted}; font-size: 14px; line-height: 1.6; text-align: center; margin: 32px 0 0 0;">Marta Leśniewska<br>Chaos Kitchen</p>`;
 }
