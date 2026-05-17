@@ -34,7 +34,7 @@ export function CartDialog({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-coral ring-yellow relative w-full max-w-md overflow-clip rounded-lg ring-2 md:max-w-2xl"
+        className="bg-coral ring-yellow relative w-full max-w-md overflow-hidden rounded-lg ring-2 md:max-w-2xl"
       >
         <div
           aria-hidden

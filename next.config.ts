@@ -14,7 +14,12 @@ const nextConfig: NextConfig = {
       { pathname: "/_next/static/**", search: "" },
     ],
   },
-  allowedDevOrigins: ["192.168.31.177", "192.168.31.183", "192.168.0.85"],
+  allowedDevOrigins: [
+    "192.168.31.177",
+    "192.168.31.183",
+    "192.168.0.85",
+    "192.168.31.58",
+  ],
 };
 
 export default withPayload(nextConfig);

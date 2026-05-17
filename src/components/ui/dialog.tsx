@@ -4,6 +4,7 @@ import { type ReactNode } from "react";
 import * as RDialog from "@radix-ui/react-dialog";
 import { m, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/helpers/cn";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 const CURTAIN_EASE = [0.95, 0, 1, 0.25] as const;
 const CURTAIN_ENTER_DURATION = 0.45;
@@ -78,6 +79,11 @@ export function Dialog({
   ariaDescribedBy,
   variant = "curtain",
 }: DialogPropsT) {
+  /* Radix's body scroll lock uses overflow:hidden only, which iOS Safari
+     ignores for touch — body still rubber-bands and steals touches from the
+     overlay's overflow-y:auto. useScrollLock pins body { position: fixed }
+     which is the only reliable lock on iOS. */
+  useScrollLock(isOpen);
   return (
     <RDialog.Root
       open={isOpen}
@@ -94,6 +100,7 @@ export function Dialog({
                 ariaLabel={ariaLabel}
                 ariaLabelledBy={ariaLabelledBy}
                 ariaDescribedBy={ariaDescribedBy}
+                onClose={onClose}
               >
                 {children}
               </ModalContent>
@@ -120,6 +127,10 @@ type ContentPropsT = {
   ariaLabel?: string;
   ariaLabelledBy?: string;
   ariaDescribedBy?: string;
+};
+
+type ModalContentPropsT = ContentPropsT & {
+  onClose: () => void;
 };
 
 function CurtainContent({
@@ -171,27 +182,37 @@ function ModalContent({
   ariaLabel,
   ariaLabelledBy,
   ariaDescribedBy,
-}: ContentPropsT) {
+  onClose,
+}: ModalContentPropsT) {
   const reduced = useReducedMotion();
   return (
-    <RDialog.Overlay asChild forceMount>
-      <m.div
-        className={cn(
-          "bg-coral/40 fixed inset-0 z-[500] overflow-y-auto overscroll-contain p-4",
-          className,
-        )}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={reduced ? { duration: 0 } : { duration: 0.25 }}
+    <>
+      {/* Backdrop only — Overlay never owns scroll. */}
+      <RDialog.Overlay asChild forceMount>
+        <m.div
+          className={cn("bg-coral/40 fixed inset-0 z-[500]", className)}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={reduced ? { duration: 0 } : { duration: 0.25 }}
+        />
+      </RDialog.Overlay>
+      {/* Content owns the scroll. Sized to the visible viewport via dvh so
+          iOS Safari's URL bar doesn't make the form's bottom sit beyond the
+          scrollable area. */}
+      <RDialog.Content
+        asChild
+        forceMount
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
       >
-        <div className="flex min-h-full justify-center">
-          <RDialog.Content
-            asChild
-            forceMount
-            aria-labelledby={ariaLabelledBy}
-            aria-describedby={ariaDescribedBy}
-          >
+        <div
+          className="fixed inset-x-0 top-0 z-[501] h-[100dvh] overflow-y-auto overscroll-contain p-4"
+          /* Card stops click propagation, so any click that bubbles up to
+             this scroll container originated outside the card → close. */
+          onClick={onClose}
+        >
+          <div className="flex min-h-full justify-center">
             <m.div
               className="m-auto flex w-full justify-center"
               initial={reduced ? { opacity: 0 } : { opacity: 0, y: 16 }}
@@ -206,9 +227,9 @@ function ModalContent({
               )}
               {children}
             </m.div>
-          </RDialog.Content>
+          </div>
         </div>
-      </m.div>
-    </RDialog.Overlay>
+      </RDialog.Content>
+    </>
   );
 }

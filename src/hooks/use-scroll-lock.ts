@@ -43,10 +43,15 @@ function acquireLock() {
   const scrollbarWidth = window.innerWidth - html.clientWidth;
 
   /* Lock both html and body. body alone fails on iOS Safari (rubber-band);
-     html alone fails on some Android Chromes (body still scrolls). */
+     html alone fails on some Android Chromes (body still scrolls).
+
+     `position` MUST be set with !important: Radix Dialog uses
+     react-remove-scroll-bar, which injects `body[data-scroll-locked] {
+     position: relative !important }`. A stylesheet !important beats a regular
+     inline style, but inline !important beats stylesheet !important. */
   html.style.overflow = "hidden";
   body.style.overflow = "hidden";
-  body.style.position = "fixed";
+  body.style.setProperty("position", "fixed", "important");
   body.style.top = `-${savedScrollY}px`;
   body.style.left = "0";
   body.style.right = "0";
