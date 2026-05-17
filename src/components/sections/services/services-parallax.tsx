@@ -76,7 +76,14 @@ export function ServicesParallax({ data }: ServicesPropsT) {
       const imageWrap = imageRef.current;
       if (!section || !stage || !track || !imageWrap) return;
 
-      const normalizer = ScrollTrigger.normalizeScroll(true);
+      /* `allowNestedScroll: true` lets native touch scroll work inside any
+         nested overflow container (e.g. the cart Dialog's scroll area) while
+         still normalizing the main page scroll for the pin. Without it, GSAP
+         hijacks every touchmove globally and overflow-y:auto modals can't be
+         scrolled on iOS. */
+      const normalizer = ScrollTrigger.normalizeScroll({
+        allowNestedScroll: true,
+      });
 
       const travelUnits = Math.max(slideCount - 1 + EXIT_BUFFER, 0);
       const lastOpacities = new Array(contentRefs.current.length).fill(-1);

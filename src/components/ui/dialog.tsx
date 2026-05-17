@@ -79,10 +79,6 @@ export function Dialog({
   ariaDescribedBy,
   variant = "curtain",
 }: DialogPropsT) {
-  /* Radix's body scroll lock uses overflow:hidden only, which iOS Safari
-     ignores for touch — body still rubber-bands and steals touches from the
-     overlay's overflow-y:auto. useScrollLock pins body { position: fixed }
-     which is the only reliable lock on iOS. */
   useScrollLock(isOpen);
   return (
     <RDialog.Root
@@ -190,16 +186,14 @@ function ModalContent({
       {/* Backdrop only — Overlay never owns scroll. */}
       <RDialog.Overlay asChild forceMount>
         <m.div
-          className={cn("bg-coral/40 fixed inset-0 z-[500]", className)}
+          className={cn("bg-coral/40 fixed inset-0 z-500", className)}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={reduced ? { duration: 0 } : { duration: 0.25 }}
         />
       </RDialog.Overlay>
-      {/* Content owns the scroll. Sized to the visible viewport via dvh so
-          iOS Safari's URL bar doesn't make the form's bottom sit beyond the
-          scrollable area. */}
+      {/* Content owns the scroll. */}
       <RDialog.Content
         asChild
         forceMount
@@ -207,7 +201,7 @@ function ModalContent({
         aria-describedby={ariaDescribedBy}
       >
         <div
-          className="fixed inset-x-0 top-0 z-[501] h-[100dvh] overflow-y-auto overscroll-contain p-4"
+          className="fixed inset-x-0 top-0 z-501 h-svh overflow-y-auto overscroll-contain p-4"
           /* Card stops click propagation, so any click that bubbles up to
              this scroll container originated outside the card → close. */
           onClick={onClose}

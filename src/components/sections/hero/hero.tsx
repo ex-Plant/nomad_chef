@@ -17,6 +17,7 @@ import { Loader } from "@/components/shared/loader";
 import { scrollToSection } from "@/helpers/scroll-to-section";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useScrollLock } from "../../../hooks/use-scroll-lock";
 
 const POSTER_DESKTOP_SRC = "/videos/hero_poster_desktop.jpeg";
 const POSTER_MOBILE_SRC = "/videos/hero_poster_mobile.jpeg";
@@ -55,6 +56,8 @@ export function Hero({ data, videoRef, isReady }: HeroPropsT) {
     video.src = videoSrc;
     video.load();
   }, [videoSrc, videoRef]);
+
+  useScrollLock(!isReady);
 
   useGSAP(
     () => {
