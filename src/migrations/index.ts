@@ -24,6 +24,7 @@ import * as migration_20260516_122032_digital_delivery from "./20260516_122032_d
 import * as migration_20260516_132215 from "./20260516_132215";
 import * as migration_20260517_125241_digital_assets_collection from "./20260517_125241_digital_assets_collection";
 import * as migration_20260517_140000_drop_download_count_fields from "./20260517_140000_drop_download_count_fields";
+import * as migration_20260517_150000_add_inventory_policy from "./20260517_150000_add_inventory_policy";
 
 export const migrations = [
   {
@@ -155,5 +156,10 @@ export const migrations = [
     up: migration_20260517_140000_drop_download_count_fields.up,
     down: migration_20260517_140000_drop_download_count_fields.down,
     name: "20260517_140000_drop_download_count_fields",
+  },
+  {
+    up: migration_20260517_150000_add_inventory_policy.up,
+    down: migration_20260517_150000_add_inventory_policy.down,
+    name: "20260517_150000_add_inventory_policy",
   },
 ];

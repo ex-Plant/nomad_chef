@@ -1,28 +1,49 @@
 import type {
   Access,
   CollectionBeforeChangeHook,
+  CollectionBeforeValidateHook,
   CollectionConfig,
 } from "payload";
 import { calcVat } from "@/lib/billing";
+import { defaultInventoryPolicy } from "@/lib/inventory-policy";
 import { revalidateProduct } from "@/helpers/revalidate-product";
 
 const requireAuth: Access = ({ req: { user } }) => Boolean(user);
 const whenDigital = (_: unknown, siblingData?: { format?: string }) =>
   siblingData?.format === "digital";
-const whenPhysical = (_: unknown, siblingData?: { format?: string }) =>
-  siblingData?.format === "physical";
+const whenTrackedInventory = (
+  _: unknown,
+  siblingData?: { inventoryPolicy?: string },
+) => siblingData?.inventoryPolicy === "tracked";
+
+const syncInventoryPolicy: CollectionBeforeValidateHook = ({
+  data,
+  originalDoc,
+}) => {
+  if (!data) return data;
+
+  const format = data.format ?? originalDoc?.format;
+
+  if (data.inventoryPolicy === undefined && format) {
+    data.inventoryPolicy = defaultInventoryPolicy(format);
+  }
+
+  return data;
+};
 
 const calculateNetPrice: CollectionBeforeChangeHook = ({ data }) => {
   if (typeof data.priceGross !== "number") return data;
   const vatRate = data.vatRate ? Number(data.vatRate) : 0;
   const { priceNet } = calcVat(data.priceGross, vatRate);
   data.priceNet = priceNet;
+
   return data;
 };
 
 export const Products: CollectionConfig = {
   slug: "products",
   hooks: {
+    beforeValidate: [syncInventoryPolicy],
     beforeChange: [calculateNetPrice],
     afterChange: [revalidateProduct],
     afterDelete: [revalidateProduct],
@@ -33,7 +54,14 @@ export const Products: CollectionConfig = {
   },
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["title", "format", "priceGross", "stockQty", "active"],
+    defaultColumns: [
+      "title",
+      "format",
+      "inventoryPolicy",
+      "priceGross",
+      "stockQty",
+      "active",
+    ],
   },
   access: {
     read: () => true,
@@ -132,16 +160,38 @@ export const Products: CollectionConfig = {
       },
     },
     {
+      name: "inventoryPolicy",
+      type: "select",
+      required: true,
+      options: [
+        {
+          label: { pl: "Śledź stan magazynowy", en: "Tracked inventory" },
+          value: "tracked",
+        },
+        {
+          label: { pl: "Bez limitu stanów", en: "Untracked inventory" },
+          value: "untracked",
+        },
+      ],
+      label: { pl: "Polityka magazynowa", en: "Inventory policy" },
+      admin: {
+        description: {
+          pl: "Kontroluje, czy checkout ma pilnować liczby dostępnych sztuk. Domyślnie fizyczne produkty śledzą stan, cyfrowe nie.",
+          en: "Controls whether checkout should enforce available units. Physical products default to tracked inventory, digital products to untracked.",
+        },
+      },
+    },
+    {
       name: "stockQty",
       type: "number",
       defaultValue: 0,
       min: 0,
       label: { pl: "Stan magazynowy", en: "Stock on hand" },
       admin: {
-        condition: whenPhysical,
+        condition: whenTrackedInventory,
         description: {
-          pl: "Liczba sztuk dostępnych do sprzedaży. Spada przy złożeniu zamówienia, wraca przy nieudanej płatności lub zwrocie.",
-          en: "Units available to sell. Decreases on order create, restores on payment failure or refund.",
+          pl: "Liczba sztuk dostępnych do sprzedaży. Spada dopiero po potwierdzeniu płatności, wraca przy nieudanej płatności lub zwrocie.",
+          en: "Units available to sell. Decreases only after payment is confirmed and restores on failed payments or refunds.",
         },
       },
     },

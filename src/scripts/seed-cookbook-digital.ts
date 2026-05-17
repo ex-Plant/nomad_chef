@@ -9,9 +9,7 @@ async function main() {
     limit: 1,
   });
   if (existing.docs[0]) {
-    console.log(
-      `exists: #${existing.docs[0].id} ${existing.docs[0].slug}`,
-    );
+    console.log(`exists: #${existing.docs[0].id} ${existing.docs[0].slug}`);
     process.exit(0);
   }
   const created = await payload.create({
@@ -20,6 +18,7 @@ async function main() {
       slug: "cookbook-digital",
       title: "Książka cyfrowa",
       format: "digital",
+      inventoryPolicy: "untracked",
       priceGross: 49.99,
       vatRate: "5",
       currency: "PLN",

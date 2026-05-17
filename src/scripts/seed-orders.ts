@@ -18,6 +18,7 @@ async function main() {
   const digital = (await findOrCreateProduct(payload, "cookbook-digital", {
     title: "Książka cyfrowa",
     format: "digital",
+    inventoryPolicy: "untracked",
     priceGross: 49.99,
     vatRate: "5",
     currency: "PLN",
@@ -27,6 +28,7 @@ async function main() {
   const physical = (await findOrCreateProduct(payload, "cookbook-physical", {
     title: "Książka fizyczna",
     format: "physical",
+    inventoryPolicy: "tracked",
     priceGross: 99.99,
     vatRate: "5",
     currency: "PLN",

@@ -253,7 +253,11 @@ export interface Product {
   coverImage?: (number | null) | Media;
   file?: (number | null) | DigitalAsset;
   /**
-   * Units available to sell. Decreases on order create, restores on payment failure or refund.
+   * Controls whether checkout should enforce available units. Physical products default to tracked inventory, digital products to untracked.
+   */
+  inventoryPolicy: 'tracked' | 'untracked';
+  /**
+   * Units available to sell. Decreases only after payment is confirmed and restores on failed payments or refunds.
    */
   stockQty?: number | null;
   active?: boolean | null;
@@ -565,6 +569,7 @@ export interface ProductsSelect<T extends boolean = true> {
   currency?: T;
   coverImage?: T;
   file?: T;
+  inventoryPolicy?: T;
   stockQty?: T;
   active?: T;
   updatedAt?: T;
