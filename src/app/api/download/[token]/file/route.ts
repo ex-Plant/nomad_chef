@@ -2,11 +2,15 @@ import { NextResponse } from "next/server";
 import { getPayload } from "payload";
 import config from "@/payload.config";
 
+export const dynamic = "force-dynamic";
+
 type RouteContextT = { params: Promise<{ token: string }> };
+
+const TOKEN_REGEX = /^[0-9a-f]{48}$/;
 
 export async function GET(_req: Request, ctx: RouteContextT): Promise<Response> {
   const { token } = await ctx.params;
-  if (!token || token.length < 32) {
+  if (!TOKEN_REGEX.test(token)) {
     return errorResponse("Nieprawidłowy link.", 400);
   }
 
@@ -16,7 +20,7 @@ export async function GET(_req: Request, ctx: RouteContextT): Promise<Response> 
     collection: "orders",
     where: { downloadToken: { equals: token } },
     limit: 1,
-    depth: 1,
+    depth: 2,
   });
   const order = result.docs[0];
 
@@ -50,7 +54,7 @@ export async function GET(_req: Request, ctx: RouteContextT): Promise<Response> 
   await payload.update({
     collection: "orders",
     id: order.id,
-    data: { downloadCount: count + 1 },
+    data: { downloadCount: count + 1, lastDownloadAt: new Date().toISOString() },
     context: { skipFulfillment: true },
   });
 
@@ -59,7 +63,7 @@ export async function GET(_req: Request, ctx: RouteContextT): Promise<Response> 
     status: 200,
     headers: {
       "Content-Type": file.mimeType ?? "application/octet-stream",
-      "Content-Disposition": `attachment; filename="${filename}"`,
+      "Content-Disposition": `inline; filename="${filename}"`,
       "Cache-Control": "private, no-store",
     },
   });
