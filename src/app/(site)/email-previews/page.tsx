@@ -6,6 +6,8 @@ import { getLogoUrl } from "@/lib/emails/constants";
 import { generateOrderConfirmationHtml } from "@/lib/emails/templates/order-confirmation";
 import { generateContactMessageHtml } from "@/lib/emails/templates/contact-message";
 import { generateEbookInterestThanksHtml } from "@/lib/emails/templates/ebook-interest-thanks";
+import { generateDownloadReadyHtml } from "@/lib/emails/templates/download-ready";
+import { generateShipmentNotificationHtml } from "@/lib/emails/templates/shipment-notification";
 
 const ORDER_FIXTURE = {
   orderNumber: "CK-2026-0042",
@@ -26,6 +28,18 @@ const CONTACT_FIXTURE = {
   senderEmail: "anna.kowalska@example.com",
   message:
     "Cześć Marta!\n\nChciałabym zapytać o możliwość zamówienia kolacji na 12 osób w okolicach Krakowa w czerwcu. Daj znać czy macie wolny termin.\n\nPozdrawiam,\nAnna",
+};
+
+const DOWNLOAD_READY_FIXTURE = {
+  customerFirstName: "Anna",
+  downloadUrl: "https://www.chaoskitchen.pl/download/abc123token",
+  expiresLabel: "20 maja 2026, 14:30",
+};
+
+const SHIPMENT_FIXTURE = {
+  customerFirstName: "Anna",
+  courier: "InPost",
+  tracking: "1234567890ABC",
 };
 
 type TemplateT = {
@@ -51,6 +65,18 @@ const TEMPLATES: readonly TemplateT[] = [
     name: "Contact Form Message",
     generate: ({ omitLogo }) =>
       generateContactMessageHtml({ ...CONTACT_FIXTURE, omitLogo }),
+  },
+  {
+    id: "download-ready",
+    name: "Download Ready (digital fulfillment)",
+    generate: ({ omitLogo }) =>
+      generateDownloadReadyHtml({ ...DOWNLOAD_READY_FIXTURE, omitLogo }),
+  },
+  {
+    id: "shipment-notification",
+    name: "Shipment Notification (physical fulfillment)",
+    generate: ({ omitLogo }) =>
+      generateShipmentNotificationHtml({ ...SHIPMENT_FIXTURE, omitLogo }),
   },
 ];
 

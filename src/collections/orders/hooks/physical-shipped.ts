@@ -2,21 +2,39 @@ import type { CollectionAfterChangeHook } from "payload";
 import { sendEmail } from "@/lib/email";
 import { generateShipmentNotificationHtml } from "@/lib/emails/templates/shipment-notification";
 
-export const physicalShipped: CollectionAfterChangeHook = async ({ doc, previousDoc, req, operation, context }) => {
+export const physicalShipped: CollectionAfterChangeHook = async ({
+  doc,
+  previousDoc,
+  req,
+  operation,
+  context,
+}) => {
   if (context?.skipFulfillment) return doc;
   if (operation !== "update") return doc;
   const wasNotShipped = previousDoc.fulfillmentStatus !== "shipped";
   const isNowShipped = doc.fulfillmentStatus === "shipped";
   if (!(wasNotShipped && isNowShipped)) return doc;
 
-  const product = typeof doc.product === "object"
-    ? doc.product
-    : await req.payload.findByID({ collection: "products", id: doc.product, depth: 0, req });
+  const product =
+    typeof doc.product === "object"
+      ? doc.product
+      : await req.payload.findByID({
+          collection: "products",
+          id: doc.product,
+          depth: 0,
+          req,
+        });
   if (product.format !== "physical") return doc;
 
-  const customer = typeof doc.customer === "object"
-    ? doc.customer
-    : await req.payload.findByID({ collection: "customers", id: doc.customer, depth: 0, req });
+  const customer =
+    typeof doc.customer === "object"
+      ? doc.customer
+      : await req.payload.findByID({
+          collection: "customers",
+          id: doc.customer,
+          depth: 0,
+          req,
+        });
 
   await req.payload.update({
     collection: "orders",
@@ -30,7 +48,9 @@ export const physicalShipped: CollectionAfterChangeHook = async ({ doc, previous
 
   const tracking = doc.tracking ?? "(brak numeru)";
   const courier = doc.courier ?? "(kurier nieznany)";
-  const greeting = customer.firstName ? `Cześć ${customer.firstName},` : "Cześć,";
+  const greeting = customer.firstName
+    ? `Cześć ${customer.firstName},`
+    : "Cześć,";
   await sendEmail({
     to: customer.email,
     subject: "Twoja książka jest w drodze",
