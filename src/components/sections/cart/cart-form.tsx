@@ -13,6 +13,7 @@ import {
   type CartFormValuesT,
 } from "@/lib/cart-schema";
 import { createOrder } from "@/lib/orders/create-order";
+import { tracksInventory } from "@/lib/inventory-policy";
 import { Button } from "@/components/shared/button";
 import { LegalLink } from "@/components/shared/legal-link";
 import {
@@ -55,7 +56,7 @@ export function CartForm({
       ...storedValues,
       format: defaults.format,
       productSlug: defaults.productSlug,
-      quantity: defaults.format === "physical" ? storedValues.quantity || 1 : 1,
+      quantity: tracksInventory(product) ? storedValues.quantity || 1 : 1,
     };
     // initialValues is captured once by useForm; we intentionally do not
     // reactively re-initialize as the user types.
@@ -84,7 +85,8 @@ export function CartForm({
   const wantsInvoice = useStore(form.store, (s) => s.values.wantsInvoice);
   const quantity = useStore(form.store, (s) => s.values.quantity);
   const isPhysical = product.format === "physical";
-  const totalGross = isPhysical
+  const allowsQuantity = tracksInventory(product);
+  const totalGross = allowsQuantity
     ? product.priceGross * Math.max(1, quantity || 1)
     : product.priceGross;
 
@@ -161,7 +163,7 @@ export function CartForm({
       >
         {({ canSubmit, isSubmitting, hasFieldErrors, attempted }) => (
           <div className="flex flex-col gap-3">
-            {isPhysical && (
+            {allowsQuantity && (
               <form.Field name="quantity">
                 {(field: AnyFieldApi) => (
                   <FormNumberInput
