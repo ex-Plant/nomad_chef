@@ -10,6 +10,7 @@ import {
   stockTransitions,
   validateStockOnCreate,
 } from "./hooks/stock";
+import { regenerateDownloadEndpoint } from "./endpoints/regenerate-download";
 
 const requireAuth: Access = ({ req: { user } }) => Boolean(user);
 
@@ -29,6 +30,7 @@ const whenPhysicalOrder = (data: unknown) =>
 
 export const Orders: CollectionConfig = {
   slug: "orders",
+  endpoints: [regenerateDownloadEndpoint],
   hooks: {
     beforeChange: [
       blockOrderMutations,
@@ -178,6 +180,17 @@ export const Orders: CollectionConfig = {
         { label: { pl: "Wysłane (kurier)", en: "Shipped" }, value: "shipped" },
         { label: { pl: "Dostarczone", en: "Delivered" }, value: "delivered" },
       ],
+    },
+    {
+      name: "regenerateDownload",
+      type: "ui",
+      admin: {
+        condition: whenDigitalOrder,
+        components: {
+          Field:
+            "@/collections/orders/components/regenerate-download-buttons#RegenerateDownloadButtons",
+        },
+      },
     },
     {
       name: "downloadToken",
