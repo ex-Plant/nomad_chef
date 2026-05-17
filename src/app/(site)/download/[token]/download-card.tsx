@@ -110,6 +110,17 @@ export function DownloadCard({
         >
           Pobierz ebook
         </a>
+        <div className="border-off-black/15 mt-4 flex flex-col gap-3 border-t pt-6">
+          <Paragraph>Coś nie tak z linkiem lub zamówieniem?</Paragraph>
+          <Button
+            type="button"
+            variant="coral"
+            size="compact"
+            onClick={() => setIsHelpOpen(true)}
+          >
+            Mam problem z pobraniem
+          </Button>
+        </div>
       </Card>
 
       <DownloadSuccessDialog
