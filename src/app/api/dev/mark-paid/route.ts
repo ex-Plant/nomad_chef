@@ -1,22 +1,7 @@
 /**
- * POST /api/dev/mark-paid
- *
- * DEV-ONLY shortcut that flips an order from `pending` → `paid` without
- * going through a real payment provider. Triggered by the "Simulate payment"
- * button on /checkout/processing.
- *
- * Why it exists:
- * Until Stripe (or similar) is wired up, the only way to test the
- * fulfillment flow end-to-end is to manually flip the status. This route
- * encapsulates that for the dev UI.
- *
- * Why it's safe:
- * The very first check returns 404 in production. So this code path is
- * unreachable on chaoskitchen.pl — even if an attacker knew the URL,
- * they'd get the same "Not found" as any unknown route.
- *
- * When real payments are added, this route can stay (handy for staging
- * testing) or be deleted — nothing else in the framework depends on it.
+ * POST /api/dev/mark-paid — flips an order pending→paid for local testing.
+ * Gated by both NODE_ENV and Vercel's VERCEL_ENV so preview deployments
+ * (where NODE_ENV is also "production") don't expose it.
  */
 
 import { NextResponse } from "next/server";
@@ -27,15 +12,20 @@ export const dynamic = "force-dynamic";
 
 type BodyT = { orderNumber?: unknown };
 
+function isDevEnv(): boolean {
+  if (process.env.NODE_ENV === "production") return false;
+  // Belt and suspenders: refuse on any Vercel-hosted environment.
+  if (process.env.VERCEL_ENV && process.env.VERCEL_ENV !== "development") {
+    return false;
+  }
+  return true;
+}
+
 export async function POST(req: Request): Promise<Response> {
-  // Hard kill switch in prod. Must be the first check so we never even
-  // parse a body or hit the DB on production traffic.
-  if (process.env.NODE_ENV === "production") {
+  if (!isDevEnv()) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  // `req.json()` throws on invalid JSON — `.catch(() => ({}))` makes it
-  // tolerant so we can return a clean 400 below instead of a 500.
   const body = (await req.json().catch(() => ({}))) as BodyT;
   const orderNumber =
     typeof body.orderNumber === "string" ? body.orderNumber : null;
@@ -47,8 +37,6 @@ export async function POST(req: Request): Promise<Response> {
   }
 
   const payload = await getPayload({ config });
-  // Look up by the human-friendly orderNumber (not the DB id) because
-  // that's what the client knows.
   const result = await payload.find({
     collection: "orders",
     where: { orderNumber: { equals: orderNumber } },
@@ -59,8 +47,6 @@ export async function POST(req: Request): Promise<Response> {
   if (!order) {
     return NextResponse.json({ error: "Order not found" }, { status: 404 });
   }
-  // Refuse if the order isn't pending — avoids "double-fulfilling" an
-  // already-paid order during dev hot-reload spam.
   if (order.paymentStatus !== "pending") {
     return NextResponse.json(
       { error: `Order already in status: ${order.paymentStatus}` },
@@ -68,16 +54,11 @@ export async function POST(req: Request): Promise<Response> {
     );
   }
 
-  // The crucial line. This update fires the `digitalFulfillment` afterChange
-  // hook on the orders collection, which generates the download token and
-  // emails the customer. We don't need to do anything else here.
   await payload.update({
     collection: "orders",
     id: order.id,
     data: {
       paymentStatus: "paid",
-      // `paymentRef` is normally the Stripe payment intent id; we stamp a
-      // fake one so it's obvious in the admin which orders came from dev.
       paymentRef: `dummy-${new Date().toISOString()}`,
     },
   });

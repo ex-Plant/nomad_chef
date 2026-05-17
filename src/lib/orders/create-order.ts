@@ -13,7 +13,6 @@ type CreateOrderResultT =
   | { ok: false; error: string };
 
 export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
-  console.log("create-order.ts:16 - :");
   const parsed = cartFormSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: "Nieprawidłowe dane" };

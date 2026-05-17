@@ -1,35 +1,17 @@
-/**
- * The visible UI of the download page. Pure rendering + the small bit of
- * interactive state for the "resend" button.
- *
- * Why a client component when the parent is a server component?
- * Because we need:
- *   - `useState` for the resend button's local lifecycle
- *   - a click handler that calls `/api/download/<token>/resend`
- * Server components can't do either. Splitting it lets the heavy data
- * resolution stay on the server while only the small interactive widget
- * ships JS to the browser.
- */
-
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/shared/button";
+import type { DownloadStatusT } from "@/lib/orders/download-token";
 
-// Mirror of the server-side resolver in page.tsx. Exported so the parent
-// page imports the same string-union type.
-export type DownloadStatusT =
-  | "ready"
-  | "expired"
-  | "exhausted"
-  | "not_paid"
-  | "not_found";
+type ResendStateT = "idle" | "loading" | "sent" | "error";
 
 type DownloadCardPropsT = {
   token: string;
   status: DownloadStatusT;
   attemptsRemaining: number;
+  downloadLimit: number;
   productTitle: string | null;
 };
 
@@ -37,26 +19,18 @@ export function DownloadCard({
   token,
   status,
   attemptsRemaining,
+  downloadLimit,
   productTitle,
 }: DownloadCardPropsT) {
-  // Resend button lifecycle: idle → loading → (sent | error).
-  // We stay on `sent` once we succeed so the user can't spam the endpoint.
-  const [resendState, setResendState] = useState<
-    "idle" | "loading" | "sent" | "error"
-  >("idle");
+  const [resendState, setResendState] = useState<ResendStateT>("idle");
 
   async function resend() {
-    // Guard against double-click during a request and against a re-send
-    // after success.
     if (resendState === "loading" || resendState === "sent") return;
     setResendState("loading");
     try {
       const res = await fetch(`/api/download/${token}/resend`, {
         method: "POST",
       });
-      // The resend endpoint ALWAYS returns 200 ok (it doesn't leak whether
-      // the token exists), so this branch is mostly defensive — true
-      // failures here mean network or 5xx.
       setResendState(res.ok ? "sent" : "error");
     } catch {
       setResendState("error");
@@ -129,7 +103,10 @@ export function DownloadCard({
       )}
       <Paragraph>
         Kliknij przycisk, aby pobrać plik. Pozostało Ci{" "}
-        <strong>{attemptsRemaining} z 5</strong> prób.
+        <strong>
+          {attemptsRemaining} z {downloadLimit}
+        </strong>{" "}
+        prób.
       </Paragraph>
       <a
         href={`/api/download/${token}/file`}
@@ -167,7 +144,7 @@ function Paragraph({ children }: { children: React.ReactNode }) {
 }
 
 type ResendButtonPropsT = {
-  state: "idle" | "loading" | "sent" | "error";
+  state: ResendStateT;
   onClick: () => void;
 };
 

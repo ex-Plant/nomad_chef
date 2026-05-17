@@ -15,10 +15,10 @@ const requireAuth: Access = ({ req: { user } }) => Boolean(user);
 
 function getProductFormat(data: unknown): "digital" | "physical" | undefined {
   if (!data || typeof data !== "object") return undefined;
-  const d = data as { product?: { format?: string } | string };
-  if (typeof d.product === "object" && d.product?.format) {
-    return d.product.format as "digital" | "physical";
-  }
+  const d = data as { product?: { format?: unknown } | unknown };
+  if (typeof d.product !== "object" || d.product === null) return undefined;
+  const format = (d.product as { format?: unknown }).format;
+  if (format === "digital" || format === "physical") return format;
   return undefined;
 }
 

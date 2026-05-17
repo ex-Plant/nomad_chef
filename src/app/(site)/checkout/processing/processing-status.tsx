@@ -1,29 +1,9 @@
-/**
- * Client component that lives inside the processing page.
- *
- * It does two things:
- *   1. Polls /api/checkout/status every 2 seconds. As soon as the server
- *      reports `paymentStatus: "paid"` AND a `downloadToken`, it hard-
- *      navigates the browser to /download/<token>.
- *   2. In dev only, renders a "Simulate payment" button that POSTs to
- *      /api/dev/mark-paid. That route flips the order to paid, which fires
- *      the digital-fulfillment hook, which generates the token, which the
- *      next poll picks up — full local end-to-end without Stripe.
- *
- * WHY POLLING INSTEAD OF SSE / WEBSOCKETS?
- * Simplest thing that works. The wait window is short (seconds-to-minutes),
- * Vercel functions are cheap, and a real implementation would replace this
- * with a redirect from the Stripe success URL anyway.
- */
-
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/shared/button";
 import { Loader } from "@/components/shared/loader";
 
-// Mirror of what /api/checkout/status returns.
 type StatusResponseT = {
   orderNumber: string;
   paymentStatus: "pending" | "paid" | "failed" | "refunded";
@@ -35,37 +15,30 @@ type ProcessingStatusPropsT = {
   isDev: boolean;
 };
 
-// 2s feels responsive without hammering the server.
+type SimulateStateT = "idle" | "loading" | "error";
+
 const POLL_INTERVAL_MS = 2000;
 
 export function ProcessingStatus({
   orderNumber,
   isDev,
 }: ProcessingStatusPropsT) {
-  const router = useRouter();
   const [paymentStatus, setPaymentStatus] =
     useState<StatusResponseT["paymentStatus"]>("pending");
-  const [isSimulating, setIsSimulating] = useState(false);
+  const [simulateState, setSimulateState] = useState<SimulateStateT>("idle");
   const [simulateError, setSimulateError] = useState<string | null>(null);
 
   useEffect(() => {
-    // `cancelled` protects against React strict-mode double-invocation
-    // and against the component unmounting mid-fetch. If we navigated
-    // away, a late response shouldn't call setState on a dead component.
     let cancelled = false;
 
     async function poll() {
       try {
-        // `cache: "no-store"` ensures every request actually hits the
-        // network and we don't get a stale cached response.
         const res = await fetch("/api/checkout/status", { cache: "no-store" });
         if (!res.ok) return;
         const data = (await res.json()) as StatusResponseT;
         if (cancelled) return;
         setPaymentStatus(data.paymentStatus);
-        // As soon as the token shows up, hard-navigate. `window.location.assign`
-        // (vs router.push) forces a full page load — the download page is a
-        // server component and we want a fresh server render.
+        // Full reload — the download page is a server component that needs a fresh render.
         if (data.paymentStatus === "paid" && data.downloadToken) {
           window.location.assign(`/download/${data.downloadToken}`);
         }
@@ -74,19 +47,16 @@ export function ProcessingStatus({
       }
     }
 
-    // Kick off interval polling AND fire one immediate poll so we don't
-    // make the user stare at a blank state for 2 full seconds.
     const id = setInterval(poll, POLL_INTERVAL_MS);
     poll();
-    // Cleanup function runs on unmount / dependency change.
     return () => {
       cancelled = true;
       clearInterval(id);
     };
-  }, [router]);
+  }, []);
 
   async function simulatePayment() {
-    setIsSimulating(true);
+    setSimulateState("loading");
     setSimulateError(null);
     try {
       const res = await fetch("/api/dev/mark-paid", {
@@ -97,11 +67,13 @@ export function ProcessingStatus({
       if (!res.ok) {
         const data = (await res.json().catch(() => ({}))) as { error?: string };
         setSimulateError(data.error ?? "Nie udało się oznaczyć jako opłacone.");
+        setSimulateState("error");
+        return;
       }
+      setSimulateState("idle");
     } catch {
       setSimulateError("Błąd sieci.");
-    } finally {
-      setIsSimulating(false);
+      setSimulateState("error");
     }
   }
 
@@ -140,10 +112,10 @@ export function ProcessingStatus({
             variant="blue-solid"
             size="compact"
             onClick={simulatePayment}
-            disabled={isSimulating}
-            aria-busy={isSimulating}
+            disabled={simulateState === "loading"}
+            aria-busy={simulateState === "loading"}
           >
-            {isSimulating ? "Oznaczam…" : "Symuluj płatność"}
+            {simulateState === "loading" ? "Oznaczam…" : "Symuluj płatność"}
           </Button>
           {simulateError && (
             <p className="text-yellow font-sans text-sm">{simulateError}</p>

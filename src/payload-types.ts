@@ -13,53 +13,53 @@
  * via the `definition` "supportedTimezones".
  */
 export type SupportedTimezones =
-  | "Pacific/Midway"
-  | "Pacific/Niue"
-  | "Pacific/Honolulu"
-  | "Pacific/Rarotonga"
-  | "America/Anchorage"
-  | "Pacific/Gambier"
-  | "America/Los_Angeles"
-  | "America/Tijuana"
-  | "America/Denver"
-  | "America/Phoenix"
-  | "America/Chicago"
-  | "America/Guatemala"
-  | "America/New_York"
-  | "America/Bogota"
-  | "America/Caracas"
-  | "America/Santiago"
-  | "America/Buenos_Aires"
-  | "America/Sao_Paulo"
-  | "Atlantic/South_Georgia"
-  | "Atlantic/Azores"
-  | "Atlantic/Cape_Verde"
-  | "Europe/London"
-  | "Europe/Berlin"
-  | "Africa/Lagos"
-  | "Europe/Athens"
-  | "Africa/Cairo"
-  | "Europe/Moscow"
-  | "Asia/Riyadh"
-  | "Asia/Dubai"
-  | "Asia/Baku"
-  | "Asia/Karachi"
-  | "Asia/Tashkent"
-  | "Asia/Calcutta"
-  | "Asia/Dhaka"
-  | "Asia/Almaty"
-  | "Asia/Jakarta"
-  | "Asia/Bangkok"
-  | "Asia/Shanghai"
-  | "Asia/Singapore"
-  | "Asia/Tokyo"
-  | "Asia/Seoul"
-  | "Australia/Brisbane"
-  | "Australia/Sydney"
-  | "Pacific/Guam"
-  | "Pacific/Noumea"
-  | "Pacific/Auckland"
-  | "Pacific/Fiji";
+  | 'Pacific/Midway'
+  | 'Pacific/Niue'
+  | 'Pacific/Honolulu'
+  | 'Pacific/Rarotonga'
+  | 'America/Anchorage'
+  | 'Pacific/Gambier'
+  | 'America/Los_Angeles'
+  | 'America/Tijuana'
+  | 'America/Denver'
+  | 'America/Phoenix'
+  | 'America/Chicago'
+  | 'America/Guatemala'
+  | 'America/New_York'
+  | 'America/Bogota'
+  | 'America/Caracas'
+  | 'America/Santiago'
+  | 'America/Buenos_Aires'
+  | 'America/Sao_Paulo'
+  | 'Atlantic/South_Georgia'
+  | 'Atlantic/Azores'
+  | 'Atlantic/Cape_Verde'
+  | 'Europe/London'
+  | 'Europe/Berlin'
+  | 'Africa/Lagos'
+  | 'Europe/Athens'
+  | 'Africa/Cairo'
+  | 'Europe/Moscow'
+  | 'Asia/Riyadh'
+  | 'Asia/Dubai'
+  | 'Asia/Baku'
+  | 'Asia/Karachi'
+  | 'Asia/Tashkent'
+  | 'Asia/Calcutta'
+  | 'Asia/Dhaka'
+  | 'Asia/Almaty'
+  | 'Asia/Jakarta'
+  | 'Asia/Bangkok'
+  | 'Asia/Shanghai'
+  | 'Asia/Singapore'
+  | 'Asia/Tokyo'
+  | 'Asia/Seoul'
+  | 'Australia/Brisbane'
+  | 'Australia/Sydney'
+  | 'Pacific/Guam'
+  | 'Pacific/Noumea'
+  | 'Pacific/Auckland'
+  | 'Pacific/Fiji';
 
 export interface Config {
   auth: {
@@ -69,56 +69,43 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
-    "digital-assets": DigitalAsset;
+    'digital-assets': DigitalAsset;
     customers: Customer;
     products: Product;
     orders: Order;
-    "legal-pages": LegalPage;
-    "newsletter-subscribers": NewsletterSubscriber;
-    "payload-kv": PayloadKv;
-    "payload-locked-documents": PayloadLockedDocument;
-    "payload-preferences": PayloadPreference;
-    "payload-migrations": PayloadMigration;
+    'legal-pages': LegalPage;
+    'newsletter-subscribers': NewsletterSubscriber;
+    'payload-kv': PayloadKv;
+    'payload-locked-documents': PayloadLockedDocument;
+    'payload-preferences': PayloadPreference;
+    'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    "digital-assets": DigitalAssetsSelect<false> | DigitalAssetsSelect<true>;
+    'digital-assets': DigitalAssetsSelect<false> | DigitalAssetsSelect<true>;
     customers: CustomersSelect<false> | CustomersSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
-    "legal-pages": LegalPagesSelect<false> | LegalPagesSelect<true>;
-    "newsletter-subscribers":
-      | NewsletterSubscribersSelect<false>
-      | NewsletterSubscribersSelect<true>;
-    "payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
-    "payload-locked-documents":
-      | PayloadLockedDocumentsSelect<false>
-      | PayloadLockedDocumentsSelect<true>;
-    "payload-preferences":
-      | PayloadPreferencesSelect<false>
-      | PayloadPreferencesSelect<true>;
-    "payload-migrations":
-      | PayloadMigrationsSelect<false>
-      | PayloadMigrationsSelect<true>;
+    'legal-pages': LegalPagesSelect<false> | LegalPagesSelect<true>;
+    'newsletter-subscribers': NewsletterSubscribersSelect<false> | NewsletterSubscribersSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
+    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: number;
   };
-  fallbackLocale:
-    | ("false" | "none" | "null")
-    | false
-    | null
-    | ("pl" | "en")
-    | ("pl" | "en")[];
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('pl' | 'en') | ('pl' | 'en')[];
   globals: {
     site: Site;
   };
   globalsSelect: {
     site: SiteSelect<false> | SiteSelect<true>;
   };
-  locale: "pl" | "en";
+  locale: 'pl' | 'en';
   widgets: {
     collections: CollectionsWidget;
   };
@@ -152,7 +139,7 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
-  role: "admin" | "editor";
+  role: 'admin' | 'editor';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -170,7 +157,7 @@ export interface User {
       }[]
     | null;
   password?: string | null;
-  collection: "users";
+  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -252,17 +239,17 @@ export interface Product {
   slug: string;
   title: string;
   description?: string | null;
-  format: "digital" | "physical";
+  format: 'digital' | 'physical';
   /**
    * e.g. 49.99
    */
   priceGross: number;
-  vatRate: "0" | "5" | "8" | "23";
+  vatRate: '0' | '5' | '8' | '23';
   /**
    * Auto-calculated from gross + VAT on save.
    */
   priceNet?: number | null;
-  currency: "PLN";
+  currency: 'PLN';
   coverImage?: (number | null) | Media;
   file?: (number | null) | DigitalAsset;
   /**
@@ -291,10 +278,10 @@ export interface Order {
   priceNet: number;
   vatRate: number;
   vatAmount: number;
-  currency: "PLN";
-  paymentStatus: "pending" | "paid" | "failed" | "refunded";
+  currency: 'PLN';
+  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
   paymentRef?: string | null;
-  fulfillmentStatus: "pending" | "fulfilled" | "shipped" | "delivered";
+  fulfillmentStatus: 'pending' | 'fulfilled' | 'shipped' | 'delivered';
   downloadToken?: string | null;
   downloadCount?: number | null;
   downloadLimit?: number | null;
@@ -311,7 +298,7 @@ export interface Order {
     country?: string | null;
   };
   tracking?: string | null;
-  courier?: ("inpost" | "dpd" | "dhl" | "poczta-polska" | "other") | null;
+  courier?: ('inpost' | 'dpd' | 'dhl' | 'poczta-polska' | 'other') | null;
   shippedAt?: string | null;
   /**
    * Check if the customer requested an invoice. Verify company name + NIP in the customer's address.
@@ -320,7 +307,7 @@ export interface Order {
   notes?: string | null;
   paidAt?: string | null;
   fulfilledAt?: string | null;
-  confirmationEmailStatus: "pending" | "sent" | "failed";
+  confirmationEmailStatus: 'pending' | 'sent' | 'failed';
   confirmationEmailSentAt?: string | null;
   confirmationEmailError?: string | null;
   updatedAt: string;
@@ -350,8 +337,8 @@ export interface LegalPage {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
@@ -365,8 +352,8 @@ export interface LegalPage {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
@@ -410,40 +397,40 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: "users";
+        relationTo: 'users';
         value: number | User;
       } | null)
     | ({
-        relationTo: "media";
+        relationTo: 'media';
         value: number | Media;
       } | null)
     | ({
-        relationTo: "digital-assets";
+        relationTo: 'digital-assets';
         value: number | DigitalAsset;
       } | null)
     | ({
-        relationTo: "customers";
+        relationTo: 'customers';
         value: number | Customer;
       } | null)
     | ({
-        relationTo: "products";
+        relationTo: 'products';
         value: number | Product;
       } | null)
     | ({
-        relationTo: "orders";
+        relationTo: 'orders';
         value: number | Order;
       } | null)
     | ({
-        relationTo: "legal-pages";
+        relationTo: 'legal-pages';
         value: number | LegalPage;
       } | null)
     | ({
-        relationTo: "newsletter-subscribers";
+        relationTo: 'newsletter-subscribers';
         value: number | NewsletterSubscriber;
       } | null);
   globalSlug?: string | null;
   user: {
-    relationTo: "users";
+    relationTo: 'users';
     value: number | User;
   };
   updatedAt: string;
@@ -456,7 +443,7 @@ export interface PayloadLockedDocument {
 export interface PayloadPreference {
   id: number;
   user: {
-    relationTo: "users";
+    relationTo: 'users';
     value: number | User;
   };
   key?: string | null;
@@ -720,7 +707,7 @@ export interface Site {
   about_heading_lines?:
     | {
         text: string;
-        color: "off-black" | "coral" | "blue" | "white" | "pink" | "yellow";
+        color: 'off-black' | 'coral' | 'blue' | 'white' | 'pink' | 'yellow';
         id?: string | null;
       }[]
     | null;
@@ -762,8 +749,8 @@ export interface Site {
         alt?: string | null;
         description?: string | null;
         image?: (number | null) | Media;
-        theme: "orange" | "blue";
-        image_orientation: "vertical" | "horizontal";
+        theme: 'orange' | 'blue';
+        image_orientation: 'vertical' | 'horizontal';
         id?: string | null;
       }[]
     | null;
@@ -780,7 +767,7 @@ export interface Site {
   contact_heading_lines?:
     | {
         text: string;
-        color: "off-black" | "coral" | "blue" | "white" | "pink" | "yellow";
+        color: 'off-black' | 'coral' | 'blue' | 'white' | 'pink' | 'yellow';
         id?: string | null;
       }[]
     | null;
@@ -812,8 +799,8 @@ export interface Site {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
@@ -969,7 +956,7 @@ export interface CollectionsWidget {
   data?: {
     [k: string]: unknown;
   };
-  width: "full";
+  width: 'full';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -979,6 +966,7 @@ export interface Auth {
   [k: string]: unknown;
 }
 
-declare module "payload" {
+
+declare module 'payload' {
   export interface GeneratedTypes extends Config {}
 }
