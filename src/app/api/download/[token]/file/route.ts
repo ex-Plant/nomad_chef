@@ -49,6 +49,11 @@ export async function GET(
   }
   if (!order) return errorResponse("Link nieaktywny.", 404);
 
+  // Payload relationship fields are typed as `T | number` — at depth=0 they're
+  // just the foreign-key id; at depth>=1 they're populated objects. The TS
+  // union forces us to narrow before reading properties. We use depth=2 above
+  // so both `order.product` and `product.file` are populated; the typeof
+  // checks satisfy the type-checker without changing runtime behavior.
   const product = typeof order.product === "object" ? order.product : null;
   const file =
     product && typeof product.file === "object" ? product.file : null;
