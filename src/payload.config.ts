@@ -12,6 +12,7 @@ import { en } from "@payloadcms/translations/languages/en";
 
 import { Users } from "@/collections/users";
 import { Media } from "@/collections/media";
+import { DigitalAssets } from "@/collections/digital-assets";
 import { Customers } from "@/collections/customers";
 import { Products } from "@/collections/products";
 import { Orders } from "@/collections/orders";
@@ -59,6 +60,7 @@ export default buildConfig({
   collections: [
     Users,
     Media,
+    DigitalAssets,
     Customers,
     Products,
     Orders,
@@ -68,8 +70,12 @@ export default buildConfig({
   globals: [Site],
   plugins: [
     vercelBlobStorage({
-      collections: { media: true },
+      collections: {
+        media: true,
+        "digital-assets": { disablePayloadAccessControl: true },
+      },
       token: ENV.BLOB_READ_WRITE_TOKEN,
+      addRandomSuffix: true,
     }),
   ],
   secret: ENV.PAYLOAD_SECRET,

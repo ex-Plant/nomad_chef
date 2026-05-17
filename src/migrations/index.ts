@@ -22,6 +22,7 @@ import * as migration_20260510_174507_add_legal_link_label from "./20260510_1745
 import * as migration_20260511_080953_description_to_textarea from "./20260511_080953_description_to_textarea";
 import * as migration_20260516_122032_digital_delivery from "./20260516_122032_digital_delivery";
 import * as migration_20260516_132215 from "./20260516_132215";
+import * as migration_20260517_125241_digital_assets_collection from "./20260517_125241_digital_assets_collection";
 
 export const migrations = [
   {
@@ -143,5 +144,10 @@ export const migrations = [
     up: migration_20260516_132215.up,
     down: migration_20260516_132215.down,
     name: "20260516_132215",
+  },
+  {
+    up: migration_20260517_125241_digital_assets_collection.up,
+    down: migration_20260517_125241_digital_assets_collection.down,
+    name: "20260517_125241_digital_assets_collection",
   },
 ];

@@ -125,7 +125,7 @@ export const Products: CollectionConfig = {
     {
       name: "file",
       type: "upload",
-      relationTo: "media",
+      relationTo: "digital-assets",
       label: { pl: "Plik (cyfrowy)", en: "File (digital)" },
       admin: {
         condition: whenDigital,

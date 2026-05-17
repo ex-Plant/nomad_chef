@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    'digital-assets': DigitalAsset;
     customers: Customer;
     products: Product;
     orders: Order;
@@ -83,6 +84,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'digital-assets': DigitalAssetsSelect<false> | DigitalAssetsSelect<true>;
     customers: CustomersSelect<false> | CustomersSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
@@ -177,6 +179,27 @@ export interface Media {
   focalY?: number | null;
 }
 /**
+ * Ebook files sold as digital products. Not publicly accessible — admin-only read.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "digital-assets".
+ */
+export interface DigitalAsset {
+  id: number;
+  label?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "customers".
  */
@@ -228,7 +251,7 @@ export interface Product {
   priceNet?: number | null;
   currency: 'PLN';
   coverImage?: (number | null) | Media;
-  file?: (number | null) | Media;
+  file?: (number | null) | DigitalAsset;
   /**
    * Units available to sell. Decreases on order create, restores on payment failure or refund.
    */
@@ -382,6 +405,10 @@ export interface PayloadLockedDocument {
         value: number | Media;
       } | null)
     | ({
+        relationTo: 'digital-assets';
+        value: number | DigitalAsset;
+      } | null)
+    | ({
         relationTo: 'customers';
         value: number | Customer;
       } | null)
@@ -472,6 +499,24 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "digital-assets_select".
+ */
+export interface DigitalAssetsSelect<T extends boolean = true> {
+  label?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
