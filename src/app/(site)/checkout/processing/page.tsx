@@ -28,6 +28,7 @@ export default async function CheckoutProcessingPage() {
       <ProcessingStatus
         orderNumber={order.orderNumber}
         customerEmail={customer?.email ?? null}
+        paymentStatus={order.paymentStatus}
         isDev={isDev}
       />
     </main>

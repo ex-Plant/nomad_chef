@@ -4,12 +4,6 @@ import { snapshotOrder } from "./hooks/snapshot";
 import { upsertCustomer } from "./hooks/upsert-customer";
 import { digitalFulfillment } from "./hooks/digital-fulfillment";
 import { physicalShipped } from "./hooks/physical-shipped";
-import {
-  blockOrderMutations,
-  releaseStockOnDelete,
-  stockTransitions,
-  validateStockOnCreate,
-} from "./hooks/stock";
 import { regenerateDownloadEndpoint } from "./endpoints/regenerate-download";
 
 const requireAuth: Access = ({ req: { user } }) => Boolean(user);
@@ -31,16 +25,18 @@ const whenPhysicalOrder = (data: unknown) =>
 export const Orders: CollectionConfig = {
   slug: "orders",
   endpoints: [regenerateDownloadEndpoint],
+  // TODO: stock management is intentionally absent. The only product we sell
+  // today is digital (unlimited). When a physical or limited-quantity product
+  // launches, add a beforeChange hook that atomically decrements
+  // `products.stock_qty` on the pending→paid transition (throw if zero
+  // remaining), and a matching afterChange that restocks on paid→refunded /
+  // paid→failed. `inventory-policy.ts` already exposes `tracksInventory()` to
+  // gate the new logic. Earlier we shipped a full reservation system; it was
+  // overkill at this scale and got ripped out — keep the next implementation
+  // minimal.
   hooks: {
-    beforeChange: [
-      blockOrderMutations,
-      validateStockOnCreate,
-      upsertCustomer,
-      snapshotOrder,
-      generateOrderNumber,
-    ],
-    afterChange: [stockTransitions, digitalFulfillment, physicalShipped],
-    beforeDelete: [releaseStockOnDelete],
+    beforeChange: [upsertCustomer, snapshotOrder, generateOrderNumber],
+    afterChange: [digitalFulfillment, physicalShipped],
   },
   labels: {
     singular: { pl: "Zamówienie", en: "Order" },

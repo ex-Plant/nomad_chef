@@ -13,7 +13,10 @@ type PersistArgsT = {
   product: Product;
 };
 
-export type PersistedOrderT = Pick<Order, "id" | "orderNumber" | "totalGross" | "quantity">;
+export type PersistedOrderT = Pick<
+  Order,
+  "id" | "orderNumber" | "totalGross" | "quantity"
+>;
 
 export type PersistResultT =
   | { ok: true; order: PersistedOrderT }

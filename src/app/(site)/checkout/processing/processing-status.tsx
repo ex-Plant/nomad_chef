@@ -1,63 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/shared/button";
 import { Loader } from "@/components/shared/loader";
 import { HelpDialog } from "@/components/sections/contact/help-dialog";
 
-type StatusResponseT = {
-  orderNumber: string;
-  paymentStatus: "pending" | "paid" | "failed" | "refunded";
-  downloadToken: string | null;
-};
+type PaymentStatusT = "pending" | "paid" | "failed" | "refunded";
 
 type ProcessingStatusPropsT = {
   orderNumber: string;
   customerEmail: string | null;
+  paymentStatus: PaymentStatusT;
   isDev: boolean;
 };
 
 type SimulateStateT = "idle" | "loading" | "error";
 
-const POLL_INTERVAL_MS = 2000;
-
 export function ProcessingStatus({
   orderNumber,
   customerEmail,
+  paymentStatus,
   isDev,
 }: ProcessingStatusPropsT) {
-  const [paymentStatus, setPaymentStatus] =
-    useState<StatusResponseT["paymentStatus"]>("pending");
+  const router = useRouter();
   const [simulateState, setSimulateState] = useState<SimulateStateT>("idle");
   const [simulateError, setSimulateError] = useState<string | null>(null);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function poll() {
-      try {
-        const res = await fetch("/api/checkout/status", { cache: "no-store" });
-        if (!res.ok) return;
-        const data = (await res.json()) as StatusResponseT;
-        if (cancelled) return;
-        setPaymentStatus(data.paymentStatus);
-        // Full reload — the download page is a server component that needs a fresh render.
-        if (data.paymentStatus === "paid" && data.downloadToken) {
-          window.location.assign(`/download/${data.downloadToken}`);
-        }
-      } catch {
-        // transient; next tick will retry
-      }
-    }
-
-    const id = setInterval(poll, POLL_INTERVAL_MS);
-    poll();
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-    };
-  }, []);
 
   async function simulatePayment() {
     setSimulateState("loading");
@@ -75,6 +44,7 @@ export function ProcessingStatus({
         return;
       }
       setSimulateState("idle");
+      router.refresh();
     } catch {
       setSimulateError("Błąd sieci.");
       setSimulateState("error");
@@ -98,15 +68,16 @@ export function ProcessingStatus({
         <h1 className="font-display text-3xl tracking-tight uppercase md:text-4xl">
           {paymentStatus === "paid"
             ? "Płatność zaksięgowana"
-            : "Przetwarzamy zamówienie"}
+            : "Zamówienie utworzone"}
         </h1>
         <p
           role="status"
           aria-live="polite"
           className="font-sans text-base leading-relaxed text-white/85"
         >
-          {paymentStatus === "pending" && "Czekamy na potwierdzenie płatności…"}
-          {paymentStatus === "paid" && "Otwieram pobieranie…"}
+          {paymentStatus === "pending" &&
+            "Czekamy na potwierdzenie płatności."}
+          {paymentStatus === "paid" && "Zamówienie zostało opłacone."}
           {paymentStatus === "failed" && "Płatność nie powiodła się."}
           {paymentStatus === "refunded" && "Zamówienie zwrócone."}
         </p>
