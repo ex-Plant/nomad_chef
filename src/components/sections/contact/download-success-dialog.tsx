@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { FormDialog } from "@/components/shared/form-dialog";
 import { Button } from "@/components/shared/button";
 
@@ -17,6 +18,7 @@ export function DownloadSuccessDialog({
   onConfirmed,
   onReportProblem,
 }: DownloadSuccessDialogPropsT) {
+  const router = useRouter();
   const [state, setState] = useState<"idle" | "loading">("idle");
 
   async function confirm() {
@@ -30,6 +32,7 @@ export function DownloadSuccessDialog({
     }
     setState("idle");
     onConfirmed();
+    router.push("/");
   }
 
   return (
@@ -42,7 +45,7 @@ export function DownloadSuccessDialog({
       <div className="flex flex-col gap-3">
         <Button
           type="button"
-          variant="coral-solid"
+          variant="yellow-solid"
           size="compact"
           disabled={state === "loading"}
           aria-busy={state === "loading"}
@@ -52,7 +55,7 @@ export function DownloadSuccessDialog({
         </Button>
         <Button
           type="button"
-          variant="coral"
+          variant="yellow"
           size="compact"
           onClick={onReportProblem}
         >

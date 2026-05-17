@@ -87,7 +87,7 @@ export function HelpForm({
             <Button
               type="submit"
               size="compact"
-              variant="coral-solid"
+              variant="yellow-solid"
               disabled={!canSubmit}
               aria-busy={isSubmitting}
             >
