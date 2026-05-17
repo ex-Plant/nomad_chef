@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/shared/button";
 import { HelpDialog } from "@/components/sections/contact/help-dialog";
+import { DownloadSuccessDialog } from "@/components/sections/contact/download-success-dialog";
 import type { DownloadStatusT } from "@/lib/orders/download-token";
 
 type DownloadCardPropsT = {
@@ -44,6 +45,7 @@ export function DownloadCard({
   customerEmail,
 }: DownloadCardPropsT) {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
 
   const helpContext = {
     surface: "download" as const,
@@ -103,22 +105,23 @@ export function DownloadCard({
           href={`/api/download/${token}/file`}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => setIsSuccessOpen(true)}
           className="bg-electric-blue hover:bg-electric-blue/90 inline-flex items-center justify-center rounded-lg px-6 py-3 font-sans text-sm font-medium tracking-wide text-white uppercase transition-colors"
         >
           Pobierz ebook
         </a>
-        <div className="border-off-black/15 mt-4 flex flex-col gap-3 border-t pt-6">
-          <Paragraph>Coś poszło nie tak z pobieraniem?</Paragraph>
-          <Button
-            type="button"
-            variant="coral"
-            size="compact"
-            onClick={() => setIsHelpOpen(true)}
-          >
-            Mam problem z pobraniem
-          </Button>
-        </div>
       </Card>
+
+      <DownloadSuccessDialog
+        isOpen={isSuccessOpen}
+        token={token}
+        onConfirmed={() => setIsSuccessOpen(false)}
+        onReportProblem={() => {
+          setIsSuccessOpen(false);
+          setIsHelpOpen(true);
+        }}
+      />
+
       <HelpDialog
         isOpen={isHelpOpen}
         onClose={() => setIsHelpOpen(false)}
