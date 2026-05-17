@@ -98,7 +98,9 @@ export async function setCheckoutCookie(orderId: number): Promise<void> {
  * anonymous browser working on?" Returns null if no cookie, tampered
  * cookie, or expired cookie.
  */
-export async function readCheckoutCookie(): Promise<{ orderId: number } | null> {
+export async function readCheckoutCookie(): Promise<{
+  orderId: number;
+} | null> {
   const store = await cookies();
   const raw = store.get(COOKIE_NAME)?.value;
   if (!raw) return null;

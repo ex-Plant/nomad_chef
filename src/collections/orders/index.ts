@@ -22,8 +22,10 @@ function getProductFormat(data: unknown): "digital" | "physical" | undefined {
   return undefined;
 }
 
-const whenDigitalOrder = (data: unknown) => getProductFormat(data) === "digital";
-const whenPhysicalOrder = (data: unknown) => getProductFormat(data) === "physical";
+const whenDigitalOrder = (data: unknown) =>
+  getProductFormat(data) === "digital";
+const whenPhysicalOrder = (data: unknown) =>
+  getProductFormat(data) === "physical";
 
 export const Orders: CollectionConfig = {
   slug: "orders",
@@ -44,7 +46,15 @@ export const Orders: CollectionConfig = {
   },
   admin: {
     useAsTitle: "orderNumber",
-    defaultColumns: ["orderNumber", "customer", "product", "totalGross", "paymentStatus", "fulfillmentStatus", "createdAt"],
+    defaultColumns: [
+      "orderNumber",
+      "customer",
+      "product",
+      "totalGross",
+      "paymentStatus",
+      "fulfillmentStatus",
+      "createdAt",
+    ],
   },
   access: {
     read: requireAuth,
@@ -88,7 +98,13 @@ export const Orders: CollectionConfig = {
       name: "unitPriceGross",
       type: "number",
       required: true,
-      admin: { readOnly: true, description: { pl: "Snapshot z chwili sprzedaży", en: "Snapshot at sale time" } },
+      admin: {
+        readOnly: true,
+        description: {
+          pl: "Snapshot z chwili sprzedaży",
+          en: "Snapshot at sale time",
+        },
+      },
       label: { pl: "Cena jedn. brutto (PLN)", en: "Unit price gross (PLN)" },
     },
     {
@@ -155,7 +171,10 @@ export const Orders: CollectionConfig = {
       label: { pl: "Status realizacji", en: "Fulfillment status" },
       options: [
         { label: { pl: "Oczekuje", en: "Pending" }, value: "pending" },
-        { label: { pl: "Wysłane / dostarczone", en: "Fulfilled" }, value: "fulfilled" },
+        {
+          label: { pl: "Wysłane / dostarczone", en: "Fulfilled" },
+          value: "fulfilled",
+        },
         { label: { pl: "Wysłane (kurier)", en: "Shipped" }, value: "shipped" },
         { label: { pl: "Dostarczone", en: "Delivered" }, value: "delivered" },
       ],
@@ -315,7 +334,10 @@ export const Orders: CollectionConfig = {
       defaultValue: "pending",
       index: true,
       admin: { readOnly: true },
-      label: { pl: "Status e-maila potwierdzającego", en: "Confirmation email status" },
+      label: {
+        pl: "Status e-maila potwierdzającego",
+        en: "Confirmation email status",
+      },
       options: [
         { label: { pl: "Oczekuje", en: "Pending" }, value: "pending" },
         { label: { pl: "Wysłany", en: "Sent" }, value: "sent" },

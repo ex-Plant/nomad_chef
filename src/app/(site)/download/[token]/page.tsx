@@ -32,7 +32,8 @@ export default async function DownloadPage({ params }: PagePropsT) {
 
   // All of the "is this token usable right now?" logic happens here on
   // the server. The client UI just renders whichever state we picked.
-  const { status, attemptsRemaining, productTitle } = await resolveStatus(token);
+  const { status, attemptsRemaining, productTitle } =
+    await resolveStatus(token);
 
   return (
     <main className="bg-warm-white text-off-black min-h-screen px-6 py-24">
@@ -98,7 +99,9 @@ async function resolveStatus(token: string): Promise<ResolvedT> {
   }
 
   // Token TTL check — `downloadExpiresAt` is an ISO string when present.
-  const expiresAt = order.downloadExpiresAt ? new Date(order.downloadExpiresAt) : null;
+  const expiresAt = order.downloadExpiresAt
+    ? new Date(order.downloadExpiresAt)
+    : null;
   if (!expiresAt || expiresAt < new Date()) {
     return { status: "expired", attemptsRemaining: 0, productTitle };
   }

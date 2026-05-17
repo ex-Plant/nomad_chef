@@ -43,7 +43,8 @@ export function ProcessingStatus({
   isDev,
 }: ProcessingStatusPropsT) {
   const router = useRouter();
-  const [paymentStatus, setPaymentStatus] = useState<StatusResponseT["paymentStatus"]>("pending");
+  const [paymentStatus, setPaymentStatus] =
+    useState<StatusResponseT["paymentStatus"]>("pending");
   const [isSimulating, setIsSimulating] = useState(false);
   const [simulateError, setSimulateError] = useState<string | null>(null);
 
@@ -124,14 +125,14 @@ export function ProcessingStatus({
           {paymentStatus === "failed" && "Płatność nie powiodła się."}
           {paymentStatus === "refunded" && "Zamówienie zwrócone."}
         </p>
-        <p className="font-sans text-xs tracking-wide uppercase text-white/70">
+        <p className="font-sans text-xs tracking-wide text-white/70 uppercase">
           Zamówienie {orderNumber}
         </p>
       </div>
 
       {isDev && paymentStatus === "pending" && (
         <div className="flex w-full flex-col items-center gap-3 border-t border-white/25 pt-6">
-          <span className="font-sans text-xs tracking-wide uppercase text-white/70">
+          <span className="font-sans text-xs tracking-wide text-white/70 uppercase">
             Tylko w dev
           </span>
           <Button
@@ -145,7 +146,7 @@ export function ProcessingStatus({
             {isSimulating ? "Oznaczam…" : "Symuluj płatność"}
           </Button>
           {simulateError && (
-            <p className="font-sans text-sm text-yellow">{simulateError}</p>
+            <p className="text-yellow font-sans text-sm">{simulateError}</p>
           )}
         </div>
       )}

@@ -52,11 +52,11 @@ import { sendDownloadEmail } from "@/lib/orders/send-download-email";
 const DOWNLOAD_TTL_DAYS = 30;
 
 export const digitalFulfillment: CollectionAfterChangeHook = async ({
-  doc,         // the order row AFTER the change
+  doc, // the order row AFTER the change
   previousDoc, // the order row BEFORE the change (undefined on create)
   req,
-  operation,   // "create" | "update" | "delete" | "read"
-  context,     // ad-hoc bag we pass through to suppress recursion
+  operation, // "create" | "update" | "delete" | "read"
+  context, // ad-hoc bag we pass through to suppress recursion
 }) => {
   // Re-entrancy guard. Below we call `payload.update()` to write the token
   // back onto the same order — that write would re-trigger this very hook.
