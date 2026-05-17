@@ -24,7 +24,7 @@ export default async function CheckoutProcessingPage() {
   const isDev = process.env.NODE_ENV !== "production";
 
   return (
-    <main className="bg-coral relative flex min-h-lvh flex-col items-center justify-center px-6 py-24 text-white">
+    <main className="bg-coral relative flex min-h-svh flex-col items-center justify-center px-6 py-24 text-white">
       <ProcessingStatus
         orderNumber={order.orderNumber}
         customerEmail={customer?.email ?? null}

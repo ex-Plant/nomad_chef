@@ -10,7 +10,6 @@ type DownloadCardPropsT = {
   token: string;
   status: DownloadStatusT;
   expiresAt: string | null;
-  productTitle: string | null;
   orderNumber: string | null;
   customerEmail: string | null;
 };
@@ -32,7 +31,7 @@ const STATUS_COPY: Record<
   expired: {
     title: "Link wygasł",
     body: "Linki do pobrania są aktywne przez 24 godziny od zakupu. Napisz do nas, a wyślemy Ci nowy.",
-    buttonLabel: "Mam problem z pobraniem",
+    buttonLabel: "Mam problem z zamówieniem",
   },
 };
 
@@ -40,7 +39,6 @@ export function DownloadCard({
   token,
   status,
   expiresAt,
-  productTitle,
   orderNumber,
   customerEmail,
 }: DownloadCardPropsT) {
@@ -90,15 +88,11 @@ export function DownloadCard({
   return (
     <>
       <Card>
-        <Heading>Twój ebook jest gotowy</Heading>
-        {productTitle && (
-          <p className="font-display text-coral text-xl tracking-tight uppercase">
-            {productTitle}
-          </p>
-        )}
+        <Heading>Twoje zamówienie jest gotowe do realizacji</Heading>
         {expiresLabel && (
           <Paragraph>
-            Link aktywny do <strong>{expiresLabel}</strong>.
+            Link będzie aktywny przez 24 godziny do{" "}
+            <strong>{expiresLabel}</strong>.
           </Paragraph>
         )}
         <a
@@ -110,8 +104,10 @@ export function DownloadCard({
         >
           Pobierz ebook
         </a>
-        <div className="border-off-black/15 mt-4 flex flex-col gap-3 border-t pt-6">
-          <Paragraph>Coś nie tak z linkiem lub zamówieniem?</Paragraph>
+        <div className="border-off-black/15 flex flex-col gap-6 border-t pt-6">
+          <Paragraph>
+            Coś nie tak z linkiem lub zamówieniem? Napisz do mnie.
+          </Paragraph>
           <Button
             type="button"
             variant="coral"
@@ -144,17 +140,21 @@ export function DownloadCard({
 }
 
 function Card({ children }: { children: React.ReactNode }) {
-  return <div className="flex flex-col gap-4">{children}</div>;
+  return <div className="flex flex-col gap-6">{children}</div>;
 }
 
 function Heading({ children }: { children: React.ReactNode }) {
   return (
-    <h1 className="font-display text-3xl tracking-tight uppercase md:text-4xl">
+    <h1 className="font-display text-center text-3xl tracking-tight uppercase md:text-4xl">
       {children}
     </h1>
   );
 }
 
 function Paragraph({ children }: { children: React.ReactNode }) {
-  return <p className="font-sans text-base leading-relaxed">{children}</p>;
+  return (
+    <p className="text-center font-sans text-base leading-relaxed">
+      {children}
+    </p>
+  );
 }
