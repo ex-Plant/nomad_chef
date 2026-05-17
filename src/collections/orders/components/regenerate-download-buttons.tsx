@@ -98,7 +98,9 @@ export function RegenerateDownloadButtons() {
               ? new Date(result.expiresAt).toLocaleString("pl-PL")
               : "—"}
           </div>
-          <div>{result.emailed ? "E-mail wysłany." : "E-mail nie wysłany."}</div>
+          <div>
+            {result.emailed ? "E-mail wysłany." : "E-mail nie wysłany."}
+          </div>
           <div style={{ marginTop: "0.5rem", opacity: 0.7 }}>
             Odśwież stronę, aby zobaczyć zaktualizowane pola.
           </div>
