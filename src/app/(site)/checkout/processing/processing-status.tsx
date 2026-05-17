@@ -75,8 +75,7 @@ export function ProcessingStatus({
           aria-live="polite"
           className="font-sans text-base leading-relaxed text-white/85"
         >
-          {paymentStatus === "pending" &&
-            "Czekamy na potwierdzenie płatności."}
+          {paymentStatus === "pending" && "Czekamy na potwierdzenie płatności."}
           {paymentStatus === "paid" && "Zamówienie zostało opłacone."}
           {paymentStatus === "failed" && "Płatność nie powiodła się."}
           {paymentStatus === "refunded" && "Zamówienie zwrócone."}
