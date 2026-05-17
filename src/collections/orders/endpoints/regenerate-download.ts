@@ -53,8 +53,7 @@ export const regenerateDownloadEndpoint: Endpoint = {
       req,
     });
 
-    const customer =
-      typeof order.customer === "object" ? order.customer : null;
+    const customer = typeof order.customer === "object" ? order.customer : null;
 
     return Response.json({
       ok: true,

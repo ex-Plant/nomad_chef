@@ -106,9 +106,7 @@ export function RegenerateDownloadButtons() {
           disabled={state === "loading"}
           onClick={run}
         >
-          {state === "loading"
-            ? "…"
-            : "Wygeneruj nowy link i otwórz e-mail"}
+          {state === "loading" ? "…" : "Wygeneruj nowy link i otwórz e-mail"}
         </button>
       </div>
 
@@ -116,9 +114,7 @@ export function RegenerateDownloadButtons() {
         <div style={{ fontSize: "0.85rem" }}>
           <div>
             Nowy link:{" "}
-            <code style={{ wordBreak: "break-all" }}>
-              {result.downloadUrl}
-            </code>
+            <code style={{ wordBreak: "break-all" }}>{result.downloadUrl}</code>
           </div>
           <div>
             Wygasa:{" "}
