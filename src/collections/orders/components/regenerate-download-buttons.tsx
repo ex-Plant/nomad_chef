@@ -18,10 +18,8 @@ export function RegenerateDownloadButtons() {
   const [result, setResult] = useState<ResultT | null>(null);
 
   if (!id) return null;
-  // Only render for digital, paid orders.
-  const product =
-    data && typeof data.product === "object" ? data.product : null;
-  if (!product || product.format !== "digital") return null;
+  // Field-level admin.condition (whenDigitalOrder) already filters by format,
+  // so here we only gate on payment status.
   if (data?.paymentStatus !== "paid") return null;
 
   async function run(sendEmail: boolean) {
