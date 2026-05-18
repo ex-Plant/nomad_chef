@@ -14,7 +14,6 @@ import { ScatterText } from "@/components/shared/scatter-text";
 import { SectionContent } from "@/components/shared/section-content";
 import NextImage from "next/image";
 import { Loader } from "@/components/shared/loader";
-import { scrollToSection } from "@/helpers/scroll-to-section";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useScrollLock } from "../../../hooks/use-scroll-lock";
@@ -37,6 +36,10 @@ export function Hero({ data, videoRef, isReady }: HeroPropsT) {
   const imageRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
+
+  // Pin the page while the coral loader covers the viewport. Releases as
+  // soon as the hero video signals ready (or the 3s fallback fires).
+  useScrollLock(!isReady);
 
   // Source selection via JS — `<source media>` inside <video> is unreliable
   // across browsers (Chrome/iOS Safari sometimes pick the first decodable
@@ -169,21 +172,13 @@ export function Hero({ data, videoRef, isReady }: HeroPropsT) {
               className="mt-8 flex flex-wrap gap-4"
             >
               {data.ctas[0] && (
-                <Button
-                  variant="coral"
-                  size="compact"
-                  onClick={() => scrollToSection(data.ctas[0].href)}
-                >
-                  {data.ctas[0].label}
+                <Button asChild variant="coral" size="compact">
+                  <a href={data.ctas[0].href}>{data.ctas[0].label}</a>
                 </Button>
               )}
               {data.ctas[1] && (
-                <Button
-                  size="compact"
-                  variant="yellow"
-                  onClick={() => scrollToSection(data.ctas[1].href)}
-                >
-                  {data.ctas[1].label}
+                <Button asChild size="compact" variant="yellow">
+                  <a href={data.ctas[1].href}>{data.ctas[1].label}</a>
                 </Button>
               )}
             </FadeUp>

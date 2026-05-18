@@ -21,7 +21,6 @@ export default async function CheckoutProcessingPage() {
   }
 
   const customer = typeof order.customer === "object" ? order.customer : null;
-  const isDev = process.env.NODE_ENV !== "production";
 
   return (
     <main className="bg-coral relative flex min-h-svh flex-col items-center justify-center px-6 py-24 text-white">
@@ -29,7 +28,6 @@ export default async function CheckoutProcessingPage() {
         orderNumber={order.orderNumber}
         customerEmail={customer?.email ?? null}
         paymentStatus={order.paymentStatus}
-        isDev={isDev}
       />
     </main>
   );

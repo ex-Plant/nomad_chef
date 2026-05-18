@@ -1,13 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { m, motion, AnimatePresence } from "framer-motion";
 import { CONTENT } from "@/config/content";
 import { SECTION_IDS } from "@/config/section-ids";
 import type { SectionIdT } from "@/config/section-ids";
 import type { SiteT } from "@/types/site";
 import { cn } from "@/helpers/cn";
-import { scrollToSection } from "@/helpers/scroll-to-section";
 import { useBreakpoint } from "@/hooks/use-media-query";
 import { Logo } from "@/components/shared/logo";
 
@@ -15,25 +14,19 @@ type NavDesktopPropsT = {
   items: SiteT["nav"];
   activeSection: string;
   isOnYellow: boolean;
-  scrollTo: (id: string) => void;
 };
 
-function NavDesktop({
-  items,
-  activeSection,
-  isOnYellow,
-  scrollTo,
-}: NavDesktopPropsT) {
+function NavDesktop({ items, activeSection, isOnYellow }: NavDesktopPropsT) {
   return (
     <ul className="hidden items-center gap-1 md:flex">
       {items.map((item) => {
         const isActive = activeSection === item.id;
         return (
           <li key={item.id}>
-            <button
-              onClick={() => scrollTo(item.id)}
+            <a
+              href={`#${item.id}`}
               className={cn(
-                "font-geist ease-brand relative rounded-lg px-3 py-1 text-xs tracking-wide uppercase transition-colors duration-300",
+                "font-geist ease-brand relative inline-block rounded-lg px-3 py-1 text-xs tracking-wide uppercase transition-colors duration-300",
                 isActive && isOnYellow && "text-black",
                 isActive && !isOnYellow && "text-white",
                 !isActive && isOnYellow && "text-white hover:text-white/80",
@@ -58,7 +51,7 @@ function NavDesktop({
               <span className="relative z-10 whitespace-nowrap">
                 {item.label}
               </span>
-            </button>
+            </a>
           </li>
         );
       })}
@@ -141,9 +134,6 @@ export function NavDesktopShell({ items }: { items: SiteT["nav"] }) {
     };
   }, [items, isDesktop]);
 
-  const scrollTo = useCallback((id: string) => {
-    scrollToSection(id);
-  }, []);
   return (
     <nav
       ref={navRef}
@@ -168,7 +158,6 @@ export function NavDesktopShell({ items }: { items: SiteT["nav"] }) {
               items={items}
               activeSection={activeSection}
               isOnYellow={isOnYellow}
-              scrollTo={scrollTo}
             />
           </m.div>
         )}

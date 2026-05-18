@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { EASE } from "@/config/animation-constants";
 import { NAV_TOGGLE_COLORS, SECTION_IDS } from "@/config/section-ids";
@@ -10,7 +10,6 @@ import type { SiteT } from "@/types/site";
 import { Starburst } from "@/components/shared/starburst";
 import { cn } from "@/helpers/cn";
 import { AnimationTogglePot as AnimationToggle } from "@/components/shared/animation-toggle-pot/animation-toggle-pot";
-import { scrollToSection } from "@/helpers/scroll-to-section";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import { useBreakpoint } from "@/hooks/use-media-query";
 import { Logo } from "@/components/shared/logo";
@@ -25,7 +24,7 @@ type NavMobilePropsT = {
   isOnYellow: boolean;
   activeSection: SectionIdT;
   onToggle: () => void;
-  scrollTo: (id: string) => void;
+  onClose: () => void;
 };
 
 const STROKE_CLASS: Record<NavToggleColorT, string> = {
@@ -128,8 +127,8 @@ const YELLOW_VARIANTS = {
 function NavMobileOverlay({
   items,
   isOpen,
-  scrollTo,
-}: Pick<NavMobilePropsT, "items" | "isOpen" | "scrollTo">) {
+  onClose,
+}: Pick<NavMobilePropsT, "items" | "isOpen" | "onClose">) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -159,9 +158,10 @@ function NavMobileOverlay({
             <div className="relative flex min-h-full flex-col items-center justify-center px-6 py-24">
               <div className="z-1 flex flex-col items-center gap-8">
                 {items.map((item, i) => (
-                  <m.button
+                  <m.a
                     key={item.id}
-                    onClick={() => scrollTo(item.id)}
+                    href={`#${item.id}`}
+                    onClick={onClose}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{
@@ -184,7 +184,7 @@ function NavMobileOverlay({
                     className="bg-coral cursor-pointer pr-4 pl-1 text-4xl text-white uppercase"
                   >
                     {item.label}
-                  </m.button>
+                  </m.a>
                 ))}
               </div>
             </div>
@@ -275,17 +275,6 @@ export function NavMobileShell({ items }: { items: SiteT["nav"] }) {
     };
   }, [items, isDesktop]);
 
-  const scrollTo = useCallback((id: string) => {
-    // useScrollLock pins body { position: fixed } while open and restores
-    // window.scrollY on release. Defer the section scroll until after release
-    // so scrollIntoView runs against an unlocked body and isn't undone.
-    const onReleased = () => {
-      requestAnimationFrame(() => scrollToSection(id, "instant"));
-    };
-    window.addEventListener("scroll-lock-released", onReleased, { once: true });
-    setIsOpen(false);
-  }, []);
-
   return (
     <>
       <nav
@@ -299,7 +288,11 @@ export function NavMobileShell({ items }: { items: SiteT["nav"] }) {
         />
         <Logo priority />
       </nav>
-      <NavMobileOverlay items={items} isOpen={isOpen} scrollTo={scrollTo} />
+      <NavMobileOverlay
+        items={items}
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
     </>
   );
 }

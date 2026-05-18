@@ -12,7 +12,6 @@ type ProcessingStatusPropsT = {
   orderNumber: string;
   customerEmail: string | null;
   paymentStatus: PaymentStatusT;
-  isDev: boolean;
 };
 
 type SimulateStateT = "idle" | "loading" | "error";
@@ -21,7 +20,6 @@ export function ProcessingStatus({
   orderNumber,
   customerEmail,
   paymentStatus,
-  isDev,
 }: ProcessingStatusPropsT) {
   const router = useRouter();
   const [simulateState, setSimulateState] = useState<SimulateStateT>("idle");
@@ -62,6 +60,16 @@ export function ProcessingStatus({
 
   return (
     <div className="flex w-full max-w-md flex-col items-center gap-8 text-center">
+      <div className="border-yellow/40 bg-yellow/10 w-full rounded-md border px-4 py-3 text-left">
+        <p className="text-yellow font-sans text-sm leading-relaxed">
+          <strong className="font-semibold tracking-wide uppercase">
+            Wersja testowa.
+          </strong>{" "}
+          Strona jest w budowie — proces zamówienia nie jest jeszcze aktywny.
+          Jeśli trafiłaś tu przypadkiem, wróć później.
+        </p>
+      </div>
+
       <Loader color="yellow" className="bg-transparent" />
 
       <div className="flex flex-col gap-3">
@@ -96,10 +104,10 @@ export function ProcessingStatus({
         </Button>
       )}
 
-      {isDev && paymentStatus === "pending" && (
+      {paymentStatus === "pending" && (
         <div className="flex w-full flex-col items-center gap-3 border-t border-white/25 pt-6">
           <span className="font-sans text-xs tracking-wide text-white/70 uppercase">
-            Tylko w dev
+            Testy
           </span>
           <Button
             type="button"
