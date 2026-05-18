@@ -6,6 +6,7 @@ import { m } from "framer-motion";
 import { Image } from "@/components/ui/image";
 import { GalleryLightbox } from "@/components/ui/gallery-lightbox";
 
+import { Button } from "@/components/shared/button";
 import { FadeUp } from "@/components/shared/fade-up";
 import { ScatterText } from "@/components/shared/scatter-text";
 import { SECTION_IDS } from "@/config/section-ids";
@@ -56,6 +57,18 @@ export function Gallery({ data }: GalleryPropsT) {
           onImageClick={(index) => setOpenIndex(index)}
         />
 
+        {/* Mobile-only CTA: tile taps are disabled on mobile (too easy to misfire while scrolling),
+            so users open the gallery explicitly from here. */}
+        <FadeUp className="mt-10 flex justify-center md:hidden">
+          <Button
+            variant="coral"
+            size="compact"
+            onClick={() => setOpenIndex(0)}
+          >
+            Zobacz galerię
+          </Button>
+        </FadeUp>
+
         <GalleryLightbox
           images={data.images.map((img) => ({ src: img.url, alt: img.alt }))}
           openIndex={openIndex}
@@ -84,11 +97,13 @@ function MasonryColumns({
   numCols,
   offsets,
   onImageClick,
+  interactive,
 }: {
   images: MediaT[];
   numCols: number;
   offsets: string[];
   onImageClick: (index: number) => void;
+  interactive: boolean;
 }) {
   const cols = distributeIntoColumns(images, numCols);
 
@@ -112,6 +127,7 @@ function MasonryColumns({
                 image={image}
                 index={globalIndex}
                 onTap={onImageClick}
+                interactive={interactive}
               />
             );
           })}
@@ -135,10 +151,12 @@ function GalleryTile({
   image,
   index,
   onTap,
+  interactive,
 }: {
   image: MediaT;
   index: number;
   onTap: (index: number) => void;
+  interactive: boolean;
 }) {
   const [inView, setInView] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -185,6 +203,19 @@ function GalleryTile({
 
   const shouldShow = inView && loaded;
 
+  const img = (
+    <Image
+      src={image.url}
+      alt={image.alt}
+      width={image.width ?? 1200}
+      height={image.height ?? 1200}
+      priority={index < 4}
+      onLoad={() => setLoaded(true)}
+      className="ease-brand transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
+      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+    />
+  );
+
   return (
     <m.div
       className="group"
@@ -198,26 +229,21 @@ function GalleryTile({
         ease: "easeOut",
       }}
     >
-      <button
-        type="button"
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerCancel={handlePointerCancel}
-        onClick={handleClick}
-        className="focus-visible:ring-coral block w-full cursor-zoom-in touch-pan-y overflow-hidden rounded-lg focus:outline-none focus-visible:ring-2"
-        aria-label={`Otwórz zdjęcie: ${image.alt}`}
-      >
-        <Image
-          src={image.url}
-          alt={image.alt}
-          width={image.width ?? 1200}
-          height={image.height ?? 1200}
-          priority={index < 4}
-          onLoad={() => setLoaded(true)}
-          className="ease-brand transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
-          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-        />
-      </button>
+      {interactive ? (
+        <button
+          type="button"
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerCancel={handlePointerCancel}
+          onClick={handleClick}
+          className="focus-visible:ring-coral block w-full cursor-zoom-in touch-pan-y overflow-hidden rounded-lg focus:outline-none focus-visible:ring-2"
+          aria-label={`Otwórz zdjęcie: ${image.alt}`}
+        >
+          {img}
+        </button>
+      ) : (
+        <div className="block w-full overflow-hidden rounded-lg">{img}</div>
+      )}
     </m.div>
   );
 }
@@ -231,13 +257,14 @@ function GalleryGrid({
 }) {
   return (
     <>
-      {/* Mobile: 2 columns */}
+      {/* Mobile: 2 columns — tiles non-interactive; CTA below opens the gallery */}
       <div className="md:hidden">
         <MasonryColumns
           images={images}
           numCols={2}
           offsets={["mt-0", "mt-10"]}
           onImageClick={onImageClick}
+          interactive={false}
         />
       </div>
       {/* Tablet: 3 columns */}
@@ -247,6 +274,7 @@ function GalleryGrid({
           numCols={3}
           offsets={["mt-0", "mt-16", "mt-4"]}
           onImageClick={onImageClick}
+          interactive
         />
       </div>
       {/* Desktop: 4 columns */}
@@ -256,6 +284,7 @@ function GalleryGrid({
           numCols={4}
           offsets={[...COLUMN_OFFSETS]}
           onImageClick={onImageClick}
+          interactive
         />
       </div>
     </>
