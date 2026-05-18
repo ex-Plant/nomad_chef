@@ -49,6 +49,7 @@ export function About({ data }: AboutPropsT) {
             {data.image && (
               <FadeUp className="relative z-1" amount={0.2} delay={0.1}>
                 <Image
+                  priority
                   src={data.image.url}
                   alt={data.imageAlt || data.image.alt}
                   width={data.image.width ?? 1200}

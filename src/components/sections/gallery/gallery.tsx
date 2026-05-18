@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { m } from "framer-motion";
 
 import { Image } from "@/components/ui/image";
 import { GalleryLightbox } from "@/components/ui/gallery-lightbox";
@@ -158,8 +157,6 @@ function GalleryTile({
   onTap: (index: number) => void;
   interactive: boolean;
 }) {
-  const [inView, setInView] = useState(false);
-  const [loaded, setLoaded] = useState(false);
   const tapRef = useRef<{
     x: number;
     y: number;
@@ -201,8 +198,6 @@ function GalleryTile({
     }
   }
 
-  const shouldShow = inView && loaded;
-
   const img = (
     <Image
       src={image.url}
@@ -210,24 +205,16 @@ function GalleryTile({
       width={image.width ?? 1200}
       height={image.height ?? 1200}
       priority={index < 4}
-      onLoad={() => setLoaded(true)}
       className="ease-brand transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
       sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
     />
   );
 
   return (
-    <m.div
+    <FadeUp
       className="group"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: shouldShow ? 1 : 0 }}
-      onViewportEnter={() => setInView(true)}
-      viewport={{ once: true, amount: 0.1 }}
-      transition={{
-        duration: 0.5,
-        delay: shouldShow ? (index % 8) * 0.1 : 0,
-        ease: "easeOut",
-      }}
+      amount={0.1}
+      delay={(index % 8) * 0.1}
     >
       {interactive ? (
         <button
@@ -244,7 +231,7 @@ function GalleryTile({
       ) : (
         <div className="block w-full overflow-hidden rounded-lg">{img}</div>
       )}
-    </m.div>
+    </FadeUp>
   );
 }
 
