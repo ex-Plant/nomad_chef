@@ -12,18 +12,18 @@ import { useEffect } from "react";
    ever becomes a real path. */
 
 export function useScrollLock(isLocked: boolean): void {
-  useEffect(() => {
-    if (!isLocked) return;
-    const { body, documentElement: html } = document;
-    html.style.overflow = "hidden";
-    body.style.overflow = "hidden";
-    return () => {
-      html.style.overflow = "";
-      body.style.overflow = "";
-      // Kept for back-compat — services-sticky listens to refresh ScrollTrigger.
-      window.dispatchEvent(new CustomEvent("scroll-lock-released"));
-    };
-  }, [isLocked]);
+  // useEffect(() => {
+  //   if (!isLocked) return;
+  //   const { body, documentElement: html } = document;
+  //   html.style.overflow = "hidden";
+  //   body.style.overflow = "hidden";
+  //   return () => {
+  //     html.style.overflow = "";
+  //     body.style.overflow = "";
+  //     // Kept for back-compat — services-sticky listens to refresh ScrollTrigger.
+  //     window.dispatchEvent(new CustomEvent("scroll-lock-released"));
+  //   };
+  // }, [isLocked]);
 }
 
 /* -----------------------------------------------------------------------

@@ -2,6 +2,7 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import useEmblaCarousel from "embla-carousel-react";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import NextImage, { type StaticImageData } from "next/image";
 import { useCallback, useEffect, useState } from "react";
@@ -67,6 +68,20 @@ export function GalleryLightbox({
     return () => window.removeEventListener("keydown", onKey);
   }, [isOpen, scrollPrev, scrollNext]);
 
+  /* services-parallax installs a global ScrollTrigger.normalizeScroll Observer
+     that swallows pointer/touchmove events to keep iOS scroll in sync with
+     the fake-pin. Embla drives swipes from pointermove, so while the lightbox
+     is open we pause the Observer; re-enabled on close so the pin resyncs. */
+  useEffect(() => {
+    if (!isOpen) return;
+    const normalizer = ScrollTrigger.normalizeScroll();
+    if (!normalizer) return;
+    normalizer.disable();
+    return () => {
+      normalizer.enable();
+    };
+  }, [isOpen]);
+
   return (
     <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <Dialog.Portal>
@@ -85,7 +100,7 @@ export function GalleryLightbox({
                   Math.abs(i - selectedIndex),
                   images.length - Math.abs(i - selectedIndex),
                 );
-                const isNearby = distance <= 1;
+                const isNearby = distance <= 2;
                 return (
                   <div
                     key={i}
@@ -100,7 +115,7 @@ export function GalleryLightbox({
                         src={image.src}
                         alt={image.alt}
                         fill
-                        quality={90}
+                        quality={390}
                         sizes="(max-width: 768px) 100vw, 90vw"
                         className="relative object-contain"
                         priority={isNearby}
@@ -113,14 +128,16 @@ export function GalleryLightbox({
           </div>
 
           <Dialog.Close asChild>
-            <Button
-              variant="yellow"
-              size="icon-sm"
-              aria-label="Zamknij"
-              className="absolute top-6 right-6 z-10"
-            >
-              <X size={20} strokeWidth={2.5} aria-hidden="true" />
-            </Button>
+            <div className={`absolute top-6 right-6 z-10 p-2 pr-0`}>
+              <Button
+                variant="yellow"
+                size="icon-sm"
+                aria-label="Zamknij"
+                className=""
+              >
+                <X size={20} strokeWidth={2.5} aria-hidden="true" />
+              </Button>
+            </div>
           </Dialog.Close>
 
           <div className="font-geist text-yellow absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-sm">

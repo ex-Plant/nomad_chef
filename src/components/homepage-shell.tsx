@@ -30,7 +30,6 @@ export function HomepageShell({ site, digitalProduct }: HomepageShellPropsT) {
   });
 
   // Lock the page while the hero video is still loading; release once ready.
-  useScrollLock(!isReady);
 
   return (
     <>

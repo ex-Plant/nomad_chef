@@ -1,0 +1,274 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - navigation "Nawigacja glowna (desktop)" [ref=e3]:
+      - img "Marta Leśniewska — Chaos Kitchen"
+      - img "Marta Leśniewska — Chaos Kitchen" [ref=e4]
+    - main [ref=e5]:
+      - generic [ref=e6]:
+        - img [ref=e8]
+        - generic:
+          - status "Ładowanie":
+            - generic:
+              - generic:
+                - img
+        - generic [ref=e13]:
+          - paragraph [ref=e14]: Jedzenie dopasowane do miejsca, ludzi i momentu
+          - heading "C h a o s K i t c h e n" [level=1] [ref=e15]:
+            - generic [ref=e17]:
+              - generic [ref=e18]: C
+              - generic [ref=e19]: h
+              - generic [ref=e20]: a
+              - generic [ref=e21]: o
+              - generic [ref=e22]: s
+            - generic [ref=e24]:
+              - generic [ref=e25]: K
+              - generic [ref=e26]: i
+              - generic [ref=e27]: t
+              - generic [ref=e28]: c
+              - generic [ref=e29]: h
+              - generic [ref=e30]: e
+              - generic [ref=e31]: "n"
+          - paragraph [ref=e32]: Gotuje tam, gdzie mnie potrzebujesz — od prywatnych kolacji, przez garden party, po retreaty i wyjazdy w Polsce i za granica.
+          - generic [ref=e33]:
+            - button "Zobacz oferte" [ref=e34] [cursor=pointer]
+            - button "Napisz do mnie" [ref=e35] [cursor=pointer]
+      - generic [ref=e36]:
+        - generic [ref=e38]:
+          - generic [ref=e41]: O mnie
+          - generic [ref=e43]:
+            - generic [ref=e44]:
+              - img "Szefowa kuchni trzymająca talerz" [ref=e46]
+              - generic [ref=e47]:
+                - generic:
+                  - img
+            - generic [ref=e48]:
+              - heading "Gotuję prosto, ale nigdy banalnie" [level=2] [ref=e49]
+              - heading "G o t u j ę p r o s t o , a l e n i g d y b a n a l n i e" [level=2] [ref=e50]:
+                - generic [ref=e52]:
+                  - generic [ref=e53]: G
+                  - generic [ref=e54]: o
+                  - generic [ref=e55]: t
+                  - generic [ref=e56]: u
+                  - generic [ref=e57]: j
+                  - generic [ref=e58]: ę
+                - generic [ref=e60]:
+                  - generic [ref=e61]: p
+                  - generic [ref=e62]: r
+                  - generic [ref=e63]: o
+                  - generic [ref=e64]: s
+                  - generic [ref=e65]: t
+                  - generic [ref=e66]: o
+                  - generic [ref=e67]: ","
+                - generic [ref=e68]:
+                  - generic [ref=e69]:
+                    - generic [ref=e70]: a
+                    - generic [ref=e71]: l
+                    - generic [ref=e72]: e
+                  - generic [ref=e74]:
+                    - generic [ref=e75]: "n"
+                    - generic [ref=e76]: i
+                    - generic [ref=e77]: g
+                    - generic [ref=e78]: d
+                    - generic [ref=e79]: "y"
+                - generic [ref=e81]:
+                  - generic [ref=e82]: b
+                  - generic [ref=e83]: a
+                  - generic [ref=e84]: "n"
+                  - generic [ref=e85]: a
+                  - generic [ref=e86]: l
+                  - generic [ref=e87]: "n"
+                  - generic [ref=e88]: i
+                  - generic [ref=e89]: e
+              - generic [ref=e90]:
+                - paragraph [ref=e91]: Tworzę jedzenie dopasowane do ludzi i sytuacji — od kameralnych kolacji, przez eventy, po wyjazdy w miejscach, które rzadko mają cokolwiek wspólnego z klasyczną kuchnią.
+                - blockquote [ref=e92]:
+                  - paragraph [ref=e93]: Łączę smak z funkcją — jedzenie ma nie tylko smakować, ale też działać.
+                - paragraph [ref=e94]: Pracuję na ekologicznych produktach, korzystam z fermentacji, świeżych ziół i składników wspierających organizm.
+                - paragraph [ref=e95]: Każde menu tworzę od podstaw. Dopasowuję je do stylu życia, potrzeb i energii wydarzenia.
+                - paragraph [ref=e96]: Moja droga do kuchni nie była oczywista — od banku, przez modę, po własną restaurację. Dziś pracuję jako nomadyczna kucharka, gotując w różnych miejscach świata.
+        - generic [ref=e97]:
+          - generic [ref=e98]:
+            - img "Tło sekcji usług — fotografia kulinarna" [ref=e101]
+            - generic [ref=e107]: Usługi
+          - generic [ref=e109]:
+            - generic [ref=e112]:
+              - heading "Prywatne doświadczenia kulinarne" [level=3] [ref=e113]
+              - paragraph [ref=e114]: To nie jest catering. To jest doświadczenie.
+              - paragraph [ref=e115]: Kolacje i przyjęcia tworzę od podstaw - w Twoim domu, ogrodzie lub wybranej przestrzeni.
+            - generic [ref=e118]:
+              - heading "Catering premium i eventy" [level=3] [ref=e119]
+              - paragraph [ref=e120]: Estetyka, smak i flow wydarzenia — wszystko spójne
+              - paragraph [ref=e121]: Garden party, bufet i finger food, live cooking. Estetyka, smak i flow wydarzenia - wszystko spójne.
+            - generic [ref=e124]:
+              - heading "Retreaty i wyjazdy" [level=3] [ref=e125]
+              - paragraph [ref=e126]: Gotowanie w ruchu. Adaptacja do miejsca i ludzi.
+              - paragraph [ref=e127]: Retreaty jogowe, wyjazdy wellness i sportowe, długoterminowa współpraca. Menu wspiera energię, regenerację i balans.
+            - generic [ref=e130]:
+              - heading "Warsztaty i współprace" [level=3] [ref=e131]
+              - paragraph [ref=e132]: Fermentacja / zero waste / kuchnia funkcjonalna.
+              - paragraph [ref=e133]: Projekty dla firm i marek
+        - generic [ref=e135]:
+          - generic [ref=e136]:
+            - generic:
+              - img
+          - generic [ref=e138]:
+            - generic [ref=e141]: Ebook
+            - generic [ref=e143]:
+              - generic [ref=e144]:
+                - paragraph [ref=e145]: Mój pierwszy ebook.
+                - heading "C a m p F o o d" [level=2] [ref=e146]:
+                  - generic [ref=e148]:
+                    - generic [ref=e149]: C
+                    - generic [ref=e150]: a
+                    - generic [ref=e151]: m
+                    - generic [ref=e152]: p
+                  - generic [ref=e154]:
+                    - generic [ref=e155]: F
+                    - generic [ref=e156]: o
+                    - generic [ref=e157]: o
+                    - generic [ref=e158]: d
+                - paragraph [ref=e160]: Jedzenie, które zabierasz ze sobą — w ruch, w naturę, w życie.
+                - button "Kup ebook" [ref=e162] [cursor=pointer]
+              - img "Camp Food — okładka ebooka, widok z przodu" [ref=e165]
+            - generic [ref=e166]:
+              - generic [ref=e167]:
+                - button "Slide 1" [ref=e168]
+                - button "Slide 2" [ref=e169] [cursor=pointer]
+              - generic [ref=e170]:
+                - button "Poprzedni" [ref=e171] [cursor=pointer]:
+                  - img [ref=e172]
+                - button "Następny" [ref=e174] [cursor=pointer]:
+                  - img [ref=e175]
+        - generic [ref=e178]:
+          - generic [ref=e181]: Galeria
+          - heading "G a l e r i a" [level=2] [ref=e184]:
+            - generic [ref=e186]:
+              - generic [ref=e187]: G
+              - generic [ref=e188]: a
+              - generic [ref=e189]: l
+              - generic [ref=e190]: e
+              - generic [ref=e191]: r
+              - generic [ref=e192]: i
+              - generic [ref=e193]: a
+          - generic [ref=e195]:
+            - generic [ref=e196]:
+              - button "Otwórz zdjęcie:" [ref=e198]
+              - 'button "Otwórz zdjęcie: Zioła w słoiku" [ref=e200]':
+                - img "Zioła w słoiku" [ref=e201]
+              - button "Otwórz zdjęcie:" [ref=e203]
+              - button "Otwórz zdjęcie:" [ref=e205]
+              - 'button "Otwórz zdjęcie: Jajko na niebieskim tle" [ref=e207]':
+                - img "Jajko na niebieskim tle" [ref=e208]
+            - generic [ref=e209]:
+              - button "Otwórz zdjęcie:" [ref=e211]
+              - button "Otwórz zdjęcie:" [ref=e213]
+              - 'button "Otwórz zdjęcie: Plating na różowym talerzu" [ref=e215]':
+                - img "Plating na różowym talerzu" [ref=e216]
+              - 'button "Otwórz zdjęcie: Uczta — widok z góry" [ref=e218]':
+                - img "Uczta — widok z góry" [ref=e219]
+              - button "Otwórz zdjęcie:" [ref=e221]
+            - generic [ref=e222]:
+              - button "Otwórz zdjęcie:" [ref=e224]
+              - 'button "Otwórz zdjęcie: Złoty drink" [ref=e226]':
+                - img "Złoty drink" [ref=e227]
+              - button "Otwórz zdjęcie:" [ref=e229]
+              - button "Otwórz zdjęcie:" [ref=e231]
+              - button "Otwórz zdjęcie:" [ref=e233]
+            - generic [ref=e234]:
+              - button "Otwórz zdjęcie:" [ref=e236]
+              - button "Otwórz zdjęcie:" [ref=e238]
+              - button "Otwórz zdjęcie:" [ref=e240]
+              - button "Otwórz zdjęcie:" [ref=e242]
+              - button "Otwórz zdjęcie:" [ref=e244]
+          - generic [ref=e247]: "@mart_lesniewska"
+        - generic [ref=e250]:
+          - generic [ref=e253]: Kontakt
+          - generic [ref=e255]:
+            - generic [ref=e256]:
+              - heading "J e ś l i c z u j e s z , ż e t o c o ś d l a C i e b i e" [level=2] [ref=e257]:
+                - generic [ref=e258]:
+                  - generic [ref=e259]:
+                    - generic [ref=e260]: J
+                    - generic [ref=e261]: e
+                    - generic [ref=e262]: ś
+                    - generic [ref=e263]: l
+                    - generic [ref=e264]: i
+                  - generic [ref=e266]:
+                    - generic [ref=e267]: c
+                    - generic [ref=e268]: z
+                    - generic [ref=e269]: u
+                    - generic [ref=e270]: j
+                    - generic [ref=e271]: e
+                    - generic [ref=e272]: s
+                    - generic [ref=e273]: z
+                    - generic [ref=e274]: ","
+                - generic [ref=e275]:
+                  - generic [ref=e276]:
+                    - generic [ref=e277]: ż
+                    - generic [ref=e278]: e
+                  - generic [ref=e280]:
+                    - generic [ref=e281]: t
+                    - generic [ref=e282]: o
+                  - generic [ref=e284]:
+                    - generic [ref=e285]: c
+                    - generic [ref=e286]: o
+                    - generic [ref=e287]: ś
+                - generic [ref=e288]:
+                  - generic [ref=e289]:
+                    - generic [ref=e290]: d
+                    - generic [ref=e291]: l
+                    - generic [ref=e292]: a
+                  - generic [ref=e294]:
+                    - generic [ref=e295]: C
+                    - generic [ref=e296]: i
+                    - generic [ref=e297]: e
+                    - generic [ref=e298]: b
+                    - generic [ref=e299]: i
+                    - generic [ref=e300]: e
+              - paragraph [ref=e301]: — napisz.
+            - generic [ref=e302]:
+              - link "Email marta@chaoskitchen.pl" [ref=e304] [cursor=pointer]:
+                - /url: mailto:marta@chaoskitchen.pl
+                - img [ref=e306]
+                - generic [ref=e309]:
+                  - generic [ref=e310]: Email
+                  - generic [ref=e311]: marta@chaoskitchen.pl
+                - img [ref=e312]
+              - link "Instagram @mart_lesniewska_chef" [ref=e315] [cursor=pointer]:
+                - /url: https://instagram.com/mart_lesniewska
+                - img [ref=e317]
+                - generic [ref=e321]:
+                  - generic [ref=e322]: Instagram
+                  - generic [ref=e323]: "@mart_lesniewska_chef"
+                - img [ref=e324]
+              - form "Wyślij wiadomość" [ref=e327]:
+                - textbox "Twój e-mail..." [ref=e329]
+                - textbox "Twoja wiadomość..." [ref=e331]
+                - generic [ref=e332]:
+                  - button "Wyślij wiadomość" [ref=e333] [cursor=pointer]
+                  - button "Zapisz się do newslettera" [ref=e334] [cursor=pointer]
+          - generic [ref=e336]:
+            - generic [ref=e337]: Chaos Kitchen
+            - generic [ref=e338]: "2026"
+          - generic [ref=e339]:
+            - paragraph [ref=e340]: YOLO Bartosz Antonik
+            - paragraph [ref=e341]: ul. Terespolska 2/41
+            - paragraph [ref=e342]: 03-813 Warszawa
+            - paragraph [ref=e343]: 505 805 425
+            - paragraph [ref=e344]: "NIP: 9372492352"
+            - paragraph [ref=e345]: "REGON: 360096277"
+            - paragraph [ref=e346]:
+              - link "regulamin sprzedaży" [ref=e347] [cursor=pointer]:
+                - /url: /regulamin
+            - paragraph [ref=e348]:
+              - link "politykę prywatności" [ref=e349] [cursor=pointer]:
+                - /url: /polityka-prywatnosci
+    - switch "Wyłącz animacje" [checked] [ref=e351] [cursor=pointer]:
+      - generic [ref=e352]: Animacje
+      - img [ref=e353]:
+        - generic [ref=e357]:
+          - generic [ref=e358]: z
+          - generic [ref=e359]: z
+  - button "Open Next.js Dev Tools" [ref=e373] [cursor=pointer]:
+    - img [ref=e374]
+  - alert [ref=e377]

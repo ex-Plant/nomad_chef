@@ -57,8 +57,6 @@ export function Hero({ data, videoRef, isReady }: HeroPropsT) {
     video.load();
   }, [videoSrc, videoRef]);
 
-  useScrollLock(!isReady);
-
   useGSAP(
     () => {
       if (reducedMotion) return;

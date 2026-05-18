@@ -59,12 +59,8 @@ export function Gallery({ data }: GalleryPropsT) {
         {/* Mobile-only CTA: tile taps are disabled on mobile (too easy to misfire while scrolling),
             so users open the gallery explicitly from here. */}
         <FadeUp className="mt-10 flex justify-center md:hidden">
-          <Button
-            variant="coral"
-            size="compact"
-            onClick={() => setOpenIndex(0)}
-          >
-            Zobacz galerię
+          <Button variant="pink" size="compact" onClick={() => setOpenIndex(0)}>
+            Otwórz galerię
           </Button>
         </FadeUp>
 
@@ -211,11 +207,7 @@ function GalleryTile({
   );
 
   return (
-    <FadeUp
-      className="group"
-      amount={0.1}
-      delay={(index % 8) * 0.1}
-    >
+    <FadeUp className="group" amount={0.1} delay={(index % 8) * 0.1}>
       {interactive ? (
         <button
           type="button"
