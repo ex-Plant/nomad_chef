@@ -4,6 +4,7 @@ Everything needed to run, test, and go live with P24 payments — including the
 gotchas we hit so nobody has to guess again.
 
 > **TL;DR of the pain we already paid for:**
+>
 > 1. The REST API password is the **`Klucz do raportów`** (reports key) — _not_
 >    `Klucz do zamówień`, _not_ the CRC key. P24's naming is misleading.
 > 2. A `401 "Incorrect authentication"` is almost always the **IP whitelist**,
@@ -50,14 +51,14 @@ completes. The download email is the fallback if the poll cap is hit.
 
 ### Files
 
-| File | Role |
-| --- | --- |
-| `src/lib/payments/p24.ts` | REST client: `registerTransaction`, `verifyTransaction`, `isValidNotificationSign`, `plnToGrosze`. Config read + validated lazily (never at boot). |
-| `src/lib/orders/create-order.ts` | Registers the transaction, returns `redirectUrl`. |
-| `src/components/sections/cart/cart-form.tsx` | `window.location.href = redirectUrl` on success. |
-| `src/app/api/p24/webhook/route.ts` | `urlStatus` handler: sign-check → amount guard → idempotency → verify → flip to paid. |
-| `src/collections/orders/hooks/digital-fulfillment.ts` | Existing hook. Fires on `pending→paid`, issues token + download email. **Untouched by P24.** |
-| `src/app/api/dev/mark-paid/route.ts` | Dev-only simulator (gated by `NODE_ENV`/`VERCEL_ENV`) to flip orders paid without P24. |
+| File                                                  | Role                                                                                                                                               |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/lib/payments/p24.ts`                             | REST client: `registerTransaction`, `verifyTransaction`, `isValidNotificationSign`, `plnToGrosze`. Config read + validated lazily (never at boot). |
+| `src/lib/orders/create-order.ts`                      | Registers the transaction, returns `redirectUrl`.                                                                                                  |
+| `src/components/sections/cart/cart-form.tsx`          | `window.location.href = redirectUrl` on success.                                                                                                   |
+| `src/app/api/p24/webhook/route.ts`                    | `urlStatus` handler: sign-check → amount guard → idempotency → verify → flip to paid.                                                              |
+| `src/collections/orders/hooks/digital-fulfillment.ts` | Existing hook. Fires on `pending→paid`, issues token + download email. **Untouched by P24.**                                                       |
+| `src/app/api/dev/mark-paid/route.ts`                  | Dev-only simulator (gated by `NODE_ENV`/`VERCEL_ENV`) to flip orders paid without P24.                                                             |
 
 ---
 
@@ -68,10 +69,10 @@ Source: <https://developers.przelewy24.pl> · spec YAML:
 
 **Hosts**
 
-| Env | Base URL |
-| --- | --- |
-| Sandbox | `https://sandbox.przelewy24.pl` |
-| Production | `https://secure.przelewy24.pl` |
+| Env        | Base URL                        |
+| ---------- | ------------------------------- |
+| Sandbox    | `https://sandbox.przelewy24.pl` |
+| Production | `https://secure.przelewy24.pl`  |
 
 REST base path is `/api/v1`. Buyer redirect is `{host}/trnRequest/{token}`.
 
@@ -83,12 +84,12 @@ REST base path is `/api/v1`. Buyer redirect is `{host}/trnRequest/{token}`.
 Node's `JSON.stringify` already emits unescaped slashes/unicode, matching P24's
 `JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES` requirement.
 
-| Action | Method / Path | `sign` fields (in order) |
-| --- | --- | --- |
-| Test credentials | `GET /api/v1/testAccess` | _(none — Basic auth only)_ |
-| Register | `POST /api/v1/transaction/register` | `sessionId, merchantId, amount, currency, crc` |
-| Verify | `PUT /api/v1/transaction/verify` | `sessionId, orderId, amount, currency, crc` |
-| Notification (incoming) | P24 `POST`s to your `urlStatus` | `merchantId, posId, sessionId, amount, originAmount, currency, orderId, methodId, statement, crc` |
+| Action                  | Method / Path                       | `sign` fields (in order)                                                                          |
+| ----------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Test credentials        | `GET /api/v1/testAccess`            | _(none — Basic auth only)_                                                                        |
+| Register                | `POST /api/v1/transaction/register` | `sessionId, merchantId, amount, currency, crc`                                                    |
+| Verify                  | `PUT /api/v1/transaction/verify`    | `sessionId, orderId, amount, currency, crc`                                                       |
+| Notification (incoming) | P24 `POST`s to your `urlStatus`     | `merchantId, posId, sessionId, amount, originAmount, currency, orderId, methodId, statement, crc` |
 
 `sessionId` = our `orderNumber` (so the webhook can match the notification back
 to the order). `register` returns `{ data: { token } }`.
@@ -110,13 +111,13 @@ to the order). `register` returns `{ data: { token } }`.
 P24's panel exposes three keys plus an account ID. The mapping is **not** what
 the names suggest — copy this exactly:
 
-| Env var | Paste this from the panel | Panel label you actually see | Used for |
-| --- | --- | --- | --- |
-| `P24_MERCHANT_ID` | the account number | **`Dane konta`** (e.g. `397149`) | Basic-auth **username**. |
-| `P24_POS_ID` | the **same** account number | **`Dane konta`** (e.g. `397149`) | Same value — single-shop accounts have no separate POS ID. |
-| `P24_CRC` | `Klucz do CRC` | `Klucz do CRC` | Computing the `sign` checksum. **Signing only.** |
-| `P24_API_KEY` | `Klucz do raportów` | `Klucz do raportów` | Basic-auth **password** for the REST API. ⚠️ Counterintuitive but verified correct. |
-| _(unused)_ | — | `Klucz do zamówień` | **Not used** for REST. Legacy transaction API. Ignore it. |
+| Env var           | Paste this from the panel   | Panel label you actually see     | Used for                                                                            |
+| ----------------- | --------------------------- | -------------------------------- | ----------------------------------------------------------------------------------- |
+| `P24_MERCHANT_ID` | the account number          | **`Dane konta`** (e.g. `397149`) | Basic-auth **username**.                                                            |
+| `P24_POS_ID`      | the **same** account number | **`Dane konta`** (e.g. `397149`) | Same value — single-shop accounts have no separate POS ID.                          |
+| `P24_CRC`         | `Klucz do CRC`              | `Klucz do CRC`                   | Computing the `sign` checksum. **Signing only.**                                    |
+| `P24_API_KEY`     | `Klucz do raportów`         | `Klucz do raportów`              | Basic-auth **password** for the REST API. ⚠️ Counterintuitive but verified correct. |
+| _(unused)_        | —                           | `Klucz do zamówień`              | **Not used** for REST. Legacy transaction API. Ignore it.                           |
 
 > ⚠️ There is **no field labelled "ID sprzedawcy"** on this account — P24 shows
 > it as **`Dane konta`**. That number (`397149`) is both the merchant ID and the
@@ -178,8 +179,9 @@ P24_SANDBOX=true            # "true" → sandbox host; anything else → product
 ```
 
 `SITE_URL` (already a required boot var) builds `urlReturn` and `urlStatus`:
-- `urlReturn`  = `${SITE_URL}/checkout/processing`
-- `urlStatus`  = `${SITE_URL}/api/p24/webhook`
+
+- `urlReturn` = `${SITE_URL}/checkout/processing`
+- `urlStatus` = `${SITE_URL}/api/p24/webhook`
 
 The P24 vars are **not** in `src/config/env.ts` on purpose — they're validated
 lazily inside `p24.ts`, so an unset var fails only the payment path, never the
@@ -214,6 +216,7 @@ P24's `POST /api/p24/webhook` arrive and can **replay** it while debugging sign
 validation.
 
 **Gotchas**
+
 - Restart `npm run dev` after _any_ `.env` change.
 - Free ngrok URLs change every restart → re-edit `SITE_URL` and restart.
 - The download email sends via the real SMTP (`mail.chaoskitchen.pl`) — use your
