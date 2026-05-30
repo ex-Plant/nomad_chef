@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/shared/button";
 import { Loader } from "@/components/shared/loader";
@@ -25,6 +25,26 @@ export function ProcessingStatus({
   const [simulateState, setSimulateState] = useState<SimulateStateT>("idle");
   const [simulateError, setSimulateError] = useState<string | null>(null);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+
+  // The buyer is sent here by P24's urlReturn at roughly the same moment as the
+  // urlStatus webhook fires — the browser often wins, so we land on a `pending`
+  // order. Poll by re-running the server component; once the webhook has marked
+  // the order paid and digital fulfillment stamped a token, the page itself
+  // redirects to /download/<token>. Capped so an abandoned/failed payment stops
+  // polling (the download email remains the fallback either way).
+  useEffect(() => {
+    if (paymentStatus !== "pending") return;
+    let polls = 0;
+    const id = setInterval(() => {
+      polls += 1;
+      if (polls > MAX_POLLS) {
+        clearInterval(id);
+        return;
+      }
+      router.refresh();
+    }, POLL_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [paymentStatus, router]);
 
   async function simulatePayment() {
     setSimulateState("loading");
@@ -134,3 +154,6 @@ export function ProcessingStatus({
     </div>
   );
 }
+
+const POLL_INTERVAL_MS = 3000;
+const MAX_POLLS = 40; // ~2 min, then stop; the download email is the fallback
