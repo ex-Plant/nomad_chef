@@ -77,6 +77,8 @@ export function CartForm({
         // resetFormData();
         // form.reset();
         onSuccess(result.orderNumber, value.email);
+        // Hand off to the Przelewy24 paywall (external domain → full nav).
+        window.location.href = result.redirectUrl;
       }
       return result;
     },
