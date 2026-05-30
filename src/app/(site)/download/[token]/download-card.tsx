@@ -92,8 +92,7 @@ export function DownloadCard({
         <Heading>Twoje zamówienie jest gotowe do realizacji</Heading>
         {expiresLabel && (
           <Paragraph>
-            Link będzie aktywny przez 24 godziny do{" "}
-            <strong>{expiresLabel}</strong>.
+            Link będzie aktywny do <strong>{expiresLabel}</strong>.
           </Paragraph>
         )}
         <a
