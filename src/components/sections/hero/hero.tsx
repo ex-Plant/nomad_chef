@@ -16,7 +16,7 @@ import NextImage from "next/image";
 import { Loader } from "@/components/shared/loader";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { useScrollLock } from "../../../hooks/use-scroll-lock";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 const POSTER_DESKTOP_SRC = "/videos/hero_poster_desktop.jpeg";
 const POSTER_MOBILE_SRC = "/videos/hero_poster_mobile.jpeg";
