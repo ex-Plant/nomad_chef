@@ -69,3 +69,6 @@ next-env.d.ts
 # agent scratch
 .agents/
 .claude/
+
+# playwright (MCP) snapshots / console logs
+.playwright-mcp/
