@@ -167,8 +167,8 @@ function TestNotice() {
         <strong className="font-semibold tracking-wide uppercase">
           Wersja testowa.
         </strong>{" "}
-        Strona jest w budowie — ebook nie jest jeszcze gotowy. Jeśli trafiłaś
-        tu przypadkiem, wróć później.
+        Strona jest w budowie — ebook nie jest jeszcze gotowy. Jeśli trafiłaś tu
+        przypadkiem, wróć później.
       </p>
     </div>
   );

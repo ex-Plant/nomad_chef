@@ -1,1 +1,7 @@
 npm run typecheck
+
+# Background watcher: tails the Vercel deployment that this push triggers and
+# prints its state transitions (… BUILDING → READY / ERROR) to this terminal.
+# Detached subshell so `git push` returns immediately when the hook exits.
+# Set SKIP_WATCH_DEPLOY=1 to bypass (CI machines, offline pushes, etc.).
+[ -z "${SKIP_WATCH_DEPLOY:-}" ] && ( bash scripts/watch-deploy.sh & )
