@@ -11,7 +11,7 @@ import type {
 export { generateDownloadToken };
 
 export const TOKEN_REGEX = /^[0-9a-f]{48}$/;
-export const DOWNLOAD_TTL_HOURS = 24;
+export const DOWNLOAD_TTL_HOURS = 72;
 export const DOWNLOAD_TTL_MS = DOWNLOAD_TTL_HOURS * 60 * 60 * 1000;
 
 export type DownloadStatusT = "ready" | "expired" | "not_paid" | "not_found";

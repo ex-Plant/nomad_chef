@@ -95,7 +95,7 @@ export function RegenerateDownloadButtons() {
     >
       <strong>Regeneracja linku do pobrania</strong>
       <p style={{ margin: 0, fontSize: "0.85rem", opacity: 0.7 }}>
-        Tworzy nowy token i ustawia 24-godzinną ważność. Stary link przestaje
+        Tworzy nowy token i ustawia 72-godzinną ważność. Stary link przestaje
         działać. Po kliknięciu otworzy się Twój klient e-mail z gotową
         wiadomością do wysłania klientowi.
       </p>
