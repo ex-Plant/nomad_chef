@@ -45,20 +45,50 @@ not settled to us until `transaction/verify` succeeds.
 
 **The return race:** P24's `urlReturn` (browser) and `urlStatus` (webhook) fire
 near-simultaneously and the browser often wins, landing on a still-`pending`
-page. `processing-status.tsx` polls via `router.refresh()` (3s interval, ~2 min
-cap) so the page resolves to the download view on its own once the webhook
-completes. The download email is the fallback if the poll cap is hit.
+page. `processing-status.tsx` polls via `router.refresh()` (3s interval, ~3.5 min
+cap) so the page resolves to the download view on its own once the order settles.
+The download email is the fallback if the poll cap is hit.
+
+**Failure detection (the PULL path):** P24 does **not** call `urlStatus` for a
+failed, cancelled, or abandoned payment — and `urlReturn` fires for _every_
+outcome with no status in the query string. So a failed payment lands on
+`/checkout/processing` looking identical to a slow success. To tell them apart,
+after a short grace window the page calls the `checkPaymentOutcome` server
+action, which PULLs `transaction/by/sessionId` for the authoritative status
+(see §2) and:
+
+- status `2` (paid) → settles it (amount guard → `verify` → flip to paid),
+  mirroring the webhook so the in-browser flow no longer depends on webhook
+  delivery;
+- status `0` (no payment) → **ambiguous, not treated as failure on its own.** A
+  declined/cancelled card and a traditional bank transfer ("przelew tradycyjny")
+  that simply hasn't landed yet both read `0`, and the status API can't separate
+  them. The order is only marked `failed` once the **payable window has elapsed**
+  (`P24_PAYABLE_WINDOW_HOURS`, default 72h, measured from `order.createdAt`) —
+  the point past which a deferred transfer can no longer arrive. Before that it
+  stays `pending`. So a real card failure does **not** flip to `failed` within
+  the in-browser poll window; the buyer hits the timeout/help state instead, and
+  the order is reconciled to `failed` later (or to `paid` if a transfer lands).
+
+`P24_PAYABLE_WINDOW_HOURS` **must be ≥ the real P24 transaction validity**, which
+is governed by the `timeLimit` passed on register (default = the account's panel
+setting). Confirm/set that so the window can't conclude "failed" while a
+transaction is still payable.
+
+Marking `failed` is **recoverable**: a later success notification still finds the
+order not-`paid`, verifies, and flips it `failed → paid` (fulfilment runs then).
 
 ### Files
 
-| File                                                  | Role                                                                                                                                               |
-| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/lib/payments/p24.ts`                             | REST client: `registerTransaction`, `verifyTransaction`, `isValidNotificationSign`, `plnToGrosze`. Config read + validated lazily (never at boot). |
-| `src/lib/orders/create-order.ts`                      | Registers the transaction, returns `redirectUrl`.                                                                                                  |
-| `src/components/sections/cart/cart-form.tsx`          | `window.location.href = redirectUrl` on success.                                                                                                   |
-| `src/app/api/p24/webhook/route.ts`                    | `urlStatus` handler: sign-check → amount guard → idempotency → verify → flip to paid.                                                              |
-| `src/collections/orders/hooks/digital-fulfillment.ts` | Existing hook. Fires on `pending→paid`, issues token + download email. **Untouched by P24.**                                                       |
-| `src/app/api/dev/mark-paid/route.ts`                  | Dev-only simulator (gated by `NODE_ENV`/`VERCEL_ENV`) to flip orders paid without P24.                                                             |
+| File                                                  | Role                                                                                                                                                  |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/lib/payments/p24.ts`                             | REST client: `registerTransaction`, `verifyTransaction`, `isValidNotificationSign`, `plnToGrosze`. Config read + validated lazily (never at boot).    |
+| `src/lib/orders/create-order.ts`                      | Registers the transaction, returns `redirectUrl`.                                                                                                     |
+| `src/lib/orders/check-payment-outcome.ts`             | Server action: PULLs `transaction/by/sessionId` to settle a paid order or mark a failed one. Called by the processing page (see "Failure detection"). |
+| `src/components/sections/cart/cart-form.tsx`          | `window.location.href = redirectUrl` on success.                                                                                                      |
+| `src/app/api/p24/webhook/route.ts`                    | `urlStatus` handler: sign-check → amount guard → idempotency → verify → flip to paid.                                                                 |
+| `src/collections/orders/hooks/digital-fulfillment.ts` | Existing hook. Fires on `pending→paid`, issues token + download email. **Untouched by P24.**                                                          |
+| `src/app/api/dev/mark-paid/route.ts`                  | Dev-only simulator (gated by `NODE_ENV`/`VERCEL_ENV`) to flip orders paid without P24.                                                                |
 
 ---
 
@@ -84,12 +114,25 @@ REST base path is `/api/v1`. Buyer redirect is `{host}/trnRequest/{token}`.
 Node's `JSON.stringify` already emits unescaped slashes/unicode, matching P24's
 `JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES` requirement.
 
-| Action                  | Method / Path                       | `sign` fields (in order)                                                                          |
-| ----------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------- |
-| Test credentials        | `GET /api/v1/testAccess`            | _(none — Basic auth only)_                                                                        |
-| Register                | `POST /api/v1/transaction/register` | `sessionId, merchantId, amount, currency, crc`                                                    |
-| Verify                  | `PUT /api/v1/transaction/verify`    | `sessionId, orderId, amount, currency, crc`                                                       |
-| Notification (incoming) | P24 `POST`s to your `urlStatus`     | `merchantId, posId, sessionId, amount, originAmount, currency, orderId, methodId, statement, crc` |
+| Action                  | Method / Path                                      | `sign` fields (in order)                                                                          |
+| ----------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Test credentials        | `GET /api/v1/testAccess`                           | _(none — Basic auth only)_                                                                        |
+| Register                | `POST /api/v1/transaction/register`                | `sessionId, merchantId, amount, currency, crc`                                                    |
+| Verify                  | `PUT /api/v1/transaction/verify`                   | `sessionId, orderId, amount, currency, crc`                                                       |
+| Status (PULL)           | `GET /api/v1/transaction/by/sessionId/{sessionId}` | _(none — Basic auth only)_                                                                        |
+| Notification (incoming) | P24 `POST`s to your `urlStatus`                    | `merchantId, posId, sessionId, amount, originAmount, currency, orderId, methodId, statement, crc` |
+
+**Status (PULL) response** — `data.status` is an integer; this is how we read a
+non-success outcome that the webhook never reports:
+
+| `status` | Meaning                                                                        |
+| -------- | ------------------------------------------------------------------------------ |
+| `0`      | No payment — **ambiguous**: failed/cancelled card _or_ transfer not yet landed |
+| `1`      | Advance (partial) payment                                                      |
+| `2`      | Paid in full                                                                   |
+| `3`      | Refunded                                                                       |
+
+A `404`/non-200 means P24 has no transaction for that `sessionId` yet.
 
 `sessionId` = our `orderNumber` (so the webhook can match the notification back
 to the order). `register` returns `{ data: { token } }`.
@@ -97,7 +140,8 @@ to the order). `register` returns `{ data: { token } }`.
 ### Webhook behaviour (important)
 
 - P24 sends the notification **only for successful payments**. No notification
-  for failed/abandoned ones — those orders just stay `pending`.
+  for failed/abandoned ones — the processing page PULLs `by/sessionId` to detect
+  those (see "Failure detection" in §1).
 - P24 **retries** the notification at **3, 5, 15, 30, 60, 150, 450 min** until
   our endpoint verifies the transaction. So the handler must:
   - return **non-2xx on any failure** (so P24 retries),

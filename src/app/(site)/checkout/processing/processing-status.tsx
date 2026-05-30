@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/shared/button";
 import { Loader } from "@/components/shared/loader";
 import { HelpDialog } from "@/components/sections/contact/help-dialog";
+import { checkPaymentOutcome } from "@/lib/orders/check-payment-outcome";
 
 type PaymentStatusT = "pending" | "paid" | "failed" | "refunded";
 
@@ -25,25 +26,46 @@ export function ProcessingStatus({
 
   // The buyer is sent here by P24's urlReturn at roughly the same moment as the
   // urlStatus webhook fires — the browser often wins, so we land on a `pending`
-  // order. Poll by re-running the server component; once the webhook has marked
-  // the order paid and digital fulfillment stamped a token, the page itself
-  // redirects to /download/<token>. The window covers P24's first webhook retry
-  // (+3 min) so a single failed delivery still resolves in-browser; past that we
-  // stop auto-polling and switch to a terminal state (the download email is the
-  // fallback, and the buyer can re-check manually).
+  // order. Poll by re-running the server component; once the order is paid and
+  // digital fulfillment stamped a token, the page itself redirects to
+  // /download/<token>.
+  //
+  // The first GRACE_POLLS only chase that success race (the webhook flipping the
+  // order to paid). After the grace window we additionally PULL P24 for the
+  // authoritative outcome via checkPaymentOutcome — P24 never webhooks a failed
+  // or cancelled payment, so this is what surfaces a failure in seconds instead
+  // of spinning all the way to the timeout. Past MAX_POLLS we stop and switch to
+  // the manual/help state (download email is the fallback).
   useEffect(() => {
     if (paymentStatus !== "pending") return;
     let polls = 0;
-    const id = setInterval(() => {
+    let cancelled = false;
+
+    const id = setInterval(async () => {
       polls += 1;
       if (polls > MAX_POLLS) {
         clearInterval(id);
         setHasTimedOut(true);
         return;
       }
+
+      if (polls > GRACE_POLLS) {
+        const outcome = await checkPaymentOutcome().catch(() => "pending");
+        if (cancelled) return;
+        if (outcome === "paid" || outcome === "failed") {
+          clearInterval(id);
+          router.refresh();
+          return;
+        }
+      }
+
       router.refresh();
     }, POLL_INTERVAL_MS);
-    return () => clearInterval(id);
+
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
   }, [paymentStatus, router]);
 
   const isPaymentProblem =
@@ -133,6 +155,9 @@ function resolveHeading(status: PaymentStatusT, isStalled: boolean): string {
 }
 
 const POLL_INTERVAL_MS = 3000;
+// First 2 polls (~6s) only wait on the webhook-driven success race before we
+// start PULLing P24 — avoids flashing a failed state during a normal fast settle.
+const GRACE_POLLS = 2;
 // 70 × 3s ≈ 3.5 min — covers P24's first webhook retry (+3 min), then stop;
 // the download email is the fallback and the buyer can re-check manually.
 const MAX_POLLS = 70;

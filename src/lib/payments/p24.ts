@@ -56,6 +56,33 @@ type VerifyTransactionInputT = {
   currency?: string;
 };
 
+// Transaction statuses P24 returns from GET /transaction/by/sessionId. P24 only
+// PUSHes the urlStatus webhook for a SUCCESSFUL payment, so this PULL is the only
+// way to learn that a payment failed, was cancelled, or was abandoned.
+export const P24_TRANSACTION_STATUS = {
+  noPayment: 0, // no payment recorded YET — ambiguous: failed/cancelled card OR
+  // a traditional transfer not yet landed. NOT safe to treat as terminal.
+  advance: 1, // partial / advance payment
+  paid: 2, // paid in full
+  returned: 3, // refunded
+} as const;
+
+// How long a P24 transaction can still be paid. Card/BLIK is instant, but a
+// traditional bank transfer ("przelew tradycyjny") can land hours/days later —
+// during that window status stays `noPayment (0)` without being a failure. We
+// only conclude failure once this window has elapsed. MUST be >= the real P24
+// transaction validity (governed by `timeLimit` on register, default = the
+// account's panel setting — confirm/set it). 72h per the deferred-transfer norm.
+export const P24_PAYABLE_WINDOW_HOURS = 72;
+export const P24_PAYABLE_WINDOW_MS = P24_PAYABLE_WINDOW_HOURS * 60 * 60 * 1000;
+
+export type P24TransactionT = {
+  sessionId: string;
+  orderId: number;
+  amount: number;
+  status: number;
+};
+
 // Fields P24 POSTs to the urlStatus webhook for a successful payment.
 export type P24NotificationT = {
   merchantId: number;
@@ -208,6 +235,47 @@ export async function verifyTransaction(
   });
 
   return response.ok;
+}
+
+// PULLs the authoritative transaction state from P24 by our sessionId
+// (= orderNumber). Because P24 never webhooks a failed/cancelled payment, the
+// order otherwise sits silently `pending`; this is how we learn the real
+// outcome. Returns null when P24 has no transaction for the sessionId yet (404)
+// — e.g. the buyer bounced before paying.
+export async function findTransactionBySessionId(
+  sessionId: string,
+): Promise<P24TransactionT | null> {
+  const config = getP24Config();
+
+  const response = await fetch(
+    `${config.host}/api/v1/transaction/by/sessionId/${encodeURIComponent(sessionId)}`,
+    { headers: { Authorization: authHeader(config) } },
+  );
+  if (!response.ok) return null;
+
+  const json = (await response.json().catch(() => null)) as {
+    data?: {
+      sessionId?: string;
+      orderId?: number;
+      amount?: number;
+      status?: number;
+    };
+  } | null;
+  const data = json?.data;
+  if (
+    !data ||
+    typeof data.status !== "number" ||
+    typeof data.orderId !== "number"
+  ) {
+    return null;
+  }
+
+  return {
+    sessionId: data.sessionId ?? sessionId,
+    orderId: data.orderId,
+    amount: typeof data.amount === "number" ? data.amount : 0,
+    status: data.status,
+  };
 }
 
 // Recomputes the notification checksum and timing-safe compares it to the
