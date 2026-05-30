@@ -14,24 +14,23 @@ type ProcessingStatusPropsT = {
   paymentStatus: PaymentStatusT;
 };
 
-type SimulateStateT = "idle" | "loading" | "error";
-
 export function ProcessingStatus({
   orderNumber,
   customerEmail,
   paymentStatus,
 }: ProcessingStatusPropsT) {
   const router = useRouter();
-  const [simulateState, setSimulateState] = useState<SimulateStateT>("idle");
-  const [simulateError, setSimulateError] = useState<string | null>(null);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [hasTimedOut, setHasTimedOut] = useState(false);
 
   // The buyer is sent here by P24's urlReturn at roughly the same moment as the
   // urlStatus webhook fires — the browser often wins, so we land on a `pending`
   // order. Poll by re-running the server component; once the webhook has marked
   // the order paid and digital fulfillment stamped a token, the page itself
-  // redirects to /download/<token>. Capped so an abandoned/failed payment stops
-  // polling (the download email remains the fallback either way).
+  // redirects to /download/<token>. The window covers P24's first webhook retry
+  // (+3 min) so a single failed delivery still resolves in-browser; past that we
+  // stop auto-polling and switch to a terminal state (the download email is the
+  // fallback, and the buyer can re-check manually).
   useEffect(() => {
     if (paymentStatus !== "pending") return;
     let polls = 0;
@@ -39,6 +38,7 @@ export function ProcessingStatus({
       polls += 1;
       if (polls > MAX_POLLS) {
         clearInterval(id);
+        setHasTimedOut(true);
         return;
       }
       router.refresh();
@@ -46,31 +46,11 @@ export function ProcessingStatus({
     return () => clearInterval(id);
   }, [paymentStatus, router]);
 
-  async function simulatePayment() {
-    setSimulateState("loading");
-    setSimulateError(null);
-    try {
-      const res = await fetch("/api/dev/mark-paid", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderNumber }),
-      });
-      if (!res.ok) {
-        const data = (await res.json().catch(() => ({}))) as { error?: string };
-        setSimulateError(data.error ?? "Nie udało się oznaczyć jako opłacone.");
-        setSimulateState("error");
-        return;
-      }
-      setSimulateState("idle");
-      router.refresh();
-    } catch {
-      setSimulateError("Błąd sieci.");
-      setSimulateState("error");
-    }
-  }
-
   const isPaymentProblem =
     paymentStatus === "failed" || paymentStatus === "refunded";
+  // Still pending after the poll window: webhook hasn't settled in-browser.
+  const isStalled = paymentStatus === "pending" && hasTimedOut;
+  const showHelp = isPaymentProblem || isStalled;
 
   const helpContext = {
     surface: "checkout" as const,
@@ -90,20 +70,21 @@ export function ProcessingStatus({
         </p>
       </div>
 
-      <Loader color="yellow" className="bg-transparent" />
+      {!isStalled && <Loader color="yellow" className="bg-transparent" />}
 
       <div className="flex flex-col gap-3">
         <h1 className="font-display text-3xl tracking-tight uppercase md:text-4xl">
-          {paymentStatus === "paid"
-            ? "Płatność zaksięgowana"
-            : "Zamówienie utworzone"}
+          {resolveHeading(paymentStatus, isStalled)}
         </h1>
         <p
           role="status"
           aria-live="polite"
           className="font-sans text-base leading-relaxed text-white/85"
         >
-          {paymentStatus === "pending" && "Czekamy na potwierdzenie płatności."}
+          {paymentStatus === "pending" &&
+            (isStalled
+              ? "Potwierdzenie płatności trwa dłużej niż zwykle. Link do pobrania wyślemy na Twój adres e-mail, gdy tylko płatność zostanie zaksięgowana. Możesz też sprawdzić ponownie teraz."
+              : "Czekamy na potwierdzenie płatności.")}
           {paymentStatus === "paid" && "Zamówienie zostało opłacone."}
           {paymentStatus === "failed" && "Płatność nie powiodła się."}
           {paymentStatus === "refunded" && "Zamówienie zwrócone."}
@@ -113,7 +94,18 @@ export function ProcessingStatus({
         </p>
       </div>
 
-      {isPaymentProblem && (
+      {isStalled && (
+        <Button
+          type="button"
+          variant="blue-solid"
+          size="compact"
+          onClick={() => router.refresh()}
+        >
+          Sprawdź ponownie
+        </Button>
+      )}
+
+      {showHelp && (
         <Button
           type="button"
           variant="blue-solid"
@@ -122,27 +114,6 @@ export function ProcessingStatus({
         >
           Mam problem z płatnością
         </Button>
-      )}
-
-      {paymentStatus === "pending" && (
-        <div className="flex w-full flex-col items-center gap-3 border-t border-white/25 pt-6">
-          <span className="font-sans text-xs tracking-wide text-white/70 uppercase">
-            Testy
-          </span>
-          <Button
-            type="button"
-            variant="blue-solid"
-            size="compact"
-            onClick={simulatePayment}
-            disabled={simulateState === "loading"}
-            aria-busy={simulateState === "loading"}
-          >
-            {simulateState === "loading" ? "Oznaczam…" : "Symuluj płatność"}
-          </Button>
-          {simulateError && (
-            <p className="text-yellow font-sans text-sm">{simulateError}</p>
-          )}
-        </div>
       )}
 
       <HelpDialog
@@ -155,5 +126,13 @@ export function ProcessingStatus({
   );
 }
 
+function resolveHeading(status: PaymentStatusT, isStalled: boolean): string {
+  if (status === "paid") return "Płatność zaksięgowana";
+  if (isStalled) return "Potwierdzamy płatność";
+  return "Zamówienie utworzone";
+}
+
 const POLL_INTERVAL_MS = 3000;
-const MAX_POLLS = 40; // ~2 min, then stop; the download email is the fallback
+// 70 × 3s ≈ 3.5 min — covers P24's first webhook retry (+3 min), then stop;
+// the download email is the fallback and the buyer can re-check manually.
+const MAX_POLLS = 70;
