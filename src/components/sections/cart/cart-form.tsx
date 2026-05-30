@@ -15,6 +15,7 @@ import {
 import { createOrder } from "@/lib/orders/create-order";
 import { tracksInventory } from "@/lib/inventory-policy";
 import { Button } from "@/components/shared/button";
+import { Loader } from "@/components/shared/loader";
 import { LegalLink } from "@/components/shared/legal-link";
 import {
   FormCheckbox,
@@ -165,6 +166,9 @@ export function CartForm({
       >
         {({ canSubmit, isSubmitting, hasFieldErrors, attempted }) => (
           <div className="flex flex-col gap-3">
+            {isSubmitting && (
+              <Loader className="fixed inset-0 z-50 bg-transparent" />
+            )}
             {allowsQuantity && (
               <form.Field name="quantity">
                 {(field: AnyFieldApi) => (
