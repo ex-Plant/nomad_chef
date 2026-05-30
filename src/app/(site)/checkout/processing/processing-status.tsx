@@ -23,6 +23,17 @@ export function ProcessingStatus({
   const router = useRouter();
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [hasTimedOut, setHasTimedOut] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
+
+  // Manual re-check: PULL P24 for the authoritative outcome (the poll loop has
+  // already stopped at this point), then refresh so the server component
+  // reflects any settled state. Mirrors what the loop did past GRACE_POLLS.
+  async function handleManualCheck() {
+    setIsChecking(true);
+    await checkPaymentOutcome().catch(() => undefined);
+    setIsChecking(false);
+    router.refresh();
+  }
 
   // The buyer is sent here by P24's urlReturn at roughly the same moment as the
   // urlStatus webhook fires — the browser often wins, so we land on a `pending`
@@ -103,10 +114,7 @@ export function ProcessingStatus({
           aria-live="polite"
           className="font-sans text-base leading-relaxed text-white/85"
         >
-          {paymentStatus === "pending" &&
-            (isStalled
-              ? "Potwierdzenie płatności trwa dłużej niż zwykle. Link do pobrania wyślemy na Twój adres e-mail, gdy tylko płatność zostanie zaksięgowana. Możesz też sprawdzić ponownie teraz."
-              : "Czekamy na potwierdzenie płatności.")}
+          {paymentStatus === "pending" && "Czekamy na potwierdzenie płatności."}
           {paymentStatus === "paid" && "Zamówienie zostało opłacone."}
           {paymentStatus === "failed" && "Płatność nie powiodła się."}
           {paymentStatus === "refunded" && "Zamówienie zwrócone."}
@@ -121,9 +129,10 @@ export function ProcessingStatus({
           type="button"
           variant="blue-solid"
           size="compact"
-          onClick={() => router.refresh()}
+          disabled={isChecking}
+          onClick={handleManualCheck}
         >
-          Sprawdź ponownie
+          {isChecking ? "Sprawdzanie…" : "Sprawdź ponownie"}
         </Button>
       )}
 

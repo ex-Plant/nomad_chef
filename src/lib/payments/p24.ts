@@ -67,14 +67,18 @@ export const P24_TRANSACTION_STATUS = {
   returned: 3, // refunded
 } as const;
 
-// How long a P24 transaction can still be paid. Card/BLIK is instant, but a
-// traditional bank transfer ("przelew tradycyjny") can land hours/days later —
-// during that window status stays `noPayment (0)` without being a failure. We
-// only conclude failure once this window has elapsed. MUST be >= the real P24
-// transaction validity (governed by `timeLimit` on register, default = the
-// account's panel setting — confirm/set it). 72h per the deferred-transfer norm.
-export const P24_PAYABLE_WINDOW_HOURS = 72;
-export const P24_PAYABLE_WINDOW_MS = P24_PAYABLE_WINDOW_HOURS * 60 * 60 * 1000;
+// How long a P24 transaction can still be paid before a `noPayment (0)` status
+// is concluded a failure. All session-based methods (card, BLIK, pay-by-link
+// bank transfer, wallet) settle within minutes; 30 min covers the slowest legit
+// completion (a buyer dawdling in their bank login) with margin, and is
+// recoverable anyway — a late success webhook still flips `failed → paid` + fulfils.
+//
+// TODO: disable the *deferred* methods in the P24 production panel — `Przekaz
+// tradycyjny` (178), and ideally `mBank - Raty` (136, financing). They can land
+// hours/days later, so 30 min would false-fail them. This 30-min window ASSUMES
+// they are off; revisit if either is re-enabled.
+export const P24_PAYABLE_WINDOW_MINUTES = 30;
+export const P24_PAYABLE_WINDOW_MS = P24_PAYABLE_WINDOW_MINUTES * 60 * 1000;
 
 export type P24TransactionT = {
   sessionId: string;
