@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { cartFormSchema, defaultCartValues } from "./cart-schema";
+import { cartFormSchema, defaultCartValues } from "@/lib/cart/cart-schema";
 
 const valid = {
   format: "digital" as const,

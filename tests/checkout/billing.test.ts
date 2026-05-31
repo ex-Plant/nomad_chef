@@ -1,6 +1,11 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { calcVat, generateDownloadToken, formatOrderNumber, roundMoney } from "./billing";
+import {
+  calcVat,
+  generateDownloadToken,
+  formatOrderNumber,
+  roundMoney,
+} from "@/lib/checkout/billing";
 
 describe("calcVat", () => {
   it("splits 49.99 PLN at 23% into net 40.64 + vat 9.35", () => {

@@ -1,7 +1,11 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { buildAddressesToAdd, mergeAddresses, type AddressT } from "./cart-merge";
-import { defaultCartValues } from "./cart-schema";
+import {
+  buildAddressesToAdd,
+  mergeAddresses,
+  type AddressT,
+} from "@/lib/cart/cart-merge";
+import { defaultCartValues } from "@/lib/cart/cart-schema";
 
 const baseShipping: AddressT = {
   line1: "ul. Klonowa 5",
@@ -85,7 +89,10 @@ describe("mergeAddresses", () => {
   });
 
   it("starts from an empty list", () => {
-    const { merged, changed } = mergeAddresses([], [baseShipping, otherInvoice]);
+    const { merged, changed } = mergeAddresses(
+      [],
+      [baseShipping, otherInvoice],
+    );
     assert.equal(changed, true);
     assert.equal(merged.length, 2);
   });

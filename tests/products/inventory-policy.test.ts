@@ -4,7 +4,7 @@ import {
   defaultInventoryPolicy,
   resolveInventoryPolicy,
   tracksInventory,
-} from "./inventory-policy";
+} from "@/lib/products/inventory-policy";
 
 describe("defaultInventoryPolicy", () => {
   it("defaults physical products to tracked inventory", () => {
