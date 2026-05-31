@@ -232,7 +232,7 @@ export const p24NotificationSchema = z.object({
   sign: z.string(),
 });
 
-export type P24NotificationT = z.infer<typeof p24NotificationSchema>;
+type P24NotificationT = z.infer<typeof p24NotificationSchema>;
 
 // Recomputes the notification checksum and timing-safe compares it to the
 // `sign` P24 sent. Guards the public webhook against spoofed payloads.

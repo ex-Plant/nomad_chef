@@ -19,16 +19,14 @@ type CreateOrderResultT =
 
 export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
   const parsed = cartFormSchema.safeParse(input);
-  if (!parsed.success) {
-    return { ok: false, error: "Nieprawidłowe dane" };
-  }
+  if (!parsed.success) return { ok: false, error: "Nieprawidłowe dane" };
+
   const values = parsed.data;
 
   const payload = await getPayload({ config });
   const productResult = await findActiveProduct(payload, values);
-  if (!productResult.ok) {
-    return productResult;
-  }
+  if (!productResult.ok) return productResult;
+
   const { product } = productResult;
 
   const persistResult = await persistCustomerAndOrder({
@@ -36,9 +34,8 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
     values,
     product,
   });
-  if (!persistResult.ok) {
-    return persistResult;
-  }
+
+  if (!persistResult.ok) return persistResult;
   const { order } = persistResult;
 
   // Operator notice + buyer interest-thanks don't feed the redirect, so defer

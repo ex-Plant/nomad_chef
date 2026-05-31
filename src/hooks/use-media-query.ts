@@ -12,7 +12,7 @@ export function useMediaQuery(
   {
     defaultValue = false,
     initializeWithValue = true,
-  }: UseMediaQueryOptionsT = {}
+  }: UseMediaQueryOptionsT = {},
 ): boolean {
   function getSnapshot() {
     return window.matchMedia(query).matches;
