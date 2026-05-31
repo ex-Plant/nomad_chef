@@ -1,9 +1,3 @@
-/**
- * LegalPages — static localized text pages (terms, privacy policy), keyed by slug.
- * Publicly readable; writes are admin-only. afterChange/afterDelete revalidate the
- * `legal-page:<slug>` cache tag so the public route reflects edits immediately.
- */
-
 import type { Access, CollectionConfig } from "payload";
 import { revalidateTag } from "next/cache";
 

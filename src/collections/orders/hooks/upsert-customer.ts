@@ -1,9 +1,8 @@
 /**
- * beforeChange (create only): resolves the buyer into a Customer from the virtual
- * `_buyer*` fields the checkout submits, sets data.customer, then strips those
- * temporary fields off the order. Reuses an existing customer matched by email
- * (appending the address if not already on file) or creates a new one. No-op when
- * no _buyerEmail is present.
+ * Checkout submits the buyer inline as virtual `_buyer*` fields, NOT as a customer
+ * relationship. This hook turns them into a real Customer (reusing one matched by
+ * email and deduping addresses), points data.customer at it, then deletes the
+ * `_buyer*` keys so they never reach the orders schema.
  */
 
 import type { CollectionBeforeChangeHook } from "payload";
@@ -21,7 +20,11 @@ type BuyerInputT = {
   };
 };
 
-export const upsertCustomer: CollectionBeforeChangeHook = async ({ data, req, operation }) => {
+export const upsertCustomer: CollectionBeforeChangeHook = async ({
+  data,
+  req,
+  operation,
+}) => {
   if (operation !== "create") return data;
   const buyer = data as BuyerInputT;
   const email = buyer._buyerEmail;
@@ -41,7 +44,9 @@ export const upsertCustomer: CollectionBeforeChangeHook = async ({ data, req, op
     if (buyer._buyerAddress) {
       const current = existing.docs[0];
       const hasAddress = current.addresses?.some(
-        (a) => a.line1 === buyer._buyerAddress!.line1 && a.postalCode === buyer._buyerAddress!.postalCode,
+        (a) =>
+          a.line1 === buyer._buyerAddress!.line1 &&
+          a.postalCode === buyer._buyerAddress!.postalCode,
       );
       if (!hasAddress) {
         await req.payload.update({

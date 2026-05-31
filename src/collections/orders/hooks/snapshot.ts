@@ -1,9 +1,8 @@
 /**
- * beforeChange (create only): freezes pricing onto the order so later product
- * edits never alter a historical sale. Copies unitPriceGross, totalGross,
- * priceNet, vatRate, vatAmount and currency from the product at sale time. For
- * physical orders with no explicit shippingAddress, also copies the customer's
- * first saved address.
+ * The point of this hook is immutability: an order is a historical record, so
+ * price/VAT are copied FROM the product onto the order at create time and never
+ * read live again. Editing a product's price later must not change what a past
+ * customer was charged. (Physical orders also snapshot the shipping address.)
  */
 
 import type { CollectionBeforeChangeHook } from "payload";

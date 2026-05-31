@@ -1,7 +1,7 @@
 /**
- * Users — Payload auth collection for admin-panel logins (auth: true).
- * Roles are admin/editor; only admins may change another user's role, and a
- * beforeDelete guard blocks removing the last remaining user (lockout safety).
+ * Payload auth collection for admin-panel logins. The beforeDelete guard is the
+ * part worth knowing: it refuses to delete the last remaining user, so an admin
+ * can't accidentally lock everyone out of the panel.
  */
 
 import type { CollectionConfig } from "payload";

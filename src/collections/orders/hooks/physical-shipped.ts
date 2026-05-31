@@ -1,11 +1,3 @@
-/**
- * afterChange: on a physical order's first transition to fulfillmentStatus
- * "shipped", stamps shippedAt (if unset) and emails the customer a shipment
- * notification with courier + tracking number. Bails when
- * context.skipFulfillment is set (the self-update guard shared with the other
- * order hooks) or when the product isn't physical.
- */
-
 import type { CollectionAfterChangeHook } from "payload";
 import { sendEmail } from "@/lib/emails/send";
 import { generateShipmentNotificationHtml } from "@/lib/emails/templates/shipment-notification";

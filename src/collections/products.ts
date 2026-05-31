@@ -1,11 +1,8 @@
 /**
- * Products — the catalogue (digital ebooks and physical goods). Publicly
- * readable; writes are admin-only.
- *
- * Auto-managed fields via the hooks defined below: syncInventoryPolicy defaults
- * inventoryPolicy from format (physical→tracked, digital→untracked) when unset,
- * calculateNetPrice derives priceNet from priceGross + vatRate on save, and
- * revalidateProduct busts the cached product page on change/delete.
+ * Two behaviours here aren't visible from the field list: when inventoryPolicy is
+ * left unset it's auto-defaulted from format (physical→tracked, digital→untracked)
+ * by syncInventoryPolicy, and priceNet is always derived from priceGross + vatRate
+ * on save (calculateNetPrice) — it's read-only, never entered by hand.
  */
 
 import type {

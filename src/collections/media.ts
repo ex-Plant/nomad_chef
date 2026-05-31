@@ -1,9 +1,3 @@
-/**
- * Media — general image uploads with public read and localized `alt` text.
- * afterChange revalidates the `site` cache tag because media is referenced from
- * cached site content (e.g. globals), so edits must invalidate those pages.
- */
-
 import type { CollectionConfig } from "payload";
 import { revalidateTag } from "next/cache";
 
