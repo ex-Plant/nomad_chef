@@ -2,8 +2,11 @@
 
 import { useState } from "react";
 import { useForm, type AnyFieldApi } from "@tanstack/react-form";
-import { sendContactEmail, type ContactContextT } from "@/lib/email";
-import { contactFormSchema } from "@/lib/contact-schema";
+import {
+  sendContactEmail,
+  type ContactContextT,
+} from "@/lib/contact/send-contact-email";
+import { contactFormSchema } from "@/lib/contact/contact-schema";
 import { FormTextInput, FormTextarea } from "@/components/forms";
 import { Button } from "@/components/shared/button";
 

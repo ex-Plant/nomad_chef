@@ -1,6 +1,6 @@
 import type { Payload, PayloadRequest } from "payload";
-import { mergeAddresses, type AddressT } from "@/lib/cart-merge";
-import type { CartFormValuesT } from "@/lib/cart-schema";
+import { mergeAddresses, type AddressT } from "@/lib/cart/cart-merge";
+import type { CartFormValuesT } from "@/lib/cart/cart-schema";
 
 type FindOrCreateCustomerArgsT = {
   payload: Payload;

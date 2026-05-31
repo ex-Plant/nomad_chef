@@ -1,13 +1,28 @@
-import type { CollectionBeforeChangeHook } from "payload";
-import { calcVat, roundMoney } from "@/lib/billing";
+/**
+ * beforeChange (create only): freezes pricing onto the order so later product
+ * edits never alter a historical sale. Copies unitPriceGross, totalGross,
+ * priceNet, vatRate, vatAmount and currency from the product at sale time. For
+ * physical orders with no explicit shippingAddress, also copies the customer's
+ * first saved address.
+ */
 
-export const snapshotOrder: CollectionBeforeChangeHook = async ({ data, req, operation }) => {
+import type { CollectionBeforeChangeHook } from "payload";
+import { calcVat, roundMoney } from "@/lib/checkout/billing";
+
+export const snapshotOrder: CollectionBeforeChangeHook = async ({
+  data,
+  req,
+  operation,
+}) => {
   if (operation !== "create") return data;
 
   if (!data.product) throw new Error("Order requires a product");
   const product = await req.payload.findByID({
     collection: "products",
-    id: typeof data.product === "string" || typeof data.product === "number" ? data.product : data.product.id,
+    id:
+      typeof data.product === "string" || typeof data.product === "number"
+        ? data.product
+        : data.product.id,
     depth: 0,
   });
 
@@ -24,10 +39,17 @@ export const snapshotOrder: CollectionBeforeChangeHook = async ({ data, req, ope
   data.vatAmount = vatAmount;
   data.currency = product.currency ?? "PLN";
 
-  if (product.format === "physical" && data.customer && !data.shippingAddress?.line1) {
+  if (
+    product.format === "physical" &&
+    data.customer &&
+    !data.shippingAddress?.line1
+  ) {
     const customer = await req.payload.findByID({
       collection: "customers",
-      id: typeof data.customer === "string" || typeof data.customer === "number" ? data.customer : data.customer.id,
+      id:
+        typeof data.customer === "string" || typeof data.customer === "number"
+          ? data.customer
+          : data.customer.id,
       depth: 0,
     });
     const firstAddress = customer.addresses?.[0];

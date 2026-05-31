@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getLegalPage } from "@/lib/get-legal-page";
+import { getLegalPage } from "@/lib/cms/get-legal-page";
 import { TextPage } from "@/components/templates/text-page";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import { LEGAL_SLUGS } from "@/config/legal";

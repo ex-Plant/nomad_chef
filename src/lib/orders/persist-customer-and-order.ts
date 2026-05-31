@@ -1,7 +1,7 @@
 import type { Payload, PayloadRequest } from "payload";
 import type { Order, Product } from "@/payload-types";
-import { buildAddressesToAdd } from "@/lib/cart-merge";
-import type { CartFormValuesT } from "@/lib/cart-schema";
+import { buildAddressesToAdd } from "@/lib/cart/cart-merge";
+import type { CartFormValuesT } from "@/lib/cart/cart-schema";
 import { findOrCreateCustomer } from "./find-or-create-customer";
 import { buildShippingAddressForOrder } from "./build-shipping-address";
 

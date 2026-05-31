@@ -1,7 +1,18 @@
-import type { CollectionBeforeChangeHook } from "payload";
-import { formatOrderNumber } from "@/lib/billing";
+/**
+ * beforeChange (create only): assigns orderNumber as a per-calendar-year
+ * sequential value — counts this year's existing orders and formats
+ * (year, n+1) via formatOrderNumber. No-op on update or if orderNumber is
+ * already set.
+ */
 
-export const generateOrderNumber: CollectionBeforeChangeHook = async ({ data, req, operation }) => {
+import type { CollectionBeforeChangeHook } from "payload";
+import { formatOrderNumber } from "@/lib/checkout/billing";
+
+export const generateOrderNumber: CollectionBeforeChangeHook = async ({
+  data,
+  req,
+  operation,
+}) => {
   if (operation !== "create") return data;
   if (data.orderNumber) return data;
 

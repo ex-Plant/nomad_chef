@@ -1,3 +1,16 @@
+/**
+ * Orders — the sales record. One order = one product bought by one customer.
+ *
+ * Behaviour is driven by hooks (see ./hooks). On create: upsertCustomer resolves
+ * the buyer, snapshotOrder freezes price/VAT, generateOrderNumber assigns a
+ * per-year sequential number. On the paid transition: digitalFulfillment issues a
+ * download link + emails it (digital products); physicalShipped emails the
+ * customer on the shipped transition. The regenerate-download endpoint (see
+ * ./endpoints) re-issues expired download links on demand.
+ *
+ * Stock management is intentionally absent — see the TODO on the config below.
+ */
+
 import type { Access, CollectionConfig } from "payload";
 import { generateOrderNumber } from "./hooks/generate-order-number";
 import { snapshotOrder } from "./hooks/snapshot";

@@ -5,8 +5,8 @@ import { useForm, type AnyFieldApi } from "@tanstack/react-form";
 import {
   newsletterFormSchema,
   defaultNewsletterValues,
-} from "@/lib/newsletter-schema";
-import { subscribeToNewsletter } from "@/lib/newsletter";
+} from "@/lib/newsletter/newsletter-schema";
+import { subscribeToNewsletter } from "@/lib/newsletter/newsletter";
 import { Button } from "@/components/shared/button";
 import { LegalLink } from "@/components/shared/legal-link";
 import { FormCheckbox, FormError, FormTextInput } from "@/components/forms";

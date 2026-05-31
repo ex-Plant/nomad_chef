@@ -1,4 +1,4 @@
-import type { CartFormValuesT } from "@/lib/cart-schema";
+import type { CartFormValuesT } from "@/lib/cart/cart-schema";
 
 type OrderForEmailT = {
   orderNumber: string;

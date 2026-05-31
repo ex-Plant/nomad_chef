@@ -3,7 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { DebugWrapper } from "@/components/debug-tools/debug-wrapper";
 import { MotionProvider } from "@/components/ui/motion-provider";
 import { ENV } from "@/config/env";
-import { getSite } from "@/lib/get-site";
+import { getSite } from "@/lib/cms/get-site";
 import { fontVariables } from "./fonts";
 import "../globals.css";
 

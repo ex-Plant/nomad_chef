@@ -1,4 +1,4 @@
-import { sendEmail } from "@/lib/email";
+import { sendEmail } from "@/lib/emails/send";
 import { ENV } from "@/config/env";
 import { generateDownloadReadyHtml } from "@/lib/emails/templates/download-ready";
 

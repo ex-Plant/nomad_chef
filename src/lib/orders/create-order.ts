@@ -2,8 +2,8 @@
 
 import { getPayload } from "payload";
 import config from "@payload-config";
-import { cartFormSchema } from "@/lib/cart-schema";
-import { setCheckoutCookie } from "@/lib/checkout-session";
+import { cartFormSchema } from "@/lib/cart/cart-schema";
+import { setCheckoutCookie } from "@/lib/checkout/checkout-session";
 import { findActiveProduct } from "./find-active-product";
 import { persistCustomerAndOrder } from "./persist-customer-and-order";
 import { sendInterestThanks } from "./send-interest-thanks";

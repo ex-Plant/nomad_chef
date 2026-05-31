@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import type { CartFormValuesT } from "@/lib/cart-schema";
+import type { CartFormValuesT } from "@/lib/cart/cart-schema";
 
 type CartFormStoreT = {
   formData: CartFormValuesT | null;

@@ -2,7 +2,7 @@
 
 import { getPayload } from "payload";
 import config from "@payload-config";
-import { newsletterEmailSchema } from "@/lib/newsletter-schema";
+import { newsletterEmailSchema } from "@/lib/newsletter/newsletter-schema";
 
 type SubscribeResultT = { ok: true } | { ok: false; error: string };
 

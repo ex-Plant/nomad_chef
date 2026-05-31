@@ -11,9 +11,9 @@ import {
   cartFormSchema,
   defaultCartValues,
   type CartFormValuesT,
-} from "@/lib/cart-schema";
+} from "@/lib/cart/cart-schema";
 import { createOrder } from "@/lib/orders/create-order";
-import { tracksInventory } from "@/lib/inventory-policy";
+import { tracksInventory } from "@/lib/products/inventory-policy";
 import { Button } from "@/components/shared/button";
 import { Loader } from "@/components/shared/loader";
 import { LegalLink } from "@/components/shared/legal-link";

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getPayload } from "payload";
 import config from "@payload-config";
-import { readCheckoutCookie } from "@/lib/checkout-session";
+import { readCheckoutCookie } from "@/lib/checkout/checkout-session";
 import { P24_PAYABLE_WINDOW_MS } from "@/config/payments";
 import { ProcessingStatus } from "./processing-status";
 

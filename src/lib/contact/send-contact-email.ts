@@ -1,18 +1,9 @@
 "use server";
 
-import { getPayload } from "payload";
-import config from "@payload-config";
 import { ENV } from "@/config/env";
-import { contactFormSchema } from "@/lib/contact-schema";
+import { contactFormSchema } from "@/lib/contact/contact-schema";
 import { generateContactMessageHtml } from "@/lib/emails/templates/contact-message";
-
-type SendEmailArgsT = {
-  to: string;
-  subject: string;
-  text: string;
-  html?: string;
-  replyTo?: string;
-};
+import { sendEmail } from "@/lib/emails/send";
 
 export type ContactContextT = {
   surface: "download" | "checkout";
@@ -20,17 +11,6 @@ export type ContactContextT = {
   token?: string;
   orderNumber?: string;
 };
-
-export async function sendEmail(args: SendEmailArgsT): Promise<void> {
-  const payload = await getPayload({ config });
-  await payload.sendEmail({
-    to: args.to,
-    subject: args.subject,
-    text: args.text,
-    html: args.html,
-    replyTo: args.replyTo,
-  });
-}
 
 export async function sendContactEmail(
   input: unknown,

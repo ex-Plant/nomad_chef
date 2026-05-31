@@ -1,3 +1,18 @@
+/**
+ * POST /api/orders/:id/regenerate-download — admin-only.
+ *
+ * Re-issues a digital order's download link: mints a fresh token + 72h expiry
+ * and persists them, which invalidates the previous link (downloadToken is
+ * unique). Unlike the digitalFulfillment hook — which issues token #1 and emails
+ * the customer automatically on the paid transition — this endpoint sends no
+ * email; it returns the new link + customer details so the admin UI
+ * (RegenerateDownloadButtons) can open a prefilled mailto draft for a manual send.
+ *
+ * Guards: requires an authenticated user, a digital product, and paymentStatus
+ * "paid". The order update sets context.skipFulfillment so the afterChange
+ * fulfillment hook doesn't re-fire (no recursion, no duplicate email).
+ */
+
 import type { Endpoint } from "payload";
 import {
   generateDownloadToken,

@@ -1,7 +1,7 @@
 import type { Payload } from "payload";
 import type { Product } from "@/payload-types";
-import { sendEmail } from "@/lib/email";
-import type { CartFormValuesT } from "@/lib/cart-schema";
+import { sendEmail } from "@/lib/emails/send";
+import type { CartFormValuesT } from "@/lib/cart/cart-schema";
 import { generateOrderConfirmationHtml } from "@/lib/emails/templates/order-confirmation";
 import { buildOrderEmailText } from "./build-order-email-text";
 import { EMAIL_STATUS, type EmailStatusT } from "./email-status";

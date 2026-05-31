@@ -1,5 +1,5 @@
 import type { Payload } from "payload";
-import { generateDownloadToken } from "@/lib/billing";
+import { generateDownloadToken } from "@/lib/checkout/billing";
 import type {
   Customer,
   DigitalAsset,

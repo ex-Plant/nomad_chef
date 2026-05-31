@@ -1,5 +1,13 @@
 "use client";
 
+/**
+ * Admin-only `ui` field rendered on the order edit view (mounted in
+ * collections/orders/index.ts). Calls POST /api/orders/:id/regenerate-download to
+ * mint a fresh download link, then opens a prefilled mailto draft so the chef can
+ * send the new link to the customer manually. Renders nothing unless the order is
+ * paid.
+ */
+
 import { useState } from "react";
 import { useDocumentInfo } from "@payloadcms/ui";
 

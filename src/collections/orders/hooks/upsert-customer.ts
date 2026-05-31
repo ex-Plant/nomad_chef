@@ -1,3 +1,11 @@
+/**
+ * beforeChange (create only): resolves the buyer into a Customer from the virtual
+ * `_buyer*` fields the checkout submits, sets data.customer, then strips those
+ * temporary fields off the order. Reuses an existing customer matched by email
+ * (appending the address if not already on file) or creates a new one. No-op when
+ * no _buyerEmail is present.
+ */
+
 import type { CollectionBeforeChangeHook } from "payload";
 
 type BuyerInputT = {

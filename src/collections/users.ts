@@ -1,3 +1,9 @@
+/**
+ * Users — Payload auth collection for admin-panel logins (auth: true).
+ * Roles are admin/editor; only admins may change another user's role, and a
+ * beforeDelete guard blocks removing the last remaining user (lockout safety).
+ */
+
 import type { CollectionConfig } from "payload";
 
 export const Users: CollectionConfig = {

@@ -2,7 +2,7 @@
 
 import { getPayload } from "payload";
 import config from "@payload-config";
-import { readCheckoutCookie } from "@/lib/checkout-session";
+import { readCheckoutCookie } from "@/lib/checkout/checkout-session";
 import {
   findTransactionBySessionId,
   verifyTransaction,

@@ -6,7 +6,10 @@ export function roundMoney(amount: number): number {
   return Math.round(amount * 100) / 100;
 }
 
-export function calcVat(priceGross: number, vatRatePercent: number): VatBreakdownT {
+export function calcVat(
+  priceGross: number,
+  vatRatePercent: number,
+): VatBreakdownT {
   if (priceGross === 0) return { priceNet: 0, vatAmount: 0 };
   const priceNet = roundMoney(priceGross / (1 + vatRatePercent / 100));
   const vatAmount = roundMoney(priceGross - priceNet);

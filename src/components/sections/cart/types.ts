@@ -1,5 +1,5 @@
 import type { ReactFormExtendedApi } from "@tanstack/react-form";
-import type { CartFormValuesT } from "@/lib/cart-schema";
+import type { CartFormValuesT } from "@/lib/cart/cart-schema";
 
 // TanStack Form 1.29's `ReactFormExtendedApi` has 12 generic params (validators
 // + submit meta). At our call sites the validator slots are always `undefined`
@@ -9,8 +9,19 @@ import type { CartFormValuesT } from "@/lib/cart-schema";
 // Field reads are still type-safe via `AnyFieldApi` at the leaf level, and
 // field name strings are statically constrained against `CartFormValuesT` keys.
 // TODO(typing): tighten when TanStack ships a single-generic alias.
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type CartFormApiT = ReactFormExtendedApi<
   CartFormValuesT,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  any, any, any, any, any, any, any, any, any, any, any
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
 >;
+/* eslint-enable @typescript-eslint/no-explicit-any */

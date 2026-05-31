@@ -1,11 +1,21 @@
+/**
+ * Products — the catalogue (digital ebooks and physical goods). Publicly
+ * readable; writes are admin-only.
+ *
+ * Auto-managed fields via the hooks defined below: syncInventoryPolicy defaults
+ * inventoryPolicy from format (physical→tracked, digital→untracked) when unset,
+ * calculateNetPrice derives priceNet from priceGross + vatRate on save, and
+ * revalidateProduct busts the cached product page on change/delete.
+ */
+
 import type {
   Access,
   CollectionBeforeChangeHook,
   CollectionBeforeValidateHook,
   CollectionConfig,
 } from "payload";
-import { calcVat } from "@/lib/billing";
-import { defaultInventoryPolicy } from "@/lib/inventory-policy";
+import { calcVat } from "@/lib/checkout/billing";
+import { defaultInventoryPolicy } from "@/lib/products/inventory-policy";
 import { revalidateProduct } from "@/helpers/revalidate-product";
 
 const requireAuth: Access = ({ req: { user } }) => Boolean(user);

@@ -1,7 +1,10 @@
 import type { Payload } from "payload";
-import type { CartFormValuesT } from "@/lib/cart-schema";
+import type { CartFormValuesT } from "@/lib/cart/cart-schema";
 
-export async function findActiveProduct(payload: Payload, values: CartFormValuesT) {
+export async function findActiveProduct(
+  payload: Payload,
+  values: CartFormValuesT,
+) {
   const products = await payload.find({
     collection: "products",
     where: {

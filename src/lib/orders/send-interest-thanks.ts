@@ -1,4 +1,4 @@
-import { sendEmail } from "@/lib/email";
+import { sendEmail } from "@/lib/emails/send";
 import { generateEbookInterestThanksHtml } from "@/lib/emails/templates/ebook-interest-thanks";
 
 const SUBJECT = "Dziękuję za zainteresowanie e-bookiem";
