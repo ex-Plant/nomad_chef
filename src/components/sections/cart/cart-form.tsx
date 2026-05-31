@@ -121,6 +121,7 @@ export function CartForm({
             <FormCheckbox
               field={field}
               label="Akceptuję"
+              ariaLabel="Akceptuję regulamin sprzedaży oraz politykę prywatności"
               trailing={
                 <>
                   {legalLinks?.terms && <LegalLink link={legalLinks.terms} />}

@@ -284,15 +284,16 @@ creds in test env).
 ## 10. Audit results — coverage & findings
 
 Suite: `npm run test:e2e` (CI-safe) / `npm run test:e2e:all` (incl. `@manual`).
-Last run: **20 passed, 1 skipped** (against the local dev DB; self-cleaning via
-the `+e2e-` teardown marker).
+Last run: **19 passed** (default gate, fully deterministic — no external network).
+`cart-redirect` and `payment-smoke` are `@manual` (live P24 sandbox). Runs
+against the local dev DB; self-cleaning via the `+e2e-` teardown marker.
 
 ### Phase coverage
 
 | Phase                                  | Spec                                          | Status                                                              |
 | -------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------- |
 | Cart validation (unhappy path)         | `cart-validation`                             | ✅ blocks on missing consents / invalid email                       |
-| Cart → P24 redirect (happy path)       | `cart-redirect`                               | ✅ real order → `…/trnRequest/{token}`                              |
+| Cart → P24 redirect (happy path)       | `cart-redirect`                               | ⏸ `@manual` — calls live P24 register; recycled order nums (F4)     |
 | Order creation + price snapshot        | `fulfillment-digital`, `fulfillment-physical` | ✅                                                                  |
 | Invoice + customer data capture        | `invoice-customer`                            | ✅ company/NIP/address on customer; `wantsInvoice`                  |
 | Customer dedup                         | `invoice-customer`                            | ✅ same email → one customer, no dup address                        |
@@ -316,15 +317,25 @@ the `+e2e-` teardown marker).
   Note: dev + prod share **one** Blob store
   (`vkxkazad3y7jvarg.public.blob.vercel-storage.com`, 47 objects) — the tests
   never write to it (verified: object count unchanged across runs).
-- **F2 — Consent checkboxes lack ARIA-associated labels (a11y, WCAG name).**
-  The Radix checkboxes' visible text is an unlinked sibling, so they have no
-  accessible name (tests target them by index). Associate a `<label htmlFor>` or
-  `aria-label`.
+- **F2 — Consent-checkbox accessible name (original finding was a misdiagnosis;
+  real residual fixed).** The checkboxes are native `<input>` + associated
+  `<label htmlFor>` and **do** have accessible names — the earlier
+  `getByRole(name)` failures were the hydration race (modal not yet open), not
+  missing labels. The one genuine gap: the legal-consent name was only
+  "Akceptuję" because the linked _regulamin/polityka_ text sits outside the
+  `<label>` (so the links stay clickable). Fixed: `FormCheckbox` gained an
+  optional `ariaLabel`, and the legal consent now announces the full
+  "Akceptuję regulamin sprzedaży oraz politykę prywatności" (WCAG 2.5.3
+  Label-in-Name). Specs switched to name-based checkbox selectors.
 - **F3 — VAT rounds to 0 at the 0.1 PLN test price.** Artifact of the tiny test
   price, not a bug; VAT math is unit-tested at realistic prices.
-- **F4 — Order numbers are count-derived** (`orders-this-year + 1`). After row
-  deletions the sequence can reissue a previously-used value. Harmless in prod
-  (orders aren't deleted); only relevant to test cleanup.
+- **F4 — Order numbers are count-derived** (`orders-this-year + 1`). After
+  teardown deletions the sequence reissues previously-used values. **Concrete
+  consequence:** `cart-redirect` calls the live P24 `transaction/register` with
+  `sessionId = orderNumber`, and the sandbox rejects a recycled id with
+  `"Id sesji zduplikowane"` (400) — which is why that test is `@manual`, not in
+  the default gate. Harmless in **prod** (orders aren't deleted; numbers only
+  grow monotonically).
 - **F5 — Admin locale isn't pinned.** A fresh browser renders the panel in
   English ("Login"/"Password"); another shows Polish ("Zaloguj"). Status labels
   are localized too. No functional impact; tests use locale-proof selectors

@@ -36,9 +36,8 @@ test("blocks submission on an invalid email", async ({ page }) => {
   await dialog
     .getByRole("textbox", { name: "Twój e-mail" })
     .fill("not-an-email");
-  const checkboxes = dialog.getByRole("checkbox");
-  await checkboxes.nth(0).check();
-  await checkboxes.nth(1).check();
+  await dialog.getByRole("checkbox", { name: /^Akceptuję/ }).check();
+  await dialog.getByRole("checkbox", { name: /^Wyrażam zgodę/ }).check();
   await dialog.getByRole("button", { name: "Złóż zamówienie" }).click();
 
   await page.waitForTimeout(1_500);

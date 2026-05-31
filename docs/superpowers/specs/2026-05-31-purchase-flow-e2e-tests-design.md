@@ -50,13 +50,19 @@ the real P24 round-trip for a single manual smoke. Hence three layers.
 
 ## 3. Architecture
 
-### Layer A — UI up to the P24 redirect (fast, CI-safe)
+### Layer A — UI up to the P24 redirect (`@manual`, sandbox-dependent)
 
 Origin `http://localhost:3000` (ngrok-free kills hydration in `next dev` — see
 findings §3.2). Drive the cart form via Playwright, submit, assert the client
-navigates to a `sandbox.przelewy24.pl/trnRequest/{token}` URL. No payment, no
-external network. Proves: validation, invoice/customer capture, order persisted
-as `pending` with correct price snapshot.
+navigates to a `…/trnRequest/{token}` URL. Proves: validation, invoice/customer
+capture, order persisted as `pending` with correct price snapshot.
+
+> **Correction (audit):** this is NOT network-free — `createOrder` calls the
+> live P24 `transaction/register` to get the paywall URL, and recycled
+> count-derived order numbers collide with the sandbox's session-id memory
+> (findings F4). So `cart-redirect` is `@manual`, not in the default gate. The
+> deterministic value it implied (validation, persistence) is covered by
+> `cart-validation` + the Local-API specs instead.
 
 ### Layer B — fulfillment / download / email (fast, CI-safe)
 

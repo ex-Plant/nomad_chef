@@ -7,6 +7,13 @@ import { FieldShell } from "./field-shell";
 type FormCheckboxPropsT = {
   field: AnyFieldApi;
   label: ReactNode;
+  /**
+   * Full accessible name for the input. Use when the visible label is split —
+   * e.g. the consent text continues into `trailing` links rendered outside the
+   * <label> — so a screen reader announces the complete purpose, not just the
+   * leading `label` word.
+   */
+  ariaLabel?: string;
   /** Inline content rendered outside the <label> (e.g. links). */
   trailing?: ReactNode;
   className?: string;
@@ -20,6 +27,7 @@ type FormCheckboxPropsT = {
 export function FormCheckbox({
   field,
   label,
+  ariaLabel,
   trailing,
   className,
   disabled,
@@ -45,6 +53,7 @@ export function FormCheckbox({
             name={field.name}
             checked={checked}
             disabled={disabled}
+            aria-label={ariaLabel}
             aria-invalid={hasErrors}
             aria-describedby={hasErrors ? errorId : undefined}
             onBlur={field.handleBlur}
