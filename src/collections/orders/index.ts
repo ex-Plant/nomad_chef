@@ -349,15 +349,21 @@ export const Orders: CollectionConfig = {
       label: { pl: "Data realizacji", en: "Fulfilled at" },
     },
     {
-      name: "confirmationEmailStatus",
+      name: "downloadEmailStatus",
       type: "select",
       required: true,
       defaultValue: "pending",
       index: true,
-      admin: { readOnly: true },
+      admin: {
+        readOnly: true,
+        description: {
+          pl: "Czy e-mail z linkiem do pobrania dotarł do klienta. Ustawiany automatycznie po opłaceniu zamówienia.",
+          en: "Whether the download-link email reached the customer. Set automatically once the order is paid.",
+        },
+      },
       label: {
-        pl: "Status e-maila potwierdzającego",
-        en: "Confirmation email status",
+        pl: "Status e-maila z linkiem do pobrania",
+        en: "Download email status",
       },
       options: [
         { label: { pl: "Oczekuje", en: "Pending" }, value: "pending" },
@@ -366,10 +372,14 @@ export const Orders: CollectionConfig = {
       ],
     },
     {
-      name: "confirmationEmailSentAt",
+      name: "downloadEmailSentAt",
       type: "date",
       admin: {
         readOnly: true,
+        description: {
+          pl: "Data i godzina pomyślnego wysłania e-maila z linkiem.",
+          en: "When the download-link email was successfully sent.",
+        },
         date: {
           pickerAppearance: "dayAndTime",
           displayFormat: "yyyy-MM-dd HH:mm",
@@ -378,9 +388,15 @@ export const Orders: CollectionConfig = {
       label: { pl: "E-mail wysłany o", en: "Email sent at" },
     },
     {
-      name: "confirmationEmailError",
+      name: "downloadEmailError",
       type: "text",
-      admin: { readOnly: true },
+      admin: {
+        readOnly: true,
+        description: {
+          pl: "Powód nieudanej wysyłki (np. błędny adres e-mail) — pomaga zdecydować, czy wystarczy wysłać ponownie, czy najpierw poprawić adres.",
+          en: "Why the send failed (e.g. bad address) — tells you whether a resend will work or the address needs fixing first.",
+        },
+      },
       label: { pl: "Błąd wysyłki e-maila", en: "Email send error" },
     },
   ],

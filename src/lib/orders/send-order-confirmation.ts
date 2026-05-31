@@ -1,23 +1,24 @@
-import type { Payload } from "payload";
 import type { Product } from "@/payload-types";
 import { ENV } from "@/config/env";
 import { sendEmail } from "@/lib/emails/send";
 import type { CartFormValuesT } from "@/lib/cart/cart-schema";
 import { generateOrderConfirmationHtml } from "@/lib/emails/templates/order-confirmation";
 import { buildOrderEmailText } from "./build-order-email-text";
-import { EMAIL_STATUS, type EmailStatusT } from "./email-status";
 import type { PersistedOrderT } from "./persist-customer-and-order";
 
 type SendArgsT = {
-  payload: Payload;
   order: PersistedOrderT;
   values: CartFormValuesT;
   product: Product;
   emailTo: string;
 };
 
+// Operator-only "new order" notification. Fire-and-forget: a failure here just
+// logs, because the order is already visible in the admin panel — there's
+// nothing for the operator to recover. The customer-critical email (the
+// download link) is tracked per-order via downloadEmailStatus; see
+// digital-fulfillment.ts.
 export async function sendOrderConfirmation({
-  payload,
   order,
   values,
   product,
@@ -43,55 +44,7 @@ export async function sendOrderConfirmation({
         adminUrl: `${ENV.SITE_URL}/admin/collections/orders/${order.id}`,
       }),
     });
-    await updateEmailStatus({
-      payload,
-      orderId: order.id,
-      status: EMAIL_STATUS.sent,
-    });
   } catch (err) {
-    console.error("[createOrder] confirmation email failed", err);
-    const message = err instanceof Error ? err.message : String(err);
-    await updateEmailStatus({
-      payload,
-      orderId: order.id,
-      status: EMAIL_STATUS.failed,
-      error: message,
-    });
-  }
-}
-
-type UpdateStatusArgsT = {
-  payload: Payload;
-  orderId: string | number;
-  status: EmailStatusT;
-  error?: string;
-};
-
-async function updateEmailStatus({
-  payload,
-  orderId,
-  status,
-  error,
-}: UpdateStatusArgsT): Promise<void> {
-  const data =
-    status === EMAIL_STATUS.sent
-      ? {
-          confirmationEmailStatus: status,
-          confirmationEmailSentAt: new Date().toISOString(),
-          confirmationEmailError: null,
-        }
-      : {
-          confirmationEmailStatus: status,
-          confirmationEmailError: error ?? null,
-        };
-
-  try {
-    await payload.update({
-      collection: "orders",
-      id: orderId,
-      data: data as never,
-    });
-  } catch (updateErr) {
-    console.error("[createOrder] failed to mark email status", updateErr);
+    console.error("[createOrder] operator notification email failed", err);
   }
 }

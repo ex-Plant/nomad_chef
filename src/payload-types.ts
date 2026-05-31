@@ -308,9 +308,18 @@ export interface Order {
   notes?: string | null;
   paidAt?: string | null;
   fulfilledAt?: string | null;
-  confirmationEmailStatus: 'pending' | 'sent' | 'failed';
-  confirmationEmailSentAt?: string | null;
-  confirmationEmailError?: string | null;
+  /**
+   * Whether the download-link email reached the customer. Set automatically once the order is paid.
+   */
+  downloadEmailStatus: 'pending' | 'sent' | 'failed';
+  /**
+   * When the download-link email was successfully sent.
+   */
+  downloadEmailSentAt?: string | null;
+  /**
+   * Why the send failed (e.g. bad address) — tells you whether a resend will work or the address needs fixing first.
+   */
+  downloadEmailError?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -614,9 +623,9 @@ export interface OrdersSelect<T extends boolean = true> {
   notes?: T;
   paidAt?: T;
   fulfilledAt?: T;
-  confirmationEmailStatus?: T;
-  confirmationEmailSentAt?: T;
-  confirmationEmailError?: T;
+  downloadEmailStatus?: T;
+  downloadEmailSentAt?: T;
+  downloadEmailError?: T;
   updatedAt?: T;
   createdAt?: T;
 }

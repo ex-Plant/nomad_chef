@@ -11,6 +11,7 @@ import {
   nextDownloadExpiry,
 } from "@/lib/orders/download-token";
 import { sendDownloadEmail } from "@/lib/orders/send-download-email";
+import { EMAIL_STATUS, type EmailStatusT } from "@/lib/orders/email-status";
 import { resolveRelation } from "@/lib/payload/resolve-relation";
 
 export const digitalFulfillment: CollectionAfterChangeHook = async ({
@@ -45,6 +46,26 @@ export const digitalFulfillment: CollectionAfterChangeHook = async ({
   const expiresAt = nextDownloadExpiry();
   const now = new Date().toISOString();
 
+  // Send before stamping fulfillment: the download email is the customer's only
+  // way to reach the ebook, so a failed send must NOT leave the order looking
+  // fulfilled. We capture the outcome and only mark fulfilled when it actually
+  // sent; on failure the token is still persisted so the order can be resent.
+  let emailStatus: EmailStatusT = EMAIL_STATUS.sent;
+  let emailError: string | null = null;
+  try {
+    await sendDownloadEmail({
+      customerEmail: customer.email,
+      customerFirstName: customer.firstName,
+      downloadToken: token,
+      downloadExpiresAt: expiresAt,
+    });
+  } catch (err) {
+    console.error("[digitalFulfillment] download email failed", err);
+    emailStatus = EMAIL_STATUS.failed;
+    emailError = err instanceof Error ? err.message : String(err);
+  }
+
+  const sent = emailStatus === EMAIL_STATUS.sent;
   await req.payload.update({
     collection: "orders",
     id: doc.id,
@@ -52,18 +73,14 @@ export const digitalFulfillment: CollectionAfterChangeHook = async ({
       downloadToken: token,
       downloadExpiresAt: expiresAt.toISOString(),
       paidAt: doc.paidAt ?? now,
-      fulfillmentStatus: "fulfilled",
-      fulfilledAt: now,
+      fulfillmentStatus: sent ? "fulfilled" : doc.fulfillmentStatus,
+      fulfilledAt: sent ? now : doc.fulfilledAt,
+      downloadEmailStatus: emailStatus,
+      downloadEmailSentAt: sent ? now : null,
+      downloadEmailError: emailError,
     },
     context: { skipFulfillment: true },
     req,
-  });
-
-  await sendDownloadEmail({
-    customerEmail: customer.email,
-    customerFirstName: customer.firstName,
-    downloadToken: token,
-    downloadExpiresAt: expiresAt,
   });
 
   return doc;

@@ -40,7 +40,6 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
   const { order } = persistResult;
 
   await sendOrderConfirmation({
-    payload,
     order,
     values,
     product,
