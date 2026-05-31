@@ -1,5 +1,7 @@
 "use server";
 
+import { getPayload } from "payload";
+import config from "@payload-config";
 import { ENV } from "@/config/env";
 import { contactFormSchema } from "@/lib/contact/contact-schema";
 import { generateContactMessageHtml } from "@/lib/emails/templates/contact-message";
@@ -41,6 +43,40 @@ export async function sendContactEmail(
       `E-mail nadawcy: ${email}`,
       ...contextLines,
     ].join("\n"),
-    html: generateContactMessageHtml({ senderEmail: email, message }),
+    html: generateContactMessageHtml({
+      senderEmail: email,
+      message,
+      context,
+      adminUrl: await resolveOrderAdminUrl(context),
+    }),
   });
+}
+
+// Best-effort deep link to the order this help request is about. Matches the
+// order by its number (or download token), mirroring the P24 webhook lookup.
+// Returns undefined if there's no order context or the lookup fails — the
+// email still sends, just without the button.
+async function resolveOrderAdminUrl(
+  context?: ContactContextT,
+): Promise<string | undefined> {
+  if (!context?.orderNumber && !context?.token) return undefined;
+
+  try {
+    const payload = await getPayload({ config });
+    const where = context.orderNumber
+      ? { orderNumber: { equals: context.orderNumber } }
+      : { downloadToken: { equals: context.token } };
+    const { docs } = await payload.find({
+      collection: "orders",
+      where,
+      limit: 1,
+      depth: 0,
+    });
+    const order = docs[0];
+    if (!order) return undefined;
+    return `${ENV.SITE_URL}/admin/collections/orders/${order.id}`;
+  } catch (err) {
+    console.error("[sendContactEmail] failed to resolve order admin URL", err);
+    return undefined;
+  }
 }

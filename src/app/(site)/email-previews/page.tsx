@@ -28,7 +28,14 @@ const ORDER_FIXTURE = {
 const CONTACT_FIXTURE = {
   senderEmail: "anna.kowalska@example.com",
   message:
-    "Cześć Marta!\n\nChciałabym zapytać o możliwość zamówienia kolacji na 12 osób w okolicach Krakowa w czerwcu. Daj znać czy macie wolny termin.\n\nPozdrawiam,\nAnna",
+    "Cześć Marta!\n\nNie mogę pobrać ebooka, link nie działa. Pomożesz?\n\nPozdrawiam,\nAnna",
+  context: {
+    surface: "download" as const,
+    status: "paid",
+    orderNumber: "CK-2026-0042",
+    token: "abc123token",
+  },
+  adminUrl: "https://www.chaoskitchen.pl/admin/collections/orders/123",
 };
 
 const DOWNLOAD_READY_FIXTURE = {

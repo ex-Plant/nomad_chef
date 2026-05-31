@@ -63,9 +63,9 @@ export function generateOrderConfirmationHtml(
   return renderEmailShell({
     title: "Masz nowe zamówienie",
     items,
-    omitLogo: args.omitLogo,
-    // Operator-facing notification sent to the chef herself — the
-    // "Marta Leśniewska / Chaos Kitchen" brand footer is pointless here.
+    // Operator-facing notification sent to the chef herself — no brand
+    // footer or logo, they're pointless on an email to yourself.
+    omitLogo: true,
     omitFooter: true,
   });
 }
