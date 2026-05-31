@@ -48,17 +48,15 @@ export const physicalShipped: CollectionAfterChangeHook = async ({
   });
 
   const tracking = doc.tracking ?? "(brak numeru)";
-  const courier = doc.courier ?? "(kurier nieznany)";
   const greeting = customer.firstName
     ? `Cześć ${customer.firstName},`
     : "Cześć,";
   await sendEmail({
     to: customer.email,
     subject: "Twoja książka jest w drodze",
-    text: `${greeting}\n\nWysłaliśmy Twoją książkę.\nKurier: ${courier}\nNumer przesyłki: ${tracking}\n\nDziękujemy!`,
+    text: `${greeting}\n\nWysłaliśmy Twoją książkę.\nNumer przesyłki: ${tracking}\n\nDziękujemy!`,
     html: generateShipmentNotificationHtml({
       customerFirstName: customer.firstName,
-      courier,
       tracking,
     }),
   });

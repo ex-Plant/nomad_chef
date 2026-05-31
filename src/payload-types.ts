@@ -273,6 +273,7 @@ export interface Order {
   orderNumber: string;
   customer: number | Customer;
   product: number | Product;
+  productFormat?: string | null;
   quantity: number;
   /**
    * Snapshot at sale time
@@ -299,7 +300,6 @@ export interface Order {
     country?: string | null;
   };
   tracking?: string | null;
-  courier?: ('inpost' | 'dpd' | 'dhl' | 'poczta-polska' | 'other') | null;
   shippedAt?: string | null;
   /**
    * Check if the customer requested an invoice. Verify company name + NIP in the customer's address.
@@ -583,6 +583,7 @@ export interface OrdersSelect<T extends boolean = true> {
   orderNumber?: T;
   customer?: T;
   product?: T;
+  productFormat?: T;
   quantity?: T;
   unitPriceGross?: T;
   totalGross?: T;
@@ -608,7 +609,6 @@ export interface OrdersSelect<T extends boolean = true> {
         country?: T;
       };
   tracking?: T;
-  courier?: T;
   shippedAt?: T;
   wantsInvoice?: T;
   notes?: T;

@@ -20,9 +20,12 @@ const requireAuth: Access = ({ req: { user } }) => Boolean(user);
 
 function getProductFormat(data: unknown): "digital" | "physical" | undefined {
   if (!data || typeof data !== "object") return undefined;
-  const d = data as { product?: { format?: unknown } | unknown };
-  if (typeof d.product !== "object" || d.product === null) return undefined;
-  const format = (d.product as { format?: unknown }).format;
+  // Reads `productFormat` (the virtual mirror defined on the order), NOT
+  // `product.format`. Inside an admin condition `data.product` is just the
+  // related product's ID, so `data.product.format` would always be undefined.
+  // The mirror copies the format onto the order at read time, giving us a plain
+  // string here. Full explanation on the `productFormat` field definition below.
+  const format = (data as { productFormat?: unknown }).productFormat;
   if (format === "digital" || format === "physical") return format;
   return undefined;
 }
@@ -93,6 +96,28 @@ export const Orders: CollectionConfig = {
       relationTo: "products",
       required: true,
       label: { pl: "Produkt", en: "Product" },
+    },
+    {
+      // Why this field exists:
+      // The shipping/download fields further down show or hide based on whether
+      // the order's product is "physical" or "digital" (whenPhysicalOrder /
+      // whenDigitalOrder). Those `admin.condition` functions run in the BROWSER
+      // against the form's current values — and in that form a relationship field
+      // holds only the related row's ID, never the row itself. So `data.product`
+      // is e.g. `7`, which makes `data.product.format` undefined: there is no way
+      // to read the product's format straight from the form.
+      //
+      // `virtual: "product.format"` solves that. On read, Payload follows the
+      // `product` relationship and copies the related product's `format` onto this
+      // `productFormat` field. It's computed server-side and NOT stored in the DB
+      // (no column, no migration). By the time the edit form renders,
+      // `data.productFormat` is already a plain "physical" / "digital" string that
+      // the synchronous conditions can read. Hidden because it's internal plumbing
+      // — editors shouldn't see or set it.
+      name: "productFormat",
+      type: "text",
+      virtual: "product.format",
+      admin: { hidden: true },
     },
     {
       name: "quantity",
@@ -274,19 +299,6 @@ export const Orders: CollectionConfig = {
       type: "text",
       admin: { condition: whenPhysicalOrder },
       label: { pl: "Numer przesyłki", en: "Tracking number" },
-    },
-    {
-      name: "courier",
-      type: "select",
-      label: { pl: "Kurier", en: "Courier" },
-      options: [
-        { label: "InPost", value: "inpost" },
-        { label: "DPD", value: "dpd" },
-        { label: "DHL", value: "dhl" },
-        { label: "Poczta Polska", value: "poczta-polska" },
-        { label: { pl: "Inny", en: "Other" }, value: "other" },
-      ],
-      admin: { condition: whenPhysicalOrder },
     },
     {
       name: "shippedAt",

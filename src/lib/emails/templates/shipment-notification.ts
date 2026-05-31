@@ -4,7 +4,6 @@ import { escapeHtml, buildGreeting } from "../escape-html";
 
 type ShipmentNotificationArgsT = {
   customerFirstName?: string | null;
-  courier: string;
   tracking: string;
   omitLogo?: boolean;
 };
@@ -15,10 +14,6 @@ export function generateShipmentNotificationHtml(
   const items: EmailItemT[] = [
     { type: "text", content: buildGreeting(args.customerFirstName) },
     { type: "text", content: "Wysłaliśmy Twoją książkę." },
-    {
-      type: "text",
-      content: `<strong>Kurier:</strong> ${escapeHtml(args.courier)}`,
-    },
     {
       type: "text",
       content: `<strong>Numer przesyłki:</strong> ${escapeHtml(args.tracking)}`,

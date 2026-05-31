@@ -38,7 +38,6 @@ const DOWNLOAD_READY_FIXTURE = {
 
 const SHIPMENT_FIXTURE = {
   customerFirstName: "Anna",
-  courier: "InPost",
   tracking: "1234567890ABC",
 };
 
