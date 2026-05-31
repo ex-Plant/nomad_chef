@@ -13,7 +13,7 @@ export function generateEbookInterestThanksHtml(
     {
       type: "text",
       content:
-        "Dzięki za zainteresowanie moim e-bookiem.\nOdezwę się jak tylko ruszy sprzedaż.",
+        "Dzięki za zainteresowanie moim e-bookiem.\nLink do pobrania prześlę w osobnej wiadomości jak tylko otrzymam potwierdzenie wpłaty.",
     },
   ];
 

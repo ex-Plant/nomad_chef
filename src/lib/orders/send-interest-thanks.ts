@@ -4,8 +4,10 @@ import { generateEbookInterestThanksHtml } from "@/lib/emails/templates/ebook-in
 const SUBJECT = "Dziękuję za zainteresowanie e-bookiem";
 
 const TEXT_BODY = [
-  "Dzięki za zainteresowanie e-bookiem.",
-  "Odezwę się jak tylko ruszy sprzedaż.",
+  "Cześć,",
+  "",
+  "Dzięki za zainteresowanie moim e-bookiem.",
+  "Link do pobrania prześlę w osobnej wiadomości jak tylko otrzymam potwierdzenie wpłaty.",
   "",
   "Marta",
 ].join("\n");
