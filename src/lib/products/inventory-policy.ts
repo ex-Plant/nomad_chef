@@ -1,5 +1,5 @@
-export type ProductFormatT = "digital" | "physical";
-export type InventoryPolicyT = "tracked" | "untracked";
+type ProductFormatT = "digital" | "physical";
+type InventoryPolicyT = "tracked" | "untracked";
 
 type ProductLikeT = {
   format?: string | null;

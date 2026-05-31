@@ -23,6 +23,7 @@ export const snapshotOrder: CollectionBeforeChangeHook = async ({
         ? data.product
         : data.product.id,
     depth: 0,
+    req,
   });
 
   const quantity = data.quantity ?? 1;
@@ -50,6 +51,7 @@ export const snapshotOrder: CollectionBeforeChangeHook = async ({
           ? data.customer
           : data.customer.id,
       depth: 0,
+      req,
     });
     const firstAddress = customer.addresses?.[0];
     if (firstAddress) {

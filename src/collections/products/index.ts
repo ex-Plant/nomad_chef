@@ -13,7 +13,7 @@ import type {
 } from "payload";
 import { calcVat } from "@/lib/checkout/billing";
 import { defaultInventoryPolicy } from "@/lib/products/inventory-policy";
-import { revalidateProduct } from "@/helpers/revalidate-product";
+import { revalidateProduct } from "./hooks/revalidate-product";
 
 const requireAuth: Access = ({ req: { user } }) => Boolean(user);
 const whenDigital = (_: unknown, siblingData?: { format?: string }) =>
