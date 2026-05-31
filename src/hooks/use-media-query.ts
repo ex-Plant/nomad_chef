@@ -41,7 +41,7 @@ export const BREAKPOINTS = {
   "2xl": "(min-width: 1536px)",
 } as const;
 
-export type BreakpointT = keyof typeof BREAKPOINTS;
+type BreakpointT = keyof typeof BREAKPOINTS;
 
 export function useBreakpoint(bp: BreakpointT): boolean {
   return useMediaQuery(BREAKPOINTS[bp]);

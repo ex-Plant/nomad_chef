@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 
-export type VatBreakdownT = { priceNet: number; vatAmount: number };
+type VatBreakdownT = { priceNet: number; vatAmount: number };
 
 export function roundMoney(amount: number): number {
   return Math.round(amount * 100) / 100;

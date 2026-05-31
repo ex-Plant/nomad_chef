@@ -18,7 +18,7 @@ export type PersistedOrderT = Pick<
   "id" | "orderNumber" | "totalGross" | "quantity"
 >;
 
-export type PersistResultT =
+type PersistResultT =
   | { ok: true; order: PersistedOrderT }
   | { ok: false; error: string };
 

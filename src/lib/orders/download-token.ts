@@ -12,8 +12,8 @@ import type {
 export { generateDownloadToken };
 
 export const TOKEN_REGEX = /^[0-9a-f]{48}$/;
-export const DOWNLOAD_TTL_HOURS = 72;
-export const DOWNLOAD_TTL_MS = DOWNLOAD_TTL_HOURS * 60 * 60 * 1000;
+const DOWNLOAD_TTL_HOURS = 72;
+const DOWNLOAD_TTL_MS = DOWNLOAD_TTL_HOURS * 60 * 60 * 1000;
 
 export type DownloadStatusT = "ready" | "expired" | "not_paid" | "not_found";
 
@@ -26,7 +26,7 @@ export function nextDownloadExpiry(): Date {
 // here once means callers can read `product` / `customer` / `file`
 // directly without re-checking `typeof === "object"` at every site.
 // Whichever fields aren't populated at the requested depth are `null`.
-export type DownloadOrderT = {
+type DownloadOrderT = {
   order: Order;
   product: Product | null;
   customer: Customer | null;
@@ -55,7 +55,7 @@ export async function findOrderByDownloadToken(
   return { order, product, customer, file };
 }
 
-export type DownloadStateT = {
+type DownloadStateT = {
   status: DownloadStatusT;
   expiresAt: Date | null;
 };

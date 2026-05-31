@@ -12,7 +12,7 @@ export const newsletterFormSchema = z.object({
   }),
 });
 
-export type NewsletterFormValuesT = z.infer<typeof newsletterFormSchema>;
+type NewsletterFormValuesT = z.infer<typeof newsletterFormSchema>;
 
 export const defaultNewsletterValues = (): NewsletterFormValuesT => ({
   email: "",

@@ -10,7 +10,7 @@
 // late success webhook still flips `failed → paid` + fulfils. Safe because
 // P24_CHANNEL excludes the deferred methods (traditional transfer, instalments)
 // that could land days later — if those are re-enabled, raise this to match.
-export const P24_PAYABLE_WINDOW_MINUTES = 15;
+const P24_PAYABLE_WINDOW_MINUTES = 15;
 export const P24_PAYABLE_WINDOW_MS = P24_PAYABLE_WINDOW_MINUTES * 60 * 1000;
 
 // P24's register `timeLimit` (minutes the buyer has to pay) is capped at 0–99.
