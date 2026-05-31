@@ -72,3 +72,10 @@ next-env.d.ts
 
 # playwright (MCP) snapshots / console logs
 .playwright-mcp/
+
+# playwright test run artifacts
+/test-results/
+/playwright-report/
+
+# recon screenshots (local audit evidence, not committed)
+/recon-*.png

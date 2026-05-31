@@ -13,6 +13,8 @@
     "format:fix": "prettier --write --ignore-path .gitignore --ignore-path .prettierignore .",
     "prepare": "husky",
     "test": "node --import tsx --test 'tests/**/*.test.ts'",
+    "test:e2e": "playwright test",
+    "test:e2e:all": "E2E_ALL=1 playwright test",
     "payload": "payload",
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",
