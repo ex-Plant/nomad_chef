@@ -209,7 +209,7 @@ export function CartForm({
             >
               {isSubmitting ? "Wysyłanie…" : "Złóż zamówienie"}
             </Button>
-            <div className="flex items-start justify-between gap-4 pt-4">
+            {/* <div className="flex items-start justify-between gap-4 pt-4">
               {legal ? (
                 <address className="[&_a]:hover:text-yellow font-sans text-xs leading-snug text-white/85 not-italic [&_a]:underline [&_a]:underline-offset-2 [&_p]:m-0">
                   <RichText data={legal} />
@@ -224,7 +224,7 @@ export function CartForm({
                 className="h-8 w-auto shrink-0"
                 placeholder="blur"
               />
-            </div>
+            </div> */}
           </div>
         )}
       </form.Subscribe>
