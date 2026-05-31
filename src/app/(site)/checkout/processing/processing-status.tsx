@@ -112,8 +112,8 @@ export function ProcessingStatus({
         >
           {paymentStatus === "pending" && (
             <>
-              Czekamy na potwierdzenie płatności, to nie powinno zająć dłużej niż
-              kilka minut.
+              Czekamy na potwierdzenie płatności, to nie powinno zająć dłużej
+              niż kilka minut.
               <br />
               Gdy płatność trafi na nasze konto wyślemy Ci maila z linkiem do
               pobrania ebooka.

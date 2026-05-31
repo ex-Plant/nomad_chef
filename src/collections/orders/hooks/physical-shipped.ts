@@ -3,6 +3,14 @@ import { sendEmail } from "@/lib/emails/send";
 import { generateShipmentNotificationHtml } from "@/lib/emails/templates/shipment-notification";
 import { resolveRelation } from "@/lib/payload/resolve-relation";
 
+/**
+ * Notifies the customer when a physical-book order is marked as shipped.
+ *
+ * Fires only on the not-shipped → shipped *transition* (compares previousDoc),
+ * so re-saving an already-shipped order is a no-op. Skips digital orders.
+ * The nested shippedAt update passes skipFulfillment to avoid re-triggering
+ * this same afterChange hook.
+ */
 export const physicalShipped: CollectionAfterChangeHook = async ({
   doc,
   previousDoc,
