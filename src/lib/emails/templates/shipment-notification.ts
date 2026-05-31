@@ -13,7 +13,7 @@ export function generateShipmentNotificationHtml(
 ): string {
   const items: EmailItemT[] = [
     { type: "text", content: buildGreeting(args.customerFirstName) },
-    { type: "text", content: "Wysłaliśmy Twoją książkę." },
+    { type: "text", content: "Twoja książka jest w drodze." },
     {
       type: "text",
       content: `<strong>Numer przesyłki:</strong> ${escapeHtml(args.tracking)}`,
@@ -22,7 +22,6 @@ export function generateShipmentNotificationHtml(
   ];
 
   return renderEmailShell({
-    title: "Twoja książka jest w drodze",
     items,
     omitLogo: args.omitLogo,
   });

@@ -14,6 +14,16 @@ export const EMAIL_COLORS = {
   muted: "#5A4E47",
 } as const;
 
+// Single source of truth for vertical rhythm and type size. Blocks are spaced
+// with bottom-margin only (no top margins), so the gap between any two
+// consecutive blocks is exactly one value. `logoGap` is the deliberately
+// tighter space above the trailing logo.
+export const EMAIL_LAYOUT = {
+  fontSize: "16px",
+  gap: "16px",
+  logoGap: "8px",
+} as const;
+
 export function getLogoUrl(): string {
   return `${ENV.SITE_URL}/email/logo.png`;
 }

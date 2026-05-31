@@ -98,7 +98,7 @@ export const sendShipmentNotificationEndpoint: Endpoint = {
     await sendEmail({
       to: customer.email,
       subject: "Twoja książka jest w drodze",
-      text: `${greeting}\n\nWysłaliśmy Twoją książkę.\nNumer przesyłki: ${tracking}\n\nDziękujemy!`,
+      text: `${greeting}\n\nTwoja książka jest w drodze.\nNumer przesyłki: ${tracking}\n\nDziękujemy!`,
       html: generateShipmentNotificationHtml({
         customerFirstName: customer.firstName,
         tracking,
