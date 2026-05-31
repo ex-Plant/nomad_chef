@@ -2,9 +2,10 @@
  * Almost nothing on an order is set by hand — the hooks below own its state, and
  * their ORDER matters:
  *   beforeChange: upsertCustomer → snapshotOrder → generateOrderNumber
- *   afterChange:  digitalFulfillment, physicalShipped (gated on the paid /
- *                 shipped transitions; guarded against re-entry via
- *                 context.skipFulfillment)
+ *   afterChange:  digitalFulfillment (gated on the paid transition; guarded
+ *                 against re-entry via context.skipFulfillment)
+ * The shipment email is NOT automatic — the chef sends it from the
+ * SendShipmentButton UI field via the send-shipment-notification endpoint.
  * Stock management is deliberately omitted — see the TODO on the config below.
  */
 
@@ -13,8 +14,8 @@ import { generateOrderNumber } from "./hooks/generate-order-number";
 import { snapshotOrder } from "./hooks/snapshot";
 import { upsertCustomer } from "./hooks/upsert-customer";
 import { digitalFulfillment } from "./hooks/digital-fulfillment";
-import { physicalShipped } from "./hooks/physical-shipped";
 import { regenerateDownloadEndpoint } from "./endpoints/regenerate-download";
+import { sendShipmentNotificationEndpoint } from "./endpoints/send-shipment-notification";
 
 const requireAuth: Access = ({ req: { user } }) => Boolean(user);
 
@@ -37,7 +38,7 @@ const whenPhysicalOrder = (data: unknown) =>
 
 export const Orders: CollectionConfig = {
   slug: "orders",
-  endpoints: [regenerateDownloadEndpoint],
+  endpoints: [regenerateDownloadEndpoint, sendShipmentNotificationEndpoint],
   // TODO: stock management is intentionally absent. The only product we sell
   // today is digital (unlimited). When a physical or limited-quantity product
   // launches, add a beforeChange hook that atomically decrements
@@ -49,7 +50,7 @@ export const Orders: CollectionConfig = {
   // minimal.
   hooks: {
     beforeChange: [upsertCustomer, snapshotOrder, generateOrderNumber],
-    afterChange: [digitalFulfillment, physicalShipped],
+    afterChange: [digitalFulfillment],
   },
   labels: {
     singular: { pl: "Zamówienie", en: "Order" },
@@ -305,6 +306,17 @@ export const Orders: CollectionConfig = {
       type: "date",
       admin: { condition: whenPhysicalOrder },
       label: { pl: "Data wysyłki", en: "Shipped at" },
+    },
+    {
+      name: "sendShipmentNotification",
+      type: "ui",
+      admin: {
+        condition: whenPhysicalOrder,
+        components: {
+          Field:
+            "@/collections/orders/components/send-shipment-button#SendShipmentButton",
+        },
+      },
     },
     {
       name: "wantsInvoice",
