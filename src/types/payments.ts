@@ -9,9 +9,6 @@ export type RegisterTransactionInputT = {
   email: string;
   urlReturn: string;
   urlStatus: string;
-  currency?: string;
-  country?: string;
-  language?: string;
 };
 
 export type RegisterTransactionResultT = {
@@ -23,7 +20,6 @@ export type VerifyTransactionInputT = {
   sessionId: string;
   orderId: number;
   amountGrosze: number;
-  currency?: string;
 };
 
 export type P24TransactionT = {
@@ -31,18 +27,4 @@ export type P24TransactionT = {
   orderId: number;
   amount: number;
   status: number;
-};
-
-// Fields P24 POSTs to the urlStatus webhook for a successful payment.
-export type P24NotificationT = {
-  merchantId: number;
-  posId: number;
-  sessionId: string;
-  amount: number;
-  originAmount: number;
-  currency: string;
-  orderId: number;
-  methodId: number;
-  statement: string;
-  sign: string;
 };

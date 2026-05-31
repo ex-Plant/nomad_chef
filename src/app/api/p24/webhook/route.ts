@@ -21,36 +21,21 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 import {
   isValidNotificationSign,
+  p24NotificationSchema,
   verifyTransaction,
 } from "@/lib/payments/p24";
 import { plnToGrosze } from "@/lib/payments/amount";
-import type { P24NotificationT } from "@/types/payments";
 
 export const dynamic = "force-dynamic";
 
-function asNotification(body: unknown): P24NotificationT | null {
-  if (typeof body !== "object" || body === null) return null;
-  const b = body as Record<string, unknown>;
-  const valid =
-    typeof b.merchantId === "number" &&
-    typeof b.posId === "number" &&
-    typeof b.sessionId === "string" &&
-    typeof b.amount === "number" &&
-    typeof b.originAmount === "number" &&
-    typeof b.currency === "string" &&
-    typeof b.orderId === "number" &&
-    typeof b.methodId === "number" &&
-    typeof b.statement === "string" &&
-    typeof b.sign === "string";
-  return valid ? (b as P24NotificationT) : null;
-}
-
 export async function POST(req: Request): Promise<Response> {
-  const body = await req.json().catch(() => null);
-  const notification = asNotification(body);
-  if (!notification) {
+  const parsed = p24NotificationSchema.safeParse(
+    await req.json().catch(() => null),
+  );
+  if (!parsed.success) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
+  const notification = parsed.data;
 
   // Reject spoofed notifications before touching the DB.
   if (!isValidNotificationSign(notification)) {
@@ -90,7 +75,6 @@ export async function POST(req: Request): Promise<Response> {
     sessionId: notification.sessionId,
     orderId: notification.orderId,
     amountGrosze: notification.amount,
-    currency: notification.currency,
   });
   if (!verified) {
     console.error(

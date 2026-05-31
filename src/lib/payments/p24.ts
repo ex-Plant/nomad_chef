@@ -17,6 +17,7 @@
 // Auth: HTTP Basic, username = posId, password = API key. Amounts: integer grosze.
 
 import { createHash, timingSafeEqual } from "node:crypto";
+import { z } from "zod";
 import { ENV } from "@/config/env";
 import { P24_REGISTER_TIME_LIMIT, P24_CHANNEL } from "@/config/payments";
 import type {
@@ -24,14 +25,11 @@ import type {
   RegisterTransactionResultT,
   VerifyTransactionInputT,
   P24TransactionT,
-  P24NotificationT,
 } from "@/types/payments";
 
 const SANDBOX_HOST = "https://sandbox.przelewy24.pl";
 const PRODUCTION_HOST = "https://secure.przelewy24.pl";
 const DEFAULT_CURRENCY = "PLN";
-const DEFAULT_COUNTRY = "PL";
-const DEFAULT_LANGUAGE = "pl";
 
 type P24ConfigT = {
   readonly merchantId: number;
@@ -87,11 +85,20 @@ async function p24Request(
   return response;
 }
 
+// P24's POST /transaction/register returns the token we redirect the buyer
+// with. A missing/empty token (or a non-JSON body) means registration didn't
+// take — fail loudly so the caller never builds a broken paywall URL.
+const p24RegisterResponseSchema = z.object({
+  data: z.object({
+    token: z.string().min(1),
+  }),
+});
+
 export async function registerTransaction(
   input: RegisterTransactionInputT,
 ): Promise<RegisterTransactionResultT> {
   const config = getP24Config();
-  const currency = input.currency ?? DEFAULT_CURRENCY;
+  const currency = DEFAULT_CURRENCY;
 
   const signature = sign({
     sessionId: input.sessionId,
@@ -109,8 +116,8 @@ export async function registerTransaction(
     currency,
     description: input.description,
     email: input.email,
-    country: input.country ?? DEFAULT_COUNTRY,
-    language: input.language ?? DEFAULT_LANGUAGE,
+    country: "PL",
+    language: "pl",
     urlReturn: input.urlReturn,
     urlStatus: input.urlStatus,
     // Bound to the payable window so P24's expiry matches when we conclude
@@ -126,12 +133,14 @@ export async function registerTransaction(
     throw new Error(`P24 register failed (${response.status}): ${detail}`);
   }
 
-  const json = (await response.json()) as { data?: { token?: string } };
-  const token = json.data?.token;
-  if (!token) {
+  const parsed = p24RegisterResponseSchema.safeParse(
+    await response.json().catch(() => null),
+  );
+  if (!parsed.success) {
     throw new Error("P24 register returned no token");
   }
 
+  const { token } = parsed.data.data;
   return { token, redirectUrl: `${config.host}/trnRequest/${token}` };
 }
 
@@ -142,7 +151,7 @@ export async function verifyTransaction(
   input: VerifyTransactionInputT,
 ): Promise<boolean> {
   const config = getP24Config();
-  const currency = input.currency ?? DEFAULT_CURRENCY;
+  const currency = DEFAULT_CURRENCY;
 
   const signature = sign({
     sessionId: input.sessionId,
@@ -165,6 +174,19 @@ export async function verifyTransaction(
   return response.ok;
 }
 
+// Shape we require from P24's GET /transaction/by/sessionId/{id}. orderId and
+// status are mandatory — we can't act without them — so a payload missing
+// either (or a non-JSON/empty body) fails safeParse and is treated as "no
+// transaction". sessionId/amount are optional and fall back below.
+const p24SessionLookupSchema = z.object({
+  data: z.object({
+    sessionId: z.string().optional(),
+    orderId: z.number(),
+    amount: z.number().optional(),
+    status: z.number(),
+  }),
+});
+
 // PULLs the authoritative transaction state from P24 by our sessionId
 // (= orderNumber). Because P24 never webhooks a failed/cancelled payment, the
 // order otherwise sits silently `pending`; this is how we learn the real
@@ -181,30 +203,36 @@ export async function findTransactionBySessionId(
   );
   if (!response.ok) return null;
 
-  const json = (await response.json().catch(() => null)) as {
-    data?: {
-      sessionId?: string;
-      orderId?: number;
-      amount?: number;
-      status?: number;
-    };
-  } | null;
-  const data = json?.data;
-  if (
-    !data ||
-    typeof data.status !== "number" ||
-    typeof data.orderId !== "number"
-  ) {
-    return null;
-  }
+  const parsed = p24SessionLookupSchema.safeParse(
+    await response.json().catch(() => null),
+  );
+  if (!parsed.success) return null;
+  const { data } = parsed.data;
 
   return {
     sessionId: data.sessionId ?? sessionId,
     orderId: data.orderId,
-    amount: typeof data.amount === "number" ? data.amount : 0,
+    amount: data.amount ?? 0,
     status: data.status,
   };
 }
+
+// P24's urlStatus webhook payload (successful payments only). Parsed at the
+// route boundary; isValidNotificationSign then recomputes the checksum over it.
+export const p24NotificationSchema = z.object({
+  merchantId: z.number(),
+  posId: z.number(),
+  sessionId: z.string(),
+  amount: z.number(),
+  originAmount: z.number(),
+  currency: z.string(),
+  orderId: z.number(),
+  methodId: z.number(),
+  statement: z.string(),
+  sign: z.string(),
+});
+
+export type P24NotificationT = z.infer<typeof p24NotificationSchema>;
 
 // Recomputes the notification checksum and timing-safe compares it to the
 // `sign` P24 sent. Guards the public webhook against spoofed payloads.
