@@ -7,12 +7,18 @@
 
 import { cookies } from "next/headers";
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { z } from "zod";
 import { ENV } from "@/config/env";
 
 const COOKIE_NAME = "chef_checkout";
 const COOKIE_MAX_AGE_SECONDS = 60 * 60;
 
-type PayloadT = { orderId: number; exp: number };
+const checkoutPayloadSchema = z.object({
+  orderId: z.number(),
+  exp: z.number(),
+});
+
+type PayloadT = z.infer<typeof checkoutPayloadSchema>;
 
 function sign(payload: string): string {
   return createHmac("sha256", ENV.PAYLOAD_SECRET)
@@ -57,17 +63,16 @@ export async function readCheckoutCookie(): Promise<{
   const signature = raw.slice(dot + 1);
   if (!safeEqual(signature, sign(encoded))) return null;
 
-  let parsed: PayloadT;
+  let json: unknown;
   try {
-    parsed = JSON.parse(Buffer.from(encoded, "base64url").toString());
+    json = JSON.parse(Buffer.from(encoded, "base64url").toString());
   } catch {
     return null;
   }
 
-  if (typeof parsed.orderId !== "number" || typeof parsed.exp !== "number") {
-    return null;
-  }
-  if (parsed.exp * 1000 < Date.now()) return null;
+  const parsed = checkoutPayloadSchema.safeParse(json);
+  if (!parsed.success) return null;
+  if (parsed.data.exp * 1000 < Date.now()) return null;
 
-  return { orderId: parsed.orderId };
+  return { orderId: parsed.data.orderId };
 }
