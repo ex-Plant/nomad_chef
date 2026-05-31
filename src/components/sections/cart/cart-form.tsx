@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import NextImage from "next/image";
 import p24Logo from "@/assets/przelewy24-logo.png";
 import { RichText } from "@payloadcms/richtext-lexical/react";
@@ -46,6 +46,10 @@ export function CartForm({
   const storedValues = useCartFormStore((s) => s.formData);
   const updateFormData = useCartFormStore((s) => s.updateFormData);
   const resetFormData = useCartFormStore((s) => s.resetFormData);
+  // Server-side failures from createOrder (e.g. P24 register threw) surface here.
+  // TanStack's errorMap.onSubmit isn't used so a truthy success return can't be
+  // mistaken for an error; mirrors the newsletter form.
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const initialValues = useMemo<CartFormValuesT>(() => {
     const defaults = defaultCartValues(
@@ -72,16 +76,17 @@ export function CartForm({
       onChangeDebounceMs: 500,
     },
     onSubmit: async ({ value }) => {
+      setErrorMessage(null);
       const result = await createOrder(value);
       if (result.ok) {
-        //TODO
-        // resetFormData();
-        // form.reset();
+        resetFormData();
+        form.reset();
         onSuccess(result.orderNumber, value.email);
         // Hand off to the Przelewy24 paywall (external domain → full nav).
         window.location.href = result.redirectUrl;
+        return;
       }
-      return result;
+      setErrorMessage(result.error);
     },
   });
 
@@ -194,6 +199,7 @@ export function CartForm({
             {attempted && hasFieldErrors && (
               <FormError>Koszyk zawiera błędy</FormError>
             )}
+            {errorMessage && <FormError>{errorMessage}</FormError>}
             <Button
               type="submit"
               size="compact"
