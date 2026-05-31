@@ -18,6 +18,7 @@ import {
   generateDownloadToken,
   nextDownloadExpiry,
 } from "@/lib/orders/download-token";
+import { asPopulated } from "@/lib/payload/as-populated";
 import { ENV } from "@/config/env";
 
 export const regenerateDownloadEndpoint: Endpoint = {
@@ -40,7 +41,7 @@ export const regenerateDownloadEndpoint: Endpoint = {
       return Response.json({ error: "Order not found" }, { status: 404 });
     }
 
-    const product = typeof order.product === "object" ? order.product : null;
+    const product = asPopulated(order.product);
     if (!product || product.format !== "digital") {
       return Response.json(
         { error: "Order is not a digital product." },
@@ -68,7 +69,7 @@ export const regenerateDownloadEndpoint: Endpoint = {
       req,
     });
 
-    const customer = typeof order.customer === "object" ? order.customer : null;
+    const customer = asPopulated(order.customer);
 
     return Response.json({
       ok: true,

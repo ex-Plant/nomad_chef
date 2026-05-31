@@ -1,5 +1,6 @@
 import type { Payload } from "payload";
 import { generateDownloadToken } from "@/lib/checkout/billing";
+import { asPopulated } from "@/lib/payload/as-populated";
 import type {
   Customer,
   DigitalAsset,
@@ -47,12 +48,9 @@ export async function findOrderByDownloadToken(
   const order = result.docs[0];
   if (!order) return null;
 
-  const product = typeof order.product === "object" ? order.product : null;
-  const customer = typeof order.customer === "object" ? order.customer : null;
-  const file =
-    product && typeof product.file === "object"
-      ? (product.file as DigitalAsset | Media)
-      : null;
+  const product = asPopulated(order.product);
+  const customer = asPopulated(order.customer);
+  const file = product ? asPopulated<DigitalAsset | Media>(product.file) : null;
 
   return { order, product, customer, file };
 }

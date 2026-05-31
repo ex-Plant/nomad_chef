@@ -1,6 +1,7 @@
 import type { CollectionAfterChangeHook } from "payload";
 import { sendEmail } from "@/lib/emails/send";
 import { generateShipmentNotificationHtml } from "@/lib/emails/templates/shipment-notification";
+import { resolveRelation } from "@/lib/payload/resolve-relation";
 
 export const physicalShipped: CollectionAfterChangeHook = async ({
   doc,
@@ -15,26 +16,18 @@ export const physicalShipped: CollectionAfterChangeHook = async ({
   const isNowShipped = doc.fulfillmentStatus === "shipped";
   if (!(wasNotShipped && isNowShipped)) return doc;
 
-  const product =
-    typeof doc.product === "object"
-      ? doc.product
-      : await req.payload.findByID({
-          collection: "products",
-          id: doc.product,
-          depth: 0,
-          req,
-        });
+  const product = await resolveRelation({
+    collection: "products",
+    value: doc.product,
+    req,
+  });
   if (product.format !== "physical") return doc;
 
-  const customer =
-    typeof doc.customer === "object"
-      ? doc.customer
-      : await req.payload.findByID({
-          collection: "customers",
-          id: doc.customer,
-          depth: 0,
-          req,
-        });
+  const customer = await resolveRelation({
+    collection: "customers",
+    value: doc.customer,
+    req,
+  });
 
   await req.payload.update({
     collection: "orders",

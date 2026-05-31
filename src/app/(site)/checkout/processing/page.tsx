@@ -3,6 +3,7 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 import { readCheckoutCookie } from "@/lib/checkout/checkout-session";
 import { P24_PAYABLE_WINDOW_MS } from "@/config/payments";
+import { asPopulated } from "@/lib/payload/as-populated";
 import { ProcessingStatus } from "./processing-status";
 
 export const dynamic = "force-dynamic";
@@ -21,7 +22,7 @@ export default async function CheckoutProcessingPage() {
     redirect(`/download/${order.downloadToken}`);
   }
 
-  const customer = typeof order.customer === "object" ? order.customer : null;
+  const customer = asPopulated(order.customer);
 
   return (
     <main className="bg-coral relative flex min-h-svh flex-col items-center justify-center px-6 py-24 text-white">

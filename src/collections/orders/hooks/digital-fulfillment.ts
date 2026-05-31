@@ -11,6 +11,7 @@ import {
   nextDownloadExpiry,
 } from "@/lib/orders/download-token";
 import { sendDownloadEmail } from "@/lib/orders/send-download-email";
+import { resolveRelation } from "@/lib/payload/resolve-relation";
 
 export const digitalFulfillment: CollectionAfterChangeHook = async ({
   doc,
@@ -27,26 +28,18 @@ export const digitalFulfillment: CollectionAfterChangeHook = async ({
   const isNowPaid = doc.paymentStatus === "paid";
   if (!(wasNotPaid && isNowPaid)) return doc;
 
-  const product =
-    typeof doc.product === "object"
-      ? doc.product
-      : await req.payload.findByID({
-          collection: "products",
-          id: doc.product,
-          depth: 0,
-          req,
-        });
+  const product = await resolveRelation({
+    collection: "products",
+    value: doc.product,
+    req,
+  });
   if (product.format !== "digital") return doc;
 
-  const customer =
-    typeof doc.customer === "object"
-      ? doc.customer
-      : await req.payload.findByID({
-          collection: "customers",
-          id: doc.customer,
-          depth: 0,
-          req,
-        });
+  const customer = await resolveRelation({
+    collection: "customers",
+    value: doc.customer,
+    req,
+  });
 
   const token = generateDownloadToken();
   const expiresAt = nextDownloadExpiry();
