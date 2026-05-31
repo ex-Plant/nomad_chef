@@ -9,7 +9,8 @@ import { persistCustomerAndOrder } from "./persist-customer-and-order";
 import { sendInterestThanks } from "./send-interest-thanks";
 import { sendOrderConfirmation } from "./send-order-confirmation";
 import { ENV } from "@/config/env";
-import { registerTransaction, plnToGrosze } from "@/lib/payments/p24";
+import { registerTransaction } from "@/lib/payments/p24";
+import { plnToGrosze } from "@/lib/payments/amount";
 
 type CreateOrderResultT =
   | { ok: true; orderNumber: string; totalGross: number; redirectUrl: string }

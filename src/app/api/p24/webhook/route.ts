@@ -22,8 +22,8 @@ import config from "@payload-config";
 import {
   isValidNotificationSign,
   verifyTransaction,
-  plnToGrosze,
 } from "@/lib/payments/p24";
+import { plnToGrosze } from "@/lib/payments/amount";
 import type { P24NotificationT } from "@/types/payments";
 
 export const dynamic = "force-dynamic";

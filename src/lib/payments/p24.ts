@@ -41,10 +41,6 @@ type P24ConfigT = {
   readonly host: string;
 };
 
-export function plnToGrosze(pln: number): number {
-  return Math.round(pln * 100);
-}
-
 function getP24Config(): P24ConfigT {
   // Credentials are validated at boot via ENV (src/config/env.ts); a missing
   // one throws there, so by here they are guaranteed present. P24_SANDBOX is an
