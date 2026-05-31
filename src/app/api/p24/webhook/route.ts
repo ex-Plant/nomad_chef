@@ -1,8 +1,8 @@
 /**
  * POST /api/p24/webhook — Przelewy24 transaction notification (urlStatus).
  *
- * P24 POSTs here for SUCCESSFUL payments only, and retries on the schedule
- * 3/5/15/30/60/150/450 min until we acknowledge with a 200. So we:
+ * P24 POSTs here for SUCCESSFUL payments only, and retries delivery until we
+ * acknowledge with a 200. So we:
  *   1. validate the notification `sign` (reject spoofed payloads),
  *   2. match it to the order via sessionId (= orderNumber),
  *   3. guard against amount tampering,
