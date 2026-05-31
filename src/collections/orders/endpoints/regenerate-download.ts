@@ -14,6 +14,10 @@
  */
 
 import type { Endpoint } from "payload";
+import type {
+  RegenerateDownloadErrorT,
+  RegenerateDownloadSuccessT,
+} from "@/types/orders";
 import {
   generateDownloadToken,
   nextDownloadExpiry,
@@ -26,31 +30,42 @@ export const regenerateDownloadEndpoint: Endpoint = {
   method: "post",
   handler: async (req) => {
     if (!req.user) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
+      return Response.json(
+        { error: "Unauthorized" } satisfies RegenerateDownloadErrorT,
+        { status: 401 },
+      );
     }
 
     const id = req.routeParams?.id;
     if (typeof id !== "string" && typeof id !== "number") {
-      return Response.json({ error: "Invalid id" }, { status: 400 });
+      return Response.json(
+        { error: "Invalid id" } satisfies RegenerateDownloadErrorT,
+        { status: 400 },
+      );
     }
 
     const order = await req.payload
       .findByID({ collection: "orders", id, depth: 1, req })
       .catch(() => null);
     if (!order) {
-      return Response.json({ error: "Order not found" }, { status: 404 });
+      return Response.json(
+        { error: "Order not found" } satisfies RegenerateDownloadErrorT,
+        { status: 404 },
+      );
     }
 
     const product = asPopulated(order.product);
     if (!product || product.format !== "digital") {
       return Response.json(
-        { error: "Order is not a digital product." },
+        {
+          error: "Order is not a digital product.",
+        } satisfies RegenerateDownloadErrorT,
         { status: 400 },
       );
     }
     if (order.paymentStatus !== "paid") {
       return Response.json(
-        { error: "Order is not paid yet." },
+        { error: "Order is not paid yet." } satisfies RegenerateDownloadErrorT,
         { status: 400 },
       );
     }
@@ -71,13 +86,14 @@ export const regenerateDownloadEndpoint: Endpoint = {
 
     const customer = asPopulated(order.customer);
 
-    return Response.json({
+    const result: RegenerateDownloadSuccessT = {
       ok: true,
       token,
       expiresAt: expiresAt.toISOString(),
       downloadUrl: `${ENV.SITE_URL}/download/${token}`,
       customerEmail: customer?.email ?? null,
       customerFirstName: customer?.firstName ?? null,
-    });
+    };
+    return Response.json(result);
   },
 };

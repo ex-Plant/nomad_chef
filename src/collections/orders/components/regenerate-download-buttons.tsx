@@ -7,16 +7,14 @@
  */
 
 import { useState } from "react";
-import { useDocumentInfo } from "@payloadcms/ui";
-
-type ResultT = {
-  token?: string;
-  expiresAt?: string;
-  downloadUrl?: string;
-  customerEmail?: string | null;
-  customerFirstName?: string | null;
-  error?: string;
-};
+import {
+  Banner,
+  Button,
+  CopyToClipboard,
+  toast,
+  useDocumentInfo,
+} from "@payloadcms/ui";
+import type { RegenerateDownloadResponseT } from "@/types/orders";
 
 const SUBJECT = "Twoja książka jest gotowa do pobrania";
 
@@ -48,7 +46,9 @@ export function RegenerateDownloadButtons() {
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">(
     "idle",
   );
-  const [result, setResult] = useState<ResultT | null>(null);
+  const [result, setResult] = useState<RegenerateDownloadResponseT | null>(
+    null,
+  );
 
   if (!id) return null;
   if (data?.paymentStatus !== "paid") return null;
@@ -62,14 +62,17 @@ export function RegenerateDownloadButtons() {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
-      const body = (await res.json().catch(() => ({}))) as ResultT;
-      if (!res.ok) {
+      const body = (await res.json().catch(() => ({
+        error: "Nieprawidłowa odpowiedź serwera.",
+      }))) as RegenerateDownloadResponseT;
+      if (!res.ok || !("token" in body)) {
         setState("error");
         setResult(body);
         return;
       }
       setState("done");
       setResult(body);
+      toast.success("Wygenerowano nowy link do pobrania.");
 
       if (body.customerEmail && body.downloadUrl && body.expiresAt) {
         const mailto = `mailto:${encodeURIComponent(body.customerEmail)}?subject=${encodeURIComponent(SUBJECT)}&body=${encodeURIComponent(
@@ -84,8 +87,12 @@ export function RegenerateDownloadButtons() {
     } catch {
       setState("error");
       setResult({ error: "Network error" });
+      toast.error("Błąd sieci — spróbuj ponownie.");
     }
   }
+
+  const success = result && "token" in result ? result : undefined;
+  const errorMessage = result && "error" in result ? result.error : undefined;
 
   return (
     <div
@@ -93,9 +100,6 @@ export function RegenerateDownloadButtons() {
         display: "flex",
         flexDirection: "column",
         gap: "0.75rem",
-        padding: "1rem",
-        border: "1px solid var(--theme-elevation-150)",
-        borderRadius: "4px",
         marginBottom: "1.5rem",
       }}
     >
@@ -106,42 +110,50 @@ export function RegenerateDownloadButtons() {
         wiadomością do wysłania klientowi.
       </p>
       <div>
-        <button
-          type="button"
-          className="btn btn--style-primary btn--size-small"
+        <Button
+          buttonStyle="primary"
+          size="small"
+          margin={false}
           disabled={state === "loading"}
           onClick={run}
         >
           {state === "loading" ? "…" : "Wygeneruj nowy link i otwórz e-mail"}
-        </button>
+        </Button>
       </div>
 
-      {state === "done" && result?.token && (
-        <div style={{ fontSize: "0.85rem" }}>
-          <div>
-            Nowy link:{" "}
-            <code style={{ wordBreak: "break-all" }}>{result.downloadUrl}</code>
-          </div>
-          <div>
-            Wygasa:{" "}
-            {result.expiresAt
-              ? new Date(result.expiresAt).toLocaleString("pl-PL")
-              : "—"}
-          </div>
-          {!result.customerEmail && (
-            <div style={{ color: "var(--theme-warning-500)" }}>
-              Brak adresu e-mail klienta — wyślij link ręcznie.
+      {state === "done" && success && (
+        <Banner type="success">
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
+          >
+            <div
+              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+            >
+              <span>Nowy link:</span>
+              <code style={{ wordBreak: "break-all" }}>
+                {success.downloadUrl}
+              </code>
+              <CopyToClipboard
+                value={success.downloadUrl}
+                successMessage="Skopiowano link"
+              />
             </div>
-          )}
-          <div style={{ marginTop: "0.5rem", opacity: 0.7 }}>
-            Odśwież stronę, aby zobaczyć zaktualizowane pola.
+            <div>
+              Wygasa: {new Date(success.expiresAt).toLocaleString("pl-PL")}
+            </div>
+            <div style={{ opacity: 0.7 }}>
+              Odśwież stronę, aby zobaczyć zaktualizowane pola.
+            </div>
           </div>
-        </div>
+        </Banner>
+      )}
+      {state === "done" && success && !success.customerEmail && (
+        <Banner type="info">
+          Brak adresu e-mail klienta — wyślij link ręcznie.
+        </Banner>
       )}
       {state === "error" && (
-        <div style={{ color: "var(--theme-error-500)", fontSize: "0.85rem" }}>
-          {result?.error ?? "Coś poszło nie tak."}
-        </div>
+        <Banner type="error">{errorMessage ?? "Coś poszło nie tak."}</Banner>
       )}
     </div>
   );
