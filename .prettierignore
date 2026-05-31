@@ -1,0 +1,5 @@
+# Payload-generated files. Payload owns their formatting (single quotes, no
+# semicolons) and rewrites them on every `generate:importmap` / `generate:types`.
+# Letting Prettier reformat them makes the two tools fight on every commit/build.
+src/app/(payload)/admin/importMap.js
+src/payload-types.ts
