@@ -13,7 +13,11 @@ type EnvKeyT =
   | "EMAIL_USER"
   | "EMAIL_PASS"
   | "EMAIL_TO"
-  | "SITE_URL";
+  | "SITE_URL"
+  | "P24_MERCHANT_ID"
+  | "P24_POS_ID"
+  | "P24_CRC"
+  | "P24_API_KEY";
 
 function required(key: EnvKeyT): string {
   const value = process.env[key];
@@ -32,4 +36,13 @@ export const ENV = {
   EMAIL_TO: required("EMAIL_TO"),
 
   SITE_URL: required("SITE_URL"),
+
+  // Przelewy24 credentials. Required at boot so a misconfigured deploy fails
+  // the build (this module is evaluated by `next build` and `payload`) instead
+  // of letting checkout break silently in production. P24_SANDBOX is an
+  // optional toggle, so it stays a direct read in p24.ts.
+  P24_MERCHANT_ID: required("P24_MERCHANT_ID"),
+  P24_POS_ID: required("P24_POS_ID"),
+  P24_CRC: required("P24_CRC"),
+  P24_API_KEY: required("P24_API_KEY"),
 } as const;

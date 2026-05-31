@@ -17,6 +17,7 @@
 // Auth: HTTP Basic, username = posId, password = API key. Amounts: integer grosze.
 
 import { createHash, timingSafeEqual } from "node:crypto";
+import { ENV } from "@/config/env";
 import { P24_REGISTER_TIME_LIMIT, P24_CHANNEL } from "@/config/payments";
 import type {
   RegisterTransactionInputT,
@@ -45,34 +46,17 @@ export function plnToGrosze(pln: number): number {
 }
 
 function getP24Config(): P24ConfigT {
-  const merchantId = process.env.P24_MERCHANT_ID;
-  const posId = process.env.P24_POS_ID;
-  const crc = process.env.P24_CRC;
-  const apiKey = process.env.P24_API_KEY;
-
-  const missing = (
-    [
-      ["P24_MERCHANT_ID", merchantId],
-      ["P24_POS_ID", posId],
-      ["P24_CRC", crc],
-      ["P24_API_KEY", apiKey],
-    ] as const
-  )
-    .filter(([, value]) => !value)
-    .map(([key]) => key);
-
-  if (missing.length > 0) {
-    throw new Error(`Missing required P24 env vars: ${missing.join(", ")}`);
-  }
-
+  // Credentials are validated at boot via ENV (src/config/env.ts); a missing
+  // one throws there, so by here they are guaranteed present. P24_SANDBOX is an
+  // optional toggle — absent means production — so it stays a direct read.
   const host =
     process.env.P24_SANDBOX === "true" ? SANDBOX_HOST : PRODUCTION_HOST;
 
   return {
-    merchantId: Number(merchantId),
-    posId: Number(posId),
-    crc: crc as string,
-    apiKey: apiKey as string,
+    merchantId: Number(ENV.P24_MERCHANT_ID),
+    posId: Number(ENV.P24_POS_ID),
+    crc: ENV.P24_CRC,
+    apiKey: ENV.P24_API_KEY,
     host,
   };
 }
