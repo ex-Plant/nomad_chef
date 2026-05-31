@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { readCheckoutCookie } from "@/lib/checkout-session";
+import { P24_PAYABLE_WINDOW_MS } from "@/config/payments";
 import { ProcessingStatus } from "./processing-status";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +29,7 @@ export default async function CheckoutProcessingPage() {
         orderNumber={order.orderNumber}
         customerEmail={customer?.email ?? null}
         paymentStatus={order.paymentStatus}
+        payableWindowMs={P24_PAYABLE_WINDOW_MS}
       />
     </main>
   );

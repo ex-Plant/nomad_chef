@@ -1,9 +1,9 @@
-// Thin Przelewy24 (P24) REST client — register, verify, and notification-sign
-// checking. No SDK; we hit the documented v1 contract directly.
+// Thin Przelewy24 (P24) REST client — register, verify, status PULL, and
+// notification-sign checking. No SDK; we hit the documented v1 contract directly.
 //
 // Config is read + validated lazily (not at boot) so an unset P24 var only
-// fails the payment path, never the whole site. See src/config/env.ts for the
-// boot-required vars and the rationale for keeping feature vars out of it.
+// fails the payment path, never the whole site. Tunables (payable window,
+// timeLimit, channel) live in src/config/payments.ts; contract shapes in ./types.
 //
 // Contract reference (sandbox): https://developers.przelewy24.pl
 //   register: POST /api/v1/transaction/register
@@ -17,6 +17,14 @@
 // Auth: HTTP Basic, username = posId, password = API key. Amounts: integer grosze.
 
 import { createHash, timingSafeEqual } from "node:crypto";
+import { P24_REGISTER_TIME_LIMIT, P24_CHANNEL } from "@/config/payments";
+import type {
+  RegisterTransactionInputT,
+  RegisterTransactionResultT,
+  VerifyTransactionInputT,
+  P24TransactionT,
+  P24NotificationT,
+} from "./types";
 
 const SANDBOX_HOST = "https://sandbox.przelewy24.pl";
 const PRODUCTION_HOST = "https://secure.przelewy24.pl";
@@ -30,75 +38,6 @@ type P24ConfigT = {
   readonly crc: string;
   readonly apiKey: string;
   readonly host: string;
-};
-
-type RegisterTransactionInputT = {
-  sessionId: string;
-  amountGrosze: number;
-  description: string;
-  email: string;
-  urlReturn: string;
-  urlStatus: string;
-  currency?: string;
-  country?: string;
-  language?: string;
-};
-
-type RegisterTransactionResultT = {
-  token: string;
-  redirectUrl: string;
-};
-
-type VerifyTransactionInputT = {
-  sessionId: string;
-  orderId: number;
-  amountGrosze: number;
-  currency?: string;
-};
-
-// Transaction statuses P24 returns from GET /transaction/by/sessionId. P24 only
-// PUSHes the urlStatus webhook for a SUCCESSFUL payment, so this PULL is the only
-// way to learn that a payment failed, was cancelled, or was abandoned.
-export const P24_TRANSACTION_STATUS = {
-  noPayment: 0, // no payment recorded YET — ambiguous: failed/cancelled card OR
-  // a traditional transfer not yet landed. NOT safe to treat as terminal.
-  advance: 1, // partial / advance payment
-  paid: 2, // paid in full
-  returned: 3, // refunded
-} as const;
-
-// How long a P24 transaction can still be paid before a `noPayment (0)` status
-// is concluded a failure. All session-based methods (card, BLIK, pay-by-link
-// bank transfer, wallet) settle within minutes; 30 min covers the slowest legit
-// completion (a buyer dawdling in their bank login) with margin, and is
-// recoverable anyway — a late success webhook still flips `failed → paid` + fulfils.
-//
-// TODO: disable the *deferred* methods in the P24 production panel — `Przekaz
-// tradycyjny` (178), and ideally `mBank - Raty` (136, financing). They can land
-// hours/days later, so 30 min would false-fail them. This 30-min window ASSUMES
-// they are off; revisit if either is re-enabled.
-export const P24_PAYABLE_WINDOW_MINUTES = 30;
-export const P24_PAYABLE_WINDOW_MS = P24_PAYABLE_WINDOW_MINUTES * 60 * 1000;
-
-export type P24TransactionT = {
-  sessionId: string;
-  orderId: number;
-  amount: number;
-  status: number;
-};
-
-// Fields P24 POSTs to the urlStatus webhook for a successful payment.
-export type P24NotificationT = {
-  merchantId: number;
-  posId: number;
-  sessionId: string;
-  amount: number;
-  originAmount: number;
-  currency: string;
-  orderId: number;
-  methodId: number;
-  statement: string;
-  sign: string;
 };
 
 export function plnToGrosze(pln: number): number {
@@ -194,6 +133,11 @@ export async function registerTransaction(
     language: input.language ?? DEFAULT_LANGUAGE,
     urlReturn: input.urlReturn,
     urlStatus: input.urlStatus,
+    // Bound to the payable window so P24's expiry matches when we conclude
+    // failure (not in the `sign` — only the 5 documented fields are signed).
+    timeLimit: P24_REGISTER_TIME_LIMIT,
+    // Restrict to instant methods (also not signed). See P24_CHANNEL.
+    channel: P24_CHANNEL,
     sign: signature,
   });
 

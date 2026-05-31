@@ -6,6 +6,10 @@ import { Button } from "@/components/shared/button";
 import { Loader } from "@/components/shared/loader";
 import { HelpDialog } from "@/components/sections/contact/help-dialog";
 import { checkPaymentOutcome } from "@/lib/orders/check-payment-outcome";
+import {
+  CHECKOUT_POLL_INTERVAL_MS,
+  CHECKOUT_GRACE_POLLS,
+} from "@/config/payments";
 
 type PaymentStatusT = "pending" | "paid" | "failed" | "refunded";
 
@@ -13,27 +17,23 @@ type ProcessingStatusPropsT = {
   orderNumber: string;
   customerEmail: string | null;
   paymentStatus: PaymentStatusT;
+  // P24's payable window (ms), passed from the server so the client doesn't pull
+  // the node-only p24 module into its bundle. Drives how long we poll.
+  payableWindowMs: number;
 };
 
 export function ProcessingStatus({
   orderNumber,
   customerEmail,
   paymentStatus,
+  payableWindowMs,
 }: ProcessingStatusPropsT) {
   const router = useRouter();
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-  const [hasTimedOut, setHasTimedOut] = useState(false);
-  const [isChecking, setIsChecking] = useState(false);
 
-  // Manual re-check: PULL P24 for the authoritative outcome (the poll loop has
-  // already stopped at this point), then refresh so the server component
-  // reflects any settled state. Mirrors what the loop did past GRACE_POLLS.
-  async function handleManualCheck() {
-    setIsChecking(true);
-    await checkPaymentOutcome().catch(() => undefined);
-    setIsChecking(false);
-    router.refresh();
-  }
+  // Poll for the whole payable window, derived from the window itself so polling
+  // and the failure cutoff stay in lockstep.
+  const maxPolls = Math.ceil(payableWindowMs / CHECKOUT_POLL_INTERVAL_MS);
 
   // The buyer is sent here by P24's urlReturn at roughly the same moment as the
   // urlStatus webhook fires — the browser often wins, so we land on a `pending`
@@ -41,12 +41,13 @@ export function ProcessingStatus({
   // digital fulfillment stamped a token, the page itself redirects to
   // /download/<token>.
   //
-  // The first GRACE_POLLS only chase that success race (the webhook flipping the
+  // The first CHECKOUT_GRACE_POLLS only chase that success race (the webhook flipping the
   // order to paid). After the grace window we additionally PULL P24 for the
   // authoritative outcome via checkPaymentOutcome — P24 never webhooks a failed
-  // or cancelled payment, so this is what surfaces a failure in seconds instead
-  // of spinning all the way to the timeout. Past MAX_POLLS we stop and switch to
-  // the manual/help state (download email is the fallback).
+  // or cancelled payment, so this is what surfaces a failure once the payable
+  // window has elapsed. The PULL on the last in-window tick resolves the order to
+  // paid/failed, so reaching maxPolls just stops the timer (the pending copy
+  // already points the buyer to the download email).
   useEffect(() => {
     if (paymentStatus !== "pending") return;
     let polls = 0;
@@ -54,13 +55,12 @@ export function ProcessingStatus({
 
     const id = setInterval(async () => {
       polls += 1;
-      if (polls > MAX_POLLS) {
+      if (polls > maxPolls) {
         clearInterval(id);
-        setHasTimedOut(true);
         return;
       }
 
-      if (polls > GRACE_POLLS) {
+      if (polls > CHECKOUT_GRACE_POLLS) {
         const outcome = await checkPaymentOutcome().catch(() => "pending");
         if (cancelled) return;
         if (outcome === "paid" || outcome === "failed") {
@@ -71,19 +71,13 @@ export function ProcessingStatus({
       }
 
       router.refresh();
-    }, POLL_INTERVAL_MS);
+    }, CHECKOUT_POLL_INTERVAL_MS);
 
     return () => {
       cancelled = true;
       clearInterval(id);
     };
-  }, [paymentStatus, router]);
-
-  const isPaymentProblem =
-    paymentStatus === "failed" || paymentStatus === "refunded";
-  // Still pending after the poll window: webhook hasn't settled in-browser.
-  const isStalled = paymentStatus === "pending" && hasTimedOut;
-  const showHelp = isPaymentProblem || isStalled;
+  }, [paymentStatus, router, maxPolls]);
 
   const helpContext = {
     surface: "checkout" as const,
@@ -103,18 +97,30 @@ export function ProcessingStatus({
         </p>
       </div>
 
-      {!isStalled && <Loader color="yellow" className="bg-transparent" />}
+      {paymentStatus === "pending" && (
+        <Loader color="yellow" className="bg-transparent" />
+      )}
 
       <div className="flex flex-col gap-3">
         <h1 className="font-display text-3xl tracking-tight uppercase md:text-4xl">
-          {resolveHeading(paymentStatus, isStalled)}
+          {resolveHeading(paymentStatus)}
         </h1>
         <p
           role="status"
           aria-live="polite"
           className="font-sans text-base leading-relaxed text-white/85"
         >
-          {paymentStatus === "pending" && "Czekamy na potwierdzenie płatności."}
+          {paymentStatus === "pending" && (
+            <>
+              Czekamy na potwierdzenie płatności, to nie powinno zająć dłużej niż
+              kilka minut.
+              <br />
+              Gdy płatność trafi na nasze konto wyślemy Ci maila z linkiem do
+              pobrania ebooka.
+              <br />
+              Na link możesz poczekać również na tej stronie.
+            </>
+          )}
           {paymentStatus === "paid" && "Zamówienie zostało opłacone."}
           {paymentStatus === "failed" && "Płatność nie powiodła się."}
           {paymentStatus === "refunded" && "Zamówienie zwrócone."}
@@ -124,28 +130,14 @@ export function ProcessingStatus({
         </p>
       </div>
 
-      {isStalled && (
-        <Button
-          type="button"
-          variant="blue-solid"
-          size="compact"
-          disabled={isChecking}
-          onClick={handleManualCheck}
-        >
-          {isChecking ? "Sprawdzanie…" : "Sprawdź ponownie"}
-        </Button>
-      )}
-
-      {showHelp && (
-        <Button
-          type="button"
-          variant="blue-solid"
-          size="compact"
-          onClick={() => setIsHelpOpen(true)}
-        >
-          Mam problem z płatnością
-        </Button>
-      )}
+      <Button
+        type="button"
+        variant="blue-solid"
+        size="compact"
+        onClick={() => setIsHelpOpen(true)}
+      >
+        Mam problem z płatnością
+      </Button>
 
       <HelpDialog
         isOpen={isHelpOpen}
@@ -157,16 +149,9 @@ export function ProcessingStatus({
   );
 }
 
-function resolveHeading(status: PaymentStatusT, isStalled: boolean): string {
+function resolveHeading(status: PaymentStatusT): string {
   if (status === "paid") return "Płatność zaksięgowana";
-  if (isStalled) return "Potwierdzamy płatność";
+  if (status === "failed") return "Płatność nieudana";
+  if (status === "refunded") return "Zamówienie zwrócone";
   return "Zamówienie utworzone";
 }
-
-const POLL_INTERVAL_MS = 3000;
-// First 2 polls (~6s) only wait on the webhook-driven success race before we
-// start PULLing P24 — avoids flashing a failed state during a normal fast settle.
-const GRACE_POLLS = 2;
-// 70 × 3s ≈ 3.5 min — covers P24's first webhook retry (+3 min), then stop;
-// the download email is the fallback and the buyer can re-check manually.
-const MAX_POLLS = 70;

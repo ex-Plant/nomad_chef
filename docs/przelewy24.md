@@ -45,9 +45,10 @@ not settled to us until `transaction/verify` succeeds.
 
 **The return race:** P24's `urlReturn` (browser) and `urlStatus` (webhook) fire
 near-simultaneously and the browser often wins, landing on a still-`pending`
-page. `processing-status.tsx` polls via `router.refresh()` (3s interval, ~3.5 min
-cap) so the page resolves to the download view on its own once the order settles.
-The download email is the fallback if the poll cap is hit.
+page. `processing-status.tsx` polls (15s interval) for the whole payable window —
+poll count derived from `P24_PAYABLE_WINDOW_MINUTES`, not a magic cap — so the
+page resolves to the download view (or to a `failed` state, see below) on its own.
+The download email is the fallback if the buyer closes the tab first.
 
 **Failure detection (the PULL path):** P24 does **not** call `urlStatus` for a
 failed, cancelled, or abandoned payment — and `urlReturn` fires for _every_
@@ -64,16 +65,27 @@ action, which PULLs `transaction/by/sessionId` for the authoritative status
   declined/cancelled card and a traditional bank transfer ("przelew tradycyjny")
   that simply hasn't landed yet both read `0`, and the status API can't separate
   them. The order is only marked `failed` once the **payable window has elapsed**
-  (`P24_PAYABLE_WINDOW_HOURS`, default 72h, measured from `order.createdAt`) —
-  the point past which a deferred transfer can no longer arrive. Before that it
-  stays `pending`. So a real card failure does **not** flip to `failed` within
-  the in-browser poll window; the buyer hits the timeout/help state instead, and
-  the order is reconciled to `failed` later (or to `paid` if a transfer lands).
+  (`P24_PAYABLE_WINDOW_MINUTES`, default **15 min**, measured from
+  `order.createdAt`) — the point past which the transaction can no longer be
+  paid. Before that it stays `pending`. The processing page polls every 15s for
+  the **full window** (poll count derived from `P24_PAYABLE_WINDOW_MINUTES`), so
+  if the buyer keeps the tab open a real card failure flips to `failed`
+  in-browser right when the window elapses (~15 min); otherwise a later PULL or a
+  late success webhook reconciles it afterwards.
 
-`P24_PAYABLE_WINDOW_HOURS` **must be ≥ the real P24 transaction validity**, which
-is governed by the `timeLimit` passed on register (default = the account's panel
-setting). Confirm/set that so the window can't conclude "failed" while a
-transaction is still payable.
+The 15-min window assumes only **instant** methods are offered (card, BLIK,
+pay-by-link transfer — all settle within minutes). We make that deterministic at
+register time (see §2): `registerTransaction` sends `timeLimit = min(15, 99)`, so
+P24 expires the transaction exactly when we'd conclude failure — no reliance on
+the account's panel default. `P24_PAYABLE_WINDOW_MINUTES` **must be ≥ the real P24
+transaction validity**; binding `timeLimit` to it keeps the two in lockstep.
+
+**Deferred methods must stay off.** Traditional transfer (`przekaz tradycyjny`)
+and instalments (`Raty`) can land hours/days later, so 15 min would false-fail
+them. Disable them — in the panel, or from code via the `channel` whitelist (§2).
+If you ever re-enable one, raise `P24_PAYABLE_WINDOW_MINUTES` to match its real
+validity (and note `timeLimit` maxes at 99 min, so it can't cover a multi-day
+transfer — you'd stop sending `timeLimit` in that case).
 
 Marking `failed` is **recoverable**: a later success notification still finds the
 order not-`paid`, verifies, and flips it `failed → paid` (fulfilment runs then).
@@ -88,7 +100,6 @@ order not-`paid`, verifies, and flips it `failed → paid` (fulfilment runs then
 | `src/components/sections/cart/cart-form.tsx`          | `window.location.href = redirectUrl` on success.                                                                                                      |
 | `src/app/api/p24/webhook/route.ts`                    | `urlStatus` handler: sign-check → amount guard → idempotency → verify → flip to paid.                                                                 |
 | `src/collections/orders/hooks/digital-fulfillment.ts` | Existing hook. Fires on `pending→paid`, issues token + download email. **Untouched by P24.**                                                          |
-| `src/app/api/dev/mark-paid/route.ts`                  | Dev-only simulator (gated by `NODE_ENV`/`VERCEL_ENV`) to flip orders paid without P24.                                                                |
 
 ---
 
@@ -136,6 +147,39 @@ A `404`/non-200 means P24 has no transaction for that `sessionId` yet.
 
 `sessionId` = our `orderNumber` (so the webhook can match the notification back
 to the order). `register` returns `{ data: { token } }`.
+
+### Limiting payment methods & the pay-window (`channel`, `timeLimit`, `method`)
+
+These optional `register` params are **not** part of the `sign` (only the five
+fields above are signed), so they can be added freely.
+
+- **`timeLimit`** — minutes the buyer has to pay, `0`–`99` (`0` = no limit).
+  `registerTransaction` sends `min(P24_PAYABLE_WINDOW_MINUTES, 99)` so P24 expires
+  the transaction exactly when our failure window elapses — independent of the
+  panel default. _(Currently wired.)_
+- **`channel`** — a **bitmask whitelist** of method categories to show: sum the
+  ones you want; anything omitted is hidden. It only narrows within what the
+  account has enabled, and is the from-code alternative to toggling methods in the
+  panel. `registerTransaction` sends **`channel = 8195`** (`1 + 2 + 8192` = card +
+  online transfer + BLIK), excluding traditional transfer and instalments. _(Currently wired.)_
+
+  | value | channel                                       | value   | channel                |
+  | ----- | --------------------------------------------- | ------- | ---------------------- |
+  | `1`   | card + ApplePay/GooglePay                     | `64`    | only pay-by-link       |
+  | `2`   | online transfer (pay-by-link banks)           | `128`   | **instalments (Raty)** |
+  | `4`   | **traditional transfer (przekaz tradycyjny)** | `256`   | wallets                |
+  | `16`  | all methods                                   | `4096`  | card                   |
+  | `32`  | pre-payment                                   | `8192`  | BLIK                   |
+  |       |                                               | `16384` | all except BLIK        |
+
+  To offer card + online transfer + BLIK and **exclude the deferred methods**
+  (traditional transfer `4`, instalments `128`): `channel = 1 + 2 + 8192 = 8195`
+  (add `256` for wallets → `8451`). Excluding those is exactly what makes the
+  30-min failure window safe (§1). Test the resulting paywall once on sandbox —
+  channel grouping can vary by account.
+
+- **`method`** — a single method ID forces one method and skips the chooser.
+  `GET /api/v1/payment/methods/{lang}` (Basic auth) lists the available IDs.
 
 ### Webhook behaviour (important)
 
@@ -268,14 +312,13 @@ validation.
 - No webhook POST in the inspector? → IP whitelist (`%`) or a panel
   "registered return addresses" restriction.
 
-Without a tunnel you can still test the first half (register + redirect to the
-paywall). To simulate the paid state locally, use the dev endpoint:
-
-```bash
-curl -X POST http://localhost:3000/api/dev/mark-paid \
-  -H 'content-type: application/json' \
-  -d '{"orderNumber":"0001-2026"}'
-```
+Without a tunnel you can still test the whole flow on the **sandbox** paywall:
+pick a method (e.g. mBank) to reach the **"Wybierz czynność"** simulator, then
+choose an outcome — **Zapłać** (success), **Błąd płatności**, **Brak wpłaty**,
+**Nieprawidłowa kwota** — to drive the paid/failed branches without real money.
+The PULL path (`checkPaymentOutcome`) settles `paid` and detects non-success even
+when the webhook can't reach you; only the **Zapłać** outcome makes P24 POST
+`urlStatus` (the others leave the order `pending` → reconciled per §1).
 
 ---
 
@@ -301,10 +344,7 @@ decision.
    redirecting to a live paywall — contradictory). Decide whether to enable
    `sendOrderConfirmation` (currently commented out). The post-payment download
    email already fires from `digitalFulfillment`.
-5. **Confirm the dev endpoint is gated.** `src/app/api/dev/mark-paid/route.ts`
-   already 404s on production/preview via `NODE_ENV`/`VERCEL_ENV` — verify it
-   stays that way.
-6. **Smoke test** with one real low-value transaction: webhook lands → order
+5. **Smoke test** with one real low-value transaction: webhook lands → order
    flips `paid` → download email arrives → file downloads via the token.
 
 ---

@@ -23,8 +23,8 @@ import {
   isValidNotificationSign,
   verifyTransaction,
   plnToGrosze,
-  type P24NotificationT,
 } from "@/lib/payments/p24";
+import type { P24NotificationT } from "@/lib/payments/types";
 
 export const dynamic = "force-dynamic";
 
