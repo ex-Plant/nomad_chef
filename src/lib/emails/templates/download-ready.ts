@@ -1,21 +1,22 @@
 import { renderEmailShell } from "../render-shell";
-import type { EmailItemT } from "../constants";
+import { EMAIL_COLORS, type EmailItemT } from "../constants";
 import { escapeHtml, buildGreeting } from "../escape-html";
 
 type DownloadReadyArgsT = {
   customerFirstName?: string | null;
   downloadUrl: string;
   expiresLabel: string;
+  supportEmail: string;
   omitLogo?: boolean;
 };
 
 export function generateDownloadReadyHtml(args: DownloadReadyArgsT): string {
   const items: EmailItemT[] = [
     { type: "text", content: buildGreeting(args.customerFirstName) },
+    { type: "text", content: "Dziękuję za zakup." },
     {
       type: "text",
-      content:
-        "Dziękujemy za zakup. Ebook możesz pobrać klikając w poniższy link:",
+      content: "Ebook możesz pobrać klikając w poniższy link:",
     },
     {
       type: "button",
@@ -24,13 +25,17 @@ export function generateDownloadReadyHtml(args: DownloadReadyArgsT): string {
     },
     {
       type: "text",
-      content: `Link aktywny do ${escapeHtml(args.expiresLabel)}.`,
+      content: `Link będzie aktywny do ${escapeHtml(args.expiresLabel)}.`,
+    },
+    {
+      type: "text",
+      content: `W przypadku jakichkolwiek problemów z pobraniem napisz do mnie: <a href="mailto:${args.supportEmail}" style="color: ${EMAIL_COLORS.coral};">${escapeHtml(args.supportEmail)}</a>`,
     },
     { type: "text", content: "Miłej lektury!" },
   ];
 
   return renderEmailShell({
-    title: "Twoja książka jest gotowa do pobrania",
+    title: "Twój ebook jest gotowy do pobrania",
     items,
     omitLogo: args.omitLogo,
   });

@@ -35,6 +35,7 @@ const DOWNLOAD_READY_FIXTURE = {
   customerFirstName: "Anna",
   downloadUrl: "https://www.chaoskitchen.pl/download/abc123token",
   expiresLabel: "20 maja 2026, 14:30",
+  supportEmail: "marta@chaoskitchen.pl",
 };
 
 const SHIPMENT_FIXTURE = {

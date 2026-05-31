@@ -28,5 +28,8 @@ export function generateContactMessageHtml(args: ContactMessageArgsT): string {
     title: "Wiadomość z formularza",
     items,
     omitLogo: args.omitLogo,
+    // Operator-facing — the message lands in the chef's own inbox, so the
+    // "Marta Leśniewska / Chaos Kitchen" brand footer is pointless here.
+    omitFooter: true,
   });
 }

@@ -24,16 +24,17 @@ export async function sendDownloadEmail({
 
   await sendEmail({
     to: customerEmail,
-    subject: "Twoja książka jest gotowa do pobrania",
+    subject: "Twój ebook jest gotowy do pobrania",
     text: [
       greeting,
       "",
-      "Dziękujemy za zakup. Pobierz swoją książkę:",
+      "Dziękuję za zakup.",
+      "Ebook możesz pobrać klikając w poniższy link:",
       downloadUrl,
       "",
-      `Link aktywny do ${expiresLabel}.`,
+      `Link będzie aktywny do ${expiresLabel}.`,
       "",
-      'Jeśli masz problem z pobraniem, kliknij na stronie "Mam problem" i napisz do nas — odezwiemy się indywidualnie.',
+      `W przypadku jakichkolwiek problemów z pobraniem napisz do mnie: ${ENV.MARTA_EMAIL}`,
       "",
       "Miłej lektury!",
     ].join("\n"),
@@ -41,6 +42,7 @@ export async function sendDownloadEmail({
       customerFirstName,
       downloadUrl,
       expiresLabel,
+      supportEmail: ENV.MARTA_EMAIL,
     }),
   });
 }
