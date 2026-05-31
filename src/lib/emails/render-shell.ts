@@ -9,17 +9,19 @@ type RenderShellArgsT = {
   title?: string;
   items: EmailItemT[];
   omitLogo?: boolean;
+  omitFooter?: boolean;
 };
 
 export function renderEmailShell({
   title,
   items,
   omitLogo = false,
+  omitFooter = false,
 }: RenderShellArgsT): string {
   const itemsHtml = items.map(renderItem).join("\n");
   const titleHtml = title ? renderTitle(title) : "";
   const logoHtml = omitLogo ? "" : renderLogo();
-  const footerHtml = renderBrandFooter();
+  const footerHtml = omitFooter ? "" : renderBrandFooter();
 
   return `<!DOCTYPE html>
 <html lang="pl">
@@ -59,7 +61,7 @@ function renderItem(item: EmailItemT): string {
   }
 
   if (item.type === "button") {
-    return `<p style="margin: 0 0 ${EMAIL_LAYOUT.gap} 0; text-align: center;">
+    return `<p style="margin: ${EMAIL_LAYOUT.buttonGap} 0; text-align: left;">
   <a href="${item.url}" style="background-color: ${EMAIL_COLORS.coral}; color: ${EMAIL_COLORS.textOnDark}; padding: 14px 28px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block; font-size: ${EMAIL_LAYOUT.fontSize}; letter-spacing: 0.02em;">${item.label}</a>
 </p>`;
   }

@@ -7,6 +7,7 @@ import { setCheckoutCookie } from "@/lib/checkout/checkout-session";
 import { findActiveProduct } from "./find-active-product";
 import { persistCustomerAndOrder } from "./persist-customer-and-order";
 import { sendInterestThanks } from "./send-interest-thanks";
+import { sendOrderConfirmation } from "./send-order-confirmation";
 import { ENV } from "@/config/env";
 import { registerTransaction, plnToGrosze } from "@/lib/payments/p24";
 
@@ -38,18 +39,13 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
   }
   const { order } = persistResult;
 
-  // TODO: When ebook sales launch, revert to sendOrderConfirmation below
-  // (re-add `import { ENV } from "@/config/env";` and the
-  // `sendOrderConfirmation` import). For now the customer gets a generic
-  // pre-launch thank-you and no order-details email is sent to the operator.
-  //
-  // await sendOrderConfirmation({
-  //   payload,
-  //   order,
-  //   values,
-  //   product,
-  //   emailTo: ENV.EMAIL_TO,
-  // });
+  await sendOrderConfirmation({
+    payload,
+    order,
+    values,
+    product,
+    emailTo: ENV.EMAIL_TO,
+  });
   await sendInterestThanks({ customerEmail: values.email });
 
   // Stamp a signed cookie holding the order id so the next page

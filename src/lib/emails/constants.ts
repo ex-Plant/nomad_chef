@@ -22,6 +22,9 @@ export const EMAIL_LAYOUT = {
   fontSize: "16px",
   gap: "16px",
   logoGap: "8px",
+  // Buttons get extra breathing room above and below — they intentionally
+  // break the uniform `gap` rhythm to stand out as a CTA.
+  buttonGap: "32px",
 } as const;
 
 export function getLogoUrl(): string {

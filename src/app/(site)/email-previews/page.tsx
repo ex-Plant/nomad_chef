@@ -22,6 +22,7 @@ const ORDER_FIXTURE = {
     companyName: "Kowalska Studio Sp. z o.o.",
     nip: "1234567890",
   },
+  adminUrl: "https://www.chaoskitchen.pl/admin/collections/orders/123",
 };
 
 const CONTACT_FIXTURE = {

@@ -15,6 +15,7 @@ type OrderConfirmationArgsT = {
     companyName: string;
     nip: string;
   };
+  adminUrl: string;
   omitLogo?: boolean;
 };
 
@@ -53,10 +54,19 @@ export function generateOrderConfirmationHtml(
     });
   }
 
+  items.push({
+    type: "button",
+    label: "Zobacz zamówienie",
+    url: args.adminUrl,
+  });
+
   return renderEmailShell({
-    title: `Nowe zamówienie ${args.orderNumber}`,
+    title: "Masz nowe zamówienie",
     items,
     omitLogo: args.omitLogo,
+    // Operator-facing notification sent to the chef herself — the
+    // "Marta Leśniewska / Chaos Kitchen" brand footer is pointless here.
+    omitFooter: true,
   });
 }
 

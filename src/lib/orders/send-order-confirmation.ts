@@ -1,5 +1,6 @@
 import type { Payload } from "payload";
 import type { Product } from "@/payload-types";
+import { ENV } from "@/config/env";
 import { sendEmail } from "@/lib/emails/send";
 import type { CartFormValuesT } from "@/lib/cart/cart-schema";
 import { generateOrderConfirmationHtml } from "@/lib/emails/templates/order-confirmation";
@@ -39,6 +40,7 @@ export async function sendOrderConfirmation({
         invoice: values.wantsInvoice
           ? { companyName: values.companyName, nip: values.nip }
           : undefined,
+        adminUrl: `${ENV.SITE_URL}/admin/collections/orders/${order.id}`,
       }),
     });
     await updateEmailStatus({
