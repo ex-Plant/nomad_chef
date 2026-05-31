@@ -4,13 +4,7 @@ import { ENV } from "@/config/env";
 import { contactFormSchema } from "@/lib/contact/contact-schema";
 import { generateContactMessageHtml } from "@/lib/emails/templates/contact-message";
 import { sendEmail } from "@/lib/emails/send";
-
-export type ContactContextT = {
-  surface: "download" | "checkout";
-  status?: string;
-  token?: string;
-  orderNumber?: string;
-};
+import type { ContactContextT } from "@/types/contact";
 
 export async function sendContactEmail(
   input: unknown,

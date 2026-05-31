@@ -24,7 +24,7 @@ import type {
   VerifyTransactionInputT,
   P24TransactionT,
   P24NotificationT,
-} from "./types";
+} from "@/types/payments";
 
 const SANDBOX_HOST = "https://sandbox.przelewy24.pl";
 const PRODUCTION_HOST = "https://secure.przelewy24.pl";

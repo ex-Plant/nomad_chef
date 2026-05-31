@@ -8,7 +8,7 @@ import {
   verifyTransaction,
   plnToGrosze,
 } from "@/lib/payments/p24";
-import { P24_TRANSACTION_STATUS } from "@/lib/payments/types";
+import { P24_TRANSACTION_STATUS } from "@/lib/payments/transaction-status";
 import { P24_PAYABLE_WINDOW_MS } from "@/config/payments";
 
 type PaymentOutcomeT = "pending" | "paid" | "failed";

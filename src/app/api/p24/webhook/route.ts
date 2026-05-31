@@ -24,7 +24,7 @@ import {
   verifyTransaction,
   plnToGrosze,
 } from "@/lib/payments/p24";
-import type { P24NotificationT } from "@/lib/payments/types";
+import type { P24NotificationT } from "@/types/payments";
 
 export const dynamic = "force-dynamic";
 

@@ -1,5 +1,6 @@
-/* Przelewy24 contract — request/response shapes and the transaction-status codes
-   P24 returns from GET /transaction/by/sessionId. Pure types + constants, no logic. */
+/* Przelewy24 contract — request/response shapes P24 exchanges over its REST API.
+   Pure types, no logic. Transaction-status codes live in
+   src/lib/payments/transaction-status.ts (a runtime value, not a type). */
 
 export type RegisterTransactionInputT = {
   sessionId: string;
@@ -45,14 +46,3 @@ export type P24NotificationT = {
   statement: string;
   sign: string;
 };
-
-// Transaction statuses P24 returns from GET /transaction/by/sessionId. P24 only
-// PUSHes the urlStatus webhook for a SUCCESSFUL payment, so this PULL is the only
-// way to learn that a payment failed, was cancelled, or was abandoned.
-export const P24_TRANSACTION_STATUS = {
-  noPayment: 0, // no payment recorded YET — ambiguous: failed/cancelled card OR
-  // a traditional transfer not yet landed. NOT safe to treat as terminal.
-  advance: 1, // partial / advance payment
-  paid: 2, // paid in full
-  returned: 3, // refunded
-} as const;

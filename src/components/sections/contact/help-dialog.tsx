@@ -2,7 +2,7 @@
 
 import { FormDialog } from "@/components/shared/form-dialog";
 import { HelpForm } from "./help-form";
-import type { ContactContextT } from "@/lib/contact/send-contact-email";
+import type { ContactContextT } from "@/types/contact";
 
 type HelpDialogPropsT = {
   isOpen: boolean;
