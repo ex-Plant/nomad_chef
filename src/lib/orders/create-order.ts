@@ -1,5 +1,6 @@
 "use server";
 
+import { after } from "next/server";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { cartFormSchema } from "@/lib/cart/cart-schema";
@@ -40,13 +41,17 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
   }
   const { order } = persistResult;
 
-  await sendOrderConfirmation({
-    order,
-    values,
-    product,
-    emailTo: ENV.EMAIL_TO,
-  });
-  await sendInterestThanks({ customerEmail: values.email });
+  // Operator notice + buyer interest-thanks don't feed the redirect, so defer
+  // them past the response with after(): they no longer block the buyer's path
+  // to the P24 paywall, and the platform keeps the function alive (via waitUntil)
+  // to finish the sends. Run concurrently; both swallow their own errors, so the
+  // Promise.all never rejects.
+  after(() =>
+    Promise.all([
+      sendOrderConfirmation({ order, values, product, emailTo: ENV.EMAIL_TO }),
+      sendInterestThanks({ customerEmail: values.email }),
+    ]),
+  );
 
   // Stamp a signed cookie holding the order id so the next page
   // (/checkout/processing) can identify this anonymous buyer without a
