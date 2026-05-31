@@ -30,7 +30,7 @@ export function renderEmailShell({
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body style="font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 0;">
-    <div style="max-width: 600px; margin: 0 auto; padding: 40px 0 24px;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 40px 24px 24px;">
       ${titleHtml}
       ${itemsHtml}
       ${footerHtml}

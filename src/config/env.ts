@@ -13,7 +13,6 @@ type EnvKeyT =
   | "EMAIL_USER"
   | "EMAIL_PASS"
   | "EMAIL_TO"
-  | "MARTA_EMAIL"
   | "SITE_URL";
 
 function required(key: EnvKeyT): string {
@@ -31,7 +30,6 @@ export const ENV = {
   EMAIL_USER: required("EMAIL_USER"),
   EMAIL_PASS: required("EMAIL_PASS"),
   EMAIL_TO: required("EMAIL_TO"),
-  MARTA_EMAIL: required("MARTA_EMAIL"),
 
   SITE_URL: required("SITE_URL"),
 } as const;

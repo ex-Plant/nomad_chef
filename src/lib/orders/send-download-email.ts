@@ -34,7 +34,7 @@ export async function sendDownloadEmail({
       "",
       `Link będzie aktywny do ${expiresLabel}.`,
       "",
-      `W przypadku jakichkolwiek problemów z pobraniem napisz do mnie: ${ENV.MARTA_EMAIL}`,
+      `W przypadku jakichkolwiek problemów z pobraniem napisz do mnie: ${ENV.EMAIL_TO}`,
       "",
       "Miłej lektury!",
     ].join("\n"),
@@ -42,7 +42,7 @@ export async function sendDownloadEmail({
       customerFirstName,
       downloadUrl,
       expiresLabel,
-      supportEmail: ENV.MARTA_EMAIL,
+      supportEmail: ENV.EMAIL_TO,
     }),
   });
 }
