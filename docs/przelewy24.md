@@ -36,7 +36,7 @@ cart submit
                           → download token + email                            ◄┘
   → buyer redirected to urlReturn = /checkout/processing
         if order already paid + has token → server redirect to /download/{token}
-        else (browser beat the webhook) → poll (router.refresh every 3s),
+        else (browser beat the webhook) → poll (router.refresh every 15s),
              redirect to /download/{token} once the webhook lands
 ```
 
@@ -90,13 +90,30 @@ transfer — you'd stop sending `timeLimit` in that case).
 Marking `failed` is **recoverable**: a later success notification still finds the
 order not-`paid`, verifies, and flips it `failed → paid` (fulfilment runs then).
 
+**Server-side reconciliation (the daily cron).** The PULL above only runs while
+the buyer keeps `/checkout/processing` open. If they close the tab on a
+failed/abandoned payment, nothing client-side ever fires — and since P24 never
+webhooks a non-success, the order would sit `pending` forever.
+`GET /api/cron/reconcile-payments` closes that gap: once a day it finds every
+`pending` order older than the payable window and runs the **same** settle/fail
+logic over each. The poll and the cron share one core — `reconcileOrderPayment`,
+extracted from `checkPaymentOutcome` — so the two can never diverge. The cron also
+rescues the rare paid-but-stuck order (a genuine success whose webhook never
+settled _and_ whose buyer left before the poll could): it reads status `2`,
+verifies, and fulfils. Scheduled in `vercel.json` (`0 3 * * *` — the Hobby plan's
+once-a-day floor) and guarded by `CRON_SECRET` (read at the route, see §5; cron
+jobs run on production deployments only).
+
 ### Files
 
 | File                                                  | Role                                                                                                                                                  |
 | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/lib/payments/p24.ts`                             | REST client: `registerTransaction`, `verifyTransaction`, `isValidNotificationSign`, `plnToGrosze`. Config read + validated lazily (never at boot).    |
-| `src/lib/orders/create-order.ts`                      | Registers the transaction, returns `redirectUrl`.                                                                                                     |
-| `src/lib/orders/check-payment-outcome.ts`             | Server action: PULLs `transaction/by/sessionId` to settle a paid order or mark a failed one. Called by the processing page (see "Failure detection"). |
+| `src/lib/payments/p24.ts`                             | REST client: `registerTransaction`, `verifyTransaction`, `findTransactionBySessionId` (status PULL), `p24NotificationSchema`, `isValidNotificationSign`. P24 creds come from `ENV` (boot-validated); only `P24_SANDBOX` is a direct read.    |
+| `src/lib/payments/amount.ts`                          | `plnToGrosze()` — PLN → integer grosze. |
+| `src/lib/orders/create-order.ts`                      | Registers the transaction, returns `redirectUrl`; defers operator + interest emails via `after()`.                                                                                                     |
+| `src/lib/orders/check-payment-outcome.ts`             | Server action (processing-page poll): resolves the order from the signed checkout cookie, then delegates to `reconcileOrderPayment`. |
+| `src/lib/orders/reconcile-order-payment.ts`           | Shared core: PULLs `transaction/by/sessionId` for one `pending` order and settles it (paid → `verify` → flip) or marks it `failed` past the window. Used by the poll **and** the cron. |
+| `src/app/api/cron/reconcile-payments/route.ts`        | Daily reconciliation cron (`vercel.json`): sweeps `pending` orders past the payable window, runs `reconcileOrderPayment` on each. `CRON_SECRET`-guarded. |
 | `src/components/sections/cart/cart-form.tsx`          | `window.location.href = redirectUrl` on success.                                                                                                      |
 | `src/app/api/p24/webhook/route.ts`                    | `urlStatus` handler: sign-check → amount guard → idempotency → verify → flip to paid.                                                                 |
 | `src/collections/orders/hooks/digital-fulfillment.ts` | Existing hook. Fires on `pending→paid`, issues token + download email. **Untouched by P24.**                                                          |
@@ -175,7 +192,7 @@ fields above are signed), so they can be added freely.
   To offer card + online transfer + BLIK and **exclude the deferred methods**
   (traditional transfer `4`, instalments `128`): `channel = 1 + 2 + 8192 = 8195`
   (add `256` for wallets → `8451`). Excluding those is exactly what makes the
-  30-min failure window safe (§1). Test the resulting paywall once on sandbox —
+  15-min failure window safe (§1). Test the resulting paywall once on sandbox —
   channel grouping can vary by account.
 
 - **`method`** — a single method ID forces one method and skips the chooser.
@@ -186,8 +203,8 @@ fields above are signed), so they can be added freely.
 - P24 sends the notification **only for successful payments**. No notification
   for failed/abandoned ones — the processing page PULLs `by/sessionId` to detect
   those (see "Failure detection" in §1).
-- P24 **retries** the notification at **3, 5, 15, 30, 60, 150, 450 min** until
-  our endpoint verifies the transaction. So the handler must:
+- P24 **retries** the notification on a backoff until our endpoint acknowledges
+  with a `200`. So the handler must:
   - return **non-2xx on any failure** (so P24 retries),
   - be **idempotent** — a repeat hit on an already-paid order returns `200`
     without re-verifying.
@@ -264,6 +281,7 @@ P24_POS_ID=397149           # panel: "Dane konta" again (same value, no separate
 P24_CRC=                    # panel: "Klucz do CRC"        → signing only
 P24_API_KEY=                # panel: "Klucz do raportów"   → REST Basic-auth password (NOT "zamówień")
 P24_SANDBOX=true            # "true" → sandbox host; anything else → production
+CRON_SECRET=                # guards the reconciliation cron; optional locally, REQUIRED on Vercel (prod)
 ```
 
 `SITE_URL` (already a required boot var) builds `urlReturn` and `urlStatus`:
@@ -271,9 +289,17 @@ P24_SANDBOX=true            # "true" → sandbox host; anything else → product
 - `urlReturn` = `${SITE_URL}/checkout/processing`
 - `urlStatus` = `${SITE_URL}/api/p24/webhook`
 
-The P24 vars are **not** in `src/config/env.ts` on purpose — they're validated
-lazily inside `p24.ts`, so an unset var fails only the payment path, never the
-whole site boot.
+The four P24 credentials **are** in `src/config/env.ts` (the `required()` set), so
+a missing one fails fast at boot — `next build`, the `payload` CLI, and the
+running app all import `ENV`. Only `P24_SANDBOX` stays a direct `process.env` read
+in `p24.ts` (an optional toggle, not a required var).
+
+`CRON_SECRET` guards `GET /api/cron/reconcile-payments` (the reconciliation
+sweep, §1). Unlike the P24 creds it's deliberately **not** in `env.ts`: it's read
+directly at the route and only matters in production (the cron never runs
+locally/preview), so a missing value never crashes boot — the route just
+fail-closes (`401`) and logs. Set it on Vercel (`openssl rand -hex 32`); Vercel
+sends it as `Authorization: Bearer <CRON_SECRET>`.
 
 ---
 
@@ -339,11 +365,13 @@ decision.
    - `P24_MERCHANT_ID`, `P24_POS_ID`, `P24_CRC`, `P24_API_KEY` → production values
    - `P24_SANDBOX=false`
    - `SITE_URL=https://www.chaoskitchen.pl` (canonical — see `CLAUDE.md`)
+   - `CRON_SECRET` → strong random value (`openssl rand -hex 32`); without it the
+     reconciliation cron fail-closes and stuck `pending` orders won't self-heal
 4. **Remove the pre-launch stub.** In `src/lib/orders/create-order.ts`, delete
    the `sendInterestThanks(...)` call (it emails "thanks for your interest" while
-   redirecting to a live paywall — contradictory). Decide whether to enable
-   `sendOrderConfirmation` (currently commented out). The post-payment download
-   email already fires from `digitalFulfillment`.
+   redirecting to a live paywall — contradictory). `sendOrderConfirmation` (the
+   operator notice) is already active — both fire post-response via `after()`.
+   The post-payment download email fires from `digitalFulfillment`.
 5. **Smoke test** with one real low-value transaction: webhook lands → order
    flips `paid` → download email arrives → file downloads via the token.
 

@@ -46,7 +46,7 @@ export default buildConfig({
   }),
   email: nodemailerAdapter({
     defaultFromAddress: ENV.EMAIL_USER,
-    defaultFromName: "Chef",
+    defaultFromName: "Marta Leśniewska Chaos Kitchen",
     transport: nodemailer.createTransport({
       host: ENV.EMAIL_HOST,
       port: 465,

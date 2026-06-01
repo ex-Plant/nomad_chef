@@ -13,6 +13,7 @@ type EnvKeyT =
   | "EMAIL_USER"
   | "EMAIL_PASS"
   | "EMAIL_TO"
+  | "CRON_SECRET"
   | "SITE_URL"
   | "P24_MERCHANT_ID"
   | "P24_POS_ID"
@@ -34,6 +35,7 @@ export const ENV = {
   EMAIL_USER: required("EMAIL_USER"),
   EMAIL_PASS: required("EMAIL_PASS"),
   EMAIL_TO: required("EMAIL_TO"),
+  CRON_SECRET: required("CRON_SECRET"),
 
   SITE_URL: required("SITE_URL"),
 

@@ -1,9 +1,10 @@
 // Thin Przelewy24 (P24) REST client — register, verify, status PULL, and
 // notification-sign checking. No SDK; we hit the documented v1 contract directly.
 //
-// Config is read + validated lazily (not at boot) so an unset P24 var only
-// fails the payment path, never the whole site. Tunables (payable window,
-// timeLimit, channel) live in src/config/payments.ts; contract shapes in ./types.
+// P24 credentials come from ENV (src/config/env.ts), so a missing one fails fast
+// at boot, not mid-checkout; only the optional P24_SANDBOX toggle is a direct
+// process.env read below. Tunables (payable window, timeLimit, channel) live in
+// src/config/payments.ts; contract shapes in ./types.
 //
 // Contract reference (sandbox): https://developers.przelewy24.pl
 //   register: POST /api/v1/transaction/register
