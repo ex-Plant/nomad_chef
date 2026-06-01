@@ -382,7 +382,6 @@ decision.
    suite under `tests/e2e/` already tools this — the deterministic specs
    (validation, order persistence, webhook, fulfilment, download gating) run in
    the default gate, and the live-paywall paths are tagged `@manual`:
-
    - `tests/e2e/payment-smoke.spec.ts` — drives the cart to the real P24 paywall;
      run it against an ngrok prod-build origin so the webhook round-trips:
      `E2E_ALL=1 E2E_BASE_URL=<ngrok> npx playwright test payment-smoke`. It

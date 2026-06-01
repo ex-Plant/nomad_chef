@@ -1,6 +1,7 @@
 "use server";
 
 import { getPayload } from "payload";
+import type { Where } from "payload";
 import config from "@payload-config";
 import { ENV } from "@/config/env";
 import { contactFormSchema } from "@/lib/contact/contact-schema";
@@ -63,7 +64,7 @@ async function resolveOrderAdminUrl(
 
   try {
     const payload = await getPayload({ config });
-    const where = context.orderNumber
+    const where: Where = context.orderNumber
       ? { orderNumber: { equals: context.orderNumber } }
       : { downloadToken: { equals: context.token } };
     const { docs } = await payload.find({

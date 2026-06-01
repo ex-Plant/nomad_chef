@@ -15,6 +15,7 @@ export type OrderRowT = {
   quantity: number;
   paymentStatus: string;
   fulfillmentStatus: string;
+  wantsInvoice?: boolean | null;
   paymentRef?: string | null;
   paidAt?: string | null;
   downloadToken?: string | null;
