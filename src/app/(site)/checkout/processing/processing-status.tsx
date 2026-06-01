@@ -87,16 +87,6 @@ export function ProcessingStatus({
 
   return (
     <div className="flex w-full max-w-md flex-col items-center gap-8 text-center">
-      <div className="border-yellow/40 bg-yellow/10 w-full rounded-md border px-4 py-3 text-left">
-        <p className="text-yellow font-sans text-sm leading-relaxed">
-          <strong className="font-semibold tracking-wide uppercase">
-            Wersja testowa.
-          </strong>{" "}
-          Strona jest w budowie — proces zamówienia nie jest jeszcze aktywny.
-          Jeśli trafiłaś tu przypadkiem, wróć później.
-        </p>
-      </div>
-
       {paymentStatus === "pending" && (
         <Loader color="yellow" className="bg-transparent" />
       )}
