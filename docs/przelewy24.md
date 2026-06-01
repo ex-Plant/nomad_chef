@@ -82,7 +82,9 @@ transaction validity**; binding `timeLimit` to it keeps the two in lockstep.
 
 **Deferred methods must stay off.** Traditional transfer (`przekaz tradycyjny`)
 and instalments (`Raty`) can land hours/days later, so 15 min would false-fail
-them. Disable them — in the panel, or from code via the `channel` whitelist (§2).
+them. Disable them via the `channel` whitelist at register time (§2) — the P24
+sandbox panel's per-method toggle has no effect on this account, so code is the
+only reliable way.
 If you ever re-enable one, raise `P24_PAYABLE_WINDOW_MINUTES` to match its real
 validity (and note `timeLimit` maxes at 99 min, so it can't cover a multi-day
 transfer — you'd stop sending `timeLimit` in that case).
@@ -106,17 +108,17 @@ jobs run on production deployments only).
 
 ### Files
 
-| File                                                  | Role                                                                                                                                                  |
-| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/lib/payments/p24.ts`                             | REST client: `registerTransaction`, `verifyTransaction`, `findTransactionBySessionId` (status PULL), `p24NotificationSchema`, `isValidNotificationSign`. P24 creds come from `ENV` (boot-validated); only `P24_SANDBOX` is a direct read.    |
-| `src/lib/payments/amount.ts`                          | `plnToGrosze()` — PLN → integer grosze. |
-| `src/lib/orders/create-order.ts`                      | Registers the transaction, returns `redirectUrl`; defers operator + interest emails via `after()`.                                                                                                     |
-| `src/lib/orders/check-payment-outcome.ts`             | Server action (processing-page poll): resolves the order from the signed checkout cookie, then delegates to `reconcileOrderPayment`. |
-| `src/lib/orders/reconcile-order-payment.ts`           | Shared core: PULLs `transaction/by/sessionId` for one `pending` order and settles it (paid → `verify` → flip) or marks it `failed` past the window. Used by the poll **and** the cron. |
-| `src/app/api/cron/reconcile-payments/route.ts`        | Daily reconciliation cron (`vercel.json`): sweeps `pending` orders past the payable window, runs `reconcileOrderPayment` on each. `CRON_SECRET`-guarded. |
-| `src/components/sections/cart/cart-form.tsx`          | `window.location.href = redirectUrl` on success.                                                                                                      |
-| `src/app/api/p24/webhook/route.ts`                    | `urlStatus` handler: sign-check → amount guard → idempotency → verify → flip to paid.                                                                 |
-| `src/collections/orders/hooks/digital-fulfillment.ts` | Existing hook. Fires on `pending→paid`, issues token + download email. **Untouched by P24.**                                                          |
+| File                                                  | Role                                                                                                                                                                                                                                      |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/lib/payments/p24.ts`                             | REST client: `registerTransaction`, `verifyTransaction`, `findTransactionBySessionId` (status PULL), `p24NotificationSchema`, `isValidNotificationSign`. P24 creds come from `ENV` (boot-validated); only `P24_SANDBOX` is a direct read. |
+| `src/lib/payments/amount.ts`                          | `plnToGrosze()` — PLN → integer grosze.                                                                                                                                                                                                   |
+| `src/lib/orders/create-order.ts`                      | Registers the transaction, returns `redirectUrl`; defers operator + interest emails via `after()`.                                                                                                                                        |
+| `src/lib/orders/check-payment-outcome.ts`             | Server action (processing-page poll): resolves the order from the signed checkout cookie, then delegates to `reconcileOrderPayment`.                                                                                                      |
+| `src/lib/orders/reconcile-order-payment.ts`           | Shared core: PULLs `transaction/by/sessionId` for one `pending` order and settles it (paid → `verify` → flip) or marks it `failed` past the window. Used by the poll **and** the cron.                                                    |
+| `src/app/api/cron/reconcile-payments/route.ts`        | Daily reconciliation cron (`vercel.json`): sweeps `pending` orders past the payable window, runs `reconcileOrderPayment` on each. `CRON_SECRET`-guarded.                                                                                  |
+| `src/components/sections/cart/cart-form.tsx`          | `window.location.href = redirectUrl` on success.                                                                                                                                                                                          |
+| `src/app/api/p24/webhook/route.ts`                    | `urlStatus` handler: sign-check → amount guard → idempotency → verify → flip to paid.                                                                                                                                                     |
+| `src/collections/orders/hooks/digital-fulfillment.ts` | Existing hook. Fires on `pending→paid`, issues token + download email. **Untouched by P24.**                                                                                                                                              |
 
 ---
 
@@ -170,15 +172,23 @@ to the order). `register` returns `{ data: { token } }`.
 These optional `register` params are **not** part of the `sign` (only the five
 fields above are signed), so they can be added freely.
 
+**Where this lives in code:** all tunables are exported from
+`src/config/payments.ts` — the single source of truth. `registerTransaction` in
+`src/lib/payments/p24.ts` (lines ~126–128) imports `P24_REGISTER_TIME_LIMIT` and
+`P24_CHANNEL` and passes them on every register call. To change the restriction,
+edit `payments.ts`; do **not** hard-code values in `p24.ts`.
+
 - **`timeLimit`** — minutes the buyer has to pay, `0`–`99` (`0` = no limit).
-  `registerTransaction` sends `min(P24_PAYABLE_WINDOW_MINUTES, 99)` so P24 expires
-  the transaction exactly when our failure window elapses — independent of the
-  panel default. _(Currently wired.)_
+  Exported as `P24_REGISTER_TIME_LIMIT = Math.min(P24_PAYABLE_WINDOW_MINUTES, 99)`
+  so P24 expires the transaction exactly when our failure window elapses —
+  independent of the panel default. _(Currently wired: 15 min.)_
 - **`channel`** — a **bitmask whitelist** of method categories to show: sum the
   ones you want; anything omitted is hidden. It only narrows within what the
-  account has enabled, and is the from-code alternative to toggling methods in the
-  panel. `registerTransaction` sends **`channel = 8195`** (`1 + 2 + 8192` = card +
-  online transfer + BLIK), excluding traditional transfer and instalments. _(Currently wired.)_
+  account has enabled. **The P24 sandbox panel's per-method toggle has no effect
+  on this account — code via `channel` is the only reliable way to restrict
+  methods.** Exported as `P24_CHANNEL = 8195` (`1 + 2 + 8192` = card +
+  online transfer + BLIK), excluding traditional transfer and instalments.
+  _(Currently wired.)_
 
   | value | channel                                       | value   | channel                |
   | ----- | --------------------------------------------- | ------- | ---------------------- |
@@ -367,18 +377,27 @@ decision.
    - `SITE_URL=https://www.chaoskitchen.pl` (canonical — see `CLAUDE.md`)
    - `CRON_SECRET` → strong random value (`openssl rand -hex 32`); without it the
      reconciliation cron fail-closes and stuck `pending` orders won't self-heal
-4. **Remove the pre-launch stub.** In `src/lib/orders/create-order.ts`, delete
-   the `sendInterestThanks(...)` call (it emails "thanks for your interest" while
-   redirecting to a live paywall — contradictory). `sendOrderConfirmation` (the
-   operator notice) is already active — both fire post-response via `after()`.
-   The post-payment download email fires from `digitalFulfillment`.
-5. **Smoke test** with one real low-value transaction: webhook lands → order
-   flips `paid` → download email arrives → file downloads via the token.
+4. **Smoke test** with one real low-value transaction: webhook lands → order
+   flips `paid` → download email arrives → file downloads via the token. The E2E
+   suite under `tests/e2e/` already tools this — the deterministic specs
+   (validation, order persistence, webhook, fulfilment, download gating) run in
+   the default gate, and the live-paywall paths are tagged `@manual`:
+
+   - `tests/e2e/payment-smoke.spec.ts` — drives the cart to the real P24 paywall;
+     run it against an ngrok prod-build origin so the webhook round-trips:
+     `E2E_ALL=1 E2E_BASE_URL=<ngrok> npx playwright test payment-smoke`. It
+     automates up to the paywall; completing the payment (mBank → Zapłać) and
+     confirming the `paid` flip + `/download/<token>` is the manual step.
+   - `tests/e2e/cart-redirect.spec.ts` — `@manual` for the same reason (calls live
+     P24 `register`; count-derived order numbers collide with the sandbox's
+     session-id memory, see finding F4 in `docs/purchase-flow-test-findings.md`).
 
 ---
 
 ## 8. Reference
 
+- Purchase-flow E2E coverage, findings, and the `@manual` run matrix:
+  `docs/purchase-flow-test-findings.md`
 - P24 REST docs: <https://developers.przelewy24.pl/>
 - OpenAPI spec: `https://developers.przelewy24.pl/yaml/en_documentation_1.0.yaml`
 - Where to find the API key (sandbox/prod):
