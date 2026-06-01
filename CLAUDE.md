@@ -12,7 +12,7 @@ For read-only checks against the local database, run `psql` directly via the Doc
 
 - **Production domain (canonical):** `https://www.chaoskitchen.pl` — apex `chaoskitchen.pl` returns 307 → www.
 - **Vercel project:** `nomad-chef` under team `eggplants-projects-07c20257`.
-- Use the canonical URL for any absolute link, OG image, sitemap entry, or `SITE_URL` env var. Do not paste Vercel preview/deployment URLs as canonical.
+- Any absolute origin (links, OG image, sitemap, email URLs, P24 callbacks) must read `SITE_URL` via `ENV.SITE_URL` — never hardcode the domain or paste a Vercel preview/deployment URL. In production `SITE_URL` is the canonical `https://www.chaoskitchen.pl`.
 
 # Project: Chef Personal Brand Website
 
@@ -20,122 +20,19 @@ For read-only checks against the local database, run `psql` directly via the Doc
 
 High-end website for a chef with a colorful, Instagram-friendly, vibrant personality. The site extends her Instagram presence and exposes her brand to a wider audience. Secondary goal: sell an ebook.
 
-## Phases
+## Status
 
-### Phase 1 — Design (current focus)
+Both the visual design and the ebook commerce flow are **built and live in
+production**. Work now is iteration, polish, and maintenance — not greenfield.
 
-- Create a clean, beautiful, high-end visual design
-- Match the look and feel of the chef's Instagram account
-- Reference images live in `src/moodboard/`
-- Content is secondary — focus on layout, typography, color, and visual identity
+- **Design** — the site's visual identity is shipped. See "Design Direction (locked)" below.
+- **Commerce** — ebook cart → Przelewy24 payment → digital fulfilment → download
+  email → gated download is fully implemented, tested, and live. See
+  [`docs/przelewy24.md`](docs/przelewy24.md) and
+  [`docs/purchase-flow-test-findings.md`](docs/purchase-flow-test-findings.md).
 
-### Phase 2 — Functionality (later)
+## Design
 
-- Ebook integration and sales
-- Other interactive features TBD
-
-## Design Skills
-
-Always use these skills when working on design and styling:
-
-- `taste-skill` — Senior UI/UX architect — use first for architectural decisions - THE MOST IMPORTAN ONE
-- `minimalist-skill` — clean editorial-style interfaces
-- `brutalist-skill` — raw mechanical interfaces, Swiss typography
-- `soft-skill` — high-end soft/warm design language
-- `stich-skill` — upgrade existing UI to professional quality
-
-Invoke whichever combination fits the current task. When in doubt, start with `taste-skill` for architectural decisions, then layer in the others.
-
-## Reference Material
-
-All visual references live in `src/moodboard/`. Read these before making design decisions.
-
-- `init.md` — site structure, copy (Polish), and content brief from the client
-- `ebook_1.webp`, `ebook_2.webp` — **PRIMARY design reference**. The ebook's visual language (color blocking, typography, palette) defines the website's design direction.
-- `client-selected-1..11.webp` — images hand-picked by the client as representative of her brand
-- `secondary-reference-instagram-1..46.webp` — broader Instagram feed screenshots for mood/context
-
-Priority order for design decisions: ebook style > client-selected > secondary-reference.
-
-## Reference Project
-
-The portfolio project at `/Users/konradantonik/workspace/portfolio/old_page` is a sibling codebase used heavily as a reference for patterns, components, and tooling. Key resources:
-
-- `components/debug-tools/` — debug overlay system (grid, outlines, layers, screen size). Already ported to this project.
-- `styles/globals.css` — `fest-container` / `fest-grid` utility definitions (responsive container + grid system)
-- `docs/design_spec/` — design spec documents
-
-When building new utilities or patterns, check the portfolio project first for existing implementations.
-
-The fest project at `/Users/konradantonik/workspace/fest/fest-frontend` is another reference codebase. Key resources:
-
-- `components/ui/button.tsx` — Button component with CVA variants, `asChild` pattern via Radix Slot
-- `components/ui/button-link.tsx` — LinkButton wrapper using `asChild` for link-as-button
-- General shadcn/ui + CVA + Radix patterns
-
-## Design Direction (locked)
-
-### Palette
-
-Primary (section backgrounds, key UI):
-
-- Coral-orange: `#DE6445` (rgb 222/100/69)
-- Electric blue: `#193EF4` (rgb 25/62/244)
-- Warm white: `#F5EEE5` (rgb 245/238/229)
-
-Secondary (can also be used as section backgrounds):
-
-- Pink: `#F3B1E3` (rgb 243/177/227)
-- Yellow: `#E5F55D` (rgb 229/245/93)
-
-Text:
-
-- Off-black `#1A1614` on light backgrounds
-- `#FFFFFF` on coral-orange and blue backgrounds
-
-Rule: No colors outside this system. Tint/shade these five for variants.
-
-### Typography
-
-- Headlines: Bold compressed sans-serif (matching ebook's "CAMP FOOD" style), uppercase, tight tracking
-- Body: Warm editorial serif for descriptions and longer copy
-- Labels/nav/CTAs: Clean sans-serif at small scale
-
-### Visual Language
-
-**Scroll color zones** (reference: https://zooom.framer.website/):
-
-- Each major section occupies full viewport height with one of the three primary background colors
-- Scrolling creates a color journey — white → coral → blue → white → coral, etc.
-- Text and UI flip to high-contrast counterparts per zone
-
-**Navigation** (reference: design-5 floating nav):
-
-- Floating pill-shaped nav that appears on scroll
-- Tracks and highlights the currently visible section
-- See `src/components/design-5/floating-nav.tsx` for interaction pattern
-
-**Hero** (reference: design-5 parallax hero):
-
-- Large parallax hero with scroll-based image scaling
-- Needs a strong real photo — TBD
-- See `src/components/design-5/hero-section.tsx` for motion pattern
-
-**Gallery** (reference: design-1 masonry grid):
-
-- Uneven/organic masonry grid — CSS columns, not a rigid equal-height grid
-- Varied image sizes create visual rhythm
-- See `src/components/design-1/gallery.tsx` for layout shape
-
-**Photography**:
-
-- Real photos from `src/moodboard/` only — client-selected and Instagram content
-- No stock photos, no placeholders, no picsum
-- Photography is the dominant visual — large, full-bleed, hero-scale
-
-**General**:
-
-- Asymmetric layouts (DESIGN_VARIANCE: 8)
-- Gallery-style spacing with generous whitespace
-- Subtle grain/noise overlay for tactile warmth
-- No glassmorphism, no gradients, no glows — tactile and analog
+Doing visual, UI, or styling work? Read [`docs/design-direction.md`](docs/design-direction.md)
+first — it holds the locked design system (palette, typography, visual language)
+and the design-skill workflow. Don't make visual changes without it.
