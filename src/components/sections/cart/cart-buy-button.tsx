@@ -16,6 +16,7 @@ type CartBuyButtonPropsT = {
   className?: string;
   legal?: SerializedEditorState | null;
   legalLinks?: SiteT["legalLinks"];
+  isLoggedIn: boolean;
 };
 
 export function CartBuyButton({
@@ -26,9 +27,13 @@ export function CartBuyButton({
   className,
   legal = null,
   legalLinks,
+  isLoggedIn,
 }: CartBuyButtonPropsT) {
   const router = useRouter();
   const [isCartOpen, setIsCartOpen] = useState(false);
+  // Pre-launch: hide the purchase CTA from anonymous visitors so nobody can
+  // place a real order by accident. Logged-in (CMS) users can still test it.
+  if (!isLoggedIn) return null;
   if (!product) return null;
   return (
     <>

@@ -1,6 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { Analytics } from "@vercel/analytics/next";
 import { DebugWrapper } from "@/components/debug-tools/debug-wrapper";
 import { MotionProvider } from "@/components/ui/motion-provider";
@@ -44,14 +42,11 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  if (!cookieStore.get("payload-token")) redirect("/admin");
-
   return (
     <html
       lang="pl"
