@@ -15,8 +15,8 @@ export function CookieSettingsTrigger() {
       onClick={() => setActiveUI("dialog")}
       className={cn(
         "fixed bottom-4 left-4 z-[400] inline-flex items-center gap-1.5 rounded-full",
-        "bg-off-black/70 px-3 py-1.5 font-geist text-xs uppercase tracking-wide text-white/80 backdrop-blur-sm",
-        "transition-colors duration-300 hover:bg-off-black hover:text-white",
+        "bg-off-black/70 font-geist px-3 py-1.5 text-xs tracking-wide text-white/80 uppercase backdrop-blur-sm",
+        "hover:bg-off-black transition-colors duration-300 hover:text-white",
       )}
     >
       <Cookie aria-hidden className="size-3.5" />

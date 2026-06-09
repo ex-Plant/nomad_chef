@@ -6,12 +6,12 @@ What the hero (`hero.tsx`) actually serves, and the encoding lessons behind it.
 
 Two MP4 variants in `public/` (CDN-served, immutable cache, swapped via redeploy):
 
-| Viewport                              | File                                    |
-| ------------------------------------- | --------------------------------------- |
-| Portrait mobile (`≤767px portrait`)   | `/videos/hero_vid_mobile_crf20.mp4`     |
-| Everything else (desktop/tablet/land) | `/videos/hero_vid_desktop_crf20.mp4`    |
-| Poster — mobile                       | `/videos/hero_poster_mobile.jpeg`       |
-| Poster — desktop                      | `/videos/hero_poster_desktop.jpeg`      |
+| Viewport                              | File                                 |
+| ------------------------------------- | ------------------------------------ |
+| Portrait mobile (`≤767px portrait`)   | `/videos/hero_vid_mobile_crf20.mp4`  |
+| Everything else (desktop/tablet/land) | `/videos/hero_vid_desktop_crf20.mp4` |
+| Poster — mobile                       | `/videos/hero_poster_mobile.jpeg`    |
+| Poster — desktop                      | `/videos/hero_poster_desktop.jpeg`   |
 
 Both videos: H.264, `-pix_fmt yuv420p`, `-movflags +faststart`, audio stripped (`-an`).
 

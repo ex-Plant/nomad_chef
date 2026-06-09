@@ -9,18 +9,18 @@ experience that extends her Instagram presence, plus an integrated ebook store
 
 ## Tech stack
 
-| Concern        | Choice                                                                 |
-| -------------- | ---------------------------------------------------------------------- |
-| Framework      | Next.js 16 (App Router) — see [`AGENTS.md`](AGENTS.md)                  |
-| CMS / backend  | Payload 3 (`@payloadcms/next`), mounted under `src/app/(payload)`      |
+| Concern        | Choice                                                                           |
+| -------------- | -------------------------------------------------------------------------------- |
+| Framework      | Next.js 16 (App Router) — see [`AGENTS.md`](AGENTS.md)                           |
+| CMS / backend  | Payload 3 (`@payloadcms/next`), mounted under `src/app/(payload)`                |
 | Database       | Postgres — local Docker for dev, Neon in prod (`@payloadcms/db-vercel-postgres`) |
-| Media storage  | Vercel Blob (`@payloadcms/storage-vercel-blob`)                        |
-| Email          | Nodemailer via Payload adapter (SMTP `mail.chaoskitchen.pl`)           |
-| Payments       | Przelewy24 (P24) — see [`docs/przelewy24.md`](docs/przelewy24.md)      |
-| Forms / schema | TanStack Form + Zod                                                     |
-| Animation      | GSAP (`ScrollTrigger`) + Framer Motion                                 |
-| Styling        | Tailwind CSS 4, Radix primitives                                       |
-| Hosting        | Vercel project `nomad-chef`                                            |
+| Media storage  | Vercel Blob (`@payloadcms/storage-vercel-blob`)                                  |
+| Email          | Nodemailer via Payload adapter (SMTP `mail.chaoskitchen.pl`)                     |
+| Payments       | Przelewy24 (P24) — see [`docs/przelewy24.md`](docs/przelewy24.md)                |
+| Forms / schema | TanStack Form + Zod                                                              |
+| Animation      | GSAP (`ScrollTrigger`) + Framer Motion                                           |
+| Styling        | Tailwind CSS 4, Radix primitives                                                 |
+| Hosting        | Vercel project `nomad-chef`                                                      |
 
 ## Prerequisites
 
@@ -58,20 +58,20 @@ npm run db:import   # load dumps/dump-latest.sql into the local container
 
 ## Scripts
 
-| Script                  | Purpose                                                                       |
-| ----------------------- | ----------------------------------------------------------------------------- |
-| `npm run dev`           | Next dev server                                                               |
-| `npm run build`         | `payload generate:importmap && generate:types && migrate && next build`       |
-| `npm run start`         | Production server (after `build`)                                             |
-| `npm run lint`          | ESLint                                                                         |
-| `npm run typecheck`     | `tsc --noEmit`                                                                 |
-| `npm run format[:fix]`  | Prettier check / write                                                         |
-| `npm test`              | Unit tests (`node:test` + tsx) under `tests/`                                  |
-| `npm run test:e2e`      | Playwright e2e (CI-safe default gate)                                          |
-| `npm run test:e2e:all`  | Playwright incl. `@manual` live-P24 specs (`E2E_ALL=1`)                        |
-| `npm run migrate`       | Apply Payload migrations · `migrate:create` to author a new one               |
-| `npm run db:up/down`    | Start / stop the local Postgres container                                     |
-| `npm run db:dump/import`| Snapshot prod DB / load a dump locally                                         |
+| Script                   | Purpose                                                                 |
+| ------------------------ | ----------------------------------------------------------------------- |
+| `npm run dev`            | Next dev server                                                         |
+| `npm run build`          | `payload generate:importmap && generate:types && migrate && next build` |
+| `npm run start`          | Production server (after `build`)                                       |
+| `npm run lint`           | ESLint                                                                  |
+| `npm run typecheck`      | `tsc --noEmit`                                                          |
+| `npm run format[:fix]`   | Prettier check / write                                                  |
+| `npm test`               | Unit tests (`node:test` + tsx) under `tests/`                           |
+| `npm run test:e2e`       | Playwright e2e (CI-safe default gate)                                   |
+| `npm run test:e2e:all`   | Playwright incl. `@manual` live-P24 specs (`E2E_ALL=1`)                 |
+| `npm run migrate`        | Apply Payload migrations · `migrate:create` to author a new one         |
+| `npm run db:up/down`     | Start / stop the local Postgres container                               |
+| `npm run db:dump/import` | Snapshot prod DB / load a dump locally                                  |
 
 ## Project structure
 
@@ -122,14 +122,14 @@ End-to-end test coverage, the layered test strategy, and the audit findings:
 
 ## Documentation index
 
-| Doc                                                                                  | What it covers                                                       |
-| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
-| [`CLAUDE.md`](CLAUDE.md)                                                              | Project brief, **locked design direction** (palette, type, layout)  |
-| [`AGENTS.md`](AGENTS.md)                                                              | Next.js version caveat — read the bundled docs before coding        |
-| [`docs/przelewy24.md`](docs/przelewy24.md)                                            | Przelewy24 payment integration (authoritative)                      |
-| [`docs/purchase-flow-test-findings.md`](docs/purchase-flow-test-findings.md)         | Purchase-flow e2e coverage & findings                               |
-| [`docs/mobile-full-height.md`](docs/mobile-full-height.md)                           | iOS Safari mobile Services parallax debugging log                   |
-| [`src/components/sections/hero/HERO_VIDEO_OPTIMIZATION.md`](src/components/sections/hero/HERO_VIDEO_OPTIMIZATION.md) | Hero video shipped setup + encoding notes |
+| Doc                                                                                                                  | What it covers                                                     |
+| -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| [`CLAUDE.md`](CLAUDE.md)                                                                                             | Project brief, **locked design direction** (palette, type, layout) |
+| [`AGENTS.md`](AGENTS.md)                                                                                             | Next.js version caveat — read the bundled docs before coding       |
+| [`docs/przelewy24.md`](docs/przelewy24.md)                                                                           | Przelewy24 payment integration (authoritative)                     |
+| [`docs/purchase-flow-test-findings.md`](docs/purchase-flow-test-findings.md)                                         | Purchase-flow e2e coverage & findings                              |
+| [`docs/mobile-full-height.md`](docs/mobile-full-height.md)                                                           | iOS Safari mobile Services parallax debugging log                  |
+| [`src/components/sections/hero/HERO_VIDEO_OPTIMIZATION.md`](src/components/sections/hero/HERO_VIDEO_OPTIMIZATION.md) | Hero video shipped setup + encoding notes                          |
 
 ## Deployment
 

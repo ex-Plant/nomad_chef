@@ -31,7 +31,7 @@ const OPTIONS = {
         cookieBanner: {
           ...baseTranslations.pl.cookieBanner,
           description:
-            'Używamy plików cookie do analizy ruchu. Możesz zmienić wybór klikając „Dostosuj” lub w każdej chwili przez link „Ustawienia cookies” na dole strony.',
+            "Używamy plików cookie do analizy ruchu. Możesz zmienić wybór klikając „Dostosuj” lub w każdej chwili przez link „Ustawienia cookies” na dole strony.",
         },
       },
     },

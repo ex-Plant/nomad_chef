@@ -36,14 +36,14 @@ export function ConsentCheckbox({
           disabled={disabled}
           onChange={(e) => onCheckedChange(e.target.checked)}
           className={cn(
-            "peer size-full cursor-pointer appearance-none rounded-sm bg-white outline-1 outline-yellow transition-colors checked:bg-yellow",
+            "peer outline-yellow checked:bg-yellow size-full cursor-pointer appearance-none rounded-sm bg-white outline-1 transition-colors",
             disabled && "cursor-not-allowed",
           )}
         />
         <Check
           aria-hidden="true"
           strokeWidth={3.5}
-          className="pointer-events-none absolute inset-0 m-auto size-3 text-off-black opacity-0 transition-opacity peer-checked:opacity-100"
+          className="text-off-black pointer-events-none absolute inset-0 m-auto size-3 opacity-0 transition-opacity peer-checked:opacity-100"
         />
       </span>
       <label
