@@ -76,6 +76,9 @@ export default buildConfig({
       },
       token: ENV.BLOB_READ_WRITE_TOKEN,
       addRandomSuffix: true,
+      // Browser uploads straight to Blob, bypassing Vercel's 4.5 MB function
+      // request-body cap that 413s larger files (e.g. the camp-food ebook PDF).
+      clientUploads: true,
     }),
   ],
   secret: ENV.PAYLOAD_SECRET,
