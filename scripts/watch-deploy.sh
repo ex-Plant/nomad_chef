@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
-# Tails the Vercel deployment triggered by the current `git push` and prints
-# its state until READY / ERROR / CANCELED.
+# Tails the Vercel deployment for the EXACT commit being pushed and prints its
+# state until READY / ERROR / CANCELED.
 #
-# Started (backgrounded) from .husky/pre-push, which runs BEFORE git transmits
-# the push — so the newest deployment at startup is the PRE-push one. We capture
-# that as the baseline, then wait for a newer deployment (the one this push
-# creates on Vercel via the Git integration) and report its state transitions.
+# Identifies the deployment by git commit SHA (meta.githubCommitSha), NOT by
+# "newest deployment". The newest-deployment comparison is racy — a git push
+# registers its deploy on Vercel within seconds, so a baseline snapshot taken
+# around push time can capture the new deploy itself and then wait forever for a
+# *different* one (the symptom: polls endlessly, never reports, leaks watchers).
+# It can also latch onto an unrelated branch's preview. A fixed SHA has neither
+# problem.
 #
-# Reads projectId/orgId from .vercel/project.json, so it's project-agnostic.
-# Run as:  ( bash scripts/watch-deploy.sh & )   — detached so push returns.
+# Started (backgrounded) from .husky/pre-push as:
+#   ( DEPLOY_SHA="$(git rev-parse HEAD)" bash scripts/watch-deploy.sh & )
+# Reads projectId/orgId from .vercel/project.json — project-agnostic, drop into
+# any Vercel-linked repo unchanged.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -17,29 +22,37 @@ if [ ! -f .vercel/project.json ]; then
   exit 1
 fi
 
+# Commit this push deploys. Hook passes it via env; fall back to current HEAD.
+SHA="${DEPLOY_SHA:-$(git rev-parse HEAD)}"
+
 PROJECT_ID="$(jq -r .projectId .vercel/project.json)"
 TEAM_ID="$(jq -r .orgId .vercel/project.json)"
-API_PATH="/v6/deployments?projectId=$PROJECT_ID&teamId=$TEAM_ID&limit=1"
+# limit=20: scan recent deploys, not just the newest, so a concurrent preview
+# from another branch can't hide our commit's deployment.
+API_PATH="/v6/deployments?projectId=$PROJECT_ID&teamId=$TEAM_ID&limit=20"
 
-# `vercel api` (beta) prints a banner to stderr on every call — drop it so only
-# the JSON reaches jq and the banner doesn't flood the terminal.
+# `vercel api` is beta and prints a banner to stderr every call — drop it so only
+# JSON reaches jq and the terminal isn't flooded across many polls.
 fetch() { vercel api --raw "$API_PATH" 2>/dev/null; }
 
-# Baseline: the latest deployment that exists right now, i.e. BEFORE this push
-# has created a new one. We then watch for a uid different from this.
-baseline_uid="$(fetch | jq -r '.deployments[0].uid')"
 prev_state=""
+appeared=0
 attempts=0
-MAX_ATTEMPTS=90 # ~15 min (90 × 10s) then give up, so this can never hang forever
+APPEAR_DEADLINE=18 # ~3 min (18 × 10s) for the deploy to register, else likely no Git integration
+MAX_ATTEMPTS=120   # ~20 min hard cap so this can never hang forever
 
-# NOTE: do NOT name the read target UID — it's a read-only bash builtin, and with
-# `set -e` the failed assignment would kill the watcher on the first iteration.
 while [ "$attempts" -lt "$MAX_ATTEMPTS" ]; do
   attempts=$((attempts + 1))
-  IFS=$'\t' read -r dep_uid STATE URL < <(
-    fetch | jq -r '.deployments[0] | "\(.uid)\t\(.state)\t\(.url)"'
-  )
-  if [ -n "$dep_uid" ] && [ "$dep_uid" != "$baseline_uid" ]; then
+
+  # `|| true`: a transient `vercel api` failure yields empty input, jq errors,
+  # and read hits EOF returning 1 — without this, `set -e` would kill the watcher.
+  IFS=$'\t' read -r STATE URL < <(
+    fetch | jq -r --arg sha "$SHA" \
+      '[.deployments[] | select(.meta.githubCommitSha == $sha)][0] | "\(.state)\t\(.url)"'
+  ) || true
+
+  if [ -n "${STATE:-}" ] && [ "$STATE" != "null" ]; then
+    appeared=1
     if [ "$STATE" != "$prev_state" ]; then
       echo "  vercel: $STATE  https://$URL"
       prev_state="$STATE"
@@ -48,9 +61,13 @@ while [ "$attempts" -lt "$MAX_ATTEMPTS" ]; do
       READY) exit 0 ;;
       ERROR | CANCELED) exit 1 ;;
     esac
+  elif [ "$appeared" -eq 0 ] && [ "$attempts" -ge "$APPEAR_DEADLINE" ]; then
+    echo "  vercel: no deployment for ${SHA:0:7} after ~3 min — is the Git integration connected?" >&2
+    exit 1
   fi
+
   sleep 10
 done
 
-echo "  vercel: watch-deploy gave up after ~15 min without a terminal state" >&2
+echo "  vercel: watch-deploy gave up after ~20 min without a terminal state for ${SHA:0:7}" >&2
 exit 1
