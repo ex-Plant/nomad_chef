@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { AnyFieldApi } from "@tanstack/react-form";
-import { Check } from "lucide-react";
 import { cn } from "@/helpers/cn";
+import { Checkbox } from "@/components/ui/checkbox";
 import { FieldShell } from "./field-shell";
 
 type FormCheckboxPropsT = {
@@ -46,33 +46,22 @@ export function FormCheckbox({
           className,
         )}
       >
-        <span className="relative mt-0.5 inline-flex size-4 shrink-0">
-          <input
-            type="checkbox"
-            id={field.name}
-            name={field.name}
-            checked={checked}
-            disabled={disabled}
-            aria-label={ariaLabel}
-            aria-invalid={hasErrors}
-            aria-describedby={hasErrors ? errorId : undefined}
-            onBlur={field.handleBlur}
-            onChange={(e) => field.handleChange(e.target.checked)}
-            className={cn(
-              "peer size-full cursor-pointer appearance-none rounded-sm bg-white outline-1 transition-colors",
-              boxClassName,
-              hasErrors && "outline-error checked:bg-error outline-2",
-            )}
-          />
-          <Check
-            aria-hidden="true"
-            strokeWidth={3.5}
-            className={cn(
-              "stroke-electric-blue pointer-events-none absolute inset-0 m-auto size-3 opacity-0 transition-opacity peer-checked:opacity-100",
-              iconClassName,
-            )}
-          />
-        </span>
+        <Checkbox
+          id={field.name}
+          name={field.name}
+          checked={checked}
+          disabled={disabled}
+          aria-label={ariaLabel}
+          aria-invalid={hasErrors}
+          aria-describedby={hasErrors ? errorId : undefined}
+          onBlur={field.handleBlur}
+          onChange={(e) => field.handleChange(e.target.checked)}
+          boxClassName={cn(
+            boxClassName,
+            hasErrors && "outline-error checked:bg-error outline-2",
+          )}
+          iconClassName={iconClassName}
+        />
         <span className="inline-flex flex-wrap items-baseline gap-x-1">
           <label
             htmlFor={field.name}

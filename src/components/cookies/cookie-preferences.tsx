@@ -7,7 +7,8 @@ import {
 } from "@c15t/nextjs";
 import { FormDialog } from "@/components/shared/form-dialog";
 import { Button } from "@/components/shared/button";
-import { ConsentCheckbox } from "./consent-checkbox";
+import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/helpers/cn";
 
 export function CookiePreferences() {
   const {
@@ -31,22 +32,31 @@ export function CookiePreferences() {
         {consentCategories.map((cat: AllConsentNames) => {
           const isLocked = cat === "necessary";
           const meta = t.consentTypes[cat];
+          const inputId = `cookie-consent-${cat}`;
           return (
-            <li key={cat}>
-              <ConsentCheckbox
-                id={`cookie-consent-${cat}`}
+            <li
+              key={cat}
+              className={cn(
+                "flex items-start gap-3 font-sans text-sm text-white",
+                isLocked && "opacity-60",
+              )}
+            >
+              <Checkbox
+                id={inputId}
                 checked={isLocked || !!selectedConsents[cat]}
                 disabled={isLocked}
-                onCheckedChange={(v) => setSelectedConsent(cat, v)}
-                label={
-                  <span className="flex flex-col gap-0.5">
-                    <span className="font-medium text-white">
-                      {meta?.title}
-                    </span>
-                    <span className="text-white/80">{meta?.description}</span>
-                  </span>
-                }
+                onChange={(e) => setSelectedConsent(cat, e.target.checked)}
               />
+              <label
+                htmlFor={inputId}
+                className={cn(
+                  "flex cursor-pointer flex-col gap-0.5 select-none",
+                  isLocked && "cursor-not-allowed",
+                )}
+              >
+                <span className="font-medium text-white">{meta?.title}</span>
+                <span className="text-white/80">{meta?.description}</span>
+              </label>
             </li>
           );
         })}
