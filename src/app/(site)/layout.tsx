@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { ConsentProvider } from "@/components/cookies/consent-provider";
 import { ConsentedAnalytics } from "@/components/cookies/consented-analytics";
-import { CookieSettingsTrigger } from "@/components/cookies/cookie-settings-trigger";
 import { DebugWrapper } from "@/components/debug-tools/debug-wrapper";
 import { MotionProvider } from "@/components/ui/motion-provider";
 import { ENV } from "@/config/env";
@@ -58,7 +57,6 @@ export default function RootLayout({
         <MotionProvider>
           <ConsentProvider>
             <DebugWrapper>{children}</DebugWrapper>
-            <CookieSettingsTrigger />
             <ConsentedAnalytics />
           </ConsentProvider>
         </MotionProvider>

@@ -1,85 +1,86 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { m, AnimatePresence } from "framer-motion";
 import { useConsentManager, useTranslations } from "@c15t/nextjs";
-import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/shared/button";
-import { Starburst } from "@/components/shared/starburst";
 
+// Hold the banner back so it doesn't fight the hero intro for attention.
+const SHOW_DELAY_MS = 5000;
 const TITLE_ID = "cookie-banner-title";
 const DESC_ID = "cookie-banner-description";
 
 export function CookieBanner() {
   const { activeUI, setActiveUI, saveConsents } = useConsentManager();
   const t = useTranslations();
+  const [armed, setArmed] = useState(false);
 
-  const isOpen = activeUI === "banner";
+  useEffect(() => {
+    const id = setTimeout(() => setArmed(true), SHOW_DELAY_MS);
+    return () => clearTimeout(id);
+  }, []);
+
+  // activeUI is only "banner" when no choice is stored yet, so returning
+  // visitors who already chose never see this.
+  const isOpen = armed && activeUI === "banner";
 
   return (
-    <Dialog
-      isOpen={isOpen}
-      // Non-dismissible: the visitor must make a choice. No-op close ignores
-      // Escape and backdrop clicks; there is intentionally no close button.
-      onClose={() => {}}
-      variant="modal"
-      ariaLabelledBy={TITLE_ID}
-      ariaDescribedBy={DESC_ID}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="bg-coral ring-yellow relative w-full max-w-md overflow-clip rounded-lg ring-2"
-      >
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -top-8 -right-12 z-0 flex items-center justify-center"
+    <AnimatePresence>
+      {isOpen && (
+        <m.div
+          role="dialog"
+          aria-labelledby={TITLE_ID}
+          aria-describedby={DESC_ID}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 24 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="bg-coral ring-yellow fixed inset-x-3 bottom-3 z-[700] mx-auto max-w-sm rounded-lg p-4 ring-2 sm:max-w-md sm:p-5"
         >
-          <Starburst color="pink" variant="organic" size="md" />
-        </div>
-
-        <div className="relative z-10 p-6 md:p-8">
           <h2
             id={TITLE_ID}
-            className="font-display text-electric-blue mb-4 text-2xl uppercase"
+            className="font-display text-electric-blue text-base uppercase"
           >
             {t.cookieBanner.title}
           </h2>
           <p
             id={DESC_ID}
-            className="mb-6 font-sans text-sm leading-relaxed text-white/90"
+            className="mt-1.5 font-sans text-xs leading-snug text-white/90"
           >
             {t.cookieBanner.description}
           </p>
 
-          <div className="flex flex-col gap-3">
+          <div className="mt-4 flex gap-2">
             <Button
               type="button"
               variant="yellow-solid"
               size="compact"
-              className="w-full"
+              className="px-3 py-1.5 text-xs whitespace-nowrap"
               onClick={() => saveConsents("all")}
             >
-              {t.common.acceptAll}
+              Akceptuj
             </Button>
             <Button
               type="button"
               variant="white"
               size="compact"
-              className="w-full"
+              className="px-3 py-1.5 text-xs whitespace-nowrap"
               onClick={() => saveConsents("necessary")}
             >
-              {t.common.rejectAll}
+              Odrzuć
             </Button>
             <Button
               type="button"
               variant="white"
               size="compact"
-              className="w-full"
+              className="px-3 py-1.5 text-xs whitespace-nowrap"
               onClick={() => setActiveUI("dialog")}
             >
-              {t.common.customize}
+              Dostosuj
             </Button>
           </div>
-        </div>
-      </div>
-    </Dialog>
+        </m.div>
+      )}
+    </AnimatePresence>
   );
 }

@@ -5,8 +5,8 @@ import { EyebrowTag } from "@/components/shared/eyebrow-tag";
 import { ScatterText } from "@/components/shared/scatter-text";
 import { ContactLink } from "@/components/sections/contact/contact-link";
 import { ContactForm } from "@/components/sections/contact/contact-form";
+import { CookieSettingsTrigger } from "@/components/cookies/cookie-settings-trigger";
 import { SECTION_IDS } from "@/config/section-ids";
-import { LEGAL_SLUGS } from "@/config/legal";
 import type { SiteT } from "@/types/site";
 import { Section } from "@/components/shared/section";
 import { FadeUp } from "@/components/shared/fade-up";
@@ -99,6 +99,9 @@ export function Contact({ data, legalLinks }: ContactPropsT) {
           <div className="text-heading border-coral mt-8 flex items-center justify-between border-t pt-8 text-sm tracking-tight">
             <span>{data.footer}</span>
             <span>{2026}</span>
+          </div>
+          <div className="mt-3 text-xs">
+            <CookieSettingsTrigger className="text-coral/70 hover:text-coral hover:opacity-100" />
           </div>
         </FadeUp>
       </SectionContent>
