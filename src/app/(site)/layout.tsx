@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { DebugWrapper } from "@/components/debug-tools/debug-wrapper";
 import { MotionProvider } from "@/components/ui/motion-provider";
 import { ENV } from "@/config/env";
@@ -57,6 +58,7 @@ export default function RootLayout({
           <DebugWrapper>{children}</DebugWrapper>
         </MotionProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

@@ -26,6 +26,7 @@
     "db:import": "set -a && source .env && set +a && docker exec -i \"$DOCKER_CONTAINER\" psql -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\" < ${DUMP_FILE:-dumps/dump-latest.sql}"
   },
   "dependencies": {
+    "@c15t/nextjs": "^2.1.0",
     "@gsap/react": "^2.1.2",
     "@payloadcms/db-vercel-postgres": "^3.83.0",
     "@payloadcms/email-nodemailer": "^3.83.0",
@@ -38,6 +39,7 @@
     "@radix-ui/react-slot": "^1.2.4",
     "@tanstack/react-form": "^1.29.1",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.6.0",
