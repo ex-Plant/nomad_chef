@@ -4,7 +4,7 @@
  * P24 POSTs here for SUCCESSFUL payments only, and retries delivery until we
  * acknowledge with a 200. So we:
  *   1. validate the notification `sign` (reject spoofed payloads),
- *   2. match it to the order via sessionId (= orderNumber),
+ *   2. match it to the order via sessionId (= the order's paymentSessionId),
  *   3. guard against amount tampering,
  *   4. mandatorily call transaction/verify — the payment is NOT settled to
  *      us until verify succeeds, so we never mark paid on the notification
@@ -48,7 +48,7 @@ export async function POST(req: Request): Promise<Response> {
   const payload = await getPayload({ config });
   const result = await payload.find({
     collection: "orders",
-    where: { orderNumber: { equals: notification.sessionId } },
+    where: { paymentSessionId: { equals: notification.sessionId } },
     limit: 1,
     depth: 0,
   });

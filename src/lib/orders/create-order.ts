@@ -56,13 +56,21 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
   await setCheckoutCookie(order.id);
 
   // Register the transaction with Przelewy24 and hand the buyer to the P24
-  // paywall. sessionId is the orderNumber so the webhook can match P24's
-  // notification back to this order. The pending→paid flip happens in
-  // src/app/api/p24/webhook, which then triggers digital fulfillment
+  // paywall. sessionId is the order's unique paymentSessionId (NOT the reusable
+  // orderNumber — P24 rejects a re-registered sessionId), so the webhook can
+  // match P24's notification back to this order. The pending→paid flip happens
+  // in src/app/api/p24/webhook, which then triggers digital fulfillment
   // (download token + email) via the orders afterChange hook.
+  if (!order.paymentSessionId) {
+    console.error("[createOrder] order is missing paymentSessionId", order.id);
+    return {
+      ok: false,
+      error: "Nie udało się rozpocząć płatności. Spróbuj ponownie.",
+    };
+  }
   try {
     const { redirectUrl } = await registerTransaction({
-      sessionId: order.orderNumber,
+      sessionId: order.paymentSessionId,
       amountGrosze: plnToGrosze(order.totalGross),
       description: `Chaos Kitchen — zamówienie ${order.orderNumber}`,
       email: values.email,

@@ -14,6 +14,7 @@ type ReconcileOrderPaymentInputT = {
   readonly order: {
     readonly id: number;
     readonly orderNumber: string;
+    readonly paymentSessionId?: string | null;
     readonly totalGross: number;
     readonly createdAt: string;
   };
@@ -44,7 +45,11 @@ export async function reconcileOrderPayment({
   payload,
   order,
 }: ReconcileOrderPaymentInputT): Promise<PaymentOutcomeT> {
-  const transaction = await findTransactionBySessionId(order.orderNumber);
+  // Legacy/pre-paymentSessionId orders can't be reconciled by sessionId — they
+  // were never registered under one. Treat as pending; nothing to settle.
+  if (!order.paymentSessionId) return "pending";
+
+  const transaction = await findTransactionBySessionId(order.paymentSessionId);
   // No transaction on P24's side yet → nothing decided; keep waiting.
   if (!transaction) return "pending";
 
@@ -62,7 +67,7 @@ export async function reconcileOrderPayment({
     // Funds aren't settled to us until verify succeeds — never mark paid on the
     // status read alone.
     const verified = await verifyTransaction({
-      sessionId: order.orderNumber,
+      sessionId: order.paymentSessionId,
       orderId: transaction.orderId,
       amountGrosze: transaction.amount,
     });

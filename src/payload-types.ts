@@ -286,6 +286,7 @@ export interface Order {
   currency: 'PLN';
   paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
   paymentRef?: string | null;
+  paymentSessionId?: string | null;
   fulfillmentStatus: 'pending' | 'fulfilled' | 'shipped' | 'delivered';
   downloadToken?: string | null;
   downloadExpiresAt?: string | null;
@@ -602,6 +603,7 @@ export interface OrdersSelect<T extends boolean = true> {
   currency?: T;
   paymentStatus?: T;
   paymentRef?: T;
+  paymentSessionId?: T;
   fulfillmentStatus?: T;
   downloadToken?: T;
   downloadExpiresAt?: T;

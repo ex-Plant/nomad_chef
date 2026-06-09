@@ -15,7 +15,7 @@ type PersistArgsT = {
 
 export type PersistedOrderT = Pick<
   Order,
-  "id" | "orderNumber" | "totalGross" | "quantity"
+  "id" | "orderNumber" | "paymentSessionId" | "totalGross" | "quantity"
 >;
 
 type PersistResultT =

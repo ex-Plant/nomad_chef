@@ -27,6 +27,7 @@ import * as migration_20260517_140000_drop_download_count_fields from "./2026051
 import * as migration_20260517_150000_add_inventory_policy from "./20260517_150000_add_inventory_policy";
 import * as migration_20260517_191348_check_drift from "./20260517_191348_check_drift";
 import * as migration_20260531_190238_rename_confirmation_to_download_email from "./20260531_190238_rename_confirmation_to_download_email";
+import * as migration_20260609_120000_add_payment_session_id from "./20260609_120000_add_payment_session_id";
 
 export const migrations = [
   {
@@ -173,5 +174,10 @@ export const migrations = [
     up: migration_20260531_190238_rename_confirmation_to_download_email.up,
     down: migration_20260531_190238_rename_confirmation_to_download_email.down,
     name: "20260531_190238_rename_confirmation_to_download_email",
+  },
+  {
+    up: migration_20260609_120000_add_payment_session_id.up,
+    down: migration_20260609_120000_add_payment_session_id.down,
+    name: "20260609_120000_add_payment_session_id",
   },
 ];

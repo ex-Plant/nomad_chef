@@ -11,6 +11,7 @@
 
 import type { Access, CollectionConfig } from "payload";
 import { generateOrderNumber } from "./hooks/generate-order-number";
+import { generatePaymentSessionId } from "./hooks/generate-payment-session-id";
 import { snapshotOrder } from "./hooks/snapshot";
 import { upsertCustomer } from "./hooks/upsert-customer";
 import { digitalFulfillment } from "./hooks/digital-fulfillment";
@@ -49,7 +50,12 @@ export const Orders: CollectionConfig = {
   // overkill at this scale and got ripped out — keep the next implementation
   // minimal.
   hooks: {
-    beforeChange: [upsertCustomer, snapshotOrder, generateOrderNumber],
+    beforeChange: [
+      upsertCustomer,
+      snapshotOrder,
+      generateOrderNumber,
+      generatePaymentSessionId,
+    ],
     afterChange: [digitalFulfillment],
   },
   labels: {
@@ -196,6 +202,21 @@ export const Orders: CollectionConfig = {
       type: "text",
       index: true,
       label: { pl: "ID transakcji", en: "Transaction ID" },
+    },
+    {
+      // The P24 transaction sessionId, decoupled from the human-facing
+      // orderNumber. orderNumber is count-derived and reused after deletions;
+      // P24 rejects re-registering a sessionId it has seen ("Id sesji
+      // zduplikowane"), so the value sent to P24 must be globally unique.
+      // Minted once on create by generatePaymentSessionId; the webhook and the
+      // reconcile PULL both match the order on this field. Kept visible (read
+      // only) so support can cross-reference it against the P24 panel.
+      name: "paymentSessionId",
+      type: "text",
+      unique: true,
+      index: true,
+      admin: { readOnly: true },
+      label: { pl: "ID sesji płatności", en: "Payment session ID" },
     },
     {
       name: "fulfillmentStatus",
