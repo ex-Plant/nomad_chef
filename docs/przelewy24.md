@@ -8,7 +8,12 @@ gotchas we hit so nobody has to guess again.
 > 1. The REST API password is the **`Klucz do raportów`** (reports key) — _not_
 >    `Klucz do zamówień`, _not_ the CRC key. P24's naming is misleading.
 > 2. A `401 "Incorrect authentication"` is almost always the **IP whitelist**,
->    not a bad key. Set the `adres IP` field to `%` in the panel.
+>    not a bad key. Set the `adres IP` field to `%` in the panel — **separately
+>    for sandbox and production**. Production keeps 401-ing even with correct
+>    live keys until `%` is set in the LIVE panel (`panel.przelewy24.pl`); P24
+>    may also need to approve it. _(This was the exact prod cutover blocker on
+>    2026-06-09 — sandbox was green, production 401'd, and setting `%` in the
+>    live panel fixed it instantly.)_
 > 3. Sandbox and production are **separate accounts** with separate logins and
 >    separate keys. Production keys 401 against the sandbox host and vice versa.
 
@@ -36,8 +41,10 @@ cart submit
                           → download token + email                            ◄┘
   → buyer redirected to urlReturn = /checkout/processing
         if order already paid + has token → server redirect to /download/{token}
-        else (browser beat the webhook) → poll (router.refresh every 15s),
-             redirect to /download/{token} once the webhook lands
+             (initial hard load only → clean 307, no flash)
+        else (browser beat the webhook) → poll checkPaymentOutcome every 15s,
+             client-side router.replace to /download/{token} once paid
+             (NOT the server redirect — see "Why the poll navigates client-side")
 ```
 
 **Key rule:** never mark an order paid on the notification alone. The money is
@@ -49,6 +56,35 @@ page. `processing-status.tsx` polls (15s interval) for the whole payable window 
 poll count derived from `P24_PAYABLE_WINDOW_MINUTES`, not a magic cap — so the
 page resolves to the download view (or to a `failed` state, see below) on its own.
 The download email is the fallback if the buyer closes the tab first.
+
+**Why the poll navigates client-side (the 404-flash fix).** When the poll sees
+the order is `paid`, the **browser** navigates to `/download/{token}` itself via
+`router.replace` — it does **not** lean on the processing page's own server
+`redirect()`. Reason: the poll re-renders the server component, which is a
+**streaming** render, and a `redirect()` thrown in a streaming render is emitted
+to the client as a meta-tag/RSC instruction rather than a `307` (per Next's
+`redirect` docs). While the aborted segment hands off, Next briefly renders the
+nearest `not-found` boundary — and the `(site)` route group has **no
+`not-found.tsx`**, so the buyer saw Next's default _"This page could not be
+found"_ flash for a fraction of a second before the download page loaded. Having
+the client do the navigation skips the streaming redirect entirely. To enable it,
+`checkPaymentOutcome` returns the download URL alongside the status (it mints/heals
+the token server-side via `ensureDownloadToken`), so the browser has somewhere to
+go without another server render. The server `redirect()` in `processing/page.tsx`
+**stays** — it's correct for the genuine _initial_ hard load (a buyer returning
+already-paid): that path isn't streaming, so it's a clean `307`, no flash.
+
+**Dropped: the per-tick `router.refresh()`.** The old loop refreshed the server
+component every tick; its only job was to _detect_ the webhook flipping the order
+to `paid` during the grace window (before the PULL kicks in). That detection now
+lives in the `pull: false` DB read inside `checkPaymentOutcome`, so the blanket
+refresh is gone — the pending copy is static, nothing else depended on it.
+**Known, accepted trade-off:** the old refresh would also re-render on a
+`refunded` flip; the poll now reports only `paid`/`failed` and treats `refunded`
+as `pending`, so a refund landing _while the buyer is still watching the page_
+won't update the copy mid-session. That's practically unreachable (refunds are
+manual/post-settlement, never within the 15-min window) and a refunded order still
+renders correctly on initial load.
 
 **Failure detection (the PULL path):** P24 does **not** call `urlStatus` for a
 failed, cancelled, or abandoned payment — and `urlReturn` fires for _every_
@@ -108,17 +144,17 @@ jobs run on production deployments only).
 
 ### Files
 
-| File                                                  | Role                                                                                                                                                                                                                                      |
-| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/lib/payments/p24.ts`                             | REST client: `registerTransaction`, `verifyTransaction`, `findTransactionBySessionId` (status PULL), `p24NotificationSchema`, `isValidNotificationSign`. P24 creds come from `ENV` (boot-validated); only `P24_SANDBOX` is a direct read. |
-| `src/lib/payments/amount.ts`                          | `plnToGrosze()` — PLN → integer grosze.                                                                                                                                                                                                   |
-| `src/lib/orders/create-order.ts`                      | Registers the transaction, returns `redirectUrl`; defers operator + interest emails via `after()`.                                                                                                                                        |
-| `src/lib/orders/check-payment-outcome.ts`             | Server action (processing-page poll): resolves the order from the signed checkout cookie, then delegates to `reconcileOrderPayment`.                                                                                                      |
-| `src/lib/orders/reconcile-order-payment.ts`           | Shared core: PULLs `transaction/by/sessionId` for one `pending` order and settles it (paid → `verify` → flip) or marks it `failed` past the window. Used by the poll **and** the cron.                                                    |
-| `src/app/api/cron/reconcile-payments/route.ts`        | Daily reconciliation cron (`vercel.json`): sweeps `pending` orders past the payable window, runs `reconcileOrderPayment` on each. `CRON_SECRET`-guarded.                                                                                  |
-| `src/components/sections/cart/cart-form.tsx`          | `window.location.href = redirectUrl` on success.                                                                                                                                                                                          |
-| `src/app/api/p24/webhook/route.ts`                    | `urlStatus` handler: sign-check → amount guard → idempotency → verify → flip to paid.                                                                                                                                                     |
-| `src/collections/orders/hooks/digital-fulfillment.ts` | Existing hook. Fires on `pending→paid`, issues token + download email. **Untouched by P24.**                                                                                                                                              |
+| File                                                  | Role                                                                                                                                                                                                                                                                                                                                       |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `src/lib/payments/p24.ts`                             | REST client: `registerTransaction`, `verifyTransaction`, `findTransactionBySessionId` (status PULL), `p24NotificationSchema`, `isValidNotificationSign`. P24 creds come from `ENV` (boot-validated); only `P24_SANDBOX` is a direct read.                                                                                                  |
+| `src/lib/payments/amount.ts`                          | `plnToGrosze()` — PLN → integer grosze.                                                                                                                                                                                                                                                                                                    |
+| `src/lib/orders/create-order.ts`                      | Registers the transaction, returns `redirectUrl`; defers operator + interest emails via `after()`.                                                                                                                                                                                                                                         |
+| `src/lib/orders/check-payment-outcome.ts`             | Server action (processing-page poll): resolves the order from the signed checkout cookie, returns `{ status, downloadUrl? }` (mints the token for a paid digital order so the client can `router.replace` to it — no server redirect), delegates the PULL to `reconcileOrderPayment`. `pull` gates the PULL: grace polls read the DB only. |
+| `src/lib/orders/reconcile-order-payment.ts`           | Shared core: PULLs `transaction/by/sessionId` for one `pending` order and settles it (paid → `verify` → flip) or marks it `failed` past the window. Used by the poll **and** the cron.                                                                                                                                                     |
+| `src/app/api/cron/reconcile-payments/route.ts`        | Daily reconciliation cron (`vercel.json`): sweeps `pending` orders past the payable window, runs `reconcileOrderPayment` on each. `CRON_SECRET`-guarded.                                                                                                                                                                                   |
+| `src/components/sections/cart/cart-form.tsx`          | `window.location.href = redirectUrl` on success.                                                                                                                                                                                                                                                                                           |
+| `src/app/api/p24/webhook/route.ts`                    | `urlStatus` handler: sign-check → amount guard → idempotency → verify → flip to paid.                                                                                                                                                                                                                                                      |
+| `src/collections/orders/hooks/digital-fulfillment.ts` | Existing hook. Fires on `pending→paid`, issues token + download email. **Untouched by P24.**                                                                                                                                                                                                                                               |
 
 ---
 
@@ -367,10 +403,14 @@ decision.
    (`przelewy24.pl` / `panel.przelewy24.pl`, _not_ sandbox). Copy the production
    `ID sprzedawcy`, `Klucz do CRC`, and `Klucz do raportów`. They are different
    values from sandbox.
-2. **Whitelist the IP** in the production panel's `adres IP` field. Vercel
-   functions have **no static egress IP**, so `%` is the practical choice (key
-   stays secret in env). Only pin specific IPs if you front the calls with a
-   static-egress proxy.
+2. **Whitelist the IP** in the production panel's `adres IP` field. This is a
+   **separate setting from sandbox** and is the single most likely cause of a
+   production `401 "Incorrect authentication"` even when the live keys are
+   correct — production stays 401 until it's set. Vercel functions have **no
+   static egress IP**, so set it to `%` (key stays secret in env); P24 pops a
+   "confirm allow all IPs" dialog — accept it. `%` on production **may also need
+   P24 to approve it** before it takes effect, so re-test after saving. Only pin
+   specific IPs if you front the calls with a static-egress proxy.
 3. **Set Vercel env vars** (Production scope):
    - `P24_MERCHANT_ID`, `P24_POS_ID`, `P24_CRC`, `P24_API_KEY` → production values
    - `P24_SANDBOX=false`
