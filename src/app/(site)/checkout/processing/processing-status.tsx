@@ -123,7 +123,8 @@ export function ProcessingStatus({
               Na link możesz poczekać również na tej stronie.
             </>
           )}
-          {paymentStatus === "paid" && "Zamówienie zostało opłacone."}
+          {paymentStatus === "paid" &&
+            "Za chwilę przekierujemy Cię na stronę pobierania. Jeśli to nie nastąpi, sprawdź swój e-mail lub zgłoś problem poniżej."}
           {paymentStatus === "failed" && "Płatność nie powiodła się."}
           {paymentStatus === "refunded" && "Zamówienie zwrócone."}
         </p>
@@ -138,7 +139,9 @@ export function ProcessingStatus({
         size="compact"
         onClick={() => setIsHelpOpen(true)}
       >
-        Mam problem z płatnością
+        {paymentStatus === "paid"
+          ? "Mam problem z zamówieniem"
+          : "Mam problem z płatnością"}
       </Button>
 
       <HelpDialog
