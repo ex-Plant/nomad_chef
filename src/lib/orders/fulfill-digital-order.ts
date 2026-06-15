@@ -56,6 +56,12 @@ async function resolveCustomer({
 // issued. We then re-read and return whatever token is actually stored — ours if
 // we won, the racer's if they did — so every caller converges on one canonical
 // value. Returns the canonical token.
+//
+// Concurrency-safe because the paid-flip update and its afterChange hook run in
+// one Payload transaction that holds the order row lock across this write; a
+// concurrent page/cron call blocks on that lock, then its conditional `where`
+// matches nothing and it converges on the committed token via the re-read
+// below. Keep the `req` threading — it is what shares that transaction.
 export async function ensureDownloadToken(args: FulfillArgsT): Promise<string> {
   const { payload, order, req } = args;
   if (order.downloadToken) return order.downloadToken;
@@ -121,12 +127,29 @@ export async function fulfillDigitalOrder(
     ? new Date(fresh.downloadExpiresAt)
     : nextDownloadExpiry();
 
+  if (!customer?.email) {
+    // No recipient to send to — record the failure explicitly rather than
+    // emailing an empty address. The token is already persisted, so the cron
+    // retry sweep can resend once the customer record is fixed.
+    await payload.update({
+      collection: "orders",
+      id: order.id,
+      data: {
+        downloadEmailStatus: EMAIL_STATUS.failed,
+        downloadEmailError: "no customer email on order",
+      },
+      context: { skipFulfillment: true },
+      ...reqOpt(req),
+    });
+    return { token };
+  }
+
   let emailStatus: EmailStatusT = EMAIL_STATUS.sent;
   let emailError: string | null = null;
   try {
     await sendDownloadEmail({
-      customerEmail: customer?.email ?? "",
-      customerFirstName: customer?.firstName,
+      customerEmail: customer.email,
+      customerFirstName: customer.firstName,
       downloadToken: token,
       downloadExpiresAt: expiresAt,
     });
