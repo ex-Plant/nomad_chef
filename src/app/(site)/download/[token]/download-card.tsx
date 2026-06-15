@@ -15,7 +15,7 @@ type DownloadCardPropsT = {
 };
 
 const STATUS_COPY: Record<
-  Exclude<DownloadStatusT, "ready">,
+  Exclude<DownloadStatusT, "ready" | "expired">,
   { title: string; body: string; buttonLabel: string }
 > = {
   not_found: {
@@ -27,11 +27,6 @@ const STATUS_COPY: Record<
     title: "Zamówienie jeszcze się przetwarza",
     body: "Płatność nie została jeszcze potwierdzona. Wrócimy do Ciebie e-mailem, gdy będzie gotowe.",
     buttonLabel: "Mam problem z pobraniem",
-  },
-  expired: {
-    title: "Link wygasł",
-    body: "Linki do pobrania są aktywne przez 24 godziny od zakupu. Napisz do nas, a wyślemy Ci nowy.",
-    buttonLabel: "Mam problem z zamówieniem",
   },
 };
 
@@ -51,6 +46,36 @@ export function DownloadCard({
     token,
     ...(orderNumber ? { orderNumber } : {}),
   };
+
+  if (status === "expired") {
+    return (
+      <>
+        <Card>
+          <TestNotice />
+          <Paragraph>Link nie jest już aktywny.</Paragraph>
+          <div className="border-off-black/15 flex flex-col gap-6 border-t pt-6">
+            <Paragraph>
+              Coś nie tak z linkiem lub zamówieniem? Napisz do mnie.
+            </Paragraph>
+            <Button
+              type="button"
+              variant="coral-solid"
+              size="compact"
+              onClick={() => setIsHelpOpen(true)}
+            >
+              Mam problem z zamówieniem
+            </Button>
+          </div>
+        </Card>
+        <HelpDialog
+          isOpen={isHelpOpen}
+          onClose={() => setIsHelpOpen(false)}
+          context={helpContext}
+          prefillEmail={customerEmail ?? undefined}
+        />
+      </>
+    );
+  }
 
   if (status !== "ready") {
     const copy = STATUS_COPY[status];
