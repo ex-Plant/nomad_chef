@@ -37,17 +37,21 @@ export function ProcessingStatus({
 
   // The buyer is sent here by P24's urlReturn at roughly the same moment as the
   // urlStatus webhook fires — the browser often wins, so we land on a `pending`
-  // order. Poll by re-running the server component; once the order is paid and
-  // digital fulfillment stamped a token, the page itself redirects to
-  // /download/<token>.
+  // order. Poll the order via checkPaymentOutcome; once it reports paid for a
+  // digital order it hands back the /download/<token> URL and we navigate there
+  // client-side with router.replace.
   //
-  // The first CHECKOUT_GRACE_POLLS only chase that success race (the webhook flipping the
-  // order to paid). After the grace window we additionally PULL P24 for the
-  // authoritative outcome via checkPaymentOutcome — P24 never webhooks a failed
-  // or cancelled payment, so this is what surfaces a failure once the payable
-  // window has elapsed. The PULL on the last in-window tick resolves the order to
-  // paid/failed, so reaching maxPolls just stops the timer (the pending copy
-  // already points the buyer to the download email).
+  // We deliberately do NOT route the buyer through the processing server
+  // component's own redirect() here: that redirect runs inside a router.refresh()
+  // streaming render, which emits the redirect client-side and flashes Next's
+  // default not-found page before the browser follows it.
+  //
+  // The first CHECKOUT_GRACE_POLLS only chase the success race (the webhook
+  // flipping the order to paid) with a DB-only read. After the grace window we
+  // additionally PULL P24 for the authoritative outcome (pull=true) — P24 never
+  // webhooks a failed or cancelled payment, so this is what surfaces a failure
+  // once the payable window has elapsed. Reaching maxPolls just stops the timer
+  // (the pending copy already points the buyer to the download email).
   useEffect(() => {
     if (paymentStatus !== "pending") return;
     let polls = 0;
@@ -55,12 +59,6 @@ export function ProcessingStatus({
 
     const id = setInterval(async () => {
       polls += 1;
-      // [P24-TRACE] temporary: client-side poll trace (browser console, not Vercel
-      // logs). Shows whether the tab is still polling and which branch each tick hits.
-      console.log(
-        `[P24-TRACE] poll #${polls}/${maxPolls} orderNumber=${orderNumber} ` +
-          `${polls > CHECKOUT_GRACE_POLLS ? "PULL+refresh" : "grace (refresh only)"}`,
-      );
       if (polls > maxPolls) {
         console.log(
           `[P24-TRACE] poll orderNumber=${orderNumber} reached maxPolls → stop`,
@@ -69,20 +67,37 @@ export function ProcessingStatus({
         return;
       }
 
-      if (polls > CHECKOUT_GRACE_POLLS) {
-        const outcome = await checkPaymentOutcome().catch(() => "pending");
-        console.log(
-          `[P24-TRACE] poll #${polls} orderNumber=${orderNumber} outcome=${outcome}`,
-        );
-        if (cancelled) return;
-        if (outcome === "paid" || outcome === "failed") {
-          clearInterval(id);
-          router.refresh();
-          return;
-        }
-      }
+      // Grace polls read the DB only (let the webhook settle it); after the grace
+      // window we PULL P24 for the authoritative outcome.
+      const pull = polls > CHECKOUT_GRACE_POLLS;
+      // [P24-TRACE] temporary: client-side poll trace (browser console, not Vercel
+      // logs). Shows whether the tab is still polling and which branch each tick hits.
+      console.log(
+        `[P24-TRACE] poll #${polls}/${maxPolls} orderNumber=${orderNumber} ` +
+          `${pull ? "PULL" : "grace (DB only)"}`,
+      );
 
-      router.refresh();
+      const result = await checkPaymentOutcome({ pull }).catch(() => ({
+        status: "pending" as const,
+      }));
+      if (cancelled) return;
+      console.log(
+        `[P24-TRACE] poll #${polls} orderNumber=${orderNumber} status=${result.status}`,
+      );
+
+      if (result.status === "paid") {
+        clearInterval(id);
+        // Client-side nav straight to the download — never the server redirect.
+        // Non-digital paid (safety net) has no URL: re-render to the paid screen.
+        if (result.downloadUrl) router.replace(result.downloadUrl);
+        else router.refresh();
+        return;
+      }
+      if (result.status === "failed") {
+        clearInterval(id);
+        router.refresh();
+        return;
+      }
     }, CHECKOUT_POLL_INTERVAL_MS);
 
     return () => {
