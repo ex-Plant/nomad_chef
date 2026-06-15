@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/shared/button";
 import type { Product } from "@/payload-types";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
@@ -29,7 +28,6 @@ export function CartBuyButton({
   legalLinks,
   isLoggedIn,
 }: CartBuyButtonPropsT) {
-  const router = useRouter();
   const [isCartOpen, setIsCartOpen] = useState(false);
   // Pre-launch: hide the purchase CTA from anonymous visitors so nobody can
   // place a real order by accident. Logged-in (CMS) users can still test it.
@@ -56,10 +54,12 @@ export function CartBuyButton({
         legalLinks={legalLinks}
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
-        onOrderPlaced={() => {
-          setIsCartOpen(false);
-          router.push("/checkout/processing");
-        }}
+        // On success, cart-form does a full nav to the P24 paywall
+        // (window.location.href). Do NOT also router.push here — a client-side
+        // push to the (prefetched) processing route races and can win, skipping
+        // the paywall entirely. P24's urlReturn brings the buyer to /checkout/
+        // processing after paying.
+        onOrderPlaced={() => setIsCartOpen(false)}
       />
     </>
   );
