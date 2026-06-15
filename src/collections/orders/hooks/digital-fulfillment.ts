@@ -7,6 +7,7 @@
 
 import type { CollectionAfterChangeHook } from "payload";
 import { fulfillDigitalOrder } from "@/lib/orders/fulfill-digital-order";
+import { EMAIL_STATUS } from "@/lib/orders/email-status";
 
 export const digitalFulfillment: CollectionAfterChangeHook = async ({
   doc,
@@ -23,6 +24,13 @@ export const digitalFulfillment: CollectionAfterChangeHook = async ({
   const isNowPaid = doc.paymentStatus === "paid";
   if (!(wasNotPaid && isNowPaid)) return doc;
 
-  await fulfillDigitalOrder({ payload: req.payload, order: doc, req });
+  // First send attempt. A failure here leaves the order `pending` so the daily
+  // cron grants exactly one retry (after which it becomes terminal `failed`).
+  await fulfillDigitalOrder({
+    payload: req.payload,
+    order: doc,
+    req,
+    emailFailureStatus: EMAIL_STATUS.pending,
+  });
   return doc;
 };

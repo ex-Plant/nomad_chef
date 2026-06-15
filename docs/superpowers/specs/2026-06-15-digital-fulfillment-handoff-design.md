@@ -36,9 +36,18 @@ Two partial-failure states must also be handled and retried:
 1. A paid buyer lands on the download page, not the paid screen.
 2. Token generation is decoupled from — and happens before — the email send.
 3. Both partial states are recoverable: **A (paid, no token) is healed on-demand,
-   inline — never by cron**; **B (token present, email failed) is retried by the
-   daily cron** for buyers who left. The token-first hook makes A effectively
-   unreachable except a hard mid-hook failure (see Concurrency).
+   inline — never by cron**; **B (email not sent) gets exactly ONE auto-retry by
+   the daily cron**, after which it is terminal `failed` (manual resend only). The
+   token-first hook makes A effectively unreachable except a hard mid-hook failure
+   (see Concurrency).
+
+   Retry-once state machine for the download email (`downloadEmailStatus`):
+   `pending` (default / first send failed → one retry due) → cron retry → `sent`
+   on success or `failed` on failure. The hook's first-attempt failure writes
+   `pending`; the cron's retry failure writes `failed`. The sweep selects only
+   `pending`, so `failed` is never auto-retried again. The 72h download window is
+   measured from purchase and is **not** refreshed on retry — the single retry
+   fires on the next daily cron (~within 24h), comfortably inside the window.
 
 ## Non-goals (explicitly out of scope)
 
@@ -129,13 +138,14 @@ client poller stopping on `paid` is no longer a dead-end.
 ### Cron — `src/app/api/cron/reconcile-payments/route.ts`
 
 Add a second sweep after the existing pending-reconciliation: find **paid digital**
-orders with **`downloadEmailStatus !== "sent"`** and run `fulfillDigitalOrder` on
-each. This retries **state B** (failed/unsent download email) for buyers who closed
-the tab. It does **not** generate tokens — state A is healed inline on the
-processing page only. (Should a token somehow be missing on a swept order,
-`fulfillDigitalOrder`'s write-once step still issues one before emailing, but the
-sweep is not selected on token-absence.) Same `CRON_SECRET` guard and per-run cap;
-log the counts.
+orders with **`downloadEmailStatus === "pending"`** and run `fulfillDigitalOrder` on
+each. This is the **single** auto-retry of **state B**; the retry resolves the order
+to `sent` or terminal `failed`, so it is never re-queued. `failed` is deliberately
+**not** selected — its auto-retry is spent (recover via manual resend). It does
+**not** generate tokens — state A is healed inline on the processing page only.
+(Should a token somehow be missing on a swept order, `fulfillDigitalOrder`'s
+write-once step still issues one before emailing.) Same `CRON_SECRET` guard and
+per-run cap; log the counts.
 
 ### Client poller — `processing-status.tsx`
 

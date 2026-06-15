@@ -91,17 +91,19 @@ export async function GET(req: Request): Promise<Response> {
     counts,
   );
 
-  // Second sweep: paid orders whose download email never sent (state B). The
-  // token is healed inline on the processing page (state A), so this is about
-  // delivery, not tokens — though fulfillDigitalOrder's write-once step will
-  // still issue a token if one is somehow missing before it emails.
+  // Second sweep: the ONE auto-retry for paid orders whose download email is
+  // still `pending` (state B — a first send that failed left it `pending`). This
+  // single retry then resolves the order to `sent` or terminal `failed`, so it is
+  // never re-queued. `failed` is deliberately NOT selected — that auto-retry is
+  // spent; recover those with a manual resend. (fulfillDigitalOrder's write-once
+  // step still issues a token if one is somehow missing before it emails.)
   const emailRetry = { resent: 0, errored: 0 };
   const unsent = await payload.find({
     collection: "orders",
     where: {
       and: [
         { paymentStatus: { equals: "paid" } },
-        { downloadEmailStatus: { not_equals: "sent" } },
+        { downloadEmailStatus: { equals: "pending" } },
       ],
     },
     depth: 0,

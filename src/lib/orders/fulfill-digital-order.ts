@@ -14,6 +14,12 @@ type FulfillArgsT = {
   // Present only on the hook path (carries the active transaction). Page/cron
   // callers use a fresh getPayload with no ambient transaction.
   readonly req?: PayloadRequest;
+  // Status to write when the SMTP send throws. The hook (first attempt at
+  // purchase) passes `pending` so the daily cron grants exactly ONE retry; the
+  // cron's retry omits it → defaults to `failed` (terminal — auto-retry spent,
+  // manual resend only). The cron sweep selects on `pending`, so `failed` is
+  // never picked up again.
+  readonly emailFailureStatus?: EmailStatusT;
 };
 
 const reqOpt = (req?: PayloadRequest) => (req ? { req } : {});
@@ -155,7 +161,8 @@ export async function fulfillDigitalOrder(
     });
   } catch (err) {
     console.error("[fulfillDigitalOrder] download email failed", err);
-    emailStatus = EMAIL_STATUS.failed;
+    // Hook → `pending` (one cron retry due); cron retry → `failed` (terminal).
+    emailStatus = args.emailFailureStatus ?? EMAIL_STATUS.failed;
     emailError = err instanceof Error ? err.message : String(err);
   }
 

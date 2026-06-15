@@ -387,12 +387,13 @@ switch (cmd) {
   }
 
   case "email-retry-sweep": {
+    // Mirrors the cron sweep: only `pending` (one retry due) — never `failed`.
     const unsent = await payload.find({
       collection: "orders",
       where: {
         and: [
           { paymentStatus: { equals: "paid" } },
-          { downloadEmailStatus: { not_equals: "sent" } },
+          { downloadEmailStatus: { equals: "pending" } },
         ],
       },
       depth: 0,

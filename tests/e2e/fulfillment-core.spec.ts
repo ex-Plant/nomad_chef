@@ -45,11 +45,11 @@ test("fulfillOrder no-ops on a pending order", () => {
   expect(result.order.downloadToken ?? null).toBeNull();
 });
 
-test("email-retry sweep resends a paid order whose email is not sent", () => {
+test("email-retry sweep retries a paid order whose email is still pending", () => {
   const created = db.createOrder({ email: uniqueBuyerEmail("core-retry") });
   const paid = db.flipPaid(created.id);
-  // Simulate a failed/unsent email while keeping the token (state B).
-  db.patchOrder(paid.id, { downloadEmailStatus: "failed" });
+  // A first send that failed leaves the order `pending` (one retry due).
+  db.patchOrder(paid.id, { downloadEmailStatus: "pending" });
 
   const sweep = db.emailRetrySweep();
   expect(sweep.resent).toBeGreaterThanOrEqual(1);
@@ -57,4 +57,16 @@ test("email-retry sweep resends a paid order whose email is not sent", () => {
   const after = db.getOrder(paid.id);
   expect(after.downloadEmailStatus).toBe("sent");
   expect(after.downloadToken).toBe(paid.downloadToken); // token unchanged
+});
+
+test("email-retry sweep does NOT retry a terminal `failed` order (retry once only)", () => {
+  const created = db.createOrder({ email: uniqueBuyerEmail("core-failed") });
+  const paid = db.flipPaid(created.id);
+  // `failed` = the single auto-retry was already spent. Manual resend only.
+  db.patchOrder(paid.id, { downloadEmailStatus: "failed" });
+
+  db.emailRetrySweep();
+
+  const after = db.getOrder(paid.id);
+  expect(after.downloadEmailStatus).toBe("failed"); // untouched by the sweep
 });
