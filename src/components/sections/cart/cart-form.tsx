@@ -79,11 +79,16 @@ export function CartForm({
       setErrorMessage(null);
       const result = await createOrder(value);
       if (result.ok) {
+        // Start the cross-origin handoff to P24 BEFORE any local state update.
+        // Clearing the cart store, resetting the form, and closing the dialog
+        // each trigger a React re-render that can race the in-flight external
+        // navigation — WebKit aborts it and flashes its native "This page
+        // couldn't load" before the retry reaches the paywall. Scheduling the
+        // nav first gives the browser the best chance to commit it cleanly.
+        window.location.href = result.redirectUrl;
         resetFormData();
         form.reset();
         onSuccess(result.orderNumber, value.email);
-        // Hand off to the Przelewy24 paywall (external domain → full nav).
-        window.location.href = result.redirectUrl;
         return;
       }
       setErrorMessage(result.error);
