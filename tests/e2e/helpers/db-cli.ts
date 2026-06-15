@@ -154,6 +154,8 @@ switch (cmd) {
     if (str(flags.paymentStatus)) data.paymentStatus = str(flags.paymentStatus);
     if (str(flags.fulfillmentStatus))
       data.fulfillmentStatus = str(flags.fulfillmentStatus);
+    if (str(flags.downloadEmailStatus))
+      data.downloadEmailStatus = str(flags.downloadEmailStatus);
     if (str(flags.tracking)) data.tracking = str(flags.tracking);
     await payload.update({
       collection: "orders",
@@ -361,7 +363,11 @@ switch (cmd) {
   case "ensure-token": {
     const id = Number(str(flags.id));
     if (!id) throw new Error("ensure-token requires --id");
-    const order = await payload.findByID({ collection: "orders", id, depth: 0 });
+    const order = await payload.findByID({
+      collection: "orders",
+      id,
+      depth: 0,
+    });
     const token = await ensureDownloadToken({ payload, order });
     out({ token, order: await getOrder(id) });
     break;
@@ -370,9 +376,35 @@ switch (cmd) {
   case "fulfill-order": {
     const id = Number(str(flags.id));
     if (!id) throw new Error("fulfill-order requires --id");
-    const order = await payload.findByID({ collection: "orders", id, depth: 0 });
+    const order = await payload.findByID({
+      collection: "orders",
+      id,
+      depth: 0,
+    });
     const result = await fulfillDigitalOrder({ payload, order });
     out({ ...result, order: await getOrder(id) });
+    break;
+  }
+
+  case "email-retry-sweep": {
+    const unsent = await payload.find({
+      collection: "orders",
+      where: {
+        and: [
+          { paymentStatus: { equals: "paid" } },
+          { downloadEmailStatus: { not_equals: "sent" } },
+        ],
+      },
+      depth: 0,
+      limit: 100,
+      sort: "createdAt",
+    });
+    let resent = 0;
+    for (const order of unsent.docs) {
+      await fulfillDigitalOrder({ payload, order });
+      resent += 1;
+    }
+    out({ swept: unsent.docs.length, resent });
     break;
   }
 

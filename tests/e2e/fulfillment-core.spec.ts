@@ -44,3 +44,17 @@ test("fulfillOrder no-ops on a pending order", () => {
   expect(result.token).toBeNull();
   expect(result.order.downloadToken ?? null).toBeNull();
 });
+
+test("email-retry sweep resends a paid order whose email is not sent", () => {
+  const created = db.createOrder({ email: uniqueBuyerEmail("core-retry") });
+  const paid = db.flipPaid(created.id);
+  // Simulate a failed/unsent email while keeping the token (state B).
+  db.patchOrder(paid.id, { downloadEmailStatus: "failed" });
+
+  const sweep = db.emailRetrySweep();
+  expect(sweep.resent).toBeGreaterThanOrEqual(1);
+
+  const after = db.getOrder(paid.id);
+  expect(after.downloadEmailStatus).toBe("sent");
+  expect(after.downloadToken).toBe(paid.downloadToken); // token unchanged
+});

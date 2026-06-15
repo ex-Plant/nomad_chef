@@ -18,6 +18,7 @@ import { NextResponse } from "next/server";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { reconcileOrderPayment } from "@/lib/orders/reconcile-order-payment";
+import { fulfillDigitalOrder } from "@/lib/orders/fulfill-digital-order";
 import { P24_PAYABLE_WINDOW_MS } from "@/config/payments";
 
 export const dynamic = "force-dynamic";
@@ -90,6 +91,37 @@ export async function GET(req: Request): Promise<Response> {
     counts,
   );
 
+  // Second sweep: paid orders whose download email never sent (state B). The
+  // token is healed inline on the processing page (state A), so this is about
+  // delivery, not tokens — though fulfillDigitalOrder's write-once step will
+  // still issue a token if one is somehow missing before it emails.
+  const emailRetry = { resent: 0, errored: 0 };
+  const unsent = await payload.find({
+    collection: "orders",
+    where: {
+      and: [
+        { paymentStatus: { equals: "paid" } },
+        { downloadEmailStatus: { not_equals: "sent" } },
+      ],
+    },
+    depth: 0,
+    limit: MAX_ORDERS_PER_RUN,
+    sort: "createdAt",
+  });
+  for (const order of unsent.docs) {
+    try {
+      await fulfillDigitalOrder({ payload, order });
+      emailRetry.resent += 1;
+    } catch (err) {
+      emailRetry.errored += 1;
+      console.error(
+        `[p24:reconcile] order ${order.orderNumber} email retry failed`,
+        err,
+      );
+    }
+  }
+  console.log(`[p24:reconcile] download-email retry sweep`, emailRetry);
+
   // TODO(remove after tests): debug ping to konradantonik@gmail.com to confirm
   // the cron actually fires in production. Delete this whole block (and the
   // hardcoded address) once we've seen it land. Wrapped so a mail failure never
@@ -115,5 +147,6 @@ export async function GET(req: Request): Promise<Response> {
     checked: result.docs.length,
     ...counts,
     leftover,
+    emailRetry,
   });
 }

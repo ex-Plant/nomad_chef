@@ -126,6 +126,9 @@ export const db = {
   removeDigitalAsset(assetId: number): unknown {
     return run(["remove-digital-asset", "--id", String(assetId)]);
   },
+  emailRetrySweep(): { swept: number; resent: number } {
+    return run<{ swept: number; resent: number }>(["email-retry-sweep"]);
+  },
   seedAdmin(input: { email: string; password: string }): {
     id: number;
     email: string;
