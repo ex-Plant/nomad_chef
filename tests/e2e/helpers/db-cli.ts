@@ -14,6 +14,10 @@ import { getPayload } from "payload";
 import config from "../../../src/payload.config";
 import { persistCustomerAndOrder } from "../../../src/lib/orders/persist-customer-and-order";
 import { defaultCartValues } from "../../../src/lib/cart/cart-schema";
+import {
+  ensureDownloadToken,
+  fulfillDigitalOrder,
+} from "../../../src/lib/orders/fulfill-digital-order";
 
 type FlagsT = Record<string, string | true>;
 
@@ -351,6 +355,24 @@ switch (cmd) {
       // guard or no match — ignore
     }
     out({ deletedOrders, deletedCustomers: customerIds.length, deletedUsers });
+    break;
+  }
+
+  case "ensure-token": {
+    const id = Number(str(flags.id));
+    if (!id) throw new Error("ensure-token requires --id");
+    const order = await payload.findByID({ collection: "orders", id, depth: 0 });
+    const token = await ensureDownloadToken({ payload, order });
+    out({ token, order: await getOrder(id) });
+    break;
+  }
+
+  case "fulfill-order": {
+    const id = Number(str(flags.id));
+    if (!id) throw new Error("fulfill-order requires --id");
+    const order = await payload.findByID({ collection: "orders", id, depth: 0 });
+    const result = await fulfillDigitalOrder({ payload, order });
+    out({ ...result, order: await getOrder(id) });
     break;
   }
 

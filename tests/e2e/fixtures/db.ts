@@ -94,6 +94,20 @@ export const db = {
   getOrder(id: number): OrderRowT {
     return run(["get-order", "--id", String(id)]);
   },
+  ensureToken(id: number): { token: string; order: OrderRowT } {
+    return run<{ token: string; order: OrderRowT }>([
+      "ensure-token",
+      "--id",
+      String(id),
+    ]);
+  },
+  fulfillOrder(id: number): { token: string | null; order: OrderRowT } {
+    return run<{ token: string | null; order: OrderRowT }>([
+      "fulfill-order",
+      "--id",
+      String(id),
+    ]);
+  },
   invoiceOrder(input: { email: string }): {
     order: OrderRowT;
     customer: CustomerRowT;
