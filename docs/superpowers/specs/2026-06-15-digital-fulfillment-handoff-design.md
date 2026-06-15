@@ -54,6 +54,7 @@ Chosen: extract a single idempotent fulfillment core and call it from three site
 `reconcileOrderPayment` (shared by the poll and the cron).
 
 Rejected:
+
 - **Generate the token inside the webhook/reconcile paid-flip** (atomic, no gap) —
   duplicates token logic across webhook + reconcile + admin manual flips and breaks
   the single-chokepoint hook.
@@ -75,7 +76,7 @@ Steps:
 2. **Token first, write-once** — if `downloadToken` is missing, generate
    (`generateDownloadToken`) and persist it with a **set-if-null conditional
    update** (`where: id == order.id AND downloadToken not set`, `data:
-   { downloadToken, downloadExpiresAt, paidAt? }`). Then **re-read the order** and
+{ downloadToken, downloadExpiresAt, paidAt? }`). Then **re-read the order** and
    take `downloadToken` from the DB — the canonical value, which may be ours or a
    concurrent writer's. Decoupled from the email. See "Concurrency" below.
 3. **Email** — if `downloadEmailStatus !== "sent"`, send the download email using
@@ -153,7 +154,7 @@ paid+past-TTL → `expired`, paid+valid → `ready`. Only the `expired` copy cha
 
 - Heading: unchanged — `Płatność zaksięgowana`.
 - Body → `Za chwilę przekierujemy Cię na stronę pobierania. Jeśli to nie nastąpi,
-  sprawdź swój e-mail lub zgłoś problem poniżej.`
+sprawdź swój e-mail lub zgłoś problem poniżej.`
 - Button label → `Mam problem z zamówieniem`.
 
 ### Download page — `expired` state only
@@ -162,7 +163,7 @@ paid+past-TTL → `expired`, paid+valid → `ready`. Only the `expired` copy cha
 - Body → `Link nie jest już aktywny.`
 - No `Pobierz ebook` button.
 - Keep the contact block: `Coś nie tak z linkiem lub zamówieniem? Napisz do mnie.`
-  + button `Mam problem z zamówieniem`.
+  - button `Mam problem z zamówieniem`.
 - `not_found` and `not_paid` copy unchanged.
 
 This makes the `expired` branch a bespoke layout rather than the generic
@@ -180,9 +181,19 @@ Resolution — **write-once token at the DB**. Every token persist (hook,
 `ensureDownloadToken`) is a **set-if-null conditional update**
 (`where: id == order.id AND downloadToken not set`), followed by a **re-read** of the
 order; the caller returns/redirects to the stored `downloadToken`. Whoever writes
-first wins; the loser's update matches zero rows and is a no-op; both converge on the
-single canonical token. This is what makes the "paid but token not generated yet"
-window safe without locks.
+first wins; the loser's conditional update matches zero rows and is a no-op; both
+converge on the single canonical token.
+
+What actually serializes the writers is Payload's per-operation transaction: the
+paid-flip `payload.update({ paymentStatus: "paid" })` and its `afterChange` hook run
+in **one transaction that holds the order row lock** across the whole hook, so a
+concurrent page/cron `ensureDownloadToken` blocks on that lock, then finds the token
+already set (its `where` no-ops) and converges via the re-read. After any paid-flip
+(webhook or PULL) the token is set in that same transaction — so there is no normal
+"paid committed + token null" state for two inline heals to race over. The `req`
+threading is what shares that transaction on the hook path; it must be kept. (A raw
+set-if-null SQL UPDATE was considered and rejected: it would run outside the hook's
+transaction and deadlock against the row lock it already holds.)
 
 ## Error handling & idempotency
 
@@ -195,20 +206,20 @@ window safe without locks.
 
 ## Affected files
 
-| File | Change |
-| --- | --- |
-| `src/lib/orders/fulfill-digital-order.ts` | **new** — shared fulfillment core + `ensureDownloadToken` |
-| `src/collections/orders/hooks/digital-fulfillment.ts` | delegate to the core (token-first) |
-| `src/app/(site)/checkout/processing/page.tsx` | redirect on `paid`, via `ensureDownloadToken` |
-| `src/app/(site)/checkout/processing/processing-status.tsx` | `paid`-state copy + button label |
-| `src/app/api/cron/reconcile-payments/route.ts` | second sweep: retry failed/unsent download emails (state B) only |
-| `src/app/(site)/download/[token]/download-card.tsx` | bespoke `expired` copy/layout |
+| File                                                       | Change                                                           |
+| ---------------------------------------------------------- | ---------------------------------------------------------------- |
+| `src/lib/orders/fulfill-digital-order.ts`                  | **new** — shared fulfillment core + `ensureDownloadToken`        |
+| `src/collections/orders/hooks/digital-fulfillment.ts`      | delegate to the core (token-first)                               |
+| `src/app/(site)/checkout/processing/page.tsx`              | redirect on `paid`, via `ensureDownloadToken`                    |
+| `src/app/(site)/checkout/processing/processing-status.tsx` | `paid`-state copy + button label                                 |
+| `src/app/api/cron/reconcile-payments/route.ts`             | second sweep: retry failed/unsent download emails (state B) only |
+| `src/app/(site)/download/[token]/download-card.tsx`        | bespoke `expired` copy/layout                                    |
 
 ## Testing
 
 - Unit: `fulfillDigitalOrder` — paid+no-token issues token; failed email keeps token
-  + records `failed`; second call is a no-op (idempotent); non-paid / non-digital
-  no-op.
+  - records `failed`; second call is a no-op (idempotent); non-paid / non-digital
+    no-op.
 - Unit: `ensureDownloadToken` — returns existing token; generates when missing.
 - Integration: processing page redirects on `paid` (token present and token-absent
   paths both redirect).

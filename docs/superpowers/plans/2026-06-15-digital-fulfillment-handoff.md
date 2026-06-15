@@ -14,23 +14,24 @@
 
 ## File Structure
 
-| File | Responsibility |
-| --- | --- |
-| `src/lib/orders/fulfill-digital-order.ts` | **new** — `ensureDownloadToken` (write-once token) + `fulfillDigitalOrder` (token-first, idempotent, email-decoupled) |
-| `src/collections/orders/hooks/digital-fulfillment.ts` | reduced to: detect `pending→paid` digital transition → delegate to `fulfillDigitalOrder` |
-| `src/app/(site)/checkout/processing/page.tsx` | redirect on `paid` + digital via `ensureDownloadToken` |
-| `src/app/(site)/checkout/processing/processing-status.tsx` | `paid`-state copy + button label |
-| `src/app/(site)/download/[token]/download-card.tsx` | bespoke `expired` copy/layout |
-| `src/app/api/cron/reconcile-payments/route.ts` | second sweep: retry failed/unsent download emails (state B) |
-| `tests/e2e/helpers/db-cli.ts` | add `ensure-token`, `fulfill-order`, `email-retry-sweep` commands |
-| `tests/e2e/fulfillment-core.spec.ts` | **new** — core token-first / write-once / idempotency / email-retry E2E |
-| `tests/e2e/download-expired-page.spec.ts` | **new** — expired download page renders the new copy |
+| File                                                       | Responsibility                                                                                                        |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `src/lib/orders/fulfill-digital-order.ts`                  | **new** — `ensureDownloadToken` (write-once token) + `fulfillDigitalOrder` (token-first, idempotent, email-decoupled) |
+| `src/collections/orders/hooks/digital-fulfillment.ts`      | reduced to: detect `pending→paid` digital transition → delegate to `fulfillDigitalOrder`                              |
+| `src/app/(site)/checkout/processing/page.tsx`              | redirect on `paid` + digital via `ensureDownloadToken`                                                                |
+| `src/app/(site)/checkout/processing/processing-status.tsx` | `paid`-state copy + button label                                                                                      |
+| `src/app/(site)/download/[token]/download-card.tsx`        | bespoke `expired` copy/layout                                                                                         |
+| `src/app/api/cron/reconcile-payments/route.ts`             | second sweep: retry failed/unsent download emails (state B)                                                           |
+| `tests/e2e/helpers/db-cli.ts`                              | add `ensure-token`, `fulfill-order`, `email-retry-sweep` commands                                                     |
+| `tests/e2e/fulfillment-core.spec.ts`                       | **new** — core token-first / write-once / idempotency / email-retry E2E                                               |
+| `tests/e2e/download-expired-page.spec.ts`                  | **new** — expired download page renders the new copy                                                                  |
 
 ---
 
 ## Task 1: Fulfillment core — `ensureDownloadToken` + `fulfillDigitalOrder`
 
 **Files:**
+
 - Create: `src/lib/orders/fulfill-digital-order.ts`
 - Modify: `tests/e2e/helpers/db-cli.ts` (add `ensure-token`, `fulfill-order`)
 - Test: `tests/e2e/fulfillment-core.spec.ts`
@@ -60,9 +61,11 @@ type FulfillArgsT = {
 
 const reqOpt = (req?: PayloadRequest) => (req ? { req } : {});
 
-async function resolveProduct(
-  { payload, order, req }: FulfillArgsT,
-): Promise<Product | null> {
+async function resolveProduct({
+  payload,
+  order,
+  req,
+}: FulfillArgsT): Promise<Product | null> {
   const populated = asPopulated<Product>(order.product);
   if (populated) return populated;
   if (typeof order.product !== "number") return null;
@@ -74,9 +77,11 @@ async function resolveProduct(
   });
 }
 
-async function resolveCustomer(
-  { payload, order, req }: FulfillArgsT,
-): Promise<Customer | null> {
+async function resolveCustomer({
+  payload,
+  order,
+  req,
+}: FulfillArgsT): Promise<Customer | null> {
   const populated = asPopulated<Customer>(order.customer);
   if (populated) return populated;
   if (typeof order.customer !== "number") return null;
@@ -103,10 +108,7 @@ export async function ensureDownloadToken(args: FulfillArgsT): Promise<string> {
   await payload.update({
     collection: "orders",
     where: {
-      and: [
-        { id: { equals: order.id } },
-        { downloadToken: { exists: false } },
-      ],
+      and: [{ id: { equals: order.id } }, { downloadToken: { exists: false } }],
     },
     data: {
       downloadToken: candidate,
@@ -332,6 +334,7 @@ git commit -m "add shared digital-fulfillment core with write-once token"
 ## Task 2: Hook delegates to the core
 
 **Files:**
+
 - Modify: `src/collections/orders/hooks/digital-fulfillment.ts`
 - Test: `tests/e2e/fulfillment-digital.spec.ts` (existing — must still pass)
 
@@ -397,6 +400,7 @@ git commit -m "delegate digital fulfillment hook to shared core"
 ## Task 3: Processing page redirects on paid + digital
 
 **Files:**
+
 - Modify: `src/app/(site)/checkout/processing/page.tsx`
 
 > No automated test: the page reads a signed checkout cookie that an HTTP client can't forge without the signing secret, so an isolated page test would cost more than it's worth. The redirect is a guarded 3-line change over the already-E2E-covered `ensureDownloadToken`; verified manually (Task 7) and by the `[P24-TRACE]` prod logs.
@@ -406,23 +410,23 @@ git commit -m "delegate digital fulfillment hook to shared core"
 In `src/app/(site)/checkout/processing/page.tsx`, replace the existing paid-redirect block:
 
 ```ts
-  if (order.paymentStatus === "paid" && order.downloadToken) {
-    redirect(`/download/${order.downloadToken}`);
-  }
+if (order.paymentStatus === "paid" && order.downloadToken) {
+  redirect(`/download/${order.downloadToken}`);
+}
 ```
 
 with:
 
 ```ts
-  const product = asPopulated(order.product);
-  // Digital paid → ensure a token exists (heals the paid-but-no-token race
-  // inline, never via cron) and redirect to the download. The store sells no
-  // physical products, so the digital guard is a safety net: a non-digital paid
-  // order falls through to the paid screen below and mints no token.
-  if (order.paymentStatus === "paid" && product?.format === "digital") {
-    const token = await ensureDownloadToken({ payload, order });
-    redirect(`/download/${token}`);
-  }
+const product = asPopulated(order.product);
+// Digital paid → ensure a token exists (heals the paid-but-no-token race
+// inline, never via cron) and redirect to the download. The store sells no
+// physical products, so the digital guard is a safety net: a non-digital paid
+// order falls through to the paid screen below and mints no token.
+if (order.paymentStatus === "paid" && product?.format === "digital") {
+  const token = await ensureDownloadToken({ payload, order });
+  redirect(`/download/${token}`);
+}
 ```
 
 Add the import at the top (the file already imports `asPopulated`; confirm it does — if not, add it):
@@ -450,6 +454,7 @@ git commit -m "redirect paid digital orders from processing to download"
 ## Task 4: Processing-page `paid`-state copy
 
 **Files:**
+
 - Modify: `src/app/(site)/checkout/processing/processing-status.tsx`
 
 - [ ] **Step 1: Update the `paid` body copy**
@@ -457,14 +462,18 @@ git commit -m "redirect paid digital orders from processing to download"
 In `processing-status.tsx`, replace the `paid` paragraph line:
 
 ```tsx
-          {paymentStatus === "paid" && "Zamówienie zostało opłacone."}
+{
+  paymentStatus === "paid" && "Zamówienie zostało opłacone.";
+}
 ```
 
 with:
 
 ```tsx
-          {paymentStatus === "paid" &&
-            "Za chwilę przekierujemy Cię na stronę pobierania. Jeśli to nie nastąpi, sprawdź swój e-mail lub zgłoś problem poniżej."}
+{
+  paymentStatus === "paid" &&
+    "Za chwilę przekierujemy Cię na stronę pobierania. Jeśli to nie nastąpi, sprawdź swój e-mail lub zgłoś problem poniżej.";
+}
 ```
 
 - [ ] **Step 2: Make the help button label state-aware**
@@ -478,9 +487,11 @@ Replace the help button label `Mam problem z płatnością`:
 with a value derived from status — change the `<Button>` child to:
 
 ```tsx
-        {paymentStatus === "paid"
-          ? "Mam problem z zamówieniem"
-          : "Mam problem z płatnością"}
+{
+  paymentStatus === "paid"
+    ? "Mam problem z zamówieniem"
+    : "Mam problem z płatnością";
+}
 ```
 
 - [ ] **Step 3: Typecheck + lint**
@@ -500,6 +511,7 @@ git commit -m "update paid-state processing copy to redirect fallback"
 ## Task 5: Bespoke `expired` download-card copy
 
 **Files:**
+
 - Modify: `src/app/(site)/download/[token]/download-card.tsx`
 - Test: `tests/e2e/download-expired-page.spec.ts`
 
@@ -525,14 +537,18 @@ test("expired download page shows the 'link nie jest już aktywny' copy", async 
   await page.goto(`/download/${paid.downloadToken}`);
 
   await expect(page.getByText("Link nie jest już aktywny.")).toBeVisible();
-  await expect(page.getByText("Coś nie tak z linkiem lub zamówieniem")).toBeVisible();
+  await expect(
+    page.getByText("Coś nie tak z linkiem lub zamówieniem"),
+  ).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Mam problem z zamówieniem" }),
   ).toBeVisible();
   await expect(
     page.getByText("Twoje zamówienie jest gotowe do realizacji"),
   ).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "Pobierz ebook" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Pobierz ebook" })).toHaveCount(
+    0,
+  );
 });
 ```
 
@@ -566,35 +582,35 @@ const STATUS_COPY: Record<
 Then add a dedicated `expired` render branch directly above the existing `if (status !== "ready")` block:
 
 ```tsx
-  if (status === "expired") {
-    return (
-      <>
-        <Card>
-          <TestNotice />
-          <Paragraph>Link nie jest już aktywny.</Paragraph>
-          <div className="border-off-black/15 flex flex-col gap-6 border-t pt-6">
-            <Paragraph>
-              Coś nie tak z linkiem lub zamówieniem? Napisz do mnie.
-            </Paragraph>
-            <Button
-              type="button"
-              variant="coral-solid"
-              size="compact"
-              onClick={() => setIsHelpOpen(true)}
-            >
-              Mam problem z zamówieniem
-            </Button>
-          </div>
-        </Card>
-        <HelpDialog
-          isOpen={isHelpOpen}
-          onClose={() => setIsHelpOpen(false)}
-          context={helpContext}
-          prefillEmail={customerEmail ?? undefined}
-        />
-      </>
-    );
-  }
+if (status === "expired") {
+  return (
+    <>
+      <Card>
+        <TestNotice />
+        <Paragraph>Link nie jest już aktywny.</Paragraph>
+        <div className="border-off-black/15 flex flex-col gap-6 border-t pt-6">
+          <Paragraph>
+            Coś nie tak z linkiem lub zamówieniem? Napisz do mnie.
+          </Paragraph>
+          <Button
+            type="button"
+            variant="coral-solid"
+            size="compact"
+            onClick={() => setIsHelpOpen(true)}
+          >
+            Mam problem z zamówieniem
+          </Button>
+        </div>
+      </Card>
+      <HelpDialog
+        isOpen={isHelpOpen}
+        onClose={() => setIsHelpOpen(false)}
+        context={helpContext}
+        prefillEmail={customerEmail ?? undefined}
+      />
+    </>
+  );
+}
 ```
 
 (The subsequent `if (status !== "ready")` block now only handles `not_found` / `not_paid`; its `STATUS_COPY[status]` access is type-correct because `expired` is excluded above.)
@@ -626,6 +642,7 @@ git commit -m "give expired download page its own minimal copy"
 ## Task 6: Cron retries failed/unsent download emails (state B)
 
 **Files:**
+
 - Modify: `src/app/api/cron/reconcile-payments/route.ts`
 - Modify: `tests/e2e/helpers/db-cli.ts` (add `email-retry-sweep`)
 - Modify: `tests/e2e/fixtures/db.ts` (add `emailRetrySweep`)
@@ -642,47 +659,47 @@ import { fulfillDigitalOrder } from "@/lib/orders/fulfill-digital-order";
 After the existing pending-reconciliation loop and its `console.log`, add a second sweep (before the debug-ping block):
 
 ```ts
-  // Second sweep: paid orders whose download email never sent (state B). The
-  // token is healed inline on the processing page (state A), so this is about
-  // delivery, not tokens — though fulfillDigitalOrder's write-once step will
-  // still issue a token if one is somehow missing before it emails.
-  const emailRetry = { resent: 0, errored: 0 };
-  const unsent = await payload.find({
-    collection: "orders",
-    where: {
-      and: [
-        { paymentStatus: { equals: "paid" } },
-        { downloadEmailStatus: { not_equals: "sent" } },
-      ],
-    },
-    depth: 0,
-    limit: MAX_ORDERS_PER_RUN,
-    sort: "createdAt",
-  });
-  for (const order of unsent.docs) {
-    try {
-      await fulfillDigitalOrder({ payload, order });
-      emailRetry.resent += 1;
-    } catch (err) {
-      emailRetry.errored += 1;
-      console.error(
-        `[p24:reconcile] order ${order.orderNumber} email retry failed`,
-        err,
-      );
-    }
+// Second sweep: paid orders whose download email never sent (state B). The
+// token is healed inline on the processing page (state A), so this is about
+// delivery, not tokens — though fulfillDigitalOrder's write-once step will
+// still issue a token if one is somehow missing before it emails.
+const emailRetry = { resent: 0, errored: 0 };
+const unsent = await payload.find({
+  collection: "orders",
+  where: {
+    and: [
+      { paymentStatus: { equals: "paid" } },
+      { downloadEmailStatus: { not_equals: "sent" } },
+    ],
+  },
+  depth: 0,
+  limit: MAX_ORDERS_PER_RUN,
+  sort: "createdAt",
+});
+for (const order of unsent.docs) {
+  try {
+    await fulfillDigitalOrder({ payload, order });
+    emailRetry.resent += 1;
+  } catch (err) {
+    emailRetry.errored += 1;
+    console.error(
+      `[p24:reconcile] order ${order.orderNumber} email retry failed`,
+      err,
+    );
   }
-  console.log(`[p24:reconcile] download-email retry sweep`, emailRetry);
+}
+console.log(`[p24:reconcile] download-email retry sweep`, emailRetry);
 ```
 
 Add `emailRetry` to the final JSON response:
 
 ```ts
-  return NextResponse.json({
-    checked: result.docs.length,
-    ...counts,
-    leftover,
-    emailRetry,
-  });
+return NextResponse.json({
+  checked: result.docs.length,
+  ...counts,
+  leftover,
+  emailRetry,
+});
 ```
 
 - [ ] **Step 2: Add an `email-retry-sweep` command to the db-cli**
@@ -768,6 +785,7 @@ git commit -m "add download-email retry sweep to reconcile cron"
 ## Task 7: Manual verification (local) + docs
 
 **Files:**
+
 - Modify: `docs/przelewy24.md` (fulfillment-handoff note)
 
 - [ ] **Step 1: Local end-to-end check**

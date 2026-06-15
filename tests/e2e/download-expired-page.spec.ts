@@ -24,5 +24,7 @@ test("expired download page shows the 'link nie jest już aktywny' copy", async 
   await expect(
     page.getByText("Twoje zamówienie jest gotowe do realizacji"),
   ).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "Pobierz ebook" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Pobierz ebook" })).toHaveCount(
+    0,
+  );
 });
