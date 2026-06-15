@@ -35,6 +35,41 @@ API_PATH="/v6/deployments?projectId=$PROJECT_ID&teamId=$TEAM_ID&limit=20"
 # JSON reaches jq and the terminal isn't flooded across many polls.
 fetch() { vercel api --raw "$API_PATH" 2>/dev/null; }
 
+# macOS desktop alert for backgrounded failures. The watcher runs detached from
+# `git push`, so its exit code gates nothing — without a notification, a failed
+# deploy is silent the moment you switch windows. Guarded by `command -v` so a
+# non-macOS box (CI, Linux) no-ops instead of erroring.
+notify() {
+  command -v osascript >/dev/null 2>&1 && \
+    osascript -e "display notification \"$1\" with title \"Vercel deploy\" sound name \"Basso\"" >/dev/null 2>&1 || true
+}
+
+# Fail-fast auth probe. Without this the loop below can't tell "the CLI can't
+# authorize this team" (every poll returns empty) from "no deploy exists yet",
+# so it polls blind for 3 min and then wrongly blames the Git integration. One
+# probe up front — stderr kept this time — turns that 3-min misdiagnosis into an
+# instant, accurate error. Matches: "Not authorized", "Forbidden", "(401/403)",
+# "could not retrieve project". Returns 1 (not exit) so it's reusable as a
+# foreground precheck from the pre-push hook via --check-auth.
+check_auth() {
+  local probe
+  probe="$(vercel api --raw "$API_PATH" 2>&1)" || true
+  if printf '%s\n' "$probe" | grep -qiE 'not authorized|forbidden|\(40[13]\)|could not retrieve project'; then
+    echo "  🔒 vercel: CLI can't access project ${PROJECT_ID} on team ${TEAM_ID} — run 'vercel login' / 'vercel switch'. (This is a LOCAL auth problem, not the Git integration.)" >&2
+    return 1
+  fi
+}
+
+# --check-auth: probe only, then exit. The pre-push hook calls this in the
+# FOREGROUND before backgrounding the real watcher, so a dead local token shouts
+# immediately and attached to your push — instead of 3 min later in a detached log.
+if [ "${1:-}" = "--check-auth" ]; then
+  check_auth
+  exit $?
+fi
+
+check_auth || exit 1
+
 prev_state=""
 appeared=0
 attempts=0
@@ -54,20 +89,29 @@ while [ "$attempts" -lt "$MAX_ATTEMPTS" ]; do
   if [ -n "${STATE:-}" ] && [ "$STATE" != "null" ]; then
     appeared=1
     if [ "$STATE" != "$prev_state" ]; then
-      echo "  vercel: $STATE  https://$URL"
+      case "$STATE" in
+        READY) icon="✅" ;;
+        ERROR | CANCELED) icon="❌" ;;
+        *) icon="⏳" ;;
+      esac
+      echo "  $icon vercel: $STATE  https://$URL"
       prev_state="$STATE"
     fi
     case "$STATE" in
       READY) exit 0 ;;
-      ERROR | CANCELED) exit 1 ;;
+      ERROR | CANCELED)
+        notify "❌ Deploy ${STATE} for ${SHA:0:7}"
+        exit 1 ;;
     esac
   elif [ "$appeared" -eq 0 ] && [ "$attempts" -ge "$APPEAR_DEADLINE" ]; then
-    echo "  vercel: no deployment for ${SHA:0:7} after ~3 min — is the Git integration connected?" >&2
+    echo "  ⚠️  vercel: no deployment for ${SHA:0:7} after ~3 min — is the Git integration connected?" >&2
+    notify "⚠️ No deployment registered for ${SHA:0:7} after 3 min — check Git integration"
     exit 1
   fi
 
   sleep 10
 done
 
-echo "  vercel: watch-deploy gave up after ~20 min without a terminal state for ${SHA:0:7}" >&2
+echo "  ⏱️  vercel: watch-deploy gave up after ~20 min without a terminal state for ${SHA:0:7}" >&2
+notify "⏱️ watch-deploy gave up after 20 min for ${SHA:0:7}"
 exit 1

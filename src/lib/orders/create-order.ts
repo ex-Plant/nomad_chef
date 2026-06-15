@@ -38,6 +38,13 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
   if (!persistResult.ok) return persistResult;
   const { order } = persistResult;
 
+  // [P24-TRACE] temporary: the order is now persisted as `pending` — capture its
+  // identity so every later P24-TRACE line for this sessionId can be joined back.
+  console.log(
+    `[P24-TRACE] order created id=${order.id} orderNumber=${order.orderNumber} ` +
+      `sessionId=${order.paymentSessionId} totalGross=${order.totalGross}`,
+  );
+
   // Operator notice + buyer interest-thanks don't feed the redirect, so defer
   // them past the response with after(): they no longer block the buyer's path
   // to the P24 paywall, and the platform keeps the function alive (via waitUntil)

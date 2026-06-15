@@ -37,6 +37,12 @@ export async function POST(req: Request): Promise<Response> {
   }
   const notification = parsed.data;
 
+  // [P24-TRACE] temporary: webhook landed (P24 only POSTs here for SUCCESS).
+  console.log(
+    `[P24-TRACE] webhook IN sessionId=${notification.sessionId} ` +
+      `orderId=${notification.orderId} amount=${notification.amount}`,
+  );
+
   // Reject spoofed notifications before touching the DB.
   if (!isValidNotificationSign(notification)) {
     console.warn(
@@ -54,8 +60,16 @@ export async function POST(req: Request): Promise<Response> {
   });
   const order = result.docs[0];
   if (!order) {
+    console.log(
+      `[P24-TRACE] webhook sessionId=${notification.sessionId} NO ORDER MATCH → 404`,
+    );
     return NextResponse.json({ error: "Order not found" }, { status: 404 });
   }
+  // [P24-TRACE] temporary: order matched, current status before settle.
+  console.log(
+    `[P24-TRACE] webhook sessionId=${notification.sessionId} ` +
+      `matched order ${order.orderNumber} status=${order.paymentStatus}`,
+  );
 
   // Amount-tampering guard: the notified amount must match what we charged.
   if (notification.amount !== plnToGrosze(order.totalGross)) {
@@ -95,6 +109,12 @@ export async function POST(req: Request): Promise<Response> {
       paidAt: new Date().toISOString(),
     },
   });
+
+  // [P24-TRACE] temporary: webhook settled this order to paid.
+  console.log(
+    `[P24-TRACE] webhook sessionId=${notification.sessionId} ` +
+      `order ${order.orderNumber} flipped pending→paid`,
+  );
 
   return NextResponse.json({ ok: true });
 }

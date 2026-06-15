@@ -75,6 +75,12 @@ async function p24Request(
   path: string,
   body: Record<string, unknown>,
 ): Promise<Response> {
+  // [P24-TRACE] temporary: time every register/verify call to P24 — no fetch
+  // timeout is set, so a hang here would strand the buyer on /checkout/processing.
+  const traceStart = Date.now();
+  console.log(
+    `[P24-TRACE] → ${method} ${path} sessionId=${String(body.sessionId)}`,
+  );
   const response = await fetch(`${config.host}/api/v1${path}`, {
     method,
     headers: {
@@ -83,6 +89,10 @@ async function p24Request(
     },
     body: JSON.stringify(body),
   });
+  console.log(
+    `[P24-TRACE] ← ${method} ${path} sessionId=${String(body.sessionId)} ` +
+      `status=${response.status} ${Date.now() - traceStart}ms`,
+  );
   return response;
 }
 
@@ -198,17 +208,33 @@ export async function findTransactionBySessionId(
 ): Promise<P24TransactionT | null> {
   const config = getP24Config();
 
+  // [P24-TRACE] temporary: time + outcome of the status PULL (the failure/late-
+  // success detector). No fetch timeout here either — a hang strands the poll.
+  const traceStart = Date.now();
+  console.log(`[P24-TRACE] → GET by/sessionId sessionId=${sessionId}`);
   const response = await fetch(
     `${config.host}/api/v1/transaction/by/sessionId/${encodeURIComponent(sessionId)}`,
     { headers: { Authorization: authHeader(config) } },
+  );
+  console.log(
+    `[P24-TRACE] ← GET by/sessionId sessionId=${sessionId} ` +
+      `status=${response.status} ${Date.now() - traceStart}ms`,
   );
   if (!response.ok) return null;
 
   const parsed = p24SessionLookupSchema.safeParse(
     await response.json().catch(() => null),
   );
-  if (!parsed.success) return null;
+  if (!parsed.success) {
+    console.log(
+      `[P24-TRACE] by/sessionId sessionId=${sessionId} unparseable/missing fields → null`,
+    );
+    return null;
+  }
   const { data } = parsed.data;
+  console.log(
+    `[P24-TRACE] by/sessionId sessionId=${sessionId} P24 status=${data.status} amount=${data.amount}`,
+  );
 
   return {
     sessionId: data.sessionId ?? sessionId,

@@ -55,13 +55,25 @@ export function ProcessingStatus({
 
     const id = setInterval(async () => {
       polls += 1;
+      // [P24-TRACE] temporary: client-side poll trace (browser console, not Vercel
+      // logs). Shows whether the tab is still polling and which branch each tick hits.
+      console.log(
+        `[P24-TRACE] poll #${polls}/${maxPolls} orderNumber=${orderNumber} ` +
+          `${polls > CHECKOUT_GRACE_POLLS ? "PULL+refresh" : "grace (refresh only)"}`,
+      );
       if (polls > maxPolls) {
+        console.log(
+          `[P24-TRACE] poll orderNumber=${orderNumber} reached maxPolls → stop`,
+        );
         clearInterval(id);
         return;
       }
 
       if (polls > CHECKOUT_GRACE_POLLS) {
         const outcome = await checkPaymentOutcome().catch(() => "pending");
+        console.log(
+          `[P24-TRACE] poll #${polls} orderNumber=${orderNumber} outcome=${outcome}`,
+        );
         if (cancelled) return;
         if (outcome === "paid" || outcome === "failed") {
           clearInterval(id);
@@ -77,7 +89,7 @@ export function ProcessingStatus({
       cancelled = true;
       clearInterval(id);
     };
-  }, [paymentStatus, router, maxPolls]);
+  }, [paymentStatus, router, maxPolls, orderNumber]);
 
   const helpContext = {
     surface: "checkout" as const,

@@ -18,7 +18,17 @@ export default async function CheckoutProcessingPage() {
     .catch(() => null);
   if (!order) redirect("/");
 
+  // [P24-TRACE] temporary: what the server component sees on every page render /
+  // router.refresh() tick — the source of the "are we still pending?" decision.
+  console.log(
+    `[P24-TRACE] processing page render orderNumber=${order.orderNumber} ` +
+      `status=${order.paymentStatus} hasToken=${Boolean(order.downloadToken)}`,
+  );
+
   if (order.paymentStatus === "paid" && order.downloadToken) {
+    console.log(
+      `[P24-TRACE] processing page orderNumber=${order.orderNumber} → redirect /download`,
+    );
     redirect(`/download/${order.downloadToken}`);
   }
 

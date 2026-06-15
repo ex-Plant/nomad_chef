@@ -47,11 +47,22 @@ export async function reconcileOrderPayment({
 }: ReconcileOrderPaymentInputT): Promise<PaymentOutcomeT> {
   // Legacy/pre-paymentSessionId orders can't be reconciled by sessionId — they
   // were never registered under one. Treat as pending; nothing to settle.
-  if (!order.paymentSessionId) return "pending";
+  if (!order.paymentSessionId) {
+    console.log(
+      `[P24-TRACE] reconcile order ${order.orderNumber} has NO paymentSessionId → pending`,
+    );
+    return "pending";
+  }
 
   const transaction = await findTransactionBySessionId(order.paymentSessionId);
   // No transaction on P24's side yet → nothing decided; keep waiting.
-  if (!transaction) return "pending";
+  if (!transaction) {
+    console.log(
+      `[P24-TRACE] reconcile ${order.orderNumber} sessionId=${order.paymentSessionId} ` +
+        `no P24 transaction → pending`,
+    );
+    return "pending";
+  }
 
   if (transaction.status === P24_TRANSACTION_STATUS.paid) {
     // Amount-tampering guard, same as the webhook: the settled amount must match
@@ -71,7 +82,15 @@ export async function reconcileOrderPayment({
       orderId: transaction.orderId,
       amountGrosze: transaction.amount,
     });
-    if (!verified) return "pending";
+    if (!verified) {
+      console.log(
+        `[P24-TRACE] reconcile ${order.orderNumber} P24 status=paid but verify FAILED → pending`,
+      );
+      return "pending";
+    }
+    console.log(
+      `[P24-TRACE] reconcile ${order.orderNumber} verified → flipping to paid`,
+    );
 
     // Flip to paid → digitalFulfillment hook issues the token + download email.
     // Idempotent vs the webhook: whichever settles first wins; the hook guards
@@ -94,8 +113,19 @@ export async function reconcileOrderPayment({
     // still arrive — so keep pending. Only once the window has elapsed, when the
     // transaction can no longer be paid, is `failed` safe to write.
     const ageMs = Date.now() - new Date(order.createdAt).getTime();
-    if (ageMs < P24_PAYABLE_WINDOW_MS) return "pending";
+    if (ageMs < P24_PAYABLE_WINDOW_MS) {
+      console.log(
+        `[P24-TRACE] reconcile ${order.orderNumber} P24 status=0 (no payment) ` +
+          `but age ${Math.round(ageMs / 1000)}s < window ${P24_PAYABLE_WINDOW_MS / 1000}s ` +
+          `→ pending (ambiguous, still in window)`,
+      );
+      return "pending";
+    }
 
+    console.log(
+      `[P24-TRACE] reconcile ${order.orderNumber} P24 status=0 past window ` +
+        `(age ${Math.round(ageMs / 1000)}s) → marking failed`,
+    );
     await payload.update({
       collection: "orders",
       id: order.id,
@@ -105,5 +135,9 @@ export async function reconcileOrderPayment({
   }
 
   // advance (1) / returned (3) mid-checkout → leave pending.
+  console.log(
+    `[P24-TRACE] reconcile ${order.orderNumber} P24 status=${transaction.status} ` +
+      `(advance/returned) → pending`,
+  );
   return "pending";
 }
