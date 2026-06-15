@@ -33,7 +33,9 @@ export function CartBuyButton({
   const [isCartOpen, setIsCartOpen] = useState(false);
   // Pre-launch: hide the purchase CTA from anonymous visitors so nobody can
   // place a real order by accident. Logged-in (CMS) users can still test it.
-  if (!isLoggedIn) return null;
+  // TEMP: auth gate disabled — buy button shown to everyone. Restore the line below.
+  // if (!isLoggedIn) return null;
+  void isLoggedIn;
   if (!product) return null;
   return (
     <>
