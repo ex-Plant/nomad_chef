@@ -97,7 +97,7 @@ register time. So:
 ```
 cart submit
   → createOrder()            order = pending, registerTransaction() → token
-  → window.location = {host}/trnRequest/{token}
+  → redirect() 303 → {host}/trnRequest/{token}   server-side handoff
   → buyer pays on P24 paywall
   → P24 POST urlStatus (/api/p24/webhook)   ── SUCCESS payments only, retried ──┐
         sign-check → amount guard → transaction/verify → paymentStatus = paid   │

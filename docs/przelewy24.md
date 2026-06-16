@@ -30,8 +30,8 @@ cart submit
   → createOrder()                         [server action]
       persistCustomerAndOrder()           order = pending
       registerTransaction()               → P24 token
-      return { redirectUrl }              …/trnRequest/{token}
-  → browser: window.location = redirectUrl
+      redirect(redirectUrl)               303 → …/trnRequest/{token}
+  → browser follows the server redirect to the P24 paywall
   → buyer pays on the P24 paywall
   → P24 POSTs to urlStatus  ── server→server, SUCCESS payments only, retried ──┐
         /api/p24/webhook                                                       │
@@ -113,17 +113,17 @@ jobs run on production deployments only).
 
 ### Files
 
-| File                                                  | Role                                                                                                                                                                                                                                      |
-| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/lib/payments/p24.ts`                             | REST client: `registerTransaction`, `verifyTransaction`, `findTransactionBySessionId` (status PULL), `p24NotificationSchema`, `isValidNotificationSign`. P24 creds come from `ENV` (boot-validated); only `P24_SANDBOX` is a direct read. |
-| `src/lib/payments/amount.ts`                          | `plnToGrosze()` — PLN → integer grosze.                                                                                                                                                                                                   |
-| `src/lib/orders/create-order.ts`                      | Registers the transaction, returns `redirectUrl`; defers operator + interest emails via `after()`.                                                                                                                                        |
-| `src/lib/orders/check-payment-outcome.ts`             | Server action (processing-page poll): resolves the order from the signed checkout cookie, then delegates to `reconcileOrderPayment`.                                                                                                      |
-| `src/lib/orders/reconcile-order-payment.ts`           | Shared core: PULLs `transaction/by/sessionId` for one `pending` order and settles it (paid → `verify` → flip) or marks it `failed` past the window. Used by the poll **and** the cron.                                                    |
-| `src/app/api/cron/reconcile-payments/route.ts`        | Daily reconciliation cron (`vercel.json`): sweeps `pending` orders past the payable window, runs `reconcileOrderPayment` on each. `CRON_SECRET`-guarded.                                                                                  |
-| `src/components/sections/cart/cart-form.tsx`          | `window.location.href = redirectUrl` on success.                                                                                                                                                                                          |
-| `src/app/api/p24/webhook/route.ts`                    | `urlStatus` handler: sign-check → amount guard → idempotency → verify → flip to paid.                                                                                                                                                     |
-| `src/collections/orders/hooks/digital-fulfillment.ts` | Existing hook. Fires on `pending→paid`, issues token + download email. **Untouched by P24.**                                                                                                                                              |
+| File                                                  | Role                                                                                                                                                                                                                                                               |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `src/lib/payments/p24.ts`                             | REST client: `registerTransaction`, `verifyTransaction`, `findTransactionBySessionId` (status PULL), `p24NotificationSchema`, `isValidNotificationSign`. P24 creds come from `ENV` (boot-validated); only `P24_SANDBOX` is a direct read.                          |
+| `src/lib/payments/amount.ts`                          | `plnToGrosze()` — PLN → integer grosze.                                                                                                                                                                                                                            |
+| `src/lib/orders/create-order.ts`                      | Registers the transaction, then `redirect()`s (303) to the P24 paywall; defers operator + interest emails via `after()`. Server-side redirect because a client `window.location` handoff raced the mutating action's auto-refresh and flashed WebKit's error page. |
+| `src/lib/orders/check-payment-outcome.ts`             | Server action (processing-page poll): resolves the order from the signed checkout cookie, then delegates to `reconcileOrderPayment`.                                                                                                                               |
+| `src/lib/orders/reconcile-order-payment.ts`           | Shared core: PULLs `transaction/by/sessionId` for one `pending` order and settles it (paid → `verify` → flip) or marks it `failed` past the window. Used by the poll **and** the cron.                                                                             |
+| `src/app/api/cron/reconcile-payments/route.ts`        | Daily reconciliation cron (`vercel.json`): sweeps `pending` orders past the payable window, runs `reconcileOrderPayment` on each. `CRON_SECRET`-guarded.                                                                                                           |
+| `src/components/sections/cart/cart-form.tsx`          | Calls `createOrder`; surfaces only its failure (success redirects server-side).                                                                                                                                                                                    |
+| `src/app/api/p24/webhook/route.ts`                    | `urlStatus` handler: sign-check → amount guard → idempotency → verify → flip to paid.                                                                                                                                                                              |
+| `src/collections/orders/hooks/digital-fulfillment.ts` | Existing hook. Fires on `pending→paid`, issues token + download email. **Untouched by P24.**                                                                                                                                                                       |
 
 ---
 
@@ -399,6 +399,12 @@ decision.
    - `tests/e2e/cart-redirect.spec.ts` — `@manual` for the same reason (calls live
      P24 `register`; count-derived order numbers collide with the sandbox's
      session-id memory, see finding F4 in `docs/purchase-flow-test-findings.md`).
+   - `tests/e2e/payment-flash.spec.ts` — **WebKit-only** regression for the buy→P24
+     "page couldn't load" flash: asserts the handoff fires no WebKit "Load failed"
+     error and no same-origin request is cancelled mid-redirect. `@manual` (calls
+     live P24 `register`); the paywall navigation is intercepted with a local
+     stand-in so the assertion is deterministic:
+     `E2E_ALL=1 E2E_BASE_URL=<current-code origin> npx playwright test payment-flash`.
 
 ---
 
