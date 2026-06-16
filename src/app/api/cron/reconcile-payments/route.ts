@@ -124,27 +124,6 @@ export async function GET(req: Request): Promise<Response> {
   }
   console.log(`[p24:reconcile] download-email retry sweep`, emailRetry);
 
-  // TODO(remove after tests): debug ping to konradantonik@gmail.com to confirm
-  // the cron actually fires in production. Delete this whole block (and the
-  // hardcoded address) once we've seen it land. Wrapped so a mail failure never
-  // fails the sweep.
-  try {
-    await payload.sendEmail({
-      to: "konradantonik@gmail.com",
-      subject: `[cron] reconcile-payments ran — ${result.docs.length} swept`,
-      text:
-        `reconcile-payments executed.\n\n` +
-        `checked: ${result.docs.length}\n` +
-        `paid: ${counts.paid}\n` +
-        `failed: ${counts.failed}\n` +
-        `pending: ${counts.pending}\n` +
-        `errored: ${counts.errored}\n` +
-        `leftover: ${leftover}`,
-    });
-  } catch (err) {
-    console.error("[p24:reconcile] debug ping email failed", err);
-  }
-
   return NextResponse.json({
     checked: result.docs.length,
     ...counts,
