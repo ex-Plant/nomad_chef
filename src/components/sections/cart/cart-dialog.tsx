@@ -14,7 +14,6 @@ type CartDialogPropsT = {
   legalLinks?: SiteT["legalLinks"];
   isOpen: boolean;
   onClose: () => void;
-  onOrderPlaced: (orderNumber: string, email: string) => void;
 };
 
 export function CartDialog({
@@ -23,7 +22,6 @@ export function CartDialog({
   legalLinks,
   isOpen,
   onClose,
-  onOrderPlaced,
 }: CartDialogPropsT) {
   return (
     <Dialog
@@ -62,12 +60,7 @@ export function CartDialog({
             </p>
           )}
 
-          <CartForm
-            product={product}
-            legal={legal}
-            legalLinks={legalLinks}
-            onSuccess={onOrderPlaced}
-          />
+          <CartForm product={product} legal={legal} legalLinks={legalLinks} />
         </div>
       </div>
     </Dialog>

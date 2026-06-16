@@ -34,18 +34,15 @@ type CartFormPropsT = {
   product: Product;
   legal?: SerializedEditorState | null;
   legalLinks?: SiteT["legalLinks"];
-  onSuccess: (orderNumber: string, email: string) => void;
 };
 
 export function CartForm({
   product,
   legal = null,
   legalLinks,
-  onSuccess,
 }: CartFormPropsT) {
   const storedValues = useCartFormStore((s) => s.formData);
   const updateFormData = useCartFormStore((s) => s.updateFormData);
-  const resetFormData = useCartFormStore((s) => s.resetFormData);
   // Server-side failures from createOrder (e.g. P24 register threw) surface here.
   // TanStack's errorMap.onSubmit isn't used so a truthy success return can't be
   // mistaken for an error; mirrors the newsletter form.
@@ -77,20 +74,12 @@ export function CartForm({
     },
     onSubmit: async ({ value }) => {
       setErrorMessage(null);
+      // On success createOrder issues a server-side redirect (303) to the P24
+      // paywall and the browser navigates away, so execution only continues
+      // here when it returned a failure. The redirect lives on the server
+      // because a mutating action's auto-refresh otherwise raced a client-side
+      // window.location handoff and made WebKit flash its native error page.
       const result = await createOrder(value);
-      if (result.ok) {
-        // Start the cross-origin handoff to P24 BEFORE any local state update.
-        // Clearing the cart store, resetting the form, and closing the dialog
-        // each trigger a React re-render that can race the in-flight external
-        // navigation — WebKit aborts it and flashes its native "This page
-        // couldn't load" before the retry reaches the paywall. Scheduling the
-        // nav first gives the browser the best chance to commit it cleanly.
-        window.location.href = result.redirectUrl;
-        resetFormData();
-        form.reset();
-        onSuccess(result.orderNumber, value.email);
-        return;
-      }
       setErrorMessage(result.error);
     },
   });

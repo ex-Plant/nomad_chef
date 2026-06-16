@@ -54,12 +54,6 @@ export function CartBuyButton({
         legalLinks={legalLinks}
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
-        // On success, cart-form does a full nav to the P24 paywall
-        // (window.location.href). Do NOT also router.push here — a client-side
-        // push to the (prefetched) processing route races and can win, skipping
-        // the paywall entirely. P24's urlReturn brings the buyer to /checkout/
-        // processing after paying.
-        onOrderPlaced={() => setIsCartOpen(false)}
       />
     </>
   );

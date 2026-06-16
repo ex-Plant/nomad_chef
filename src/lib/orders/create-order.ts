@@ -1,6 +1,7 @@
 "use server";
 
 import { after } from "next/server";
+import { redirect } from "next/navigation";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { cartFormSchema } from "@/lib/cart/cart-schema";
@@ -13,9 +14,10 @@ import { ENV } from "@/config/env";
 import { registerTransaction } from "@/lib/payments/p24";
 import { plnToGrosze } from "@/lib/payments/amount";
 
-type CreateOrderResultT =
-  | { ok: true; orderNumber: string; totalGross: number; redirectUrl: string }
-  | { ok: false; error: string };
+// createOrder never resolves to a success value on the client: on success it
+// issues a server-side redirect to the P24 paywall (see redirect() below), so
+// the only value it ever returns is a failure for the form to surface.
+type CreateOrderResultT = { ok: false; error: string };
 
 export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
   const parsed = cartFormSchema.safeParse(input);
@@ -75,22 +77,16 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
       error: "Nie udało się rozpocząć płatności. Spróbuj ponownie.",
     };
   }
+  let redirectUrl: string;
   try {
-    const { redirectUrl } = await registerTransaction({
+    ({ redirectUrl } = await registerTransaction({
       sessionId: order.paymentSessionId,
       amountGrosze: plnToGrosze(order.totalGross),
       description: `Chaos Kitchen — zamówienie ${order.orderNumber}`,
       email: values.email,
       urlReturn: `${ENV.SITE_URL}/checkout/processing`,
       urlStatus: `${ENV.SITE_URL}/api/p24/webhook`,
-    });
-
-    return {
-      ok: true,
-      orderNumber: order.orderNumber,
-      totalGross: order.totalGross,
-      redirectUrl,
-    };
+    }));
   } catch (err) {
     console.error("[createOrder] P24 register failed", err);
     return {
@@ -98,4 +94,14 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
       error: "Nie udało się rozpocząć płatności. Spróbuj ponownie.",
     };
   }
+
+  // Hand off to the P24 paywall with a server-side redirect (303) instead of
+  // returning the URL for the client to assign to window.location. We just set
+  // the checkout cookie, which makes this a *mutating* action — Next then
+  // auto-refreshes the current route, and that RSC fetch raced the client-side
+  // window.location handoff. WebKit aborted the cross-origin navigation and
+  // flashed its native "this page couldn't load" error before the paywall.
+  // A server redirect supersedes the refresh, so there is no race. redirect()
+  // throws NEXT_REDIRECT, so it MUST sit outside the try/catch above.
+  redirect(redirectUrl);
 }
