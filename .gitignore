@@ -79,3 +79,6 @@ next-env.d.ts
 
 # recon screenshots (local audit evidence, not committed)
 /recon-*.png
+
+# lighthouse audit runs (reports + multi-hundred-MB traces stay local)
+/.lighthouse/
