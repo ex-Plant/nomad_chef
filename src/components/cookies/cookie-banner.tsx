@@ -39,13 +39,13 @@ export function CookieBanner() {
         >
           <h2
             id={TITLE_ID}
-            className="font-display text-electric-blue text-base uppercase"
+            className="font-display text-off-black text-base uppercase"
           >
             {t.cookieBanner.title}
           </h2>
           <p
             id={DESC_ID}
-            className="mt-1.5 font-sans text-xs leading-snug text-white/90"
+            className="text-off-black/90 mt-1.5 font-sans text-xs leading-snug"
           >
             {t.cookieBanner.description}
           </p>
@@ -62,7 +62,7 @@ export function CookieBanner() {
             </Button>
             <Button
               type="button"
-              variant="white"
+              variant="dark"
               size="compact"
               className="px-3 py-1.5 text-xs whitespace-nowrap"
               onClick={() => saveConsents("necessary")}
@@ -71,7 +71,7 @@ export function CookieBanner() {
             </Button>
             <Button
               type="button"
-              variant="white"
+              variant="dark"
               size="compact"
               className="px-3 py-1.5 text-xs whitespace-nowrap"
               onClick={() => setActiveUI("dialog")}
