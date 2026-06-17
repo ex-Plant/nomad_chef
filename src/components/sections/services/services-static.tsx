@@ -24,7 +24,8 @@ export function ServicesStatic({ data }: PropsT) {
             src={bg.url}
             alt={data.backgroundAlt || bg.alt}
             fill
-            priority
+            loading="eager"
+            fetchPriority="low"
             className="rounded-none object-cover"
             sizes="100vw"
           />

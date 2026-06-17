@@ -200,7 +200,8 @@ function GalleryTile({
       alt={image.alt}
       width={image.width ?? 1200}
       height={image.height ?? 1200}
-      priority={index < 4}
+      loading={index < 4 ? "eager" : "lazy"}
+      fetchPriority={index < 4 ? "low" : "auto"}
       className="ease-brand transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
       sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
     />

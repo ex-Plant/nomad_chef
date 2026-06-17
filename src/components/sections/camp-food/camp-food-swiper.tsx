@@ -235,7 +235,8 @@ export function CampFoodSwiper({
                     height={slide.image.height ?? 1500}
                     className={`rounded-xl object-contain ${IMAGE_CLASS_BY_ORIENTATION[slide.imageOrientation ?? "vertical"]}`}
                     sizes="(max-width: 768px) 80vw, (max-width:1440px) 50vw, 750px"
-                    priority
+                    loading="eager"
+                    fetchPriority="low"
                   />
                 )}
               </m.div>

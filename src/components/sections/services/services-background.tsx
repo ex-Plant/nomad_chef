@@ -22,7 +22,8 @@ export function ServicesBackground({ data, imageRef }: PropsT) {
               src={data.background.url}
               alt={data.backgroundAlt || data.background.alt}
               fill
-              priority
+              loading="eager"
+              fetchPriority="low"
               className="rounded-none object-cover"
               sizes="140vh"
             />
