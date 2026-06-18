@@ -51,7 +51,6 @@ export function DownloadCard({
     return (
       <>
         <Card>
-          <TestNotice />
           <Paragraph>Link nie jest już aktywny.</Paragraph>
           <div className="border-off-black/15 flex flex-col gap-6 border-t pt-6">
             <Paragraph>
@@ -82,7 +81,6 @@ export function DownloadCard({
     return (
       <>
         <Card>
-          <TestNotice />
           <Heading>{copy.title}</Heading>
           <Paragraph>{copy.body}</Paragraph>
           <Button
@@ -184,16 +182,3 @@ function Paragraph({ children }: { children: React.ReactNode }) {
   );
 }
 
-function TestNotice() {
-  return (
-    <div className="border-coral/40 bg-coral/10 w-full rounded-md border px-4 py-3 text-left">
-      <p className="text-coral font-sans text-sm leading-relaxed">
-        <strong className="font-semibold tracking-wide uppercase">
-          Wersja testowa.
-        </strong>{" "}
-        Strona jest w budowie — ebook nie jest jeszcze gotowy. Jeśli trafiłaś tu
-        przypadkiem, wróć później.
-      </p>
-    </div>
-  );
-}
