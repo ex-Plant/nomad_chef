@@ -80,7 +80,6 @@ type CampFoodPropsT = {
   digitalProduct: Product | null;
   legal: SerializedEditorState | null;
   legalLinks: SiteT["legalLinks"];
-  isLoggedIn: boolean;
 };
 
 export function CampFoodSwiper({
@@ -88,7 +87,6 @@ export function CampFoodSwiper({
   digitalProduct,
   legal,
   legalLinks,
-  isLoggedIn,
 }: CampFoodPropsT) {
   const slideCount = data.slides.length;
   const [activeIndex, setActiveIndex] = useState(0);
@@ -210,7 +208,6 @@ export function CampFoodSwiper({
                 size="compact"
                 legal={legal}
                 legalLinks={legalLinks}
-                isLoggedIn={isLoggedIn}
               />
             </div>
           </div>

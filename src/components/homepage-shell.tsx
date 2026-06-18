@@ -18,13 +18,11 @@ import { AnimationHint } from "@/components/ui/animation-hint";
 type HomepageShellPropsT = {
   site: SiteT;
   digitalProduct: Product | null;
-  isLoggedIn: boolean;
 };
 
 export function HomepageShell({
   site,
   digitalProduct,
-  isLoggedIn,
 }: HomepageShellPropsT) {
   const reducedMotion = useReducedMotion();
   // Skip the play() attempt when the user has opted out — no reason to
@@ -50,7 +48,6 @@ export function HomepageShell({
             digitalProduct={digitalProduct}
             legal={site.contact.legal}
             legalLinks={site.legalLinks}
-            isLoggedIn={isLoggedIn}
           />
           <Gallery data={site.gallery} />
           <Contact data={site.contact} legalLinks={site.legalLinks} />
