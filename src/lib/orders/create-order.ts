@@ -12,6 +12,11 @@ import { sendOrderConfirmation } from "./send-order-confirmation";
 import { ENV } from "@/config/env";
 import { registerTransaction } from "@/lib/payments/p24";
 import { plnToGrosze } from "@/lib/payments/amount";
+import { calcVat } from "@/lib/checkout/billing";
+import {
+  isPriceOverrideCode,
+  PRICE_OVERRIDE_GROSS,
+} from "@/lib/checkout/price-override";
 
 // createOrder never resolves to a success value on the client: on success it
 // issues a server-side redirect to the P24 paywall (see redirect() below), so
@@ -37,7 +42,30 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
   });
 
   if (!persistResult.ok) return persistResult;
-  const { order } = persistResult;
+  let { order } = persistResult;
+
+  // Test price override: a valid code rewrites the just-snapshotted total to a
+  // trivial amount so we can run a real P24 transaction cheaply. Done as a
+  // post-create update (not in the snapshot hook) because the code is validated
+  // here at the trusted boundary — the snapshot hook has no access to it. Order
+  // hooks all guard on operation === "create", and digitalFulfillment fires only
+  // on the paid transition, so this pending-stage update re-triggers nothing.
+  // The webhook's amount guard compares P24 against THIS persisted total, so the
+  // override stays consistent end-to-end.
+  if (isPriceOverrideCode(values.discountCode)) {
+    const vatRate = product.vatRate ? Number(product.vatRate) : 0;
+    const { priceNet, vatAmount } = calcVat(PRICE_OVERRIDE_GROSS, vatRate);
+    order = await payload.update({
+      collection: "orders",
+      id: order.id,
+      data: {
+        unitPriceGross: PRICE_OVERRIDE_GROSS,
+        totalGross: PRICE_OVERRIDE_GROSS,
+        priceNet,
+        vatAmount,
+      },
+    });
+  }
 
   // [P24-TRACE] temporary: the order is now persisted as `pending` — capture its
   // identity so every later P24-TRACE line for this sessionId can be joined back.

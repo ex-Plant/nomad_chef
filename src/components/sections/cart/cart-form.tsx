@@ -22,7 +22,9 @@ import {
   FormError,
   FormNumberInput,
   FormSeparator,
+  FormTextInput,
 } from "@/components/forms";
+import { Checkbox } from "@/components/ui/checkbox";
 import type { Product } from "@/payload-types";
 import type { SiteT } from "@/types/site";
 import { BuyerFields } from "./buyer-fields";
@@ -47,6 +49,9 @@ export function CartForm({
   // TanStack's errorMap.onSubmit isn't used so a truthy success return can't be
   // mistaken for an error; mirrors the newsletter form.
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // Local-only toggle that reveals the discount-code input; the code itself
+  // lives in the form's `discountCode` field.
+  const [showDiscount, setShowDiscount] = useState(false);
 
   const initialValues = useMemo<CartFormValuesT>(() => {
     const defaults = defaultCartValues(
@@ -150,9 +155,26 @@ export function CartForm({
           )}
         </form.Field>
         {wantsInvoice && <InvoiceFields form={form} />}
+        <label className="flex items-start gap-3 font-sans text-sm text-white">
+          <Checkbox
+            checked={showDiscount}
+            onChange={(e) => setShowDiscount(e.target.checked)}
+          />
+          <span className="cursor-pointer select-none">Mam kod rabatowy</span>
+        </label>
+        {showDiscount && (
+          <form.Field name="discountCode">
+            {(field: AnyFieldApi) => (
+              <FormTextInput
+                className={`mb-2`}
+                field={field}
+                ariaLabel="Kod rabatowy"
+                placeholder="Wpisz kod rabatowy"
+              />
+            )}
+          </form.Field>
+        )}
       </div>
-
-      <FormSeparator />
 
       <form.Subscribe
         selector={(s) => ({

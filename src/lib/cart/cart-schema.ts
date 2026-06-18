@@ -29,6 +29,7 @@ export const cartFormSchema = z
     invoicePostalCode: z.string().trim(),
     invoiceCountry: z.string().trim(),
     notes: z.string().trim().max(2000),
+    discountCode: z.string().trim(),
     acceptsLegal: z.boolean().refine((v) => v === true, {
       error: "Wymagana akceptacja regulaminu i polityki prywatności",
     }),
@@ -127,6 +128,7 @@ export function defaultCartValues(
     invoicePostalCode: "",
     invoiceCountry: "PL",
     notes: "",
+    discountCode: "",
     acceptsLegal: false,
     acceptsDigitalDelivery: false,
   };
