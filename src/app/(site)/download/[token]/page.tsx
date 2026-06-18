@@ -38,8 +38,12 @@ export default async function DownloadPage({ params }: PagePropsT) {
             currency={found.order.currency}
             orderNumber={found.order.orderNumber}
             numItems={found.order.quantity}
-            {...(found.product?.title ? { contentName: found.product.title } : {})}
-            {...(found.product?.id != null ? { contentId: found.product.id } : {})}
+            {...(found.product?.title
+              ? { contentName: found.product.title }
+              : {})}
+            {...(found.product?.id != null
+              ? { contentId: found.product.id }
+              : {})}
           />
         )}
       </div>
