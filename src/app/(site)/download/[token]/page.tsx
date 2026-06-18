@@ -5,6 +5,7 @@ import {
   resolveDownloadState,
 } from "@/lib/orders/download-token";
 import { Logo } from "@/components/shared/logo";
+import { MetaPixelPurchase } from "@/components/analytics/meta-pixel-purchase";
 import { DownloadCard } from "./download-card";
 
 export const dynamic = "force-dynamic";
@@ -31,6 +32,16 @@ export default async function DownloadPage({ params }: PagePropsT) {
           orderNumber={found?.order.orderNumber ?? null}
           customerEmail={found?.customer?.email ?? null}
         />
+        {state.status === "ready" && found && (
+          <MetaPixelPurchase
+            value={found.order.totalGross}
+            currency={found.order.currency}
+            orderNumber={found.order.orderNumber}
+            numItems={found.order.quantity}
+            {...(found.product?.title ? { contentName: found.product.title } : {})}
+            {...(found.product?.id != null ? { contentId: found.product.id } : {})}
+          />
+        )}
       </div>
     </main>
   );

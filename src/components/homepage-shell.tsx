@@ -12,7 +12,6 @@ import type { SiteT } from "@/types/site";
 import type { Product } from "@/payload-types";
 import { useVideoReady } from "../hooks/use-video-ready";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
-import { useScrollLock } from "@/hooks/use-scroll-lock";
 import { AnimationHint } from "@/components/ui/animation-hint";
 
 type HomepageShellPropsT = {
