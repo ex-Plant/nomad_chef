@@ -1,0 +1,197 @@
+# ============================================================================
+# Scheduled Neon Postgres → FTPS backup (validated)
+# ============================================================================
+# Dumps the production Neon DB every 6 hours and ships the gzipped dump to the shared
+# FTPS server (same server as the wykonczymy/eggplant backups), pruning anything
+# older than the retention window.
+#
+# What it does:
+#   1. Dumps the DB with a disposable Postgres 17 container (client major = server)
+#   2. Validates the dump for real (not just file size):
+#        - size floor : catches an empty/aborted dump
+#        - row floor  : orders rows >= MIN_ROWS (wrong/empty DB)
+#        - no-shrink  : KEY_TABLES counts must not drop vs the previous backup
+#                       pulled from FTP (data loss / wrong DB)
+#   3. Uploads to the remote server via FTPS
+#   4. Removes backups older than RETENTION_DAYS from the remote dir
+#
+# Freshness check intentionally omitted: this is a low-traffic ebook store that
+# can legitimately go days/weeks with no new orders, so a "newest row within N
+# days" gate would false-alarm on a perfectly healthy DB. No-shrink + row-floor
+# still catch a wrong/empty/shrinking dump.
+#
+# Secrets required (repo → Settings → Secrets and variables → Actions):
+#   PROD_DB_POSTGRES_URL : Neon production connection string (pooler endpoint)
+#   FTP_HOST / FTP_USER / FTP_PASS
+#
+# Manual runs (workflow_dispatch) default to a test/ dir so they never touch
+# real backups; the schedule writes to the prod dir.
+# ============================================================================
+
+name: Backup Chaos Kitchen DB
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      target_dir:
+        description: 'Remote dir to upload to (leave default for safe test runs)'
+        required: false
+        default: '/db_backups_chaoskitchen/test/'
+
+jobs:
+  backup-and-upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      # Scheduled runs have no inputs -> fall back to the real backup dir.
+      # Manual runs default to test/ (input default above).
+      REMOTE_DIR: ${{ github.event.inputs.target_dir || '/db_backups_chaoskitchen/' }}
+      RETENTION_DAYS: '30'
+      SIZE_FLOOR: '1024' # bytes (gzipped) — below this the dump is empty/aborted
+      MIN_ROWS: '20' # orders floor — set below current count (41) so legit deletes don't false-alarm
+      KEY_TABLES: 'orders customers products digital_assets' # no-shrink set
+
+    steps:
+      - name: Install LFTP
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
+      # ---- 1. dump -------------------------------------------------------
+      - name: Create backup with Docker
+        env:
+          DB_URL: ${{ secrets.PROD_DB_POSTGRES_URL }}
+        run: |
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          FILENAME="chaoskitchen-backup-${TIMESTAMP}.sql.gz"
+          docker run --rm postgres:17-alpine \
+            pg_dump "$DB_URL" --no-owner --no-privileges --clean --if-exists \
+            | gzip > "$FILENAME"
+          echo "BACKUP_FILE=$FILENAME" >> "$GITHUB_ENV"
+          echo "✅ Backup created: $FILENAME"
+
+      # ---- 2. validate: size, row floor ----------------------------------
+      - name: Validate backup
+        run: |
+          count_rows() { # <file> <table>
+            gzip -dc "$1" | awk -v tb="COPY public.$2 " '
+              index($0, tb)==1 {f=1; next}
+              f && $0=="\\." {f=0}
+              f {n++}
+              END {print n+0}'
+          }
+
+          SIZE=$(stat -c%s "$BACKUP_FILE")
+          echo "📦 size: $SIZE bytes"
+          if [ "$SIZE" -lt "$SIZE_FLOOR" ]; then
+            echo "❌ dump too small ($SIZE < $SIZE_FLOOR) — empty/aborted"; exit 1
+          fi
+
+          ROWS=$(count_rows "$BACKUP_FILE" orders)
+          echo "🔢 orders rows: $ROWS"
+          if [ "$ROWS" -lt "$MIN_ROWS" ]; then
+            echo "❌ orders=$ROWS below floor $MIN_ROWS — wrong/empty DB?"; exit 1
+          fi
+          echo "✅ size / rows OK"
+
+      # ---- 3. no-shrink vs the previous backup on FTP --------------------
+      - name: Compare against previous backup
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+        run: |
+          LFTP_OPTS="set ftp:ssl-auth TLS; set ftp:ssl-force true; set ftp:ssl-protect-data true; set ssl:verify-certificate no; set xfer:clobber on;"
+
+          # Newest existing backup in REMOTE_DIR (filenames are timestamped, so
+          # lexical sort == chronological). Empty if the dir is new/empty.
+          # lftp just lists; the shell does the sort|tail (lftp's own pipe/
+          # redirect parsing is unreliable). cd to a missing dir -> empty list.
+          PREV_NAME=$(lftp -c "
+            $LFTP_OPTS
+            open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
+            cd '$REMOTE_DIR';
+            cls -1 *.sql.gz
+          " 2>/dev/null | sort | tail -1 || true)
+
+          if [ -z "$PREV_NAME" ]; then
+            echo "ℹ️ no previous backup in $REMOTE_DIR — establishing baseline, skipping no-shrink"
+            exit 0
+          fi
+          echo "🔁 previous backup: $PREV_NAME"
+
+          lftp -c "
+            $LFTP_OPTS
+            open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
+            cd '$REMOTE_DIR';
+            get '$PREV_NAME' -o prev.sql.gz
+          "
+
+          count_rows() { # <file> <table>
+            gzip -dc "$1" | awk -v tb="COPY public.$2 " '
+              index($0, tb)==1 {f=1; next}
+              f && $0=="\\." {f=0}
+              f {n++}
+              END {print n+0}'
+          }
+
+          DRIFT=0
+          for t in $KEY_TABLES; do
+            NEW_C=$(count_rows "$BACKUP_FILE" "$t")
+            OLD_C=$(count_rows prev.sql.gz "$t")
+            printf '   %-18s prev=%-6s new=%-6s Δ=%+d\n' "$t" "$OLD_C" "$NEW_C" "$((NEW_C - OLD_C))"
+            if [ "$NEW_C" -lt "$OLD_C" ]; then
+              echo "   ↳ ❌ $t shrank ($OLD_C → $NEW_C)"; DRIFT=1
+            fi
+          done
+          rm -f prev.sql.gz
+          if [ "$DRIFT" -ne 0 ]; then
+            echo "❌ a key table shrank vs previous backup — refusing to trust this dump"; exit 1
+          fi
+          echo "✅ no-shrink OK"
+
+      # ---- 4. upload + retention ----------------------------------------
+      - name: Upload via FTPS and prune old backups
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+        run: |
+          LFTP_OPTS="set ftp:ssl-auth TLS; set ftp:ssl-force true; set ftp:ssl-protect-data true; set ssl:verify-certificate no;"
+
+          # --- upload ---
+          lftp -c "
+            $LFTP_OPTS
+            open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
+            mkdir -p -f '$REMOTE_DIR';
+            put -O '$REMOTE_DIR' '$BACKUP_FILE';
+            bye
+          "
+          echo "✅ Uploaded $BACKUP_FILE to $REMOTE_DIR"
+
+          # --- prune backups older than RETENTION_DAYS ---
+          CUTOFF=$(date -d "${RETENTION_DAYS} days ago" +%Y%m%d)
+          FILE_LIST=$(lftp -c "
+            $LFTP_OPTS
+            open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
+            cd '$REMOTE_DIR';
+            cls -1 *.sql.gz
+          ")
+          DELETE_CMDS=""
+          while read -r FILE; do
+            [ -z "$FILE" ] && continue
+            FILE_DATE=$(echo "$FILE" | grep -oP '\d{8}' | head -1)
+            if [ -n "$FILE_DATE" ] && [ "$FILE_DATE" -lt "$CUTOFF" ]; then
+              echo "🗑️ Will delete: $FILE"
+              DELETE_CMDS="${DELETE_CMDS}rm '${REMOTE_DIR}${FILE}';"
+            fi
+          done <<< "$FILE_LIST"
+          if [ -n "$DELETE_CMDS" ]; then
+            lftp -c "
+              $LFTP_OPTS
+              open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
+              ${DELETE_CMDS}
+            "
+          fi
+          echo "✅ Cleanup complete — kept last ${RETENTION_DAYS} days"
