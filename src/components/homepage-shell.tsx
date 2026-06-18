@@ -20,10 +20,7 @@ type HomepageShellPropsT = {
   digitalProduct: Product | null;
 };
 
-export function HomepageShell({
-  site,
-  digitalProduct,
-}: HomepageShellPropsT) {
+export function HomepageShell({ site, digitalProduct }: HomepageShellPropsT) {
   const reducedMotion = useReducedMotion();
   // Skip the play() attempt when the user has opted out — no reason to
   // round-trip through NotAllowedError if we're not going to animate.
