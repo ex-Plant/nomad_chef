@@ -13,7 +13,6 @@ import { getPayload } from "payload";
 import config from "../src/payload.config";
 import { generateOrderConfirmationHtml } from "../src/lib/emails/templates/order-confirmation";
 import { generateContactMessageHtml } from "../src/lib/emails/templates/contact-message";
-import { generateEbookInterestThanksHtml } from "../src/lib/emails/templates/ebook-interest-thanks";
 import { generateDownloadReadyHtml } from "../src/lib/emails/templates/download-ready";
 import { generateShipmentNotificationHtml } from "../src/lib/emails/templates/shipment-notification";
 
@@ -41,11 +40,6 @@ const TEMPLATES: Record<string, () => TestEmailT> = {
       invoice: { companyName: "Kowalska Studio Sp. z o.o.", nip: "1234567890" },
       adminUrl: "https://www.chaoskitchen.pl/admin/collections/orders/123",
     }),
-  }),
-  "ebook-interest-thanks": () => ({
-    subject: "Dziękuję za zainteresowanie e-bookiem",
-    text: "Cześć,\n\nDzięki za zainteresowanie moim e-bookiem.\nLink do pobrania prześlę w osobnej wiadomości jak tylko otrzymam potwierdzenie wpłaty.\n\nMarta",
-    html: generateEbookInterestThanksHtml(),
   }),
   "contact-message": () => ({
     subject: "Wiadomość z formularza kontaktowego chaoskitchen",

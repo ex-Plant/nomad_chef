@@ -5,7 +5,6 @@ import { notFound } from "next/navigation";
 import { getLogoUrl } from "@/lib/emails/constants";
 import { generateOrderConfirmationHtml } from "@/lib/emails/templates/order-confirmation";
 import { generateContactMessageHtml } from "@/lib/emails/templates/contact-message";
-import { generateEbookInterestThanksHtml } from "@/lib/emails/templates/ebook-interest-thanks";
 import { generateDownloadReadyHtml } from "@/lib/emails/templates/download-ready";
 import { generateShipmentNotificationHtml } from "@/lib/emails/templates/shipment-notification";
 
@@ -57,11 +56,6 @@ type TemplateT = {
 };
 
 const TEMPLATES: readonly TemplateT[] = [
-  {
-    id: "ebook-interest-thanks",
-    name: "Ebook Interest — Thanks (pre-launch)",
-    generate: ({ omitLogo }) => generateEbookInterestThanksHtml({ omitLogo }),
-  },
   {
     id: "order-confirmation",
     name: "Order Confirmation (post-launch)",

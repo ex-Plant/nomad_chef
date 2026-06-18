@@ -8,7 +8,6 @@ import { cartFormSchema } from "@/lib/cart/cart-schema";
 import { setCheckoutCookie } from "@/lib/checkout/checkout-session";
 import { findActiveProduct } from "./find-active-product";
 import { persistCustomerAndOrder } from "./persist-customer-and-order";
-import { sendInterestThanks } from "./send-interest-thanks";
 import { sendOrderConfirmation } from "./send-order-confirmation";
 import { ENV } from "@/config/env";
 import { registerTransaction } from "@/lib/payments/p24";
@@ -47,16 +46,12 @@ export async function createOrder(input: unknown): Promise<CreateOrderResultT> {
       `sessionId=${order.paymentSessionId} totalGross=${order.totalGross}`,
   );
 
-  // Operator notice + buyer interest-thanks don't feed the redirect, so defer
-  // them past the response with after(): they no longer block the buyer's path
-  // to the P24 paywall, and the platform keeps the function alive (via waitUntil)
-  // to finish the sends. Run concurrently; both swallow their own errors, so the
-  // Promise.all never rejects.
+  // The operator notice doesn't feed the redirect, so defer it past the response
+  // with after(): it no longer blocks the buyer's path to the P24 paywall, and
+  // the platform keeps the function alive (via waitUntil) to finish the send.
+  // It swallows its own errors, so this never rejects.
   after(() =>
-    Promise.all([
-      sendOrderConfirmation({ order, values, product, emailTo: ENV.EMAIL_TO }),
-      sendInterestThanks({ customerEmail: values.email }),
-    ]),
+    sendOrderConfirmation({ order, values, product, emailTo: ENV.EMAIL_TO }),
   );
 
   // Stamp a signed cookie holding the order id so the next page
