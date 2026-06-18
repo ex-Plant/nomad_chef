@@ -373,6 +373,27 @@ switch (cmd) {
     break;
   }
 
+  case "race-token": {
+    // Reproduce the P24-return race: fire N concurrent ensureDownloadToken
+    // calls on the SAME pre-issue snapshot (downloadToken still null) — what
+    // the webhook hook and the buyer's processing-page render do in parallel.
+    // Returns every issued token + the converged DB value so the test can
+    // assert they're identical (with a random candidate they would diverge).
+    const id = Number(str(flags.id));
+    if (!id) throw new Error("race-token requires --id");
+    const n = Number(str(flags.n) ?? "8");
+    const order = await payload.findByID({
+      collection: "orders",
+      id,
+      depth: 0,
+    });
+    const tokens = await Promise.all(
+      Array.from({ length: n }, () => ensureDownloadToken({ payload, order })),
+    );
+    out({ tokens, stored: (await getOrder(id)).downloadToken });
+    break;
+  }
+
   case "fulfill-order": {
     const id = Number(str(flags.id));
     if (!id) throw new Error("fulfill-order requires --id");

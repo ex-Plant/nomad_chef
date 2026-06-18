@@ -101,6 +101,15 @@ export const db = {
       String(id),
     ]);
   },
+  raceToken(id: number, n = 8): { tokens: string[]; stored: string | null } {
+    return run<{ tokens: string[]; stored: string | null }>([
+      "race-token",
+      "--id",
+      String(id),
+      "--n",
+      String(n),
+    ]);
+  },
   fulfillOrder(id: number): { token: string | null; order: OrderRowT } {
     return run<{ token: string | null; order: OrderRowT }>([
       "fulfill-order",

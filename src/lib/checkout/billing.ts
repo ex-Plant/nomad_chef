@@ -1,4 +1,4 @@
-import { randomBytes } from "node:crypto";
+import { createHmac, randomBytes } from "node:crypto";
 
 type VatBreakdownT = { priceNet: number; vatAmount: number };
 
@@ -18,6 +18,18 @@ export function calcVat(
 
 export function generateDownloadToken(): string {
   return randomBytes(24).toString("hex");
+}
+
+// Deterministic initial download token, keyed by order id. Concurrent
+// fulfillment paths (P24 webhook hook + the buyer's processing-page render)
+// both derive THIS value, so a racing overwrite writes identical bytes — the
+// emailed link can never diverge from the stored one. Regenerate stays random
+// (single-threaded admin action). 24 bytes → 48 hex, matching TOKEN_REGEX.
+export function deriveDownloadToken(orderId: number, secret: string): string {
+  return createHmac("sha256", secret)
+    .update(`download:${orderId}`)
+    .digest("hex")
+    .slice(0, 48);
 }
 
 export function formatOrderNumber(year: number, sequence: number): string {

@@ -2,6 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
   calcVat,
+  deriveDownloadToken,
   generateDownloadToken,
   formatOrderNumber,
   roundMoney,
@@ -50,6 +51,36 @@ describe("generateDownloadToken", () => {
 
   it("returns a different token on each call", () => {
     assert.notEqual(generateDownloadToken(), generateDownloadToken());
+  });
+});
+
+describe("deriveDownloadToken", () => {
+  it("returns a token matching the strict download-token format (48 hex)", () => {
+    assert.match(deriveDownloadToken(39, "secret"), /^[0-9a-f]{48}$/);
+  });
+
+  // The property that makes the issuance race harmless: two concurrent
+  // fulfillment paths derive the IDENTICAL token, so an overwrite writes the
+  // same bytes — the emailed link can never diverge from the stored one.
+  it("is deterministic for the same order id + secret", () => {
+    assert.equal(
+      deriveDownloadToken(39, "secret"),
+      deriveDownloadToken(39, "secret"),
+    );
+  });
+
+  it("differs across order ids", () => {
+    assert.notEqual(
+      deriveDownloadToken(39, "secret"),
+      deriveDownloadToken(40, "secret"),
+    );
+  });
+
+  it("differs across secrets", () => {
+    assert.notEqual(
+      deriveDownloadToken(39, "secret-a"),
+      deriveDownloadToken(39, "secret-b"),
+    );
   });
 });
 

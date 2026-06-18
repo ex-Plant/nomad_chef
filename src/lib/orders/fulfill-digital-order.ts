@@ -1,8 +1,7 @@
 import type { Payload, PayloadRequest } from "payload";
-import {
-  generateDownloadToken,
-  nextDownloadExpiry,
-} from "@/lib/orders/download-token";
+import { nextDownloadExpiry } from "@/lib/orders/download-token";
+import { deriveDownloadToken } from "@/lib/checkout/billing";
+import { ENV } from "@/config/env";
 import { sendDownloadEmail } from "@/lib/orders/send-download-email";
 import { EMAIL_STATUS, type EmailStatusT } from "@/lib/orders/email-status";
 import { asPopulated } from "@/lib/payload/as-populated";
@@ -56,23 +55,26 @@ async function resolveCustomer({
   });
 }
 
-// Persist the download token WRITE-ONCE: the update only matches while the
-// column is still null, so a concurrent writer (P24 return race: webhook hook vs
-// the buyer's processing render) can't overwrite a token another path already
-// issued. We then re-read and return whatever token is actually stored — ours if
-// we won, the racer's if they did — so every caller converges on one canonical
-// value. Returns the canonical token.
+// Persist the download token, then re-read and return the stored value as the
+// canonical token.
 //
-// Concurrency-safe because the paid-flip update and its afterChange hook run in
-// one Payload transaction that holds the order row lock across this write; a
-// concurrent page/cron call blocks on that lock, then its conditional `where`
-// matches nothing and it converges on the committed token via the re-read
-// below. Keep the `req` threading — it is what shares that transaction.
+// The candidate is DETERMINISTIC (deriveDownloadToken, keyed by order id), and
+// that is what makes the P24-return race safe — NOT the `exists: false` guard.
+// Two paths can fulfill the same order near-simultaneously: the webhook's
+// afterChange hook and the buyer's processing-page render (fresh getPayload, no
+// shared txn). Payload compiles `where: { exists: false }` to select-then-update,
+// so it is NOT atomic — a concurrent writer CAN overwrite a token another path
+// already issued and emailed. That actually happened in prod: a customer got an
+// email whose link the DB had since overwritten ("LINK NIEAKTYWNY"). With a
+// deterministic candidate, both racers compute the IDENTICAL value, so an
+// overwrite just rewrites the same bytes — the emailed token and the stored
+// token can never diverge. Keep the `req` threading so the write joins the
+// hook's transaction.
 export async function ensureDownloadToken(args: FulfillArgsT): Promise<string> {
   const { payload, order, req } = args;
   if (order.downloadToken) return order.downloadToken;
 
-  const candidate = generateDownloadToken();
+  const candidate = deriveDownloadToken(order.id, ENV.PAYLOAD_SECRET);
   const expiresAt = nextDownloadExpiry();
   await payload.update({
     collection: "orders",

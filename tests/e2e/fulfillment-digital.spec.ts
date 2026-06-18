@@ -6,6 +6,7 @@
  */
 import { test, expect } from "@playwright/test";
 import { db, uniqueBuyerEmail } from "./fixtures/db";
+import { deriveDownloadToken } from "../../src/lib/checkout/billing";
 
 const TOKEN_REGEX = /^[0-9a-f]{48}$/;
 const DOWNLOAD_TTL_MS = 72 * 60 * 60 * 1000;
@@ -42,4 +43,22 @@ test("paying a digital order issues a token and sends the download email", () =>
   const expiresInMs = new Date(paid.downloadExpiresAt!).getTime() - Date.now();
   expect(expiresInMs).toBeGreaterThan(DOWNLOAD_TTL_MS - 10 * 60 * 1000);
   expect(expiresInMs).toBeLessThanOrEqual(DOWNLOAD_TTL_MS + 60 * 1000);
+});
+
+// The prod incident: two fulfillment paths (webhook hook + processing-page
+// render) raced, the non-atomic `exists:false` write let the second overwrite
+// the first AFTER the email shipped, so the customer's link pointed at a token
+// the DB no longer held. This fires 8 concurrent issuances on one order; with a
+// deterministic candidate every writer lands the SAME token and the DB
+// converges on it — so the emailed link can never go stale. With the old random
+// candidate the issued tokens diverge from `stored`.
+test("concurrent token issuance converges on one deterministic token", () => {
+  const created = db.createOrder({ email: uniqueBuyerEmail("digital-race") });
+  const expected = deriveDownloadToken(created.id, process.env.PAYLOAD_SECRET!);
+
+  const { tokens, stored } = db.raceToken(created.id, 8);
+
+  expect(stored).toBe(expected);
+  expect(stored).toMatch(TOKEN_REGEX);
+  for (const token of tokens) expect(token).toBe(expected);
 });
