@@ -1,5 +1,28 @@
 npm run typecheck
 
+# --- Dump-on-push DB backup (appended) ---------------------------------------
+# Local safety net taken on every `git push`: snapshots PROD (PROD_DB_POSTGRES_URL
+# via the local $DOCKER_CONTAINER's pg_dump) into the gitignored dumps/ dir.
+# Runs AFTER typecheck — no point dumping if the push would be rejected anyway —
+# and BEFORE the watch-deploy block, so a failed dump aborts before a watcher is
+# spawned. Blocks the push on a failed/empty dump: a backup you can't trust is
+# worse than a loud failure. Requires the local Docker DB container to be up.
+# This is the LOCAL layer; the scheduled off-site copy lives in
+# .github/workflows/db-backup.yml. Set SKIP_DB_DUMP=1 to bypass (offline, CI).
+if [ -z "${SKIP_DB_DUMP:-}" ]; then
+  echo "Dumping DB before push..."
+  if npm run db:dump && [ -s dumps/dump-latest.sql ]; then
+    echo "✅ DB dump succeeded ($(du -h dumps/dump-latest.sql | cut -f1))"
+  else
+    echo "❌ DB dump failed or produced empty file — aborting push"
+    exit 1
+  fi
+
+  # Keep dump-latest.sql plus timestamped copies from the last 7 days; drop older.
+  pruned=$(find dumps -name 'dump-*.sql' ! -name 'dump-latest.sql' -mtime +7 -print -delete 2>/dev/null | wc -l | tr -d ' ')
+  echo "✅ Pruned ${pruned:-0} old dump(s)"
+fi
+
 # Background watcher: tails the Vercel deployment that this push triggers and
 # prints its state transitions (… BUILDING → READY / ERROR) to this terminal.
 # Detached subshell so `git push` returns immediately when the hook exits.
