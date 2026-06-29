@@ -106,7 +106,7 @@ export function GalleryLightbox({
                     key={i}
                     className="relative flex h-full min-w-0 flex-[0_0_100%] items-center justify-center px-6 py-12 md:px-24 md:py-16"
                   >
-                    <div className="relative h-full w-full">
+                    <div className="relative h-full w-full max-w-[1400px]">
                       {/* Always rendered underneath — the image paints over it once decoded. */}
                       <div className="absolute inset-0 flex items-center justify-center">
                         <Loader className="bg-transparent" color="yellow" />
@@ -115,8 +115,8 @@ export function GalleryLightbox({
                         src={image.src}
                         alt={image.alt}
                         fill
-                        quality={390}
-                        sizes="(max-width: 768px) 100vw, 90vw"
+                        quality={90}
+                        sizes="(max-width: 768px) 100vw, 1400px"
                         className="relative object-contain"
                         priority={isNearby}
                       />
