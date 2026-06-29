@@ -11,11 +11,15 @@ const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
   style: ["normal", "italic"],
+  // Decorative/quote font, never in first paint — lazy-load to avoid
+  // "preloaded but not used" warnings and wasted hero-load bandwidth.
+  preload: false,
 });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  preload: false,
 });
 
 export const fontVariables = `${archivoBlack.variable} ${instrumentSerif.variable} ${geistSans.variable}`;
