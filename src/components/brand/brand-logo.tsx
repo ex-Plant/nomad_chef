@@ -4,7 +4,11 @@
 
 import { cn } from "@/helpers/cn";
 
-import { buildBrandDots, DOT_R, VIEWBOX } from "@/components/brand/brand-mark-dots";
+import {
+  buildBrandDots,
+  DOT_R,
+  VIEWBOX,
+} from "@/components/brand/brand-mark-dots";
 
 const GLOW = 0.9; // 0..1 bloom intensity
 
