@@ -6,6 +6,7 @@ import { ScatterText } from "@/components/shared/scatter-text";
 import { ContactLink } from "@/components/sections/contact/contact-link";
 import { ContactForm } from "@/components/sections/contact/contact-form";
 import { CookieSettingsTrigger } from "@/components/cookies/cookie-settings-trigger";
+import { BrandLogo } from "@/components/brand/brand-logo";
 import { SECTION_IDS } from "@/config/section-ids";
 import type { SiteT } from "@/types/site";
 import { Section } from "@/components/shared/section";
@@ -98,7 +99,17 @@ export function Contact({ data, legalLinks }: ContactPropsT) {
           {/* Brand mark line — divider above (matches original full-strength line) */}
           <div className="text-heading border-coral mt-8 flex items-center justify-between border-t pt-8 text-sm tracking-tight">
             <span>{data.footer}</span>
-            <span>{2026}</span>
+            <span className="flex items-center gap-3">
+              <Link
+                href="https://eggplantdev.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-coral inline-flex items-center gap-2 normal-case transition"
+              >
+                <span> © 2026 eggplantdev.com</span>
+                <BrandLogo className="h-8 w-auto" />
+              </Link>
+            </span>
           </div>
           <div className="mt-3 text-xs">
             <CookieSettingsTrigger className="text-coral/70 hover:text-coral hover:opacity-100" />
